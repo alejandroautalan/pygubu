@@ -45,9 +45,13 @@ ITEM_PROPS = WIDGET_ATTRS + WIDGET_PROPS + WIDGET_GRID_PROPS
 
 
 class TkBuilderUI(Application):
+    """Main gui class"""
 
     def _create_ui(self):
+        """Creates all gui widgets"""
+
         class WidgetContainer(object):
+            """Dummy container class"""
             pass
 
         self.counter = Counter()
@@ -106,7 +110,7 @@ class TkBuilderUI(Application):
         #add widget button
         widgets.add_btn = w = ttk.Button(f, text='Add',
             command=self.on_add_btn_clicked)
-        w.grid(row=0, column=1, padx=(5,0))
+        w.grid(row=0, column=1, padx=(5, 0))
 
         #properties frame
         widgets.notebook = nb = ttk.Notebook(f)
@@ -136,6 +140,8 @@ class TkBuilderUI(Application):
 
 
     def config_canvas(self):
+        """Configures the canvas"""
+
         self.widgets.canvas.configure(scrollregion=(0, 0, "50i", "50i"))
         self.widgets.canvaswindow = self.widgets.canvas.create_window(1, 1,
             anchor='nw')
@@ -152,9 +158,12 @@ class TkBuilderUI(Application):
         configure_treeview(tv, columns, displaycolumns=dcols, headings=hcols,
             show_tree=True)
         tv.bind('<<TreeviewSelect>>', self.on_treeview_select)
+        tv.bind('<KeyPress-Delete>', self.on_treeview_delete_item)
 
 
     def create_property_widget(self, master, propertyname):
+        """Creates a ui widget to edit the property"""
+
         widget = None
         widgetvar = self.prop_vars(propertyname)
 
@@ -265,6 +274,15 @@ class TkBuilderUI(Application):
         return editor_frame
 
 
+    def hide_all_properties(self):
+        """Hide all properties from property editor."""
+
+        for pname in ITEM_PROPS:
+            label, widget = self.widgets.prop_editor[pname]
+            label.grid_remove()
+            widget.grid_remove()
+
+
     def edit_item_properties(self, item):
         """Copies properties values from the treeview to the
            properties editor so they can be edited."""
@@ -288,8 +306,6 @@ class TkBuilderUI(Application):
 
     def on_property_variable_changed(self, varname, elementname, mode):
         '''Updates treeview values from property editor'''
-        msg = "{0} changed; new value='{1}'".format(elementname, self.prop_vars[elementname])
-        print(msg)
 
         new_value = self.prop_vars[elementname]
         tv = self.widgets.treeview
@@ -331,20 +347,39 @@ class TkBuilderUI(Application):
             self.edit_item_properties(item)
 
 
+    def on_treeview_delete_item(self, event):
+        """Removes item from treeview"""
+
+        tv = self.widgets.treeview
+        sel = tv.selection()
+        toplevel_items = tv.get_children()
+        if sel:
+            item = sel[0]
+            parent = ''
+            if item not in toplevel_items:
+                parent = self.get_toplevel_parent(item)
+            else:
+                self.hide_all_properties()
+            tv.delete(item)
+            self.draw_widget(parent)
+
+
     def draw_widget(self, item):
         """Create a preview of the selected treeview item"""
 
         tv = self.widgets.treeview
         canvas = self.widgets.canvas
-        values = tv.set(item)
-        uniqueid = values['id']
-        xmlnode = self.tree_node_to_xml(tv, '', item)
-        builder = tkbuilder.Tkbuilder()
-        builder.add_from_xmlnode(xmlnode)
-        widget = builder.get_object(canvas, uniqueid)
+
+        widget = ''
+        if item:
+            values = tv.set(item)
+            uniqueid = values['id']
+            xmlnode = self.tree_node_to_xml(tv, '', item)
+            builder = tkbuilder.Tkbuilder()
+            builder.add_from_xmlnode(xmlnode)
+            widget = builder.get_object(canvas, uniqueid)
+
         canvas.itemconfigure(self.widgets.canvaswindow, window=widget)
-#        bbox = canvas.bbox(self.widgets.canvaswindow)
-#        canvas.configure(scrollregion=bbox)
 
 
     def on_add_btn_clicked(self):
