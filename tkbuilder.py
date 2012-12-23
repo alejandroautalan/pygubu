@@ -128,6 +128,28 @@ TK_WIDGET_PROPS = {
     'wraphlength':_dimension_prop,
     'xscrollcommand': _default_entry_prop,
     'yscrollcommand': _default_entry_prop,
+#grid packing properties
+    'column': _default_spinbox_prop,
+    'columnspan': _default_spinbox_prop,
+    'in_': _default_entry_prop,
+    'ipadx': _default_spinbox_prop,
+    'ipady': _default_spinbox_prop,
+    'padx': _default_spinbox_prop,
+    'pady': _default_spinbox_prop,
+    'row': _default_spinbox_prop,
+    'rowspan': _default_spinbox_prop,
+    'sticky': {
+        'input_method': 'choice',
+        'values': ('', tkinter.constants.N, tkinter.constants.S,
+            tkinter.constants.E, tkinter.constants.W,
+            tkinter.constants.NE, tkinter.constants.NW,
+            tkinter.constants.SE, tkinter.constants.SW,
+            tkinter.constants.EW, tkinter.constants.NS,
+            tkinter.constants.NS + tkinter.constants.W,
+            tkinter.constants.NS + tkinter.constants.E,
+            tkinter.constants.NSEW
+            )
+        }
 }
 
 

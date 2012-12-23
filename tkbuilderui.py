@@ -37,8 +37,8 @@ WIDGET_PROPS = tuple(WIDGET_PROPS)
 
 WIDGET_GRID_PROPS = (
     #packing
-    'column', 'columnspan', 'in_', 'ipadx', 'ipady', 'padx', 'pady',
-    'row', 'rowspan', 'sticky'
+    'row', 'column', 'rowspan', 'columnspan', 'padx', 'pady',
+    'ipadx', 'ipady', 'sticky', 'in_'
 )
 
 ITEM_PROPS = WIDGET_ATTRS + WIDGET_PROPS + WIDGET_GRID_PROPS
@@ -57,6 +57,7 @@ class TkBuilderUI(Application):
         self.counter = Counter()
         self.widgets = widgets = WidgetContainer()
         self.prop_vars = ArrayVar()
+        self.cb_prop_vars = None
 
         widgets.frame1 = f1 = ttk.Frame(self)
         f1.grid(row=0, column=0, sticky='nswe')
@@ -115,8 +116,7 @@ class TkBuilderUI(Application):
         #properties frame
         widgets.notebook = nb = ttk.Notebook(f)
         nb.grid(row=1, column=0, columnspan=2, sticky=tkinter.NSEW)
-        widgets.properties_frame = f3 = self.create_properties_editor(nb)
-        nb.add(f3, text='Properties', sticky=tkinter.NSEW)
+        self.create_properties_editor(nb)
 
         #canvas viewer
         widgets.preview = f2 = ttk.Labelframe(mp, text='Preview')
@@ -220,10 +220,12 @@ class TkBuilderUI(Application):
             variable.set(treevalues[propertyname])
 
 
-    def create_properties_editor(self, master):
+    def create_properties_editor(self, notebook):
         """Create a frame with a list of all editable properties"""
 
-        editor_frame = ttk.Frame(master)
+        editor_frame = ttk.Frame(notebook)
+        editor_frame.columnconfigure(1, weight=1)
+        notebook.add(editor_frame, text='General', sticky=tkinter.NSEW)
 
         self.widgets.prop_editor = prop_editor = {}
 
@@ -253,6 +255,10 @@ class TkBuilderUI(Application):
             label.grid_remove()
             widget.grid_remove()
 
+        editor_frame = ttk.Frame(notebook)
+        editor_frame.columnconfigure(1, weight=1)
+        notebook.add(editor_frame, text='Packing', sticky=tkinter.NSEW)
+
         for name in WIDGET_GRID_PROPS:
             labeltext = "{0}:".format(name)
             label = ttk.Label(editor_frame, text=labeltext, anchor=tkinter.W)
@@ -265,10 +271,8 @@ class TkBuilderUI(Application):
             label.grid_remove()
             widget.grid_remove()
 
-        editor_frame.columnconfigure(1, weight=1)
-
         #connect callback
-        self.prop_vars.trace(mode="w",
+        self.cb_prop_vars = self.prop_vars.trace(mode="w",
             callback=self.on_property_variable_changed)
 
         return editor_frame
@@ -287,10 +291,14 @@ class TkBuilderUI(Application):
         """Copies properties values from the treeview to the
            properties editor so they can be edited."""
 
+        #first disable callback for better performance ??
+        self.prop_vars.trace_vdelete("w", self.cb_prop_vars)
+
         tv = self.widgets.treeview
         values = tv.set(item)
         wclass = values['class']
-        wprops = WIDGET_ATTRS + tuple(CLASS_MAP[wclass]['properties'])
+        wprops = WIDGET_ATTRS + tuple(CLASS_MAP[wclass]['properties']) \
+            + WIDGET_GRID_PROPS
 
         for key in values.keys():
             if key in wprops:
@@ -302,6 +310,11 @@ class TkBuilderUI(Application):
                 label, widget = self.widgets.prop_editor[key]
                 label.grid_remove()
                 widget.grid_remove()
+
+        #re-enable callback
+        #connect callback
+        self.cb_prop_vars = self.prop_vars.trace(mode="w",
+            callback=self.on_property_variable_changed)
 
 
     def on_property_variable_changed(self, varname, elementname, mode):
