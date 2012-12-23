@@ -3,6 +3,78 @@ import tkinter
 from tkinter import ttk
 
 
+_default_entry_prop = {
+    'input_method': 'entry',
+}
+
+_default_spinbox_prop = {
+    'input_method': 'spinbox',
+    'min': 0,
+    'max': 999,
+}
+
+_dimension_prop = {
+    'input_method': 'spinbox',
+    'min': 0,
+    'max': 999,
+}
+
+TK_WIDGET_PROPS = {
+    'anchor': {
+        'input_method': 'choice',
+        'values': ('', tkinter.W, tkinter.CENTER, tkinter.E),
+        },
+    'background': _default_entry_prop,
+    'borderwidth': _dimension_prop,
+    'class_': _default_entry_prop,
+    'command': _default_entry_prop,
+    'compound': {
+        'input_method': 'choice',
+        'values': {
+            'Label': ('', 'bottom', 'image', 'left', 'none',
+                'right', 'text', 'top'),
+            'Button': ('', tkinter.constants.TOP, tkinter.constants.BOTTOM,
+                tkinter.constants.LEFT, tkinter.constants.RIGHT)
+            }
+        },
+    'cursor': {
+        'input_method': 'choice',
+        'values': ('', 'arrow', 'based_arrow_down', 'based_arrow_up',
+            'boat', 'bogosity', 'bottom_left_corner'),
+        },
+    'exportselection': {
+        'input_method': 'choice',
+        'values': ('', '0', '1')
+        },
+    'font': _default_entry_prop,
+    'foreground': _default_entry_prop,
+    'height': _dimension_prop,
+    'invalidcommand': _default_entry_prop,
+    'image': _default_entry_prop,
+    'justify': {
+        'input_method': 'choice',
+        'values': ('', tkinter.constants.LEFT, tkinter.constants.CENTER,
+            tkinter.constants.RIGHT),
+        },
+    'padding': _dimension_prop,
+    'relief': {
+        'input_method': 'choice',
+        'values': ('', tkinter.constants.FLAT, 'raised', 'sunken', 'groove', 'ridge')
+        },
+    'show': _default_entry_prop,
+    'style': _default_entry_prop,
+    'takefocus': {
+        'input_method': 'choice',
+        'values': ('', tkinter.constants.TRUE, tkinter.constants.FALSE),
+        },
+    'text': _default_entry_prop,
+    'textvariable': _default_entry_prop,
+    'underline': _default_spinbox_prop,
+    'width': _dimension_prop,
+    'wraphlength':_dimension_prop,
+}
+
+
 CLASS_MAP = {
     'Frame': {
         'class': ttk.Frame,

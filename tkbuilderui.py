@@ -45,45 +45,56 @@ ITEM_PROPS = WIDGET_ATTRS + WIDGET_PROPS + WIDGET_GRID_PROPS
 
 
 class TkBuilderUI(Application):
-    
+
     def _create_ui(self):
         class WidgetContainer(object):
             pass
-        
+
         self.counter = Counter()
         self.widgets = widgets = WidgetContainer()
-        
-        widgets.project_lbl = w = ttk.Label(self, text='Project:')
+        self.prop_vars = ArrayVar()
+
+        widgets.frame1 = f1 = ttk.Frame(self)
+        f1.grid(row=0, column=0, sticky='nswe')
+        f1.columnconfigure(1, weight=1)
+
+        widgets.project_lbl = w = ttk.Label(f1, text='Project:')
         w.grid(row=0, column=0, sticky='nw')
-        
-        widgets.project_name = w = ttk.Label(self, text='NewProject1')
+
+        widgets.project_name = w = ttk.Label(f1, text='NewProject1',
+            anchor=tkinter.W)
         w.grid(row=0, column=1, sticky='nw')
-        
+
         #menu
-        widgets.menu_btn = w = tkinter.Menubutton(self, text='◉')
+        widgets.menu_btn = w = tkinter.Menubutton(f1, text='◉')
         w.grid(row=0, column=2)
-        
+
         widgets.mainmenu = w = tkinter.Menu(widgets.menu_btn)
         w.add_command(label='Open …', command=self.on_menuitem_open_clicked)
         w.add_command(label='Save …', command=self.on_menuitem_save_clicked)
         w.add_separator()
         w.add_command(label='Quit …', command=self.quit)
-        
+
         widgets.menu_btn.configure(menu=widgets.mainmenu)
-        
+
         #Main paned window
         widgets.mainpane = mp = ttk.Panedwindow(self, orient='horizontal')
-        mp.grid(row=1, column=0, columnspan=3, sticky='nsew')
-        
-        #treeview pane
-        widgets.treeview = w = create_scrollable(mp, ttk.Treeview)
-        mp.add(w.frame, weight=1)
+        mp.grid(row=1, column=0, sticky='nsew')
+
+        #subpane1
+        widgets.pane1 = pane1 = ttk.PanedWindow(self, orient='vertical')
+        mp.add(pane1)
+
+        #Treeview on pane1
+        widgets.treeview = w = create_scrollable(pane1, ttk.Treeview)
+        pane1.add(w.frame)
         self.config_treeview()
-        
-        #Properties pane
-        widgets.propframe = f = ttk.Frame(mp)
-        mp.add(f, weight=1)
-        
+
+        #Properties frame
+        widgets.propframe = f = ttk.Frame(pane1)
+        f.columnconfigure(1, weight=1)
+        pane1.add(f)
+
         values = list(CLASS_MAP.keys())
         values.sort()
         widgets.class_cbox_var = v = tkinter.StringVar()
@@ -91,25 +102,35 @@ class TkBuilderUI(Application):
             state='readonly', textvariable=v, values=values)
         w.grid(row=0, column=0)
         v.set('Frame')
-        
+
+        #add widget button
         widgets.add_btn = w = ttk.Button(f, text='Add',
             command=self.on_add_btn_clicked)
         w.grid(row=0, column=1, padx=(5,0))
-        
+
+        #properties frame
+        widgets.notebook = nb = ttk.Notebook(f)
+        nb.grid(row=1, column=0, columnspan=2, sticky=tkinter.NSEW)
+        widgets.properties_frame = f3 = self.create_properties_editor(nb)
+        nb.add(f3, text='Properties', sticky=tkinter.NSEW)
+
         #canvas viewer
-        widgets.canvas = w = create_scrollable(mp, tkinter.Canvas,
+        widgets.preview = f2 = ttk.Labelframe(mp, text='Preview')
+        f2.rowconfigure(0, weight=1)
+        f2.columnconfigure(0, weight=1)
+        mp.add(f2)
+
+        widgets.canvas = w = create_scrollable(f2, tkinter.Canvas,
             background='white')
-        mp.add(w.frame, weight=3)
+        w.frame.grid(sticky=tkinter.NSEW)
+
         self.config_canvas()
-        
-        
+
         self.rowconfigure(1, weight=1)
         self.columnconfigure(0, weight=1)
-        self.columnconfigure(1, weight=1)
-        
 
         #app config
-        self.set_title('SQLA Explorer')
+        self.set_title('A tkinter GUI builder')
         self.set_size('800x600')
         self.pack_configure(padx=5, pady=5)
 
@@ -119,22 +140,187 @@ class TkBuilderUI(Application):
         self.widgets.canvaswindow = self.widgets.canvas.create_window(1, 1,
             anchor='nw')
 
-    
+
     def config_treeview(self):
         """Sets treeview columns and other params"""
-        
+
         tv = self.widgets.treeview
         columns = ITEM_PROPS
         #dcols = WIDGET_ATTRS + WIDGET_GRID_PROPS
         dcols = tuple()
-        #hcols = ('widget',) + columns
-        hcols = None
+        hcols = ('Widgets',) + columns
         configure_treeview(tv, columns, displaycolumns=dcols, headings=hcols,
             show_tree=True)
         tv.bind('<<TreeviewSelect>>', self.on_treeview_select)
-    
-    
+
+
+    def create_property_widget(self, master, propertyname):
+        widget = None
+        widgetvar = self.prop_vars(propertyname)
+
+        wtype = ''
+        if propertyname in tkbuilder.TK_WIDGET_PROPS:
+            wdata = tkbuilder.TK_WIDGET_PROPS[propertyname]
+            wtype = wdata['input_method']
+
+        if wtype == 'entry':
+            widget = ttk.Entry(master, textvariable=widgetvar)
+        elif wtype == 'choice':
+            widget = ttk.Combobox(master, textvariable=widgetvar,
+                state='readonly')
+            values = wdata.get('values', None)
+            if values is not None:
+                if isinstance(values, dict):
+                    #I don't have class name at this moment
+                    #setup on update_property_widget
+                    pass
+                else:
+                    widget.configure(values=values)
+        elif wtype == 'spinbox':
+            widget = tkinter.Spinbox(master, textvariable=widgetvar)
+            vmin = wdata.get('min', 0)
+            vmax = wdata.get('max', 99)
+            widget.configure(from_=vmin, to=vmax)
+        else:
+            widget = ttk.Entry(master, textvariable=widgetvar)
+
+        return widget
+
+
+    def update_property_widget(self, widget, treeitem,
+            propertyname, classname):
+        wtype = ''
+        if propertyname in tkbuilder.TK_WIDGET_PROPS:
+            wdata = tkbuilder.TK_WIDGET_PROPS[propertyname]
+            wtype = wdata['input_method']
+
+        if wtype == 'choice':
+            values = wdata.get('values', None)
+            if values is not None:
+                if isinstance(values, dict):
+                    pass
+                    values = values.get(classname, None)
+                    if values:
+                        widget.configure(values=values)
+                else:
+                    widget.configure(values=values)
+
+        treevalues = self.widgets.treeview.set(treeitem)
+        variable = self.prop_vars(propertyname)
+        if propertyname in treevalues:
+            variable.set(treevalues[propertyname])
+
+
+    def create_properties_editor(self, master):
+        """Create a frame with a list of all editable properties"""
+
+        editor_frame = ttk.Frame(master)
+
+        self.widgets.prop_editor = prop_editor = {}
+
+        row=0
+        col=0
+        for name in WIDGET_ATTRS:
+            labeltext = "{0}:".format(name)
+            label = ttk.Label(editor_frame, text=labeltext, anchor=tkinter.W)
+            widget = self.create_property_widget(editor_frame, name)
+            label.grid(row=row, column=col, sticky=tkinter.EW)
+            widget.grid(row=row, column=col+1, sticky=tkinter.EW)
+            row += 1
+            prop_editor[name] = (label, widget)
+            #initialy hide all
+            label.grid_remove()
+            widget.grid_remove()
+
+        for name in WIDGET_PROPS:
+            labeltext = "{0}:".format(name)
+            label = ttk.Label(editor_frame, text=labeltext, anchor=tkinter.W)
+            widget = self.create_property_widget(editor_frame, name)
+            label.grid(row=row, column=col, sticky=tkinter.EW)
+            widget.grid(row=row, column=col+1, sticky=tkinter.EW)
+            row += 1
+            prop_editor[name] = (label, widget)
+            #initialy hide all
+            label.grid_remove()
+            widget.grid_remove()
+
+        for name in WIDGET_GRID_PROPS:
+            labeltext = "{0}:".format(name)
+            label = ttk.Label(editor_frame, text=labeltext, anchor=tkinter.W)
+            widget = self.create_property_widget(editor_frame, name)
+            label.grid(row=row, column=col, sticky=tkinter.EW)
+            widget.grid(row=row, column=col+1, sticky=tkinter.EW)
+            row += 1
+            prop_editor[name] = (label, widget)
+            #initialy hide all
+            label.grid_remove()
+            widget.grid_remove()
+
+        editor_frame.columnconfigure(1, weight=1)
+
+        #connect callback
+        self.prop_vars.trace(mode="w",
+            callback=self.on_property_variable_changed)
+
+        return editor_frame
+
+
+    def edit_item_properties(self, item):
+        """Copies properties values from the treeview to the
+           properties editor so they can be edited."""
+
+        tv = self.widgets.treeview
+        values = tv.set(item)
+        wclass = values['class']
+        wprops = WIDGET_ATTRS + tuple(CLASS_MAP[wclass]['properties'])
+
+        for key in values.keys():
+            if key in wprops:
+                label, widget = self.widgets.prop_editor[key]
+                self.update_property_widget(widget, item, key, wclass)
+                label.grid()
+                widget.grid()
+            else:
+                label, widget = self.widgets.prop_editor[key]
+                label.grid_remove()
+                widget.grid_remove()
+
+
+    def on_property_variable_changed(self, varname, elementname, mode):
+        '''Updates treeview values from property editor'''
+        msg = "{0} changed; new value='{1}'".format(elementname, self.prop_vars[elementname])
+        print(msg)
+
+        new_value = self.prop_vars[elementname]
+        tv = self.widgets.treeview
+        sel = tv.selection()
+        if sel:
+            item = sel[0]
+            tv.set(item, elementname, new_value)
+            if elementname in WIDGET_ATTRS:
+                widget_id = tv.set(item, 'id')
+                wclass = tv.set(item, 'class')
+                treenode_label = '{0} - {1}'.format(widget_id,wclass)
+                tv.item(item, text=treenode_label)
+            self.draw_widget(self.get_toplevel_parent(item))
+
+
+    def get_toplevel_parent(self, treeitem):
+        tv = self.widgets.treeview
+        toplevel_items = tv.get_children()
+        toplevel_parent = None
+
+        item = treeitem
+        while not (item in toplevel_items):
+            item = tv.parent(item)
+
+        return item
+
+
     def on_treeview_select(self, event):
+        """Get the selected treeitem and display properties in
+            property editor."""
+
         tv = self.widgets.treeview
         sel = tv.selection()
         if sel:
@@ -142,9 +328,12 @@ class TkBuilderUI(Application):
             rootitems = tv.get_children()
             if item in rootitems:
                 self.draw_widget(item)
-                
-    
+            self.edit_item_properties(item)
+
+
     def draw_widget(self, item):
+        """Create a preview of the selected treeview item"""
+
         tv = self.widgets.treeview
         canvas = self.widgets.canvas
         values = tv.set(item)
@@ -154,11 +343,13 @@ class TkBuilderUI(Application):
         builder.add_from_xmlnode(xmlnode)
         widget = builder.get_object(canvas, uniqueid)
         canvas.itemconfigure(self.widgets.canvaswindow, window=widget)
-        
-        
-    
+#        bbox = canvas.bbox(self.widgets.canvaswindow)
+#        canvas.configure(scrollregion=bbox)
+
+
     def on_add_btn_clicked(self):
         """Adds selected widget class to treeview"""
+
         tree = self.widgets.treeview
         #get widget class name to insert
         wclass = self.widgets.class_cbox_var.get()
@@ -167,10 +358,10 @@ class TkBuilderUI(Application):
         tsel = tree.selection()
         if tsel:
             selected_item = tsel[0]
-            
+
         #by default insert at top level
         root = ''
-        
+
         #check if selected item is a container
         if selected_item:
             svalues = tree.set(selected_item)
@@ -181,23 +372,23 @@ class TkBuilderUI(Application):
             else:
                 #the item parent should be the container
                 root = tree.parent(selected_item)
-        
+
         #if insertion is at top level,
-        #check that item to insert is a container.        
+        #check that item to insert is a container.
         if not root:
             if CLASS_MAP[wclass]['container'] == False:
                 print('Warning: Widget to insert is not a container.')
                 return
-        
+
         #root item should be set at this point
-        
+
         #increment class counter
         self.counter[wclass] += 1
-        
+
         #setup properties
         widget_id = '{0}_{1}'.format(wclass, self.counter[wclass])
         wvalues = [wclass, widget_id]
-        
+
         treenode_label = '{0} - {1}'.format(widget_id,wclass)
         item = tree.insert(root, 'end', text=treenode_label)
         tree.set(item, 'class', wclass)
@@ -210,62 +401,65 @@ class TkBuilderUI(Application):
         rownum = str(len(tree.get_children(root)) - 1)
         tree.set(item, 'row', rownum)
         tree.set(item, 'column', '0')
-        
+
         #select and show the item created
         tree.selection_set(item)
         tree.see(item)
-    
-    
+
+
     def on_menuitem_open_clicked(self):
         """Opens xml file and load to treeview"""
-        
+
         fname = filedialog.askopenfilename()
         if fname:
             self.load_file(fname)
-    
-    
+
+
     def on_menuitem_save_clicked(self):
         """Save treeview to xml file"""
-        
+
         fname = filedialog.asksaveasfilename()
         if fname:
             xml_tree = self.tree_to_xml()
             #xml_tree.write(fname, encoding='utf-8', xml_declaration=True)
-            
+
             xmlvar = xml.dom.minidom.parseString(
                 ET.tostring(xml_tree.getroot()))
             pretty_xml_as_string = xmlvar.toprettyxml(indent=' '*4)
             with open(fname, 'w') as f:
                 f.write(pretty_xml_as_string)
             #print(pretty_xml_as_string)
-    
-    
+
+
     def load_file(self, filename):
         """Load xml into treeview"""
-        
+
         self.counter.clear()
         etree = ET.parse(filename)
         eroot = etree.getroot()
-        
+
         for element in eroot:
             self.populate_tree('', eroot, element)
+        self.widgets.project_name.configure(text=filename)
 
 
     def populate_tree(self, master, parent, element):
         """Reads xml nodes and populates tree item"""
-        
+
         cname = element.get('class')
         uniqueid = element.get('id')
-        
+
         #print('on serialize for ', cname)
-        
+
         if cname in CLASS_MAP:
             #update counter
             self.counter[cname] += 1
-            pwidget = self.widgets.treeview.insert(master, 'end', text=uniqueid)
+            treenode_label = '{0} - {1}'.format(uniqueid, cname)
+            pwidget = self.widgets.treeview.insert(master, 'end',
+                text=treenode_label)
             self.widgets.treeview.set(pwidget, 'class', cname)
             self.widgets.treeview.set(pwidget, 'id', uniqueid)
-            
+
             xpath = './packing'
             packing_elem = parent.find(xpath)
             if packing_elem is not None:
@@ -273,61 +467,61 @@ class TkBuilderUI(Application):
                 print(properties)
                 for k, v in properties.items():
                     self.widgets.treeview.set(pwidget, k, v)
-            
+
             xpath = "./child"
             children = element.findall(xpath)
             for child in children:
                 child_object = child.find('./object')
                 cwidget = self.populate_tree(pwidget, child, child_object)
                 #self.configure_layout(element, child, pwidget, cwidget)
-            
+
             self.config_tree_widget(pwidget, cname, element)
             return pwidget
         else:
             raise Exception('Class "{0}" not mapped'.format(cname))
-    
-    
+
+
     def config_tree_widget(self, widget, cname, element):
         """Reads xml property nodes and populates tree item"""
-        
+
         properties = self.get_properties(element)
-        
+
         for pname, value in properties.items():
             self.widgets.treeview.set(widget, pname, value)
-    
-    
+
+
     def get_properties(self, element):
         """Gets name, value from property nodes in element"""
-        
+
         properties = element.findall('./property')
         pdict= {}
         for p in properties:
             pdict[p.get('name')] = p.text
         return pdict
-    
-    
+
+
     def tree_to_xml(self):
         """Traverses treeview and generates a ElementTree object"""
-        
+
         tree = self.widgets.treeview
         root = ET.Element('interface')
         items = tree.get_children()
         for item in items:
             node = self.tree_node_to_xml(tree, '', item)
             root.append(node)
-            
+
         return ET.ElementTree(root)
-        
-        
+
+
     def tree_node_to_xml(self, tree, parent, item):
         """Converts a treeview item and children to xml nodes"""
-        
+
         values = tree.set(item)
         node = ET.Element('object')
-        
+
         for prop in WIDGET_ATTRS:
             node.set(prop, values[prop])
-            
+
         wclass_props = CLASS_MAP[values['class']]['properties']
         for prop in wclass_props:
             pv = values.get(prop, None)
@@ -336,13 +530,13 @@ class TkBuilderUI(Application):
                 pnode.set('name', prop)
                 pnode.text = pv
                 node.append(pnode)
-            
+
         children = tree.get_children(item)
         for child in children:
             cnode = ET.Element('child')
             cwidget = self.tree_node_to_xml(tree, item, child)
             cnode.append(cwidget)
-            
+
             values = tree.set(child)
             packing_node = ET.Element('packing')
             has_packing = False
@@ -356,12 +550,11 @@ class TkBuilderUI(Application):
                     packing_node.append(pnode)
             if has_packing:
                 cnode.append(packing_node)
-            
+
             node.append(cnode)
-        
+
         return node
-            
-        
+
 
 if __name__ == '__main__':
     app = TkBuilderUI(tkinter.Tk())
