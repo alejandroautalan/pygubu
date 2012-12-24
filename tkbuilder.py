@@ -326,7 +326,7 @@ class Tkbuilder:
         self.tree = None
         self.root = None
         self.widgets = {}
-        
+
     def add_from_file(self, fpath):
         if self.tree is None:
             self.tree = tree = ET.parse(fpath)
@@ -349,7 +349,7 @@ class Tkbuilder:
             #TODO: append to current tree
             pass
 
-    
+
     def get_object(self, master, name):
         widget = None
         if name in self.widgets:
@@ -367,68 +367,44 @@ class Tkbuilder:
     def realize(self, master, element):
         cname = element.get('class')
         uniqueid = element.get('id')
-        
+
         #print('on serialize for ', cname)
-        
+
         if cname in CLASS_MAP:
             pwidget = CLASS_MAP[cname]['class'](master)
-            
+
             self.widgets[uniqueid] = pwidget
-            
+
             xpath = "./child"
             children = element.findall(xpath)
             for child in children:
                 child_object = child.find('./object')
                 cwidget = self.realize(pwidget, child_object)
-                self.configure_layout(element, child, pwidget, cwidget)
-            
+                #self.configure_layout(element, child, pwidget, cwidget)
+
             self.configure_widget(pwidget, cname, element)
+            self.configure_layout(element, pwidget)
             return pwidget
         else:
             raise Exception('Class "{0}" not mapped'.format(cname))
 
 
-    def configure_layout(self, parent_element, child_element, pwidget, cwidget):
+    def configure_layout(self, element, widget):
         #use grid layout for all
-        parent_class = parent_element.get('class')
-        child_class = child_element.find('./object').get('id')
-        msg = 'configuring  layout for {0} {1}'.format(parent_class,
-            child_class)
-        print(msg)
-        
         #get packing properties
-        packing_elem = child_element.find('./packing')
-        #print('child: ', ET.tostring(child_element))
+        packing_elem = element.find('./packing')
         layout_properties = self.get_properties(packing_elem)
-        print(layout_properties)
-        
-        row = layout_properties.get('row', 0)
-        column = layout_properties.get('column', 0)
-        #print('row:{0}, column:{1}'.format(row, column))
-        
-        cwidget.grid(row=row, column=column)
-            
-    
+
+        widget.grid(**layout_properties)
+
+
     def configure_widget(self, widget, cname, element):
         properties = self.get_properties(element)
         attrib = {}
-        
+
         for pname, value in properties.items():
             print('Setting: ', cname, pname, value)
             widget[pname] = value
-        
-#        for pname, value in properties.items():
-#            prop_dict = CLASS_MAP[cname]['properties']['direct']
-#            if pname in prop_dict:
-#                attrib[prop_dict[pname]] = value
-#        if attrib:
-#            widget.configure(**attrib)
-#            
-#        for pname, value in properties.items():
-#            prop_dict = CLASS_MAP[cname]['properties']['bymethod']
-#            if pname in prop_dict:
-#                set_prop_method = prop_dict[pname]
-#                set_prop_method(widget, value)
 
 
     def get_properties(self, element):

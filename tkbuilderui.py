@@ -446,6 +446,8 @@ class TkBuilderUI(Application):
         if prop_name in CLASS_MAP[wclass]['properties']:
             tree.set(item, prop_name, widget_id)
         #default grid properties
+        for prop_name in WIDGET_GRID_PROPS:
+            tree.set(item, prop_name, '')
         rownum = str(len(tree.get_children(root)) - 1)
         tree.set(item, 'row', rownum)
         tree.set(item, 'column', '0')
@@ -497,8 +499,6 @@ class TkBuilderUI(Application):
         cname = element.get('class')
         uniqueid = element.get('id')
 
-        #print('on serialize for ', cname)
-
         if cname in CLASS_MAP:
             #update counter
             self.counter[cname] += 1
@@ -508,13 +508,12 @@ class TkBuilderUI(Application):
             self.widgets.treeview.set(pwidget, 'class', cname)
             self.widgets.treeview.set(pwidget, 'id', uniqueid)
 
+            #packing element must be present
             xpath = './packing'
-            packing_elem = parent.find(xpath)
-            if packing_elem is not None:
-                properties = self.get_properties(packing_elem)
-                print(properties)
-                for k, v in properties.items():
-                    self.widgets.treeview.set(pwidget, k, v)
+            packing_elem = element.find(xpath)
+            properties = self.get_properties(packing_elem)
+            for k, v in properties.items():
+                self.widgets.treeview.set(pwidget, k, v)
 
             xpath = "./child"
             children = element.findall(xpath)
@@ -584,22 +583,22 @@ class TkBuilderUI(Application):
             cnode = ET.Element('child')
             cwidget = self.tree_node_to_xml(tree, item, child)
             cnode.append(cwidget)
-
-            values = tree.set(child)
-            packing_node = ET.Element('packing')
-            has_packing = False
-            for prop in WIDGET_GRID_PROPS:
-                pv = values.get(prop, None)
-                if pv:
-                    has_packing = True
-                    pnode = ET.Element('property')
-                    pnode.set('name', prop)
-                    pnode.text = pv
-                    packing_node.append(pnode)
-            if has_packing:
-                cnode.append(packing_node)
-
             node.append(cnode)
+
+        #create packing node
+        packing_node = ET.Element('packing')
+        has_packing = False
+        for prop in WIDGET_GRID_PROPS:
+            pv = values.get(prop, None)
+            print('packing:', prop, pv)
+            if pv:
+                has_packing = True
+                pnode = ET.Element('property')
+                pnode.set('name', prop)
+                pnode.text = pv
+                packing_node.append(pnode)
+        if has_packing:
+            node.append(packing_node)
 
         return node
 
