@@ -380,6 +380,10 @@ class TkBuilderUI(Application):
     def draw_widget(self, item):
         """Create a preview of the selected treeview item"""
 
+        #TODO: Fix this draw method, currently it consumes a lot of memory.
+        # Maybe maintain a reference to the widget y update using that
+        # reference.   To text xml genration, put a button that sais
+        # "render in toplevel" or something.
         tv = self.widgets.treeview
         canvas = self.widgets.canvas
 
@@ -392,6 +396,8 @@ class TkBuilderUI(Application):
             builder.add_from_xmlnode(xmlnode)
             widget = builder.get_object(canvas, uniqueid)
 
+        canvas.delete(self.widgets.canvaswindow)
+        self.widgets.canvaswindow = canvas.create_window(1, 1, anchor='nw')
         canvas.itemconfigure(self.widgets.canvaswindow, window=widget)
 
 
