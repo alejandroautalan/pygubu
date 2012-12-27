@@ -43,6 +43,44 @@ WIDGET_GRID_PROPS = (
 
 ITEM_PROPS = WIDGET_ATTRS + WIDGET_PROPS + WIDGET_GRID_PROPS
 
+class PreviewHelper:
+    def __init__(self, notebook):
+        self.notebook = notebook
+        self.builders = {}
+        self.canvases = {}
+        self.tabs = {}
+        self.windows = {}
+        self.preview_tag = 'previewwindow'
+
+    def draw(self, identifier, widget_id, xmlnode):
+        builder = tkbuilder.Tkbuilder()
+        canvas = None
+        if identifier not in self.builders:
+            canvas = create_scrollable(self.notebook, tkinter.Canvas,
+                background='white')
+            self.canvases[identifier] = canvas
+            self.notebook.add(canvas.frame, text=widget_id,
+                sticky=tkinter.NSEW)
+            self.tabs[identifier] = canvas.frame
+        else:
+            del self.builders[identifier]
+            canvas = self.canvases[identifier]
+            canvas.itemconfigure(self.preview_tag, window='')
+            window = self.windows[identifier]
+            window.destroy()
+
+        builder.add_from_xmlnode(xmlnode)
+        self.builders[identifier] = builder
+
+        preview_widget = builder.get_object(canvas, widget_id)
+        self.windows[identifier] = preview_widget
+        canvas.itemconfigure(self.preview_tag, window=preview_widget)
+
+    def delete(self, identifier):
+        self.notebook.forget(self.tabs[identifier])
+        del self.tabs[identifier]
+
+
 
 class TkBuilderUI(Application):
     """Main gui class"""
@@ -58,6 +96,7 @@ class TkBuilderUI(Application):
         self.widgets = widgets = WidgetContainer()
         self.prop_vars = ArrayVar()
         self.cb_prop_vars = None
+        self.preview = None
 
         widgets.frame1 = f1 = ttk.Frame(self)
         f1.grid(row=0, column=0, sticky='nswe')
@@ -124,11 +163,9 @@ class TkBuilderUI(Application):
         f2.columnconfigure(0, weight=1)
         mp.add(f2)
 
-        widgets.canvas = w = create_scrollable(f2, tkinter.Canvas,
-            background='white')
-        w.frame.grid(sticky=tkinter.NSEW)
-
-        self.config_canvas()
+        self.widgets.preview_notebook = nbook = ttk.Notebook(f2)
+        nbook.grid(sticky=tkinter.NSEW)
+        self.preview = PreviewHelper(nbook)
 
         self.grid(row=0, column=0, sticky='nswe')
         self.rowconfigure(1, weight=1)
@@ -139,14 +176,6 @@ class TkBuilderUI(Application):
         #app config
         self.set_title('A tkinter GUI builder')
         self.set_size('800x600')
-
-
-    def config_canvas(self):
-        """Configures the canvas"""
-
-        self.widgets.canvas.configure(scrollregion=(0, 0, "50i", "50i"))
-        self.widgets.canvaswindow = self.widgets.canvas.create_window(1, 1,
-            anchor='nw')
 
 
     def config_treeview(self):
@@ -362,6 +391,8 @@ class TkBuilderUI(Application):
             rootitems = tv.get_children()
             if item in rootitems:
                 self.draw_widget(item)
+            else:
+                self.draw_widget(self.get_toplevel_parent(item))
             self.edit_item_properties(item)
 
 
@@ -378,32 +409,20 @@ class TkBuilderUI(Application):
                 parent = self.get_toplevel_parent(item)
             else:
                 self.hide_all_properties()
+                self.preview.delete(item)
             tv.delete(item)
             self.draw_widget(parent)
 
 
     def draw_widget(self, item):
         """Create a preview of the selected treeview item"""
-
-        #TODO: Fix this draw method, currently it consumes a lot of memory.
-        # Maybe maintain a reference to the widget y update using that
-        # reference.   To text xml genration, put a button that sais
-        # "render in toplevel" or something.
         tv = self.widgets.treeview
-        canvas = self.widgets.canvas
 
-        widget = ''
         if item:
             values = tv.set(item)
-            uniqueid = values['id']
+            widget_id = values['id']
             xmlnode = self.tree_node_to_xml(tv, '', item)
-            builder = tkbuilder.Tkbuilder()
-            builder.add_from_xmlnode(xmlnode)
-            widget = builder.get_object(canvas, uniqueid)
-
-        canvas.delete(self.widgets.canvaswindow)
-        self.widgets.canvaswindow = canvas.create_window(1, 1, anchor='nw')
-        canvas.itemconfigure(self.widgets.canvaswindow, window=widget)
+            self.preview.draw(item, widget_id, xmlnode)
 
 
     def on_add_btn_clicked(self):
