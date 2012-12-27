@@ -128,6 +128,9 @@ TK_WIDGET_PROPS = {
     'wraphlength':_dimension_prop,
     'xscrollcommand': _default_entry_prop,
     'yscrollcommand': _default_entry_prop,
+}
+
+TK_GRID_PROPS = {
 #grid packing properties
     'column': _default_spinbox_prop,
     'columnspan': _default_spinbox_prop,
@@ -151,6 +154,16 @@ TK_WIDGET_PROPS = {
             )
         }
 }
+
+TK_GRID_RC_PROPS = {
+#grid row and column properties (can be applied to each row or column)
+    'minsize': _default_spinbox_prop,
+    'pad': _default_spinbox_prop,
+    'weight': _default_spinbox_prop
+}
+
+TK_LAYOUT_PROPS = dict(TK_GRID_PROPS)
+TK_LAYOUT_PROPS.update(TK_GRID_RC_PROPS)
 
 
 CLASS_MAP = {
@@ -368,8 +381,6 @@ class Tkbuilder:
         cname = element.get('class')
         uniqueid = element.get('id')
 
-        #print('on serialize for ', cname)
-
         if cname in CLASS_MAP:
             pwidget = CLASS_MAP[cname]['class'](master)
 
@@ -380,7 +391,6 @@ class Tkbuilder:
             for child in children:
                 child_object = child.find('./object')
                 cwidget = self.realize(pwidget, child_object)
-                #self.configure_layout(element, child, pwidget, cwidget)
 
             self.configure_widget(pwidget, cname, element)
             self.configure_layout(element, pwidget)
@@ -397,13 +407,29 @@ class Tkbuilder:
 
         widget.grid(**layout_properties)
 
+        #get grid row and col properties:
+        erows = packing_elem.find('./rows')
+        if erows is not None:
+            rows = erows.findall('./row')
+            for row in rows:
+                row_id = row.get('id')
+                row_properties = self.get_properties(row)
+                widget.rowconfigure(row_id, **row_properties)
+
+        ecolums = packing_elem.find('./columns')
+        if ecolums is not None:
+            columns = ecolums.findall('./column')
+            for column in columns:
+                column_id = column.get('id')
+                column_properties = self.get_properties(column)
+                widget.columnconfigure(column_id, **row_properties)
+
 
     def configure_widget(self, widget, cname, element):
         properties = self.get_properties(element)
         attrib = {}
 
         for pname, value in properties.items():
-            print('Setting: ', cname, pname, value)
             widget[pname] = value
 
 

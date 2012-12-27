@@ -1,65 +1,55 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" ?>
 <interface>
-  <object class="Frame" id="window1">
-    <child>
-      <object class="Frame" id="box1">
+    <object class="Frame" id="mainwindow">
         <child>
-          <object class="Button" id="button1">
-            <property name="text" translatable="yes">button1</property>
-          </object>
-          <packing>
-                <property name="row">0</property>
-                <property name="column">0</property>
-                <property name="sticky">nswe</property>
-          </packing>
-        </child>
-        <child>
-            <object class="Button" id="button2">
-                <property name="text" translatable="yes">button2</property>
+            <object class="Label" id="Label_1">
+                <property name="background">yellow</property>
+                <property name="text">Label_1</property>
+                <packing>
+                    <property name="row">0</property>
+                    <property name="column">0</property>
+                </packing>
             </object>
-            <packing>
-                <property name="row">0</property>
-                <property name="column">1</property>
-                <property name="sticky">nswe</property>
-            </packing>
         </child>
-      </object>
+        <child>
+            <object class="Entry" id="Entry_1">
+                <packing>
+                    <property name="row">0</property>
+                    <property name="column">1</property>
+                </packing>
+            </object>
+        </child>
+        <child>
+            <object class="Button" id="Button_1">
+                <property name="text">Label_2</property>
+                <packing>
+                    <property name="row">2</property>
+                    <property name="column">0</property>
+                    <property name="columnspan">2</property>
+                    <property name="sticky">nsew</property>
+                </packing>
+            </object>
+        </child>
         <packing>
-                <property name="row">0</property>
-                <property name="column">0</property>
-                <property name="sticky">nswe</property>
+            <property name="row">0</property>
+            <property name="column">0</property>
+            <property name="sticky">nsew</property>
+            <columns>
+                <column id='0'>
+                    <property name="weight">1</property>
+                </column>
+                <column id='1'>
+                    <property name="weight">1</property>
+                </column>
+            </columns>
+            <rows>
+                <row id='0'>
+                    <property name="weight">1</property>
+                </row>
+                <row id='1'>
+                    <property name="weight">1</property>
+                </row>
+            </rows>
         </packing>
-    </child>
-  </object>
-  <object class="Frame" id="window22">
-    <child>
-      <object class="Frame" id="box21">
-        <child>
-          <object class="Button" id="button21">
-            <property name="text" translatable="yes">button21</property>
-          </object>
-          <packing>
-                <property name="row">0</property>
-                <property name="column">0</property>
-                <property name="sticky">nswe</property>
-          </packing>
-        </child>
-        <child>
-            <object class="Button" id="button22">
-            <property name="text" translatable="yes">button22</property>
-            </object>
-            <packing>
-                <property name="row">1</property>
-                <property name="column">0</property>
-                <property name="sticky">nswe</property>
-            </packing>
-        </child>
-      </object>
-      <packing>
-        <property name="row">0</property>
-        <property name="column">0</property>
-        <property name="sticky">nswe</property>
-      </packing>
-    </child>
-  </object>
+    </object>
 </interface>

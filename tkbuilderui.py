@@ -87,7 +87,7 @@ class TkBuilderUI(Application):
         mp.grid(row=1, column=0, sticky='nsew')
 
         #subpane1
-        widgets.pane1 = pane1 = ttk.PanedWindow(self, orient='vertical')
+        widgets.pane1 = pane1 = ttk.PanedWindow(mp, orient='vertical')
         mp.add(pane1)
 
         #Treeview on pane1
@@ -130,13 +130,15 @@ class TkBuilderUI(Application):
 
         self.config_canvas()
 
+        self.grid(row=0, column=0, sticky='nswe')
         self.rowconfigure(1, weight=1)
         self.columnconfigure(0, weight=1)
+
+        self.set_resizable()
 
         #app config
         self.set_title('A tkinter GUI builder')
         self.set_size('800x600')
-        self.pack_configure(padx=5, pady=5)
 
 
     def config_canvas(self):
@@ -170,6 +172,9 @@ class TkBuilderUI(Application):
         wtype = ''
         if propertyname in tkbuilder.TK_WIDGET_PROPS:
             wdata = tkbuilder.TK_WIDGET_PROPS[propertyname]
+            wtype = wdata['input_method']
+        elif propertyname in tkbuilder.TK_GRID_PROPS:
+            wdata = tkbuilder.TK_GRID_PROPS[propertyname]
             wtype = wdata['input_method']
 
         if wtype == 'entry':
