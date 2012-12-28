@@ -1,27 +1,35 @@
-# This file is part of Foobar.
+# This file is part of pygubu.
 
-# Foobar is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
-
-# Foobar is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-
-# You should have received a copy of the GNU General Public License
-# along with Foobar.  If not, see <http://www.gnu.org/licenses/>
+#
+# Copyright 2012 Alejandro Autalán
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3, as published
+# by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranties of
+# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# For further info, check  http://pygubu.web.here
 
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 from collections import Counter
-from myttk import *
+
+import tkinter
+from tkinter import ttk
 from tkinter import filedialog
-import tkbuilder
+
+from pygubu import util
+from pygubu import builder
 
 
-CLASS_MAP = tkbuilder.CLASS_MAP
+CLASS_MAP = builder.CLASS_MAP
 
 WIDGET_ATTRS = (
     'class', 'id',
@@ -43,6 +51,7 @@ WIDGET_GRID_PROPS = (
 
 ITEM_PROPS = WIDGET_ATTRS + WIDGET_PROPS + WIDGET_GRID_PROPS
 
+
 class PreviewHelper:
     def __init__(self, notebook):
         self.notebook = notebook
@@ -53,10 +62,10 @@ class PreviewHelper:
         self.preview_tag = 'previewwindow'
 
     def draw(self, identifier, widget_id, xmlnode):
-        builder = tkbuilder.Tkbuilder()
+        uibuilder = builder.Tkbuilder()
         canvas = None
         if identifier not in self.builders:
-            canvas = create_scrollable(self.notebook, tkinter.Canvas,
+            canvas = util.create_scrollable(self.notebook, tkinter.Canvas,
                 background='white')
             self.canvases[identifier] = canvas
             self.notebook.add(canvas.frame, text=widget_id,
@@ -69,10 +78,10 @@ class PreviewHelper:
             window = self.windows[identifier]
             window.destroy()
 
-        builder.add_from_xmlnode(xmlnode)
-        self.builders[identifier] = builder
+        uibuilder.add_from_xmlnode(xmlnode)
+        self.builders[identifier] = uibuilder
 
-        preview_widget = builder.get_object(canvas, widget_id)
+        preview_widget = uibuilder.get_object(canvas, widget_id)
         self.windows[identifier] = preview_widget
         canvas.itemconfigure(self.preview_tag, window=preview_widget)
 
@@ -81,8 +90,7 @@ class PreviewHelper:
         del self.tabs[identifier]
 
 
-
-class TkBuilderUI(Application):
+class TkBuilderUI(util.Application):
     """Main gui class"""
 
     def _create_ui(self):
@@ -94,7 +102,7 @@ class TkBuilderUI(Application):
 
         self.counter = Counter()
         self.widgets = widgets = WidgetContainer()
-        self.prop_vars = ArrayVar()
+        self.prop_vars = util.ArrayVar()
         self.cb_prop_vars = None
         self.preview = None
 
@@ -130,7 +138,7 @@ class TkBuilderUI(Application):
         mp.add(pane1)
 
         #Treeview on pane1
-        widgets.treeview = w = create_scrollable(pane1, ttk.Treeview)
+        widgets.treeview = w = util.create_scrollable(pane1, ttk.Treeview)
         pane1.add(w.frame)
         self.config_treeview()
 
@@ -186,8 +194,8 @@ class TkBuilderUI(Application):
         #dcols = WIDGET_ATTRS + WIDGET_GRID_PROPS
         dcols = tuple()
         hcols = ('Widgets',) + columns
-        configure_treeview(tv, columns, displaycolumns=dcols, headings=hcols,
-            show_tree=True)
+        util.configure_treeview(tv, columns, displaycolumns=dcols,
+            headings=hcols, show_tree=True)
         tv.bind('<<TreeviewSelect>>', self.on_treeview_select)
         tv.bind('<KeyPress-Delete>', self.on_treeview_delete_item)
 
@@ -199,11 +207,11 @@ class TkBuilderUI(Application):
         widgetvar = self.prop_vars(propertyname)
 
         wtype = ''
-        if propertyname in tkbuilder.TK_WIDGET_PROPS:
-            wdata = tkbuilder.TK_WIDGET_PROPS[propertyname]
+        if propertyname in builder.TK_WIDGET_PROPS:
+            wdata = builder.TK_WIDGET_PROPS[propertyname]
             wtype = wdata['input_method']
-        elif propertyname in tkbuilder.TK_GRID_PROPS:
-            wdata = tkbuilder.TK_GRID_PROPS[propertyname]
+        elif propertyname in builder.TK_GRID_PROPS:
+            wdata = builder.TK_GRID_PROPS[propertyname]
             wtype = wdata['input_method']
 
         if wtype == 'entry':
@@ -233,8 +241,8 @@ class TkBuilderUI(Application):
     def update_property_widget(self, widget, treeitem,
             propertyname, classname):
         wtype = ''
-        if propertyname in tkbuilder.TK_WIDGET_PROPS:
-            wdata = tkbuilder.TK_WIDGET_PROPS[propertyname]
+        if propertyname in builder.TK_WIDGET_PROPS:
+            wdata = builder.TK_WIDGET_PROPS[propertyname]
             wtype = wdata['input_method']
 
         if wtype == 'choice':
@@ -633,6 +641,11 @@ class TkBuilderUI(Application):
         return node
 
 
-if __name__ == '__main__':
+def start_pygubu():
     app = TkBuilderUI(tkinter.Tk())
     app.run()
+
+
+if __name__ == '__main__':
+    start_pygubu()
+
