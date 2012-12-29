@@ -90,7 +90,7 @@ class PreviewHelper:
         del self.tabs[identifier]
 
 
-class TkBuilderUI(util.Application):
+class PygubuUI(util.Application):
     """Main gui class"""
 
     def _create_ui(self):
@@ -144,6 +144,7 @@ class TkBuilderUI(util.Application):
 
         #Properties frame
         widgets.propframe = f = ttk.Frame(pane1)
+        f.rowconfigure(1, weight=1)
         f.columnconfigure(1, weight=1)
         pane1.add(f)
 
@@ -265,9 +266,13 @@ class TkBuilderUI(util.Application):
     def create_properties_editor(self, notebook):
         """Create a frame with a list of all editable properties"""
 
-        editor_frame = ttk.Frame(notebook)
+        vsframe = util.VerticalScrolledFrame(notebook)
+        vsframe.rowconfigure(0, weight=1)
+        vsframe.columnconfigure(0, weight=1)
+        notebook.add(vsframe, text='General', sticky=tkinter.NSEW)
+        editor_frame = vsframe.innerframe
         editor_frame.columnconfigure(1, weight=1)
-        notebook.add(editor_frame, text='General', sticky=tkinter.NSEW)
+
 
         self.widgets.prop_editor = prop_editor = {}
 
@@ -642,7 +647,7 @@ class TkBuilderUI(util.Application):
 
 
 def start_pygubu():
-    app = TkBuilderUI(tkinter.Tk())
+    app = PygubuUI(tkinter.Tk())
     app.run()
 
 
