@@ -179,98 +179,71 @@ TK_GRID_RC_PROPS = {
     'weight': _default_spinbox_prop
 }
 
-TK_LAYOUT_PROPS = dict(TK_GRID_PROPS)
-TK_LAYOUT_PROPS.update(TK_GRID_RC_PROPS)
+
+CLASS_MAP = {}
 
 
-CLASS_MAP = {
-    'Frame': {
-        'class': ttk.Frame,
-        'container': True,
-        'properties': ['class_', 'cursor', 'height', 'padding',
-            'relief', 'style', 'takefocus', 'width',
-            ],
-        },
-    'Label': {
-        'class': ttk.Label,
-        'container': False,
-        'properties': ['anchor', 'background', 'borderwidth',
-            'class_', 'compound', 'cursor', 'font', 'foreground',
-            'image', 'justify', 'padding', 'relief',
-            'style', 'takefocus', 'text', 'textvariable', 'underline',
-            'width', 'wraphlength',
-            ],
-        },
-    'Button': {
-        'class': ttk.Button,
-        'container': False,
-        'properties': ['class_', 'command', 'compound', 'cursor',
-            'image', 'style', 'takefocus', 'text', 'textvariable',
-            'underline',
-            ],
-        },
-    'Entry': {
-        'class': ttk.Entry,
-        'container': False,
-        'properties': ['class_', 'cursor', 'exportselection', 'font',
-            'invalidcommand', 'justify', 'show', 'style', 'takefocus',
-            'textvariable', 'validate', 'validatecommand', 'values',
-            'width', 'xscrollcommand',
-            ],
-        },
-    'Checkbutton': {
-        'class': ttk.Checkbutton,
-        'container': False,
-        'properties': ['class_', 'command', 'compound', 'cursor',
-            'image', 'style', 'takefocus', 'text', 'textvariable',
-            'underline', 'variable', 'offvalue', 'onvalue', 'width',
-            ],
-        },
-    'Radiobutton': {
-        'class': ttk.Radiobutton,
-        'container': False,
-            'properties': ['class_', 'command', 'compound', 'cursor',
-            'image', 'style', 'takefocus', 'text', 'textvariable',
-            'underline', 'value', 'variable', 'width',
-            ],
-        },
-    'Combobox': {
-        'class': ttk.Combobox,
-        'container': False,
-        'properties': ['class_', 'cursor', 'exportselection',
-            'height', 'justify', 'postcommand', 'style', 'takefocus',
-            'textvariable', 'validate', 'validatecommand', 'values',
-            'width', 'xscrollcommand', 'state'
-            ],
-        },
-    'Listbox': {
-        'class': tkinter.Listbox,
-        'container': False,
-        'properties': ['activestyle', 'background', 'borderwidth', 'cursor',
+def register(classname, classobj):
+    CLASS_MAP[classname] = classobj
+
+#
+# Base class
+#
+class BuilderObject:
+    @classmethod
+    def factory(cls, master, properties=None, layout_properties=None):
+        clsobj = cls(master, properties, layout_properties)
+        print(clsobj)
+        return clsobj
+
+    def __init__(self, master, properties=None, layout_prop=None):
+        self.widget = self.class_(master)
+        self.properties = properties
+        self.layout_properties = layout_prop
+
+    def configure(self):
+        for pname, value in self.properties.items():
+            self.widget[pname] = value
+
+    def layout(self):
+        #use grid layout for all
+        properties = self.layout_properties
+        grid_rows = properties.pop('grid_rows', {})
+        grid_cols = properties.pop('grid_columns', {})
+
+        self.widget.grid(**properties)
+
+        #get grid row and col properties:
+        for row in grid_rows:
+            self.widget.rowconfigure(row, **grid_rows[row])
+        for col in grid_cols:
+            self.widget.columnconfigure(col, **grid_cols[col])
+
+    def add_child(self, cwidget):
+        pass
+
+
+#
+# tkinter widgets
+#
+class TKListbox(BuilderObject):
+    class_ =  tkinter.Listbox
+    container = False
+    properties = ['activestyle', 'background', 'borderwidth', 'cursor',
             'disabledforeground', 'exportselection', 'font',
             'foreground', 'height', 'highlightbackground', 'highlightcolor',
             'highlightthickness', 'listvariable', 'relief',
             'selectbackground', 'selectborderwidth', 'selectforeground',
             'selectmode', 'state', 'takefocus', 'width', 'xscrollcommand',
-            'yscrollcommand',
-            ],
-        },
-    'Scrollbar': {
-        'class': ttk.Scrollbar,
-        'container': False,
-        'properties': ['class_', 'command', 'cursor',
-            'orient', 'style', 'takefocus',
-            ],
-        },
-    'Sizegrip': {
-        'class': ttk.Sizegrip,
-        'container': False,
-        'properties': ['class_', 'style', ],
-        },
-    'Text': {
-        'class': tkinter.Text,
-        'container': False,
-        'properties': ['autoseparators', 'background', 'borderwidth', 'cursor',
+            'yscrollcommand']
+
+register('Listbox', TKListbox)
+
+
+class TKText(BuilderObject):
+    class_ = tkinter.Text
+    container = False
+    properties = ['autoseparators', 'background', 'borderwidth', 'cursor',
             'exportselection', 'font',
             'foreground', 'height', 'highlightbackground', 'highlightcolor',
             'highlightthickness', 'insertbackground', 'insertborderwidth',
@@ -279,27 +252,127 @@ CLASS_MAP = {
             'selectborderwidth', 'selectforeground', 'spacing1',
             'spacing2', 'spacing3', 'state', 'tabs', 'takefocus',
             'undo', 'width', 'wrap', 'xscrollcommand', 'yscrollcommand',
-            ],
-        },
-    'Progressbar': {
-        'class': ttk.Progressbar,
-        'container': False,
-        'properties': ['class_', 'cursor', 'length', 'maximum', 'mode',
-            'orient', 'style', 'takefocus', 'variable',
-            ],
-        },
-    'Scale': {
-        'class': ttk.Scale,
-        'container': False,
-        'properties': ['class_', 'command', 'cursor', 'from_', 'length',
+            ]
+
+register('Text', TKText)
+
+#
+# ttk widgets
+#
+
+class TTKFrame(BuilderObject):
+    class_ = ttk.Frame
+    container = True
+    properties = ['class_', 'cursor', 'height', 'padding',
+            'relief', 'style', 'takefocus', 'width']
+
+register('ttk.Frame', TTKFrame)
+
+
+class TTKLabel(BuilderObject):
+    class_ = ttk.Label
+    container = False
+    properties = ['anchor', 'background', 'borderwidth',
+            'class_', 'compound', 'cursor', 'font', 'foreground',
+            'image', 'justify', 'padding', 'relief',
+            'style', 'takefocus', 'text', 'textvariable', 'underline',
+            'width', 'wraphlength']
+
+register('ttk.Label', TTKLabel)
+
+
+class TTKButton(BuilderObject):
+    class_= ttk.Button
+    container= False
+    properties = ['class_', 'command', 'compound', 'cursor',
+            'image', 'style', 'takefocus', 'text', 'textvariable',
+            'underline']
+
+register('ttk.Button', TTKButton)
+
+
+class TTKCheckbutton(BuilderObject):
+    class_ = ttk.Checkbutton
+    container = False
+    properties = ['class_', 'command', 'compound', 'cursor',
+            'image', 'style', 'takefocus', 'text', 'textvariable',
+            'underline', 'variable', 'offvalue', 'onvalue', 'width']
+
+register('ttk.Checkbutton', TTKCheckbutton)
+
+
+class TTKRadiobutton(BuilderObject):
+    class_ = ttk.Radiobutton
+    container = False
+    properties = ['class_', 'command', 'compound', 'cursor',
+            'image', 'style', 'takefocus', 'text', 'textvariable',
+            'underline', 'value', 'variable', 'width']
+
+register('ttk.Radiobutton', TTKRadiobutton)
+
+
+class TTKCombobox(BuilderObject):
+    class_ = ttk.Combobox
+    container = False
+    properties = ['class_', 'cursor', 'exportselection',
+            'height', 'justify', 'postcommand', 'style', 'takefocus',
+            'textvariable', 'validate', 'validatecommand', 'values',
+            'width', 'xscrollcommand', 'state']
+
+register('ttk.Combobox', TTKCombobox)
+
+
+class TTKScrollbar(BuilderObject):
+    class_ = ttk.Scrollbar
+    container = False
+    properties = ['class_', 'command', 'cursor', 'orient',
+        'style', 'takefocus']
+
+register('ttk.Scrollbar', TTKScrollbar)
+
+
+class TTKSizegrip(BuilderObject):
+    class_ = ttk.Sizegrip
+    container = False
+    properties = ['class_', 'style']
+
+register('ttk.Sizegrip', TTKSizegrip)
+
+
+class TTKEntry(BuilderObject):
+    class_ = ttk.Entry
+    container = False
+    properties = ['class_', 'cursor', 'exportselection', 'font',
+            'invalidcommand', 'justify', 'show', 'style', 'takefocus',
+            'textvariable', 'validate', 'validatecommand', 'values',
+            'width', 'xscrollcommand']
+
+register('ttk.Entry', TTKEntry)
+
+
+class TTKProgressbar(BuilderObject):
+    class_ = ttk.Progressbar
+    container = False
+    properties = ['class_', 'cursor', 'length', 'maximum', 'mode',
+            'orient', 'style', 'takefocus', 'variable']
+
+register('ttk.Progressbar', TTKProgressbar)
+
+
+class TTKScale(BuilderObject):
+    class_ = ttk.Scale
+    container = False
+    properties = ['class_', 'command', 'cursor', 'from_', 'length',
             'orient', 'style', 'takefocus', 'to', 'variable', 'value',
-            'variable',
-            ],
-        },
-    'Spinbox': {
-        'class': tkinter.Spinbox,
-        'container': False,
-        'properties': ['activebackground', 'background', 'borderwidth',
+            'variable']
+
+register('ttk.Scale', TTKScale)
+
+
+class TKSpinbox(BuilderObject):
+    class_ = tkinter.Spinbox
+    container = False
+    properties = ['activebackground', 'background', 'borderwidth',
             'buttoncursor', 'buttondownrelief', 'buttonup', 'command',
             'cursor', 'disabledbackground', 'disabledforeground',
             'exportselection', 'font', 'foreground', 'format',
@@ -309,47 +382,89 @@ CLASS_MAP = {
             'insertwidth', 'justify', 'readonlybackground', 'relief',
             'repeatdelay', 'repeatinterval', 'selectbackground',
             'selectborderwidth', 'selectforeground', 'state', 'takefocus',
-            'textvariable', 'to', 'values', 'width', 'wrap', 'xscrollcommand',
-            ],
-        },
-    'Separator': {
-        'class': ttk.Separator,
-        'container': False,
-        'properties': ['class_', 'orient', 'style', ],
-        },
-    'Labelframe': {
-        'class': ttk.Labelframe,
-        'container': True,
-        'properties': ['borderwidth', 'class_', 'cursor', 'height',
-            'labelanchor', 'labelwidget', 'padding',
-            'relief', 'style', 'takefocus', 'text', 'underline',
-            'width',
-            ],
-        },
-    'Panedwindow': {
-        'class': ttk.Panedwindow,
-        'container': False,
-        'properties': ['class_', 'cursor', 'height', 'orient',
-            'style', 'takefocus', 'width',
-            ],
-        },
-    'Notebook': {
-        'class': ttk.Notebook,
-        'container': False,
-        'properties': ['class_', 'cursor', 'height',
-            'padding', 'style', 'takefocus', 'width',
-            ],
-        },
-    'Menubutton': {
-        'class': ttk.Menubutton,
-        'container': False,
-        'properties': ['class_', 'compound', 'cursor', 'direction',
-            'image', 'style', 'takefocus', 'text', 'textvariable',
-            'underline', 'width',
-            ],
-        },
-}
+            'textvariable', 'to', 'values', 'width', 'wrap', 'xscrollcommand']
 
+register('Spinbox', TKSpinbox)
+
+
+class TTKSeparator(BuilderObject):
+    class_ = ttk.Separator
+    container = False
+    properties = ['class_', 'orient', 'style']
+
+register('ttk.Separator', TTKSeparator)
+
+
+class TTKLabelframe:
+    class_ = ttk.Labelframe
+    container = True
+    properties = ['borderwidth', 'class_', 'cursor', 'height',
+            'labelanchor', 'labelwidget', 'padding',
+            'relief', 'style', 'takefocus', 'text', 'underline', 'width']
+
+register('ttk.Labelframe', TTKLabelframe)
+
+
+class TTKPanedwindow(BuilderObject):
+    class_ = ttk.Panedwindow
+    container = False
+    properties = ['class_', 'cursor', 'height', 'orient',
+            'style', 'takefocus', 'width']
+
+    def __init__(self, master, properties, layout_prop):
+        orient = properties.pop('orient', 'vertical')
+        self.widget = self.class_(master, orient=orient)
+        self.properties = properties
+        self.layout_properties = layout_prop
+
+register('ttk.Panedwindow', TTKPanedwindow)
+
+
+class TTKPanedwindowPane(BuilderObject):
+    class_ = None
+    container = True
+    properties = ['weight']
+
+    def __init__(self, master, properties, layout_prop):
+        self.widget = master
+        self.properties= properties
+        self.layout_properties = layout_prop
+
+    def configure(self):
+        pass
+
+    def layout(self):
+        pass
+
+    def add_child(self, cwidget):
+        print(self.properties)
+        self.widget.add(cwidget, **self.properties)
+
+register('ttk.Panedwindow.Pane', TTKPanedwindowPane)
+
+
+class TTKNotebook(BuilderObject):
+    class_ = ttk.Notebook
+    container = True
+    properties = ['class_', 'cursor', 'height',
+            'padding', 'style', 'takefocus', 'width']
+
+register('ttk.Notebook', TTKNotebook)
+
+
+class TTKMenubutton(BuilderObject):
+    class_ = ttk.Menubutton
+    container = False
+    properties = ['class_', 'compound', 'cursor', 'direction',
+            'image', 'style', 'takefocus', 'text', 'textvariable',
+            'underline', 'width']
+
+register('ttk.Menubutton', TTKMenubutton)
+
+
+#
+# Builder class
+#
 
 class Tkbuilder:
     def __init__(self):
@@ -398,8 +513,15 @@ class Tkbuilder:
         cname = element.get('class')
         uniqueid = element.get('id')
 
+        print('realize on:', cname)
+
         if cname in CLASS_MAP:
-            pwidget = CLASS_MAP[cname]['class'](master)
+            properties = self.get_properties(element)
+            layout = self.get_layout_properties(element)
+            builderobj = CLASS_MAP[cname].factory(master, properties, layout)
+            builderobj.configure()
+            builderobj.layout()
+            pwidget = builderobj.widget
 
             self.widgets[uniqueid] = pwidget
 
@@ -408,46 +530,44 @@ class Tkbuilder:
             for child in children:
                 child_object = child.find('./object')
                 cwidget = self.realize(pwidget, child_object)
+                builderobj.add_child(cwidget)
 
-            self.configure_widget(pwidget, cname, element)
-            self.configure_layout(element, pwidget)
             return pwidget
         else:
             raise Exception('Class "{0}" not mapped'.format(cname))
 
 
-    def configure_layout(self, element, widget):
+    def get_layout_properties(self, element):
         #use grid layout for all
         #get packing properties
+        layout_properties = {}
         packing_elem = element.find('./packing')
-        layout_properties = self.get_properties(packing_elem)
+        if packing_elem is not None:
+            layout_properties = self.get_properties(packing_elem)
 
-        widget.grid(**layout_properties)
+            #get grid row and col properties:
+            rows_dict = {}
+            erows = packing_elem.find('./rows')
+            if erows is not None:
+                rows = erows.findall('./row')
+                for row in rows:
+                    row_id = row.get('id')
+                    row_properties = self.get_properties(row)
+                    rows_dict[row_id] = row_properties
+            layout_properties['grid_rows'] = rows_dict
 
-        #get grid row and col properties:
-        erows = packing_elem.find('./rows')
-        if erows is not None:
-            rows = erows.findall('./row')
-            for row in rows:
-                row_id = row.get('id')
-                row_properties = self.get_properties(row)
-                widget.rowconfigure(row_id, **row_properties)
-
-        ecolums = packing_elem.find('./columns')
-        if ecolums is not None:
-            columns = ecolums.findall('./column')
-            for column in columns:
-                column_id = column.get('id')
-                column_properties = self.get_properties(column)
-                widget.columnconfigure(column_id, **row_properties)
-
-
-    def configure_widget(self, widget, cname, element):
-        properties = self.get_properties(element)
-        attrib = {}
-
-        for pname, value in properties.items():
-            widget[pname] = value
+            columns_dict = {}
+            ecolums = packing_elem.find('./columns')
+            if ecolums is not None:
+                columns = ecolums.findall('./column')
+                for column in columns:
+                    column_id = column.get('id')
+                    column_properties = self.get_properties(column)
+                    columns_dict[column_id] = column_properties
+            layout_properties['grid_columns'] = columns_dict
+        else:
+            print('Warning no packing information provided')
+        return layout_properties
 
 
     def get_properties(self, element):

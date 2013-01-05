@@ -1,10 +1,10 @@
 <?xml version="1.0" ?>
 <interface>
-    <object class="Frame" id="mainwindow">
+    <object class="ttk.Frame" id="mainwindow">
         <child>
-            <object class="Frame" id="frame_2">
+            <object class="ttk.Frame" id="frame_2">
                 <child>
-                    <object class="Label" id="label_project">
+                    <object class="ttk.Label" id="label_project">
                         <property name="text">Project:</property>
                         <packing>
                             <property name="row">0</property>
@@ -13,16 +13,17 @@
                     </object>
                 </child>
                 <child>
-                    <object class="Label" id="projectname_lbl">
+                    <object class="ttk.Label" id="projectname_lbl">
                         <property name="text">New Project</property>
                         <packing>
+                            <property name="sticky">ew</property>
                             <property name="row">0</property>
                             <property name="column">1</property>
                         </packing>
                     </object>
                 </child>
                 <child>
-                    <object class="Menubutton" id="appmenu_btn">
+                    <object class="ttk.Menubutton" id="appmenu_btn">
                         <property name="text">Main Menu</property>
                         <packing>
                             <property name="row">0</property>
@@ -33,20 +34,69 @@
                 <packing>
                     <property name="row">0</property>
                     <property name="column">0</property>
+                    <property name="sticky">nsew</property>
+                    <columns>
+                        <column id="1">
+                            <property name="weight">1</property>
+                        </column>
+                    </columns>
                 </packing>
             </object>
         </child>
         <child>
-            <object class="Panedwindow" id="panedwindow_1">
+            <object class="ttk.Panedwindow" id="panedwindow_1">
+                <property name="orient">horizontal</property>
+                <child>
+                    <object class="ttk.Panedwindow.Pane" id="pane1">
+                        <property name="weight">1</property>
+                        <child>
+                            <object class="ttk.Button" id="panebutton1">
+                                <property name="text">pane button1</property>
+                                <packing>
+                                    <property name="sticky">nsew</property>
+                                    <property name="row">0</property>
+                                    <property name="column">0</property>
+                                </packing>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="ttk.Panedwindow.Pane" id="pane2">
+                        <property name="weight">2</property>
+                        <child>
+                            <object class="ttk.Button" id="panebutton2">
+                                <property name="text">pane button2</property>
+                                <packing>
+                                    <property name="sticky">nsew</property>
+                                    <property name="row">0</property>
+                                    <property name="column">0</property>
+                                </packing>
+                            </object>
+                        </child>
+                    </object>
+                </child>
                 <packing>
                     <property name="row">1</property>
                     <property name="column">0</property>
+                    <property name="sticky">nsew</property>
                 </packing>
             </object>
         </child>
         <packing>
             <property name="row">0</property>
             <property name="column">0</property>
+            <property name="sticky">nsew</property>
+            <columns>
+                <column id="0">
+                    <property name="weight">1</property>
+                </column>
+            </columns>
+            <rows>
+                <row id="1">
+                    <property name="weight">1</property>
+                </row>
+            </rows>
         </packing>
     </object>
 </interface>
