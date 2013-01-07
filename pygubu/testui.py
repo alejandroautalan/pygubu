@@ -30,12 +30,12 @@ class UITester(util.Application):
     def _create_ui(self):
         self.builder = builder.Tkbuilder()
         self.builder.add_from_file(sys.argv[1])
-        self.builder.get_object(self, 'mainwindow')
+        self.builder.get_object('mainwindow', self)
 
         top = self.winfo_toplevel()
 
         try:
-            menu = self.builder.get_object(top, 'applicationmenu')
+            menu = self.builder.get_object('mainmenu', top)
             top['menu'] = menu
         except:
             pass

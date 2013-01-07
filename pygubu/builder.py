@@ -656,7 +656,7 @@ class Tkbuilder:
             pass
 
 
-    def get_object(self, master, name):
+    def get_object(self, name, master=None):
         widget = None
         if name in self.widgets:
             widget = self.widgets[name]

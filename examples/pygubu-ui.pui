@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <interface>
-    <object class="tk.Menu" id="applicationmenu">
+    <object class="tk.Menu" id="mainmenu">
         <child>
             <object class="tk.Menuitem.Submenu" id="filemenu">
                 <property name="label">File</property>
