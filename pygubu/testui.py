@@ -40,10 +40,10 @@ class UITester(util.Application):
 
         self.set_resizable()
 
-try:
-    __file__
-except:
-    sys.argv = [sys.argv[0], 'exampleui_2.tkb']
+if len(sys.argv) == 1:
+    print('Nombre archivo:')
+    filename = input()
+    sys.argv = [sys.argv[0], filename]
 
 if __name__ == '__main__':
     app = UITester(tkinter.Tk())

@@ -15,10 +15,13 @@
 #
 # For further info, check  http://pygubu.web.here
 
+import logging
 import xml.etree.ElementTree as ET
 import tkinter
 from tkinter import ttk
 
+logging.basicConfig(level=logging.WARNING)
+logger = logging.getLogger('pygubu.builder')
 
 _default_entry_prop = {
     'input_method': 'entry',
@@ -36,11 +39,27 @@ _dimension_prop = {
     'max': 999,
 }
 
+_sticky_prop = {
+        'input_method': 'choice',
+        'values': ('', tkinter.constants.N, tkinter.constants.S,
+            tkinter.constants.E, tkinter.constants.W,
+            tkinter.constants.NE, tkinter.constants.NW,
+            tkinter.constants.SE, tkinter.constants.SW,
+            tkinter.constants.EW, tkinter.constants.NS,
+            tkinter.constants.NS + tkinter.constants.W,
+            tkinter.constants.NS + tkinter.constants.E,
+            tkinter.constants.NSEW
+            )
+        }
+
 TK_WIDGET_PROPS = {
     'activestyle': {
         'input_method': 'choice',
         'values': ('', 'underline', 'dotbox', 'none')
         },
+    'activebackground': _default_entry_prop, #FIXME color property
+    'activeborderwidth': _default_spinbox_prop,
+    'activeforeground': _default_entry_prop, #FIXME color property
     'anchor': {
         'input_method': 'choice',
         'values': ('', tkinter.W, tkinter.CENTER, tkinter.E),
@@ -52,11 +71,15 @@ TK_WIDGET_PROPS = {
     'compound': {
         'input_method': 'choice',
         'values': {
-            'Label': ('', 'bottom', 'image', 'left', 'none',
+            'ttk.Label': ('', 'bottom', 'image', 'left', 'none',
                 'right', 'text', 'top'),
-            'Button': ('', tkinter.constants.TOP, tkinter.constants.BOTTOM,
+            'ttk.Button': ('', tkinter.constants.TOP, tkinter.constants.BOTTOM,
                 tkinter.constants.LEFT, tkinter.constants.RIGHT),
-            'Checkbutton':('', tkinter.constants.TOP, tkinter.constants.BOTTOM,
+            'ttk.Checkbutton':
+                ('', tkinter.constants.TOP, tkinter.constants.BOTTOM,
+                tkinter.constants.LEFT, tkinter.constants.RIGHT),
+            'ttk.Notebook.Tab':
+                ('', tkinter.constants.TOP, tkinter.constants.BOTTOM,
                 tkinter.constants.LEFT, tkinter.constants.RIGHT)
             }
         },
@@ -80,6 +103,10 @@ TK_WIDGET_PROPS = {
             'trek', 'ul_angle', 'umbrella', 'ur_angle', 'watch', 'xterm',
             'X_cursor')
         },
+    'direction': {
+        'input_method': 'choice',
+        'values': ('', 'above', 'below', 'flush', 'left', 'right')
+        },
     'disabledforeground': _default_entry_prop, #FIXME color prop
     'exportselection': {
         'input_method': 'choice',
@@ -92,7 +119,7 @@ TK_WIDGET_PROPS = {
     'highlightcolor': _default_entry_prop, #FIXME color prop
     'highlightthickness': _default_entry_prop,
     'invalidcommand': _default_entry_prop,
-    'image': _default_entry_prop,
+    'image': _default_entry_prop, #FIXME image property
     'justify': {
         'input_method': 'choice',
         'values': ('', tkinter.constants.LEFT, tkinter.constants.CENTER,
@@ -129,7 +156,9 @@ TK_WIDGET_PROPS = {
                 tkinter.constants.DISABLED)
             }
         },
+    'sticky': _sticky_prop,
     'style': _default_entry_prop,
+    'tearoff': _default_entry_prop,
     'takefocus': {
         'input_method': 'choice',
         'values': ('', tkinter.constants.TRUE, tkinter.constants.FALSE),
@@ -158,18 +187,7 @@ TK_GRID_PROPS = {
     'pady': _default_spinbox_prop,
     'row': _default_spinbox_prop,
     'rowspan': _default_spinbox_prop,
-    'sticky': {
-        'input_method': 'choice',
-        'values': ('', tkinter.constants.N, tkinter.constants.S,
-            tkinter.constants.E, tkinter.constants.W,
-            tkinter.constants.NE, tkinter.constants.NW,
-            tkinter.constants.SE, tkinter.constants.SW,
-            tkinter.constants.EW, tkinter.constants.NS,
-            tkinter.constants.NS + tkinter.constants.W,
-            tkinter.constants.NS + tkinter.constants.E,
-            tkinter.constants.NSEW
-            )
-        }
+    'sticky': _sticky_prop
 }
 
 TK_GRID_RC_PROPS = {
@@ -193,7 +211,6 @@ class BuilderObject:
     @classmethod
     def factory(cls, master, properties=None, layout_properties=None):
         clsobj = cls(master, properties, layout_properties)
-        print(clsobj)
         return clsobj
 
     def __init__(self, master, properties=None, layout_prop=None):
@@ -437,7 +454,6 @@ class TTKPanedwindowPane(BuilderObject):
         pass
 
     def add_child(self, cwidget):
-        print(self.properties)
         self.widget.add(cwidget, **self.properties)
 
 register('ttk.Panedwindow.Pane', TTKPanedwindowPane)
@@ -452,6 +468,29 @@ class TTKNotebook(BuilderObject):
 register('ttk.Notebook', TTKNotebook)
 
 
+class TTKNotebookTab(BuilderObject):
+    class_ = None
+    container = True
+    properties = ['compound', 'padding', 'sticky',
+        'image', 'text', 'underline']
+
+    def __init__(self, master, properties, layout_prop):
+        self.widget = master
+        self.properties= properties
+        self.layout_properties = layout_prop
+
+    def configure(self):
+        pass
+
+    def layout(self):
+        pass
+
+    def add_child(self, cwidget):
+        self.widget.add(cwidget, **self.properties)
+
+register('ttk.Notebook.Tab', TTKNotebookTab)
+
+
 class TTKMenubutton(BuilderObject):
     class_ = ttk.Menubutton
     container = False
@@ -459,7 +498,127 @@ class TTKMenubutton(BuilderObject):
             'image', 'style', 'takefocus', 'text', 'textvariable',
             'underline', 'width']
 
+    def add_child(self, cwidget):
+        self.widget['menu'] = cwidget
+
 register('ttk.Menubutton', TTKMenubutton)
+
+
+class TKMenu(BuilderObject):
+    class_ = tkinter.Menu
+    container = True
+    properties = ['activebackground', 'activeborderwidth', 'activeforeground',
+        'background', 'borderwidth', 'cursor', 'disabledforeground',
+        'font', 'foreground', 'postcommand', 'relief', 'selectcolor',
+        'tearoff', 'tearoffcommand', 'title']
+
+    def layout(self):
+        pass
+
+register('tk.Menu', TKMenu)
+
+
+class TKMenuitem(BuilderObject):
+    class_ = None
+    container = False
+    itemtype = None
+    #FIXME Move properties that are for specific items to the corresponding
+    #  subclass, eg: onvalue, offvalue to checkbutton
+    #FIXME Howto setup radio buttons variables ?
+    properties = ['accelerator', 'activebackground', 'activeforeground',
+        'background', 'bitmap', 'columnbreak', 'command', 'compound',
+        'font', 'foreground', 'hidemargin', 'image', 'label',
+        'offvalue', 'onvalue', 'selectcolor', 'selectimage', 'state',
+        'underline', 'value', 'variable']
+
+    def __init__(self, master, properties, layout_prop):
+        self.widget = master
+        master.add(self.itemtype, **properties)
+        self.properties= properties
+        self.layout_properties = layout_prop
+
+    def configure(self):
+        pass
+
+    def layout(self):
+        pass
+
+
+class TKMenuitemSubmenu(TKMenu):
+    properties = list(set(TKMenu.properties + TKMenuitem.properties))
+
+    def __init__(self, master, properties, layout_prop):
+        menu_properties = dict((k, v) for k, v in properties.items()
+            if k in TKMenu.properties)
+
+        item_properties = dict((k, v) for k, v in properties.items()
+            if k in TKMenuitem.properties)
+
+        self.widget = submenu = TKMenu.class_(master, **menu_properties)
+        item_properties['menu'] = submenu
+        master.add(tkinter.constants.CASCADE, **item_properties)
+        self.properties = properties
+        self.layout_properties = layout_prop
+
+    def configure(self):
+        pass
+
+    def layout(self):
+        pass
+
+register('tk.Menuitem.Submenu', TKMenuitemSubmenu)
+
+
+class TKMenuitemCommand(TKMenuitem):
+    itemtype = tkinter.constants.COMMAND
+
+register('tk.Menuitem.Command', TKMenuitemCommand)
+
+
+class TKMenuitemCheckbutton(TKMenuitem):
+    itemtype = tkinter.constants.CHECKBUTTON
+
+register('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton)
+
+
+class TKMenuitemRadiobutton(TKMenuitem):
+    itemtype = tkinter.constants.RADIOBUTTON
+
+register('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton)
+
+
+class TKMenuitemSeparator(TKMenuitem):
+    itemtype = tkinter.constants.SEPARATOR
+    properties = []
+
+register('tk.Menuitem.Separator', TKMenuitemSeparator)
+
+
+class TTKTreeview(BuilderObject):
+    class_ = ttk.Treeview
+    container = False
+    properties = ['class_', 'cursor', 'height', 'padding', 'selectmode',
+        'show', 'style', 'takefocus']
+    #FIXME add support to properties: 'columns', 'displaycolumns'
+    # and columns properties
+
+register('ttk.Treeview', TTKTreeview)
+
+
+class TKCanvas(BuilderObject):
+    class_ = tkinter.Canvas
+    container = False
+    properties = ['borderwidth', 'background', 'closeenough', 'confine',
+        'cursor', 'height', 'highlightbackground', 'highlightcolor',
+        'highlightthickness', 'relief', 'scrollregion', 'selectbackground',
+        'selectborderwidth', 'selectforeground', 'takefocus', 'width',
+        'xscrollincrement', 'xscrollcommand', 'yscrollincrement',
+        'yscrollcommand']
+
+register('tk.Canvas', TKCanvas)
+
+#TODO: add a ScrollHelper class that adds and configures scrollbars to
+# specific widgets such as Canvas, Text, Entry, etc.
 
 
 #
@@ -467,6 +626,8 @@ register('ttk.Menubutton', TTKMenubutton)
 #
 
 class Tkbuilder:
+    #TODO: Add a method 'bind' or similar to map commands to a function
+    # something like: builder.bind(self)
     def __init__(self):
         self.tree = None
         self.root = None
@@ -512,8 +673,6 @@ class Tkbuilder:
     def realize(self, master, element):
         cname = element.get('class')
         uniqueid = element.get('id')
-
-        print('realize on:', cname)
 
         if cname in CLASS_MAP:
             properties = self.get_properties(element)
@@ -566,7 +725,10 @@ class Tkbuilder:
                     columns_dict[column_id] = column_properties
             layout_properties['grid_columns'] = columns_dict
         else:
-            print('Warning no packing information provided')
+            cname = element.get('class')
+            uniqueid = element.get('id')
+            logger.warning('No packing information for: (%s, %s).',
+                cname, uniqueid)
         return layout_properties
 
 
