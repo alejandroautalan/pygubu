@@ -1,5 +1,31 @@
 <?xml version="1.0" ?>
 <interface>
+    <object class="tk.Menu" id="applicationmenu">
+        <child>
+            <object class="tk.Menuitem.Submenu" id="filemenu">
+                <property name="label">File</property>
+                <property name="underline">0</property>
+                <child>
+                    <object class="tk.Menuitem.Command" id="fileopen">
+                        <property name="label">Open …</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="tk.Menuitem.Command" id="filesave">
+                        <property name="label">Save …</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="tk.Menuitem.Separator" id="separator1"/>
+                </child>
+                <child>
+                    <object class="tk.Menuitem.Command" id="filequit">
+                        <property name="label">Quit …</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
     <object class="ttk.Frame" id="mainwindow">
         <child>
             <object class="ttk.Frame" id="frame_2">
@@ -8,7 +34,7 @@
                         <property name="text">Project:</property>
                         <packing>
                             <property name="row">0</property>
-                            <property name="column">1</property>
+                            <property name="column">0</property>
                         </packing>
                     </object>
                 </child>
@@ -18,39 +44,8 @@
                         <packing>
                             <property name="sticky">ew</property>
                             <property name="row">0</property>
-                            <property name="column">2</property>
+                            <property name="column">1</property>
                         </packing>
-                    </object>
-                </child>
-                <child>
-                    <object class="ttk.Menubutton" id="appmenu_btn">
-                        <property name="text">Main Menu</property>
-                        <packing>
-                            <property name="row">0</property>
-                            <property name="column">0</property>
-                        </packing>
-                        <child>
-                            <object class="tk.Menu" id="menu1">
-                                <child>
-                                    <object class="tk.Menuitem.Command" id="command1">
-                                        <property name="label">Open …</property>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="tk.Menuitem.Command" id="command2">
-                                        <property name="label">Save …</property>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="tk.Menuitem.Separator" id="separator1"/>
-                                </child>
-                                <child>
-                                    <object class="tk.Menuitem.Command" id="command4">
-                                        <property name="label">Quit …</property>
-                                    </object>
-                                </child>
-                            </object>
-                        </child>
                     </object>
                 </child>
                 <packing>
@@ -91,12 +86,26 @@
                                         <child>
                                             <object class="ttk.Notebook" id="notebook1">
                                                 <child>
-                                                    <object class="ttk.Notebook.Tab" id="tab1">
-                                                        <property name="text">Tab1</property>
+                                                    <object class="ttk.Notebook.Tab" id="generaltab">
+                                                        <property name="text">General</property>
                                                         <property name="sticky">nsew</property>
                                                         <child>
-                                                            <object class="ttk.Button" id="panebutton12">
-                                                                <property name="text">pane button1</property>
+                                                            <object class="ttk.Frame" id="propertiesframe">
+                                                                <packing>
+                                                                    <property name="sticky">nsew</property>
+                                                                    <property name="row">0</property>
+                                                                    <property name="column">0</property>
+                                                                </packing>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </child>
+                                                <child>
+                                                    <object class="ttk.Notebook.Tab" id="packingtab">
+                                                        <property name="text">Packing</property>
+                                                        <property name="sticky">nsew</property>
+                                                        <child>
+                                                            <object class="ttk.Button" id="packingframe">
                                                                 <packing>
                                                                     <property name="sticky">nsew</property>
                                                                     <property name="row">0</property>

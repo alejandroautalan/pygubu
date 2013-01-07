@@ -32,6 +32,14 @@ class UITester(util.Application):
         self.builder.add_from_file(sys.argv[1])
         self.builder.get_object(self, 'mainwindow')
 
+        top = self.winfo_toplevel()
+
+        try:
+            menu = self.builder.get_object(top, 'applicationmenu')
+            top['menu'] = menu
+        except:
+            pass
+
         self.grid(row=0, column=0, sticky='nswe')
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
