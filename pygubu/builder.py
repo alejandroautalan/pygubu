@@ -625,7 +625,7 @@ register('tk.Canvas', TKCanvas)
 # Builder class
 #
 
-class Tkbuilder:
+class Builder:
     #TODO: Add a method 'bind' or similar to map commands to a function
     # something like: builder.bind(self)
     def __init__(self):

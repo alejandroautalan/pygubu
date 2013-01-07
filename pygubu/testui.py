@@ -28,7 +28,7 @@ import builder
 
 class UITester(util.Application):
     def _create_ui(self):
-        self.builder = builder.Tkbuilder()
+        self.builder = builder.Builder()
         self.builder.add_from_file(sys.argv[1])
         self.builder.get_object('mainwindow', self)
 
