@@ -19,6 +19,7 @@ import logging
 import xml.etree.ElementTree as ET
 import tkinter
 from tkinter import ttk
+from util import _autoscroll
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('pygubu.builder')
@@ -620,6 +621,57 @@ register('tk.Canvas', TKCanvas)
 #TODO: add a ScrollHelper class that adds and configures scrollbars to
 # specific widgets such as Canvas, Text, Entry, etc.
 
+
+class ScrollbarHelper(BuilderObject):
+    class_ = None
+    scrollbar_class = None
+    container = True
+    properties = ['scrolltype']
+    VERTICAL = 'vertical'
+    HORIZONTAL = 'horizontal'
+    BOTH = 'both'
+
+    def configure(self):
+        scrolltype = self.properties.get('scrolltype', self.BOTH)
+        if scrolltype in (self.BOTH, self.VERTICAL):
+            self.widget.vsb = self.scrollbar_class(self.widget,
+                orient="vertical")
+            #packing
+            self.widget.vsb.grid(column=1, row=0, sticky=tkinter.NS)
+
+        if scrolltype in (self.BOTH, self.HORIZONTAL):
+            self.widget.hsb = self.scrollbar_class(self.widget,
+                orient="horizontal")
+            self.widget.hsb.grid(column=0, row=1, sticky=tkinter.EW)
+
+        self.widget.grid_columnconfigure(0, weight=1)
+        self.widget.grid_rowconfigure(0, weight=1)
+
+    def add_child(self, cwidget):
+        cwidget.grid(column=0, row=0, sticky=tkinter.NSEW, in_=self.widget)
+        scrolltype = self.properties.get('scrolltype', self.BOTH)
+
+        if scrolltype in (self.BOTH, self.VERTICAL):
+            self.widget.vsb.configure(command=cwidget.yview)
+            cwidget.configure(yscrollcommand=lambda f, l: _autoscroll(self.widget.vsb, f, l))
+
+        if scrolltype in (self.BOTH, self.HORIZONTAL):
+            self.widget.hsb.configure(command=cwidget.xview)
+            cwidget.configure(xscrollcommand=lambda f, l: _autoscroll(self.widget.hsb, f, l))
+
+
+class TKScrollbarHelper(ScrollbarHelper):
+    class_ = tkinter.Frame
+    scrollbar_class = tkinter.Scrollbar
+
+register('tk.ScrollbarHelper', TKScrollbarHelper)
+
+
+class TTKScrollbarHelper(ScrollbarHelper):
+    class_ = ttk.Frame
+    scrollbar_class = ttk.Scrollbar
+
+register('ttk.ScrollbarHelper', TTKScrollbarHelper)
 
 #
 # Builder class

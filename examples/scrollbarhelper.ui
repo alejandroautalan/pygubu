@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<interface>
+    <object class="ttk.Frame" id="mainwindow">
+        <child>
+            <object class="ttk.Label" id="label1">
+                <property name="text">ScrollbarHelper test:</property>
+                <packing>
+                    <property name="row">0</property>
+                    <property name="column">0</property>
+                </packing>
+            </object>
+        </child>
+        <child>
+            <object class="ttk.ScrollbarHelper" id="sbh1">
+                <property name="scrolltype">both</property>
+                <child>
+                    <object class="tk.Canvas" id="canvas1">
+                        <property name="background">green</property>
+                        <property name="scrollregion">0 0  600 600</property>
+                        <packing>
+                            <property name="row">0</property>
+                            <property name="column">0</property>
+                        </packing>
+                    </object>
+                </child>
+                <packing>
+                    <property name="row">1</property>
+                    <property name="column">0</property>
+                    <property name="sticky">nsew</property>
+                    <columns>
+                        <column id="0">
+                            <property name="weight">1</property>
+                        </column>
+                    </columns>
+                    <rows>
+                        <row id="0">
+                            <property name="weight">1</property>
+                        </row>
+                    </rows>
+                </packing>
+            </object>
+        </child>
+        <packing>
+            <property name="row">0</property>
+            <property name="column">0</property>
+            <property name="sticky">nsew</property>
+            <columns>
+                <column id="0">
+                    <property name="weight">1</property>
+                </column>
+            </columns>
+            <rows>
+                <row id="1">
+                    <property name="weight">1</property>
+                </row>
+            </rows>
+        </packing>
+    </object>
+</interface>
