@@ -19,7 +19,7 @@ import logging
 import xml.etree.ElementTree as ET
 import tkinter
 from tkinter import ttk
-from util import _autoscroll
+
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('pygubu.builder')
@@ -255,7 +255,7 @@ class TKListbox(BuilderObject):
             'selectmode', 'state', 'takefocus', 'width', 'xscrollcommand',
             'yscrollcommand']
 
-register('Listbox', TKListbox)
+register('tk.Listbox', TKListbox)
 
 
 class TKText(BuilderObject):
@@ -272,7 +272,7 @@ class TKText(BuilderObject):
             'undo', 'width', 'wrap', 'xscrollcommand', 'yscrollcommand',
             ]
 
-register('Text', TKText)
+register('tk.Text', TKText)
 
 #
 # ttk widgets
@@ -402,7 +402,7 @@ class TKSpinbox(BuilderObject):
             'selectborderwidth', 'selectforeground', 'state', 'takefocus',
             'textvariable', 'to', 'values', 'width', 'wrap', 'xscrollcommand']
 
-register('Spinbox', TKSpinbox)
+register('tk.Spinbox', TKSpinbox)
 
 
 class TTKSeparator(BuilderObject):
@@ -618,8 +618,16 @@ class TKCanvas(BuilderObject):
 
 register('tk.Canvas', TKCanvas)
 
-#TODO: add a ScrollHelper class that adds and configures scrollbars to
-# specific widgets such as Canvas, Text, Entry, etc.
+
+def _autoscroll(sbar, first, last):
+    """Hide and show scrollbar as needed.
+    Code from Joe English (JE) at http://wiki.tcl.tk/950"""
+    first, last = float(first), float(last)
+    if first <= 0 and last >= 1:
+        sbar.grid_remove()
+    else:
+        sbar.grid()
+    sbar.set(first, last)
 
 
 class ScrollbarHelper(BuilderObject):
