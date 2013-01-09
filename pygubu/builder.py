@@ -237,6 +237,9 @@ class BuilderObject:
         for col in grid_cols:
             self.widget.columnconfigure(col, **grid_cols[col])
 
+    def get_child_master(self):
+        return self.widget
+
     def add_child(self, cwidget):
         pass
 
@@ -681,6 +684,82 @@ class TTKScrollbarHelper(ScrollbarHelper):
 
 register('ttk.ScrollbarHelper', TTKScrollbarHelper)
 
+
+class VScrolledFrame(BuilderObject):
+    class_ = None
+    scrollbar_class = None
+    container = True
+    properties = []
+
+    def __init__(self, master, properties, layout_prop):
+        self.properties = properties
+        self.layout_properties = layout_prop
+        self.widget = self.class_(master)
+        self.canvas = canvas = tkinter.Canvas(self.widget, bd=0, highlightthickness=0)
+        self.innerframe = innerframe = self.class_(self.canvas)
+        self.vsb = vsb = self.scrollbar_class(self.widget)
+
+        #configure scroll
+        self.canvas.configure(
+            yscrollcommand=lambda f, l: _autoscroll(vsb, f, l))
+        self.vsb.config(command=canvas.yview)
+
+        #grid
+        self.canvas.grid(row=0, column=0, sticky=tkinter.NSEW)
+        self.vsb.grid(row=0, column=1, sticky=tkinter.NS)
+        self.widget.rowconfigure(0, weight=1)
+        self.widget.columnconfigure(0, weight=1)
+
+        # create a window inside the canvas which will be scrolled with it
+        innerframe_id = canvas.create_window(0, 0, window=innerframe,
+            anchor=tkinter.NW)
+
+        # track changes to the canvas and frame width and sync them,
+        # also updating the scrollbar
+        def _configure_innerframe(event):
+            # update the scrollbars to match the size of the inner frame
+            size = (innerframe.winfo_reqwidth(), innerframe.winfo_reqheight())
+            canvas.config(scrollregion="0 0 %s %s" % size)
+            if innerframe.winfo_reqwidth() != canvas.winfo_width():
+                # update the canvas's width to fit the inner frame
+                canvas.config(width=innerframe.winfo_reqwidth())
+
+        innerframe.bind('<Configure>', _configure_innerframe)
+
+        def _configure_canvas(event):
+            if innerframe.winfo_reqwidth() != canvas.winfo_width():
+                # update the inner frame's width to fill the canvas
+                canvas.itemconfigure(innerframe_id, width=canvas.winfo_width())
+
+        canvas.bind('<Configure>', _configure_canvas)
+
+        # reset the view
+        canvas.xview_moveto(0)
+        canvas.yview_moveto(0)
+
+
+    def configure(self):
+        pass
+
+
+    def get_child_master(self):
+        return self.innerframe
+
+
+class TKVScrolledFrame(VScrolledFrame):
+    class_ = tkinter.Frame
+    scrollbar_class = tkinter.Scrollbar
+
+register('tk.VScrolledFrame', TKVScrolledFrame)
+
+
+class TTKVScrolledFrame(VScrolledFrame):
+    class_ = ttk.Frame
+    scrollbar_class = ttk.Scrollbar
+
+register('ttk.VScrolledFrame', TKVScrolledFrame)
+
+
 #
 # Builder class
 #
@@ -748,7 +827,8 @@ class Builder:
             children = element.findall(xpath)
             for child in children:
                 child_object = child.find('./object')
-                cwidget = self.realize(pwidget, child_object)
+                cmaster = builderobj.get_child_master()
+                cwidget = self.realize(cmaster, child_object)
                 builderobj.add_child(cwidget)
 
             return pwidget
