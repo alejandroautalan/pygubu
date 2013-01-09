@@ -698,6 +698,8 @@ class VScrolledFrame(BuilderObject):
         self.canvas = canvas = tkinter.Canvas(self.widget, bd=0, highlightthickness=0)
         self.innerframe = innerframe = self.class_(self.canvas)
         self.vsb = vsb = self.scrollbar_class(self.widget)
+        self.widget.innerframe = innerframe
+        self.widget.vsb = vsb
 
         #configure scroll
         self.canvas.configure(
