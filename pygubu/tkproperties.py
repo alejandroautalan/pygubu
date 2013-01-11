@@ -35,16 +35,22 @@ _dimension_prop = {
     'max': 999,
 }
 
+_relief_prop = {
+    'input_method': 'choice',
+    'values': ('', tkinter.FLAT, tkinter.RAISED, tkinter.SUNKEN,
+        tkinter.GROOVE, tkinter.RIDGE)
+}
+
 _sticky_prop = {
         'input_method': 'choice',
-        'values': ('', tkinter.constants.N, tkinter.constants.S,
-            tkinter.constants.E, tkinter.constants.W,
-            tkinter.constants.NE, tkinter.constants.NW,
-            tkinter.constants.SE, tkinter.constants.SW,
-            tkinter.constants.EW, tkinter.constants.NS,
-            tkinter.constants.NS + tkinter.constants.W,
-            tkinter.constants.NS + tkinter.constants.E,
-            tkinter.constants.NSEW
+        'values': ('', tkinter.N, tkinter.S,
+            tkinter.E, tkinter.W,
+            tkinter.NE, tkinter.NW,
+            tkinter.SE, tkinter.SW,
+            tkinter.EW, tkinter.NS,
+            tkinter.NS + tkinter.W,
+            tkinter.NS + tkinter.E,
+            tkinter.NSEW
             )
         }
 
@@ -60,6 +66,11 @@ TK_WIDGET_PROPS = {
         'input_method': 'choice',
         'values': ('', tkinter.W, tkinter.CENTER, tkinter.E),
         },
+    'bitmap': {
+        'input_method': 'choice',
+        'values': ('', 'error', 'gray75', 'gray50', 'gray25', 'gray12',
+            'hourglass', 'info', 'questhead', 'question', 'warning')
+        },
     'background': _default_entry_prop,
     'borderwidth': _dimension_prop,
     'class_': _default_entry_prop,
@@ -67,16 +78,20 @@ TK_WIDGET_PROPS = {
     'compound': {
         'input_method': 'choice',
         'values': {
-            'ttk.Label': ('', 'bottom', 'image', 'left', 'none',
-                'right', 'text', 'top'),
-            'ttk.Button': ('', tkinter.constants.TOP, tkinter.constants.BOTTOM,
-                tkinter.constants.LEFT, tkinter.constants.RIGHT),
+            'tk.Button': ('', tkinter.TOP, tkinter.BOTTOM,
+                tkinter.LEFT, tkinter.RIGHT),
+            'tk.Checkbutton': ('', tkinter.TOP, tkinter.BOTTOM,
+                tkinter.LEFT, tkinter.RIGHT),
+            'ttk.Label': ('', tkinter.BOTTOM, 'image', tkinter.LEFT, 'none',
+                tkinter.RIGHT, 'text', tkinter.TOP),
+            'ttk.Button': ('', tkinter.TOP, tkinter.BOTTOM,
+                tkinter.LEFT, tkinter.RIGHT),
             'ttk.Checkbutton':
-                ('', tkinter.constants.TOP, tkinter.constants.BOTTOM,
-                tkinter.constants.LEFT, tkinter.constants.RIGHT),
+                ('', tkinter.TOP, tkinter.BOTTOM,
+                tkinter.LEFT, tkinter.RIGHT),
             'ttk.Notebook.Tab':
-                ('', tkinter.constants.TOP, tkinter.constants.BOTTOM,
-                tkinter.constants.LEFT, tkinter.constants.RIGHT)
+                ('', tkinter.TOP, tkinter.BOTTOM,
+                tkinter.LEFT, tkinter.RIGHT)
             }
         },
     'cursor': {
@@ -99,6 +114,10 @@ TK_WIDGET_PROPS = {
             'trek', 'ul_angle', 'umbrella', 'ur_angle', 'watch', 'xterm',
             'X_cursor')
         },
+    'default': {
+        'input_method': 'choice',
+        'values': (tkinter.NORMAL, tkinter.DISABLED)
+        },
     'direction': {
         'input_method': 'choice',
         'values': ('', 'above', 'below', 'flush', 'left', 'right')
@@ -114,42 +133,61 @@ TK_WIDGET_PROPS = {
     'highlightbackground': _default_entry_prop, #FIXME color prop
     'highlightcolor': _default_entry_prop, #FIXME color prop
     'highlightthickness': _default_entry_prop,
+    'indicatoron': {
+        'input_method': 'choice',
+        'values': ('', '0', '1')
+        },
     'invalidcommand': _default_entry_prop,
     'image': _default_entry_prop, #FIXME image property
     'justify': {
         'input_method': 'choice',
-        'values': ('', tkinter.constants.LEFT, tkinter.constants.CENTER,
-            tkinter.constants.RIGHT),
+        'values': ('', tkinter.LEFT, tkinter.CENTER,
+            tkinter.RIGHT),
+        },
+    'labelanchor': {
+        'input_method': 'choice',
+        'values': ('', tkinter.NW, tkinter.N, tkinter.NE,
+            tkinter.E + tkinter.N, tkinter.E, tkinter.E + tkinter.S,
+            tkinter.W + tkinter.N, tkinter.W, tkinter.W + tkinter.S,
+            tkinter.SW, tkinter.S, tkinter.SE)
         },
     'listvariable': _default_entry_prop,
+    'offrelief': _relief_prop,
     'onvalue': _default_entry_prop,
     'orient': {
         'input_method': 'choice',
-        'values': (tkinter.constants.VERTICAL, tkinter.constants.HORIZONTAL)
+        'values': (tkinter.VERTICAL, tkinter.HORIZONTAL)
         },
+    'overrelief': _relief_prop,
     'padding': _dimension_prop,
     'postcommand': _default_entry_prop,
-    'relief': {
-        'input_method': 'choice',
-        'values': ('', tkinter.constants.FLAT, 'raised', 'sunken', 'groove', 'ridge')
-        },
+    'relief': _relief_prop,
+    'repeatdelay': _default_spinbox_prop,
+    'repeatinterval': _default_spinbox_prop,
+    'selectcolor': _default_entry_prop, #FIXME color prop
     'selectbackground': _default_entry_prop, #FIXME color prop
     'selectborderwidth': _default_spinbox_prop,
     'selectforeground': _default_entry_prop, #FIXME color prop
+    'selectimage': _default_entry_prop, #FIXME image property
     'selectmode': {
         'input_method': 'choice',
-        'values': ('', tkinter.constants.BROWSE, tkinter.constants.SINGLE,
-            tkinter.constants.MULTIPLE, tkinter.constants.EXTENDED)
+        'values': ('', tkinter.BROWSE, tkinter.SINGLE,
+            tkinter.MULTIPLE, tkinter.EXTENDED)
         },
     'show': _default_entry_prop,
     'state': {
         'input_method': 'choice',
         'values': {
-            'Entry': ('', tkinter.constants.NORMAL,
-                tkinter.constants.DISABLED, 'disabled'),
-            'Combobox': ('', 'readonly'),
-            'Listbox': ('', tkinter.constants.NORMAL,
-                tkinter.constants.DISABLED)
+            'tk.Entry': ('', tkinter.NORMAL,
+                tkinter.DISABLED, 'disabled'),
+            'tk.Combobox': ('', 'readonly'),
+            'tk.Listbox': ('', tkinter.NORMAL,
+                tkinter.DISABLED),
+            'tk.Button': (tkinter.NORMAL, tkinter.DISABLED),
+            'tk.Checkbutton': (tkinter.NORMAL, tkinter.DISABLED),
+            'ttk.Entry': ('', tkinter.NORMAL,
+                tkinter.DISABLED, 'disabled'),
+            'ttk.Combobox': ('', 'readonly'),
             }
         },
     'sticky': _sticky_prop,
@@ -157,7 +195,7 @@ TK_WIDGET_PROPS = {
     'tearoff': _default_entry_prop,
     'takefocus': {
         'input_method': 'choice',
-        'values': ('', tkinter.constants.TRUE, tkinter.constants.FALSE),
+        'values': ('', tkinter.TRUE, tkinter.FALSE),
         },
     'text': _default_entry_prop,
     'textvariable': _default_entry_prop,

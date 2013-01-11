@@ -73,6 +73,87 @@ class BuilderObject:
 #
 # tkinter widgets
 #
+class TKFrame(BuilderObject):
+    class_ = tkinter.Frame
+    container = True
+    properties = ['background', 'borderwidth', 'cursor', 'height',
+        'highlightbackground', 'highlightcolor', 'highlightthickness',
+        'padx', 'pady', 'relief', 'takefocus', 'width']
+
+register('tk.Frame', TKFrame)
+
+
+class TKLabel(BuilderObject):
+    class_ = tkinter.Label
+    container = False
+    properties = ['activebackground', 'activeforeground', 'anchor',
+        'background', 'bitmap', 'borderwidth', 'compound',
+        'cursor', 'disabledforeground', 'font', 'foreground', 'height',
+        'highlightbackground', 'highlightcolor', 'highlightthickness',
+        'image', 'justify', 'padx', 'pady', 'relief', 'state',
+        'takefocus', 'text', 'textvariable', 'underline',
+        'width', 'wraplength']
+
+register('tk.Label', TKLabel)
+
+
+class TKLabelFrame(BuilderObject):
+    class_ = tkinter.LabelFrame
+    container = True
+    properties = ['background', 'borderwidth', 'cursor', 'height',
+        'highlightbackground', 'highlightcolor', 'highlightthickness',
+        'labelanchor', 'labelwidget', 'padx', 'pady', 'relief',
+        'takefocus', 'width']
+#TODO: Add helper so the labelwidget can be configured on GUI
+
+register('tk.LabelFrame', TKLabelFrame)
+
+
+class TKEntry(BuilderObject):
+    class_ = tkinter.Entry
+    container = False
+    properties = ['background', 'borderwidth', 'cursor',
+        'disabledbackground', 'disabledforeground', 'exportselection',
+        'foreground', 'font', 'highlightbackground', 'highlightcolor',
+        'highlightthickness', 'insertbackground', 'insertborderwidth',
+        'insertofftime', 'insertontime', 'insertwidth', 'justify',
+        'readonlybackground', 'relief', 'selectbackground',
+        'selectborderwidth', 'selectforeground', 'show', 'state',
+        'takefocus', 'textvariable', 'validate', 'validatecommand',
+        'width', 'wraplength', 'xscrollcommand']
+
+register('tk.Entry', TKEntry)
+
+
+class TKButton(BuilderObject):
+    class_ = tkinter.Button
+    container = False
+    properties = ['activebackground', 'activeforeground', 'anchor',
+        'borderwidth', 'background', 'bitmap', 'command', 'cursor',
+        'default', 'disabledforeground', 'foreground', 'font', 'height',
+        'highlightbackground', 'highlightcolor', 'highlightthickness',
+        'image', 'justify', 'overrelief', 'padx', 'pady', 'relief',
+        'repeatdelay', 'repeatinterval', 'state', 'takefocus', 'text',
+        'textvariable', 'underline', 'width', 'wraplength']
+
+register('tk.Button', TKButton)
+
+
+class TKCheckbutton(BuilderObject):
+    class_ = tkinter.Checkbutton
+    container = False
+    properties = ['activebackground', 'activeforeground', 'anchor',
+        'background', 'bitmap', 'borderwidth', 'command', 'compound',
+        'cursor', 'disabledforeground', 'font', 'foreground', 'height',
+        'highlightbackground', 'highlightcolor', 'highlightthickness',
+        'image', 'indicatoron', 'justify', 'offrelief', 'offvalue',
+        'onvalue', 'overrelief', 'padx', 'pady', 'relief', 'selectcolor',
+        'selectimage', 'state', 'takefocus', 'text', 'textvariable',
+        'underline', 'variable', 'width', 'wraplength']
+
+register('tk.Checkbutton', TKCheckbutton)
+
+
 class TKListbox(BuilderObject):
     class_ =  tkinter.Listbox
     container = False
@@ -102,6 +183,55 @@ class TKText(BuilderObject):
             ]
 
 register('tk.Text', TKText)
+
+
+class PanedWindow(BuilderObject):
+    class_ = None
+    container = True
+    properties = []
+
+    def __init__(self, master, properties, layout_prop):
+        orient = properties.pop('orient', 'vertical')
+        self.widget = self.class_(master, orient=orient)
+        self.properties = properties
+        self.layout_properties = layout_prop
+
+
+class PanedWindowPane(BuilderObject):
+    class_ = None
+    container = True
+    properties = []
+
+    def __init__(self, master, properties, layout_prop):
+        self.widget = master
+        self.properties= properties
+        self.layout_properties = layout_prop
+
+    def configure(self):
+        pass
+
+    def layout(self):
+        pass
+
+    def add_child(self, cwidget):
+        self.widget.add(cwidget, **self.properties)
+
+
+class TKPanedWindow(PanedWindow):
+    class_ = tkinter.PanedWindow
+    properties = ['background', 'borderwidth', 'cursor', 'handlepad',
+        'handlesize', 'height', 'opaqueresize', 'orient', 'relief',
+        'sashpad', 'sashrelief', 'sashwidth', 'showhandle', 'width']
+
+register('tk.PanedWindow', TKPanedWindow)
+
+
+class TKPanedWindowPane(PanedWindowPane):
+    class_ = None
+    container = True
+    properties = ['height', 'minsize', 'padx', 'pady', 'sticky']
+
+register('tk.PanedWindow.Pane', TKPanedWindowPane)
 
 #
 # ttk widgets
@@ -248,43 +378,22 @@ class TTKLabelframe:
     properties = ['borderwidth', 'class_', 'cursor', 'height',
             'labelanchor', 'labelwidget', 'padding',
             'relief', 'style', 'takefocus', 'text', 'underline', 'width']
-
+#TODO: Add helper so the labelwidget can be configured on GUI
 register('ttk.Labelframe', TTKLabelframe)
 
 
-class TTKPanedwindow(BuilderObject):
+class TTKPanedwindow(PanedWindow):
     class_ = ttk.Panedwindow
-    container = False
     properties = ['class_', 'cursor', 'height', 'orient',
             'style', 'takefocus', 'width']
-
-    def __init__(self, master, properties, layout_prop):
-        orient = properties.pop('orient', 'vertical')
-        self.widget = self.class_(master, orient=orient)
-        self.properties = properties
-        self.layout_properties = layout_prop
 
 register('ttk.Panedwindow', TTKPanedwindow)
 
 
-class TTKPanedwindowPane(BuilderObject):
+class TTKPanedwindowPane(PanedWindowPane):
     class_ = None
     container = True
     properties = ['weight']
-
-    def __init__(self, master, properties, layout_prop):
-        self.widget = master
-        self.properties= properties
-        self.layout_properties = layout_prop
-
-    def configure(self):
-        pass
-
-    def layout(self):
-        pass
-
-    def add_child(self, cwidget):
-        self.widget.add(cwidget, **self.properties)
 
 register('ttk.Panedwindow.Pane', TTKPanedwindowPane)
 
