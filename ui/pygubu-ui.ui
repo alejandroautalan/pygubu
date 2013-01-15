@@ -1,0 +1,267 @@
+<?xml version="1.0" ?>
+<interface>
+    <object class="tk.Menu" id="mainmenu">
+        <child>
+            <object class="tk.Menuitem.Submenu" id="filemenu">
+                <property name="label">File</property>
+                <property name="underline">0</property>
+                <child>
+                    <object class="tk.Menuitem.Command" id="fileopen">
+                        <property name="label">Open …</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="tk.Menuitem.Command" id="filesave">
+                        <property name="label">Save …</property>
+                    </object>
+                </child>
+                <child>
+                    <object class="tk.Menuitem.Separator" id="separator1"/>
+                </child>
+                <child>
+                    <object class="tk.Menuitem.Command" id="filequit">
+                        <property name="label">Quit …</property>
+                    </object>
+                </child>
+            </object>
+        </child>
+    </object>
+    <object class="ttk.Frame" id="mainwindow">
+        <property name="padding">2</property>
+        <child>
+            <object class="ttk.Frame" id="frame_2">
+                <child>
+                    <object class="ttk.Label" id="label_project">
+                        <property name="text">Project:</property>
+                        <property name="padding">0 0 10 0</property>
+                        <packing>
+                            <property name="row">0</property>
+                            <property name="column">0</property>
+                        </packing>
+                    </object>
+                </child>
+                <child>
+                    <object class="ttk.Label" id="projectname_lbl">
+                        <property name="text">Project file name here.</property>
+                        <packing>
+                            <property name="sticky">we</property>
+                            <property name="row">0</property>
+                            <property name="column">1</property>
+                        </packing>
+                    </object>
+                </child>
+                <packing>
+                    <property name="row">0</property>
+                    <property name="column">0</property>
+                    <property name="sticky">nsew</property>
+                    <rows>
+                        <row id="0">
+                            <property name="pad">10</property>
+                        </row>
+                    </rows>
+                    <columns>
+                        <column id="1">
+                            <property name="weight">1</property>
+                            <property name="pad">10</property>
+                        </column>
+                    </columns>
+                </packing>
+            </object>
+        </child>
+        <child>
+            <object class="ttk.Panedwindow" id="panedwindow_1">
+                <property name="orient">horizontal</property>
+                <child>
+                    <object class="ttk.Panedwindow.Pane" id="pane1">
+<!--                        <property name="weight">2</property>-->
+                        <child>
+                            <object class="ttk.Frame" id="pane1frame1">
+                                <child>
+                                    <object class="ttk.ScrollbarHelper" id="p1f1sbh1">
+                                        <property name="scrolltype">both</property>
+                                        <child>
+                                            <object class="ttk.Treeview" id="widgetlist">
+                                                <packing>
+                                                    <property name="sticky">nsew</property>
+                                                    <property name="row">0</property>
+                                                    <property name="column">0</property>
+                                                </packing>
+                                            </object>
+                                        </child>
+                                        <packing>
+                                            <property name="row">0</property>
+                                            <property name="column">0</property>
+                                            <property name="sticky">nsew</property>
+                                            <columns>
+                                                <column id="0">
+                                                    <property name="weight">1</property>
+                                                </column>
+                                            </columns>
+                                            <rows>
+                                                <row id="0">
+                                                    <property name="weight">1</property>
+                                                </row>
+                                            </rows>
+                                        </packing>
+                                    </object>
+                                </child>
+                                <child>
+                                    <object class="ttk.Panedwindow" id="panew2">
+                                        <child>
+                                            <object class="ttk.Panedwindow.Pane" id="tvpane">
+                                                <child>
+                                                    <object class="ttk.Frame" id="addwframe1">
+                                                        <child>
+                                                            <object class="ttk.ScrollbarHelper" id="sbh1">
+                                                                <property name="scrolltype">both</property>
+                                                                <child>
+                                                                    <object class="ttk.Treeview" id="treeview1">
+                                                                        <packing>
+                                                                            <property name="sticky">nsew</property>
+                                                                            <property name="row">0</property>
+                                                                            <property name="column">0</property>
+                                                                        </packing>
+                                                                    </object>
+                                                                </child>
+                                                                <packing>
+                                                                    <property name="row">1</property>
+                                                                    <property name="column">0</property>
+                                                                    <property name="sticky">nsew</property>
+                                                                    <columns>
+                                                                        <column id="0">
+                                                                            <property name="weight">1</property>
+                                                                        </column>
+                                                                    </columns>
+                                                                    <rows>
+                                                                        <row id="0">
+                                                                            <property name="weight">1</property>
+                                                                        </row>
+                                                                    </rows>
+                                                                </packing>
+                                                            </object>
+                                                        </child>
+                                                        <packing>
+                                                            <property name="sticky">nsew</property>
+                                                            <property name="row">0</property>
+                                                            <property name="column">0</property>
+                                                            <rows>
+                                                                <row id="1">
+                                                                    <property name="weight">1</property>
+                                                                </row>
+                                                            </rows>
+                                                            <columns>
+                                                                <column id="0">
+                                                                    <property name="weight">1</property>
+                                                                </column>
+                                                            </columns>
+                                                        </packing>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                        <child>
+                                            <object class="ttk.Panedwindow.Pane" id="pane22">
+                                                <child>
+                                                    <object class="ttk.Notebook" id="notebook1">
+                                                        <child>
+                                                            <object class="ttk.Notebook.Tab" id="generaltab">
+                                                                <property name="text">General</property>
+                                                                <property name="sticky">nsew</property>
+                                                                <child>
+                                                                    <object class="ttk.VScrolledFrame" id="vsframe">
+                                                                        <child>
+                                                                            <object class="ttk.Frame" id="propertiesframe">
+                                                                                <packing>
+                                                                                    <property name="sticky">nsew</property>
+                                                                                    <property name="row">0</property>
+                                                                                    <property name="column">0</property>
+                                                                                </packing>
+                                                                            </object>
+                                                                        </child>
+                                                                        <packing>
+                                                                            <property name="sticky">nsew</property>
+                                                                            <property name="row">0</property>
+                                                                            <property name="column">0</property>
+                                                                        </packing>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                        <child>
+                                                            <object class="ttk.Notebook.Tab" id="packingtab">
+                                                                <property name="text">Packing</property>
+                                                                <property name="sticky">nsew</property>
+                                                                <child>
+                                                                    <object class="ttk.Frame" id="packingframe">
+                                                                        <packing>
+                                                                            <property name="sticky">nsew</property>
+                                                                            <property name="row">0</property>
+                                                                            <property name="column">0</property>
+                                                                        </packing>
+                                                                    </object>
+                                                                </child>
+                                                            </object>
+                                                        </child>
+                                                    </object>
+                                                </child>
+                                            </object>
+                                        </child>
+                                        <packing>
+                                            <property name="sticky">nsew</property>
+                                            <property name="row">0</property>
+                                            <property name="column">1</property>
+                                        </packing>
+                                    </object>
+                                </child>
+                                <packing>
+                                    <property name="sticky">nsew</property>
+                                    <property name="row">0</property>
+                                    <property name="column">0</property>
+                                    <columns>
+                                        <column id="1">
+                                            <property name="weight">1</property>
+                                        </column>
+                                    </columns>
+                                    <rows>
+                                        <row id="0">
+                                            <property name="weight">1</property>
+                                        </row>
+                                    </rows>
+                                </packing>
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <child>
+                    <object class="ttk.Panedwindow.Pane" id="pane2">
+<!--                        <property name="weight">5</property>-->
+                        <child>
+                            <object class="ttk.Notebook" id="notebookpreview">
+                            </object>
+                        </child>
+                    </object>
+                </child>
+                <packing>
+                    <property name="row">1</property>
+                    <property name="column">0</property>
+                    <property name="sticky">nsew</property>
+                </packing>
+            </object>
+        </child>
+        <packing>
+            <property name="row">0</property>
+            <property name="column">0</property>
+            <property name="sticky">nsew</property>
+            <columns>
+                <column id="0">
+                    <property name="weight">1</property>
+                </column>
+            </columns>
+            <rows>
+                <row id="1">
+                    <property name="weight">1</property>
+                </row>
+            </rows>
+        </packing>
+    </object>
+</interface>
