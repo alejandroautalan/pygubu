@@ -233,6 +233,93 @@ class TKPanedWindowPane(PanedWindowPane):
 
 register('tk.PanedWindow.Pane', TKPanedWindowPane)
 
+
+class TKMenubutton(BuilderObject):
+    class_ = tkinter.Menubutton
+    container = True
+    properties = ['activebackground', 'activeforeground', 'anchor',
+        'background', 'bitmap', 'borderwidth', 'compound', 'cursor',
+        'direction', 'disabledforeground', 'foreground', 'font',
+        'height', 'highlightbackground', 'highlightcolor',
+        'highlightthickness', 'image', 'justify', 'padx',
+        'pady', 'relief', 'state', 'takefocus', 'text', 'textvariable',
+        'underline', 'width', 'wraplength']
+
+    def add_child(self, cwidget):
+        self.widget['menu'] = cwidget
+
+register('tk.Menubutton', TKMenubutton)
+
+
+class TKMessage(BuilderObject):
+    class_ = tkinter.Message
+    container = False
+    properties = ['aspect', 'background', 'borderwidth', 'cursor',
+        'font', 'foreground', 'highlightbackground', 'highlightcolor',
+        'highlightthickness', 'justify', 'padx', 'pady', 'relief',
+        'takefocus', 'text', 'textvariable', 'width']
+
+register('tk.Message', TKMessage)
+
+
+class TKRadiobutton(BuilderObject):
+    class_ = tkinter.Radiobutton
+    container = False
+    properties = ['activebackground', 'activeforeground', 'anchor',
+        'background', 'bitmap', 'borderwidth', 'command', 'compound',
+        'cursor', 'disabledforeground', 'font', 'foreground', 'height',
+        'highlightbackground', 'highlightcolor', 'highlightthickness',
+        'image', 'indicatoron', 'justify', 'offrelief', 'overrelief',
+        'padx', 'pady', 'relief', 'selectcolor', 'selectimage', 'state',
+        'takefocus', 'text', 'textvariable',
+        'underline', 'variable', 'width', 'wraplength']
+
+register('tk.Radiobutton', TKRadiobutton)
+
+
+class TKScale(BuilderObject):
+    class_ = tkinter.Scale
+    container = False
+    properties = ['activebackground', 'background', 'borderwidth', 'command',
+        'cursor', 'digits', 'font', 'foreground', 'from_',
+        'highlightbackground', 'highlightcolor', 'highlightthickness',
+        'label', 'lenght', 'orient', 'relief', 'repeatdelay', 'repeatinterval',
+        'resolution', 'showvalue', 'sliderlenght', 'sliderrelief', 'state',
+        'takefocus', 'tickinterval', 'to', 'troughcolor', 'variable', 'width']
+
+register('tk.Scale', TKScale)
+
+
+class TKScrollbar(BuilderObject):
+    class_ = tkinter.Scrollbar
+    container = False
+    properties = ['activebackground', 'activerelief', 'background',
+        'borderwidth', 'command', 'cursor', 'elementborderwidth',
+        'highlightbackground', 'highlightcolor', 'highlightthickness',
+        'jump', 'orient', 'relief', 'repeatdelay', 'repeatinterval',
+        'takefocus', 'troughcolor', 'width']
+
+register('tk.Scrollbar', TKScrollbar)
+
+
+class TKSpinbox(BuilderObject):
+    class_ = tkinter.Entry
+    container = False
+    properties = ['activebackground', 'background', 'borderwidth',
+        'buttonbackground', 'buttoncursor', 'buttondownrelief', 'buttonup',
+        'command', 'cursor', 'disabledbackground', 'disabledforeground',
+        'exportselection', 'font', 'foreground', 'format', 'from_',
+        'highlightbackground', 'highlightcolor', 'highlightthickness',
+        'increment', 'insertbackground', 'insertborderwidth',
+        'insertofftime', 'insertontime', 'insertwidth', 'justify',
+        'readonlybackground', 'relief', 'repeatdelay', 'repeatinterval',
+        'selectbackground', 'selectborderwidth', 'selectforeground', 'state',
+        'takefocus', 'textvariable', 'to', 'values', 'width', 'wrap',
+        'xscrollcommand']
+
+register('tk.Spinbox', TKSpinbox)
+
+
 #
 # ttk widgets
 #
@@ -346,24 +433,6 @@ class TTKScale(BuilderObject):
 register('ttk.Scale', TTKScale)
 
 
-class TKSpinbox(BuilderObject):
-    class_ = tkinter.Spinbox
-    container = False
-    properties = ['activebackground', 'background', 'borderwidth',
-            'buttoncursor', 'buttondownrelief', 'buttonup', 'command',
-            'cursor', 'disabledbackground', 'disabledforeground',
-            'exportselection', 'font', 'foreground', 'format',
-            'from_', 'highlightbackground', 'highlightcolor',
-            'highlightthickness', 'increment', 'insertbackground',
-            'insertborderwidth', 'insertofftime', 'insertontime',
-            'insertwidth', 'justify', 'readonlybackground', 'relief',
-            'repeatdelay', 'repeatinterval', 'selectbackground',
-            'selectborderwidth', 'selectforeground', 'state', 'takefocus',
-            'textvariable', 'to', 'values', 'width', 'wrap', 'xscrollcommand']
-
-register('tk.Spinbox', TKSpinbox)
-
-
 class TTKSeparator(BuilderObject):
     class_ = ttk.Separator
     container = False
@@ -432,7 +501,7 @@ register('ttk.Notebook.Tab', TTKNotebookTab)
 
 class TTKMenubutton(BuilderObject):
     class_ = ttk.Menubutton
-    container = False
+    container = True
     properties = ['class_', 'compound', 'cursor', 'direction',
             'image', 'style', 'takefocus', 'text', 'textvariable',
             'underline', 'width']

@@ -82,6 +82,10 @@ TK_WIDGET_PROPS = {
                 tkinter.LEFT, tkinter.RIGHT),
             'tk.Checkbutton': ('', tkinter.TOP, tkinter.BOTTOM,
                 tkinter.LEFT, tkinter.RIGHT),
+            'tk.Radiobutton': ('', tkinter.NONE, tkinter.TOP, tkinter.BOTTOM,
+                tkinter.LEFT, tkinter.RIGHT),
+            'tk.Menubutton': ('', tkinter.NONE, tkinter.TOP, tkinter.BOTTOM,
+                tkinter.LEFT, tkinter.RIGHT),
             'ttk.Label': ('', tkinter.BOTTOM, 'image', tkinter.LEFT, 'none',
                 tkinter.RIGHT, 'text', tkinter.TOP),
             'ttk.Button': ('', tkinter.TOP, tkinter.BOTTOM,
@@ -91,7 +95,9 @@ TK_WIDGET_PROPS = {
                 tkinter.LEFT, tkinter.RIGHT),
             'ttk.Notebook.Tab':
                 ('', tkinter.TOP, tkinter.BOTTOM,
-                tkinter.LEFT, tkinter.RIGHT)
+                tkinter.LEFT, tkinter.RIGHT),
+            'ttk.Menubutton': ('', tkinter.TOP, tkinter.BOTTOM,
+                tkinter.LEFT, tkinter.RIGHT),
             }
         },
     'cursor': {
@@ -120,7 +126,11 @@ TK_WIDGET_PROPS = {
         },
     'direction': {
         'input_method': 'choice',
-        'values': ('', 'above', 'below', 'flush', 'left', 'right')
+        'values': {
+            'tk.Menubutton': ('', tkinter.LEFT, tkinter.RIGHT, 'above'),
+            'ttk.Menubutton': ('', 'above', 'below', 'flush', tkinter.LEFT,
+                tkinter.RIGHT),
+            }
         },
     'disabledforeground': _default_entry_prop, #FIXME color prop
     'exportselection': {
