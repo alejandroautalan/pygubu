@@ -188,8 +188,8 @@ TK_WIDGET_PROPS = {
     'state': {
         'input_method': 'choice',
         'values': {
-            'tk.Entry': ('', tkinter.NORMAL,
-                tkinter.DISABLED, 'disabled'),
+            'tk.Label': ('', tkinter.NORMAL, tkinter.DISABLED),
+            'tk.Entry': ('', tkinter.NORMAL, tkinter.DISABLED),
             'tk.Combobox': ('', 'readonly'),
             'tk.Listbox': ('', tkinter.NORMAL,
                 tkinter.DISABLED),
@@ -223,14 +223,20 @@ TK_WIDGET_PROPS = {
 TK_GRID_PROPS = {
 #grid packing properties
     'column': _default_spinbox_prop,
-    'columnspan': _default_spinbox_prop,
+    'columnspan': {
+        'input_method': 'spinbox',
+        'min': 1,
+        'max': 999 },
     'in_': _default_entry_prop,
     'ipadx': _default_spinbox_prop,
     'ipady': _default_spinbox_prop,
     'padx': _default_spinbox_prop,
     'pady': _default_spinbox_prop,
     'row': _default_spinbox_prop,
-    'rowspan': _default_spinbox_prop,
+    'rowspan': {
+        'input_method': 'spinbox',
+        'min': 1,
+        'max': 999 },
     'sticky': _sticky_prop
 }
 
