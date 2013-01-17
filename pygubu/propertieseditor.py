@@ -141,6 +141,8 @@ class WidgetPropertiesEditor:
         wtype = wdata.get('input_method', None)
         default = wdata.get('default', '')
 
+        #I don't have class name at this moment
+        #so setup class specific values on update_property_widget
         if wtype == 'entry':
             readonly = wdata.get('readonly', False)
             state = tkinter.DISABLED if readonly else tkinter.NORMAL
@@ -150,12 +152,7 @@ class WidgetPropertiesEditor:
                 state='readonly')
             values = wdata.get('values', None)
             if values is not None:
-                if isinstance(values, dict):
-                    #I don't have class name at this moment
-                    #setup on update_property_widget
-                    pass
-                else:
-                    widget.configure(values=values)
+                widget.configure(values=values)
         elif wtype == 'spinbox':
             widget = tkinter.Spinbox(master, textvariable=widgetvar)
             vmin = wdata.get('min', 0)
@@ -188,6 +185,11 @@ class WidgetPropertiesEditor:
             wdata = properties.PropertiesMap[group][propertyname]
 
         wtype = wdata.get('input_method', '')
+
+        #merge description for specific class
+        if classname in wdata:
+            wdata = dict(wdata, **wdata[classname])
+
         default = wdata.get('default', '')
         if wtype == 'spinbox':
             vmin = wdata.get('min', 0)
@@ -196,12 +198,7 @@ class WidgetPropertiesEditor:
         if wtype == 'choice':
             values = wdata.get('values', None)
             if values is not None:
-                if isinstance(values, dict):
-                    values = values.get(classname, None)
-                    if values:
-                        widget.configure(values=values)
-                else:
-                    widget.configure(values=values)
+                widget.configure(values=values)
 
         variable = self.arrayvar.get_property_variable(group, propertyname)
 

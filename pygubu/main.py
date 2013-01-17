@@ -26,12 +26,16 @@ from tkinter import ttk
 from tkinter import filedialog
 
 import pygubu
-from pygubu import util
-from pygubu import builder
-#from pygubu import properties
-from pygubu.propertieseditor import WidgetPropertiesEditor
-from pygubu.widgeteditor import WidgetsTreeEditor
+from . import util
+from . import builder
+from . import properties
+from .propertieseditor import WidgetPropertiesEditor
+from .widgeteditor import WidgetsTreeEditor
 
+
+#Initilize properties from custom widgets
+for pname, descr in builder.CUSTOM_PROPERTIES.items():
+    properties.register_custom(pname, descr)
 
 
 class PreviewHelper:

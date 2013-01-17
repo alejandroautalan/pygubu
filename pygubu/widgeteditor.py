@@ -200,7 +200,16 @@ class WidgetsTreeEditor:
 
         #setup properties
         for pname in builder.CLASS_MAP[wclass].properties:
-            data[pname] = ''
+            pdescription = {}
+            pgroup = properties.GROUP_WIDGET
+            if pname in properties.PropertiesMap[pgroup]:
+                pdescription = properties.PropertiesMap[pgroup][pname]
+            else:
+                pgroup = properties.GROUP_CUSTOM
+                pdescription = properties.PropertiesMap[pgroup][pname]
+            if wclass in pdescription:
+                pdescription = dict(pdescription, **pdescription[wclass])
+            data[pname] = str(pdescription.get('default', ''))
             #default text for widgets with text prop:
             if pname == 'text':
                 data[pname] = widget_id

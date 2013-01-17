@@ -27,9 +27,14 @@ logger = logging.getLogger('pygubu.builder')
 
 CLASS_MAP = {}
 
-
 def register(classname, classobj):
     CLASS_MAP[classname] = classobj
+
+CUSTOM_PROPERTIES = {}
+
+def register_property(name, description):
+    CUSTOM_PROPERTIES[name] = description
+
 
 #
 # Base class
@@ -283,7 +288,7 @@ class TKScale(BuilderObject):
     properties = ['activebackground', 'background', 'borderwidth', 'command',
         'cursor', 'digits', 'font', 'foreground', 'from_',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'label', 'lenght', 'orient', 'relief', 'repeatdelay', 'repeatinterval',
+        'label', 'length', 'orient', 'relief', 'repeatdelay', 'repeatinterval',
         'resolution', 'showvalue', 'sliderlenght', 'sliderrelief', 'state',
         'takefocus', 'tickinterval', 'to', 'troughcolor', 'variable', 'width']
 
@@ -340,7 +345,7 @@ class TTKLabel(BuilderObject):
             'class_', 'compound', 'cursor', 'font', 'foreground',
             'image', 'justify', 'padding', 'relief',
             'style', 'takefocus', 'text', 'textvariable', 'underline',
-            'width', 'wraphlength']
+            'width', 'wraplength']
 
 register('ttk.Label', TTKLabel)
 
@@ -441,7 +446,7 @@ class TTKSeparator(BuilderObject):
 register('ttk.Separator', TTKSeparator)
 
 
-class TTKLabelframe:
+class TTKLabelframe(BuilderObject):
     class_ = ttk.Labelframe
     container = True
     properties = ['borderwidth', 'class_', 'cursor', 'height',
@@ -673,6 +678,14 @@ class ScrollbarHelper(BuilderObject):
         if scrolltype in (self.BOTH, self.HORIZONTAL):
             self.widget.hsb.configure(command=cwidget.xview)
             cwidget.configure(xscrollcommand=lambda f, l: _autoscroll(self.widget.hsb, f, l))
+
+__scrolltype_property = {
+    'input_method': 'choice',
+    'values': (ScrollbarHelper.BOTH, ScrollbarHelper.VERTICAL,
+        ScrollbarHelper.HORIZONTAL),
+    'default': ScrollbarHelper.BOTH }
+
+register_property('scrolltype', __scrolltype_property)
 
 
 class TKScrollbarHelper(ScrollbarHelper):
