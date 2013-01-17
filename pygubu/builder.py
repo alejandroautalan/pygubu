@@ -702,7 +702,7 @@ class TTKScrollbarHelper(ScrollbarHelper):
 register('ttk.ScrollbarHelper', TTKScrollbarHelper)
 
 
-class VScrolledFrame(BuilderObject):
+class ScrolledFrame(BuilderObject):
     class_ = None
     scrollbar_class = None
     container = True
@@ -715,17 +715,23 @@ class VScrolledFrame(BuilderObject):
         self.canvas = canvas = tkinter.Canvas(self.widget, bd=0, highlightthickness=0)
         self.innerframe = innerframe = self.class_(self.canvas)
         self.vsb = vsb = self.scrollbar_class(self.widget)
+        self.hsb = hsb = self.scrollbar_class(self.widget, orient="horizontal")
         self.widget.innerframe = innerframe
         self.widget.vsb = vsb
+        self.widget.hsb = hsb
 
         #configure scroll
         self.canvas.configure(
             yscrollcommand=lambda f, l: _autoscroll(vsb, f, l))
+        self.canvas.configure(
+            xscrollcommand=lambda f, l: _autoscroll(hsb, f, l))
         self.vsb.config(command=canvas.yview)
+        self.hsb.config(command=canvas.xview)
 
         #grid
         self.canvas.grid(row=0, column=0, sticky=tkinter.NSEW)
         self.vsb.grid(row=0, column=1, sticky=tkinter.NS)
+        self.hsb.grid(row=1, column=0, sticky=tkinter.EW)
         self.widget.rowconfigure(0, weight=1)
         self.widget.columnconfigure(0, weight=1)
 
@@ -746,9 +752,13 @@ class VScrolledFrame(BuilderObject):
         innerframe.bind('<Configure>', _configure_innerframe)
 
         def _configure_canvas(event):
-            if innerframe.winfo_reqwidth() != canvas.winfo_width():
+            if innerframe.winfo_reqwidth() < canvas.winfo_width():
                 # update the inner frame's width to fill the canvas
-                canvas.itemconfigure(innerframe_id, width=canvas.winfo_width())
+                canvas.itemconfigure(innerframe_id, width=canvas.winfo_width(),
+                    height= canvas.winfo_height())
+            if innerframe.winfo_reqheight() < canvas.winfo_height():
+                canvas.itemconfigure(
+                    innerframe_id, height= canvas.winfo_height())
 
         canvas.bind('<Configure>', _configure_canvas)
 
@@ -765,18 +775,18 @@ class VScrolledFrame(BuilderObject):
         return self.innerframe
 
 
-class TKVScrolledFrame(VScrolledFrame):
+class TKScrolledFrame(ScrolledFrame):
     class_ = tkinter.Frame
     scrollbar_class = tkinter.Scrollbar
 
-register('tk.VScrolledFrame', TKVScrolledFrame)
+register('tk.ScrolledFrame', TKScrolledFrame)
 
 
-class TTKVScrolledFrame(VScrolledFrame):
+class TTKScrolledFrame(ScrolledFrame):
     class_ = ttk.Frame
     scrollbar_class = ttk.Scrollbar
 
-register('ttk.VScrolledFrame', TKVScrolledFrame)
+register('ttk.ScrolledFrame', TTKScrolledFrame)
 
 
 #

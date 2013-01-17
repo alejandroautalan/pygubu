@@ -168,7 +168,7 @@
                                                                 <property name="text">General</property>
                                                                 <property name="sticky">nsew</property>
                                                                 <child>
-                                                                    <object class="ttk.VScrolledFrame" id="vsframe">
+                                                                    <object class="ttk.ScrolledFrame" id="vsframe">
                                                                         <child>
                                                                             <object class="ttk.Frame" id="propertiesframe">
                                                                                 <packing>

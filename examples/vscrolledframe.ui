@@ -11,7 +11,7 @@
             </object>
         </child>
         <child>
-            <object class="ttk.VScrolledFrame" id="vsf1">
+            <object class="ttk.ScrolledFrame" id="vsf1">
                 <child>
                     <object class="ttk.Button" id="button1">
                         <property name="text">a button</property>
