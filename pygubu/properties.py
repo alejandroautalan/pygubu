@@ -15,6 +15,7 @@
 #
 # For further info, check  http://pygubu.web.here
 
+from collections import OrderedDict
 import tkinter
 from tkinter import ttk
 
@@ -54,29 +55,38 @@ _sticky_prop = {
             )
         }
 
+GROUP_WIDGET = 'widget__'
+GROUP_LAYOUT_GRID = 'layoutgrid__'
+GROUP_LAYOUT_GRID_RC = 'layoutgridrc__'
+GROUP_CUSTOM = 'custom__'
 
-TK_WIDGET_PROPS = {
-    'activestyle': {
+GROUPS = (GROUP_WIDGET, GROUP_LAYOUT_GRID, GROUP_LAYOUT_GRID_RC, GROUP_CUSTOM)
+
+
+PropertiesMap = {}
+
+__widget = (
+    ('activestyle', {
         'input_method': 'choice',
         'values': ('', 'underline', 'dotbox', 'none')
-        },
-    'activebackground': _default_entry_prop, #FIXME color property
-    'activeborderwidth': _default_spinbox_prop,
-    'activeforeground': _default_entry_prop, #FIXME color property
-    'anchor': {
+        }),
+    ('activebackground', _default_entry_prop), #FIXME color property
+    ('activeborderwidth', _default_spinbox_prop),
+    ('activeforeground', _default_entry_prop), #FIXME color property
+    ('anchor', {
         'input_method': 'choice',
         'values': ('', tkinter.W, tkinter.CENTER, tkinter.E),
-        },
-    'bitmap': {
+        }),
+    ('bitmap', {
         'input_method': 'choice',
         'values': ('', 'error', 'gray75', 'gray50', 'gray25', 'gray12',
             'hourglass', 'info', 'questhead', 'question', 'warning')
-        },
-    'background': _default_entry_prop,
-    'borderwidth': _dimension_prop,
-    'class_': _default_entry_prop,
-    'command': _default_entry_prop,
-    'compound': {
+        }),
+    ('background', _default_entry_prop),
+    ('borderwidth', _dimension_prop),
+    ('class_', _default_entry_prop),
+    ('command', _default_entry_prop),
+    ('compound', {
         'input_method': 'choice',
         'values': {
             'tk.Button': ('', tkinter.TOP, tkinter.BOTTOM,
@@ -100,8 +110,8 @@ TK_WIDGET_PROPS = {
             'ttk.Menubutton': ('', tkinter.TOP, tkinter.BOTTOM,
                 tkinter.LEFT, tkinter.RIGHT),
             }
-        },
-    'cursor': {
+        }),
+    ('cursor', {
         'input_method': 'choice',
         'values': ('', 'arrow', 'based_arrow_down', 'based_arrow_up', 'boat',
             'bogosity', 'bottom_left_corner', 'bottom_right_corner',
@@ -120,73 +130,76 @@ TK_WIDGET_PROPS = {
             'top_left_corner', 'top_right_corner', 'top_side', 'top_tee',
             'trek', 'ul_angle', 'umbrella', 'ur_angle', 'watch', 'xterm',
             'X_cursor')
-        },
-    'default': {
+        }),
+    ('default', {
         'input_method': 'choice',
         'values': (tkinter.NORMAL, tkinter.DISABLED)
-        },
-    'direction': {
+        }),
+    ('direction', {
         'input_method': 'choice',
         'values': {
             'tk.Menubutton': ('', tkinter.LEFT, tkinter.RIGHT, 'above'),
             'ttk.Menubutton': ('', 'above', 'below', 'flush', tkinter.LEFT,
                 tkinter.RIGHT),
             }
-        },
-    'disabledforeground': _default_entry_prop, #FIXME color prop
-    'exportselection': {
+        }),
+    ('disabledforeground', _default_entry_prop), #FIXME color prop
+    ('exportselection', {
         'input_method': 'choice',
         'values': ('', '0', '1')
-        },
-    'font': _default_entry_prop,
-    'foreground': _default_entry_prop, #FIXME color prop
-    'height': _dimension_prop, #FIXME this prop has diferent interpretations
-    'highlightbackground': _default_entry_prop, #FIXME color prop
-    'highlightcolor': _default_entry_prop, #FIXME color prop
-    'highlightthickness': _default_entry_prop,
-    'indicatoron': {
+        }),
+    ('font', _default_entry_prop),
+    ('foreground', _default_entry_prop), #FIXME color prop
+    ('height', _dimension_prop), #FIXME this prop has diferent interpretations
+    ('highlightbackground', _default_entry_prop), #FIXME color prop
+    ('highlightcolor', _default_entry_prop), #FIXME color prop
+    ('highlightthickness', _default_entry_prop),
+    ('indicatoron', {
         'input_method': 'choice',
         'values': ('', '0', '1')
-        },
-    'invalidcommand': _default_entry_prop,
-    'image': _default_entry_prop, #FIXME image property
-    'justify': {
+        }),
+    ('invalidcommand', _default_entry_prop),
+    ('image', _default_entry_prop), #FIXME image property
+    ('justify', {
         'input_method': 'choice',
         'values': ('', tkinter.LEFT, tkinter.CENTER,
             tkinter.RIGHT),
-        },
-    'labelanchor': {
+        }),
+    ('labelanchor', {
         'input_method': 'choice',
         'values': ('', tkinter.NW, tkinter.N, tkinter.NE,
             tkinter.E + tkinter.N, tkinter.E, tkinter.E + tkinter.S,
             tkinter.W + tkinter.N, tkinter.W, tkinter.W + tkinter.S,
             tkinter.SW, tkinter.S, tkinter.SE)
-        },
-    'listvariable': _default_entry_prop,
-    'offrelief': _relief_prop,
-    'onvalue': _default_entry_prop,
-    'orient': {
+        }),
+    ('listvariable', _default_entry_prop),
+    ('offrelief', _relief_prop),
+    ('onvalue', _default_entry_prop),
+    ('orient', {
         'input_method': 'choice',
         'values': (tkinter.VERTICAL, tkinter.HORIZONTAL)
-        },
-    'overrelief': _relief_prop,
-    'padding': _dimension_prop,
-    'postcommand': _default_entry_prop,
-    'relief': _relief_prop,
-    'repeatdelay': _default_spinbox_prop,
-    'repeatinterval': _default_spinbox_prop,
-    'selectcolor': _default_entry_prop, #FIXME color prop
-    'selectbackground': _default_entry_prop, #FIXME color prop
-    'selectborderwidth': _default_spinbox_prop,
-    'selectforeground': _default_entry_prop, #FIXME color prop
-    'selectimage': _default_entry_prop, #FIXME image property
-    'selectmode': {
+        }),
+    ('overrelief', _relief_prop),
+    ('padding', _dimension_prop),
+    ('padx', _default_spinbox_prop),
+    ('pady', _default_spinbox_prop),
+    ('postcommand', _default_entry_prop),
+    ('relief', _relief_prop),
+    ('repeatdelay', _default_spinbox_prop),
+    ('repeatinterval', _default_spinbox_prop),
+    ('scrollregion', _default_entry_prop),
+    ('selectcolor', _default_entry_prop), #FIXME color prop
+    ('selectbackground', _default_entry_prop), #FIXME color prop
+    ('selectborderwidth', _default_spinbox_prop),
+    ('selectforeground', _default_entry_prop), #FIXME color prop
+    ('selectimage', _default_entry_prop), #FIXME image property
+    ('selectmode', {
         'input_method': 'choice',
         'values': ('', tkinter.BROWSE, tkinter.SINGLE,
             tkinter.MULTIPLE, tkinter.EXTENDED)
-        },
-    'show': _default_entry_prop,
-    'state': {
+        }),
+    ('show', _default_entry_prop),
+    ('state', {
         'input_method': 'choice',
         'values': {
             'tk.Label': ('', tkinter.NORMAL, tkinter.DISABLED),
@@ -200,50 +213,75 @@ TK_WIDGET_PROPS = {
                 tkinter.DISABLED, 'disabled'),
             'ttk.Combobox': ('', 'readonly'),
             }
-        },
-    'sticky': _sticky_prop,
-    'style': _default_entry_prop,
-    'tearoff': _default_entry_prop,
-    'takefocus': {
+        }),
+    ('sticky', _sticky_prop),
+    ('style', _default_entry_prop),
+    ('tearoff', _default_entry_prop),
+    ('takefocus', {
         'input_method': 'choice',
         'values': ('', tkinter.TRUE, tkinter.FALSE),
-        },
-    'text': _default_entry_prop,
-    'textvariable': _default_entry_prop,
-    'underline': _default_spinbox_prop,
-    'validate': _default_entry_prop,
-    'validatecommand': _default_entry_prop,
-    'value': _default_entry_prop,
-    'values': _default_entry_prop, #FIXME This should be treated as a list?
-    'width': _dimension_prop, #FIXME width is not a dimension for Entry
-    'wraphlength':_dimension_prop,
-    'xscrollcommand': _default_entry_prop,
-    'yscrollcommand': _default_entry_prop,
-}
+        }),
+    ('text', _default_entry_prop),
+    ('textvariable', _default_entry_prop),
+    ('underline', _default_spinbox_prop),
+    ('validate', _default_entry_prop),
+    ('validatecommand', _default_entry_prop),
+    ('value', _default_entry_prop),
+    ('values', _default_entry_prop), #FIXME This should be treated as a list?
+    ('width', _dimension_prop), #FIXME width is not a dimension for Entry
+    ('wraphlength', _dimension_prop),
+    ('xscrollcommand', _default_entry_prop),
+    ('yscrollcommand', _default_entry_prop),
+)
+PropertiesMap[GROUP_WIDGET] = OrderedDict(__widget)
 
-TK_GRID_PROPS = {
+__grid = (
 #grid packing properties
-    'column': _default_spinbox_prop,
-    'columnspan': {
+    ('row', _default_spinbox_prop),
+    ('column', _default_spinbox_prop),
+    ('sticky', _sticky_prop),
+    ('rowspan', {
         'input_method': 'spinbox',
         'min': 1,
-        'max': 999 },
-#    'in_': _default_entry_prop,
-    'ipadx': _default_spinbox_prop,
-    'ipady': _default_spinbox_prop,
-    'padx': _default_spinbox_prop,
-    'pady': _default_spinbox_prop,
-    'row': _default_spinbox_prop,
-    'rowspan': {
+        'max': 999 }),
+    ('columnspan', {
         'input_method': 'spinbox',
         'min': 1,
-        'max': 999 },
-    'sticky': _sticky_prop
-}
+        'max': 999 }),
+    ('padx', _default_spinbox_prop),
+    ('pady', _default_spinbox_prop),
+    ('ipadx', _default_spinbox_prop),
+    ('ipady', _default_spinbox_prop),
+)
 
-TK_GRID_RC_PROPS = {
-#grid row and column properties (can be applied to each row or column)
-    'minsize': _default_spinbox_prop,
-    'pad': _default_spinbox_prop,
-    'weight': _default_spinbox_prop
-}
+PropertiesMap[GROUP_LAYOUT_GRID] = OrderedDict(__grid)
+
+__grid_rc = (
+    #grid row and column properties (can be applied to each row or column)
+    ('minsize', _default_spinbox_prop),
+    ('pad', _default_spinbox_prop),
+    ('weight', _default_spinbox_prop)
+)
+
+PropertiesMap[GROUP_LAYOUT_GRID_RC] = OrderedDict(__grid_rc)
+
+__custom = (
+    ('class', {
+        'input_method': 'entry',
+        'readonly': True
+        }),
+    ('id', {'input_method': 'entry'}),
+)
+
+PropertiesMap[GROUP_CUSTOM] = OrderedDict(__custom)
+
+def register_custom(name, descr):
+    if name not in PropertiesMap[GROUP_CUSTOM]:
+        PropertiesMap[GROUP_CUSTOM][name] = descr
+    else:
+        raise ValueError('Property "{}" already registered'.format(name))
+
+
+OBJECT_DEFAULT_ATTRS = ('class', 'id')
+
+

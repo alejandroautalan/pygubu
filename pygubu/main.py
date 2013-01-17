@@ -28,7 +28,7 @@ from tkinter import filedialog
 import pygubu
 from pygubu import util
 from pygubu import builder
-from pygubu import tkproperties
+#from pygubu import properties
 from pygubu.propertieseditor import WidgetPropertiesEditor
 from pygubu.widgeteditor import WidgetsTreeEditor
 

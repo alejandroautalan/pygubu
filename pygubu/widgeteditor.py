@@ -19,9 +19,9 @@ import xml.dom.minidom
 import xml.etree.ElementTree as ET
 from collections import Counter
 
-from pygubu import builder
-from pygubu import util
-from pygubu.propertieseditor import WIDGET_GRID_PROPS, WIDGET_ATTRS
+from . import builder
+from . import util
+from . import properties
 
 
 class WidgetsTreeEditor:
@@ -115,7 +115,7 @@ class WidgetsTreeEditor:
         values = self.treedata[item]
         node = ET.Element('object')
 
-        for prop in WIDGET_ATTRS:
+        for prop in properties.OBJECT_DEFAULT_ATTRS:
             node.set(prop, values[prop])
 
         wclass_props = builder.CLASS_MAP[values['class']].properties
@@ -138,7 +138,7 @@ class WidgetsTreeEditor:
         pvalues = values['packing']
         packing_node = ET.Element('packing')
         has_packing = False
-        for prop in WIDGET_GRID_PROPS:
+        for prop in properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]:
             pv = pvalues.get(prop, None)
             if pv:
                 has_packing = True
@@ -208,7 +208,7 @@ class WidgetsTreeEditor:
         #default grid properties
         group = 'packing'
         data[group] = {}
-        for prop_name in WIDGET_GRID_PROPS:
+        for prop_name in properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]:
             data[group][prop_name] = ''
 
         rownum = str(len(tree.get_children(root)) - 1)

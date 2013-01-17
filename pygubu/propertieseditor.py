@@ -18,64 +18,32 @@
 import tkinter
 from tkinter import ttk
 
-import pygubu
-from pygubu import util
-from pygubu import builder
-from pygubu import tkproperties
+from . import util
+from . import builder
+from . import properties
 
 
 CLASS_MAP = builder.CLASS_MAP
 
-WIDGET_ATTRS = (
-    'class', 'id',
-)
-
-WIDGET_ATTRS_DESCR = {
-    'class': {
-        'input_method': 'entry',
-        'readonly': True
-    },
-    'id': {'input_method': 'entry'}
-}
-
-wprops = set()
-for c in CLASS_MAP:
-    wprops.update(CLASS_MAP[c].properties)
-
-WIDGET_PROPS = list(wprops)
-WIDGET_PROPS.sort()
-WIDGET_PROPS = tuple(WIDGET_PROPS)
-
-WIDGET_GRID_PROPS = (
-    #packing
-    'row', 'column', 'rowspan', 'columnspan', 'padx', 'pady',
-    'ipadx', 'ipady', 'sticky'  #removed property: 'in_'
-)
-
-WIDGET_ATTRS_PLUS_WIDGET_PROPS = tuple(set(WIDGET_ATTRS + WIDGET_PROPS))
-
 
 class PropertiesArray(util.ArrayVar):
-    WIDGET_PROP = 'VWP'
-    PACKING_PROP = 'VPP'
 
     def __init__(self, master=None, value=None, name=None):
         super(util.ArrayVar, self).__init__(master, value, name)
         self._callback = None
         self._cbhandler = None
 
-    def get_widget_prop(self, name):
-        return self.__call__(self.WIDGET_PROP + name)
-
-    def get_packing_prop(self, name):
-        return self.__call__(self.PACKING_PROP + name)
+    def get_property_variable(self, group, name):
+        if group not in properties.GROUPS:
+            raise ValueError('Invalid group value')
+        return self.__call__(group + name)
 
     def identify_property(self, element):
         result = (None, None)
-        if element.startswith(self.WIDGET_PROP):
-            result = (self.WIDGET_PROP, element.replace(self.WIDGET_PROP, ''))
-        elif element.startswith(self.PACKING_PROP):
-            result = (self.PACKING_PROP, element.replace(self.PACKING_PROP, ''))
+        for groupname in properties.GROUPS:
+            if element.startswith(groupname):
+                result = (groupname, element.replace(groupname, ''))
+                break
         return result
 
     def set_callback(self, callback):
@@ -92,8 +60,6 @@ class PropertiesArray(util.ArrayVar):
 
 
 class WidgetPropertiesEditor:
-    WIDGET_GROUP = 'widget'
-    PACKING_GROUP = 'packing'
 
     def __init__(self, app):
         self.app = app
@@ -102,8 +68,9 @@ class WidgetPropertiesEditor:
         self.packingframe = app.packing_props_frame
         self.arrayvar = PropertiesArray()
         self.prop_widget = {
-            self.WIDGET_GROUP: {},
-            self.PACKING_GROUP: {}
+            properties.GROUP_WIDGET: {},
+            properties.GROUP_LAYOUT_GRID: {},
+            properties.GROUP_CUSTOM: {}
         }
         self.create_properties()
         self.arrayvar.set_callback(self.on_array_variable_changed)
@@ -119,61 +86,51 @@ class WidgetPropertiesEditor:
         row=0
         col=0
         label_tpl = "{0}:"
-        for name in WIDGET_ATTRS:
+        for name in properties.PropertiesMap[properties.GROUP_CUSTOM]:
             labeltext = label_tpl.format(name)
             label = ttk.Label(editor_frame, text=labeltext, anchor=tkinter.W)
-            widget = self.create_widget_property_widget(editor_frame, name)
+            widget = self.create_property_widget(editor_frame,
+                properties.GROUP_CUSTOM, name)
             label.grid(row=row, column=col, sticky=tkinter.EW)
             widget.grid(row=row, column=col+1, sticky=tkinter.EW)
             row += 1
-            prop_widget[self.WIDGET_GROUP][name] = (label, widget)
+            prop_widget[properties.GROUP_CUSTOM][name] = (label, widget)
 
-        for name in WIDGET_PROPS:
+        for name in properties.PropertiesMap[properties.GROUP_WIDGET]:
             labeltext = label_tpl.format(name)
             label = ttk.Label(editor_frame, text=labeltext, anchor=tkinter.W)
-            widget = self.create_widget_property_widget(editor_frame, name)
+            widget = self.create_property_widget(editor_frame,
+                properties.GROUP_WIDGET, name)
             label.grid(row=row, column=col, sticky=tkinter.EW)
             widget.grid(row=row, column=col+1, sticky=tkinter.EW)
             row += 1
-            prop_widget[self.WIDGET_GROUP][name] = (label, widget)
+            prop_widget[properties.GROUP_WIDGET][name] = (label, widget)
 
         editor_frame = self.packingframe
 
-        for name in WIDGET_GRID_PROPS:
+        for name in properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]:
             labeltext = label_tpl.format(name)
             label = ttk.Label(editor_frame, text=labeltext, anchor=tkinter.W)
-            widget = self.create_packing_property_widget(editor_frame, name)
+            widget = self.create_property_widget(editor_frame,
+                properties.GROUP_LAYOUT_GRID, name)
             label.grid(row=row, column=col, sticky=tkinter.EW)
             widget.grid(row=row, column=col+1, sticky=tkinter.EW)
             row += 1
-            prop_widget[self.PACKING_GROUP][name] = (label, widget)
+            prop_widget[properties.GROUP_LAYOUT_GRID][name] = (label, widget)
 
         self.hide_all()
 
 
-    def create_widget_property_widget(self, master, propertyname):
+    def create_property_widget(self, master, group, propertyname):
         """Creates a ui widget to edit the property"""
 
-        widgetvar = self.arrayvar.get_widget_prop(propertyname);
+        widgetvar = self.arrayvar.get_property_variable(group, propertyname);
         wdata = {}
 
         widget = None
-        if propertyname in WIDGET_ATTRS:
-            wdata = WIDGET_ATTRS_DESCR[propertyname]
+        if propertyname in properties.PropertiesMap[group]:
+            wdata = properties.PropertiesMap[group][propertyname]
             wtype = wdata['input_method']
-        if propertyname in tkproperties.TK_WIDGET_PROPS:
-            wdata = tkproperties.TK_WIDGET_PROPS[propertyname]
-            wtype = wdata['input_method']
-
-        widget = self.__create_widget(master, wdata, widgetvar)
-        return widget
-
-
-    def create_packing_property_widget(self, master, propertyname):
-        widgetvar = self.arrayvar.get_packing_prop(propertyname);
-        wdata = {}
-        if propertyname in tkproperties.TK_GRID_PROPS:
-            wdata = tkproperties.TK_GRID_PROPS[propertyname]
 
         widget = self.__create_widget(master, wdata, widgetvar)
         return widget
@@ -227,16 +184,8 @@ class WidgetPropertiesEditor:
         """Update widget property value with values from data."""
 
         wdata = {}
-        if group == self.WIDGET_GROUP:
-            if propertyname in tkproperties.TK_WIDGET_PROPS:
-                wdata = tkproperties.TK_WIDGET_PROPS[propertyname]
-            elif propertyname in WIDGET_ATTRS_DESCR:
-                wdata = WIDGET_ATTRS_DESCR[propertyname]
-        elif group == self.PACKING_GROUP:
-            if propertyname in tkproperties.TK_GRID_PROPS:
-                wdata = tkproperties.TK_GRID_PROPS[propertyname]
-            elif propertyname in tkproperties.TK_GRID_RC_PROPS:
-                wdata = tkproperties.TK_GRID_RC_PROPS[propertyname]
+        if propertyname in properties.PropertiesMap[group]:
+            wdata = properties.PropertiesMap[group][propertyname]
 
         wtype = wdata.get('input_method', '')
         default = wdata.get('default', '')
@@ -254,11 +203,8 @@ class WidgetPropertiesEditor:
                 else:
                     widget.configure(values=values)
 
-        variable = None
-        if group == self.WIDGET_GROUP:
-            variable = self.arrayvar.get_widget_prop(propertyname)
-        else:
-            variable = self.arrayvar.get_packing_prop(propertyname)
+        variable = self.arrayvar.get_property_variable(group, propertyname)
+
         if propertyname in data:
             value = data[propertyname]
             if not value:
@@ -274,27 +220,42 @@ class WidgetPropertiesEditor:
         self.arrayvar.disable_cb()
 
         wclass = data['class']
-        wprops = WIDGET_ATTRS + tuple(CLASS_MAP[wclass].properties)
+        class_props = tuple(CLASS_MAP[wclass].properties)
 
-        #for key in data.keys():
-        for key in WIDGET_ATTRS_PLUS_WIDGET_PROPS:
-            if key in wprops:
-                label, widget = self.prop_widget[self.WIDGET_GROUP][key]
-                self.update_property_widget(self.WIDGET_GROUP, widget, key,
-                    wclass, data)
+        group = properties.GROUP_CUSTOM
+        for key in properties.PropertiesMap[group]:
+            if (key in properties.OBJECT_DEFAULT_ATTRS or key in class_props):
+                label, widget = self.prop_widget[group][key]
+                self.update_property_widget(group, widget,
+                    key, wclass, data)
                 label.grid()
                 widget.grid()
             else:
                 #hide property widget
-                label, widget = self.prop_widget[self.WIDGET_GROUP][key]
+                label, widget = self.prop_widget[group][key]
+                label.grid_remove()
+                widget.grid_remove()
+
+        group = properties.GROUP_WIDGET
+        for key in properties.PropertiesMap[group]:
+            if key in class_props:
+                label, widget = self.prop_widget[group][key]
+                self.update_property_widget(group, widget,
+                    key, wclass, data)
+                label.grid()
+                widget.grid()
+            else:
+                #hide property widget
+                label, widget = self.prop_widget[group][key]
                 label.grid_remove()
                 widget.grid_remove()
 
         #packing properties
-        for gkey in WIDGET_GRID_PROPS:
-            label, widget = self.prop_widget[self.PACKING_GROUP][gkey]
+        group = properties.GROUP_LAYOUT_GRID
+        for gkey in properties.PropertiesMap[group]:
+            label, widget = self.prop_widget[group][gkey]
             gdata = data.get('packing', {})
-            self.update_property_widget(self.PACKING_GROUP, widget, gkey,
+            self.update_property_widget(group, widget, gkey,
                     wclass, gdata)
             label.grid()
             widget.grid()
@@ -313,15 +274,14 @@ class WidgetPropertiesEditor:
         sel = tv.selection()
         if sel:
             item = sel[0]
-            if (pgroup == PropertiesArray.WIDGET_PROP
-                and pname in WIDGET_ATTRS_PLUS_WIDGET_PROPS):
+            if (pgroup in (properties.GROUP_WIDGET, properties.GROUP_CUSTOM)):
                 treedata[item][pname] = new_value
                 widget_id = treedata[item]['id']
                 wclass = treedata[item]['class']
                 treenode_label = '{0} - {1}'.format(widget_id,wclass)
                 tv.item(item, text=treenode_label)
-            elif (pgroup == PropertiesArray.PACKING_PROP
-                and pname in WIDGET_GRID_PROPS):
+            elif (pgroup == properties.GROUP_LAYOUT_GRID and pname in
+                    properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]):
                 treedata[item]['packing'][pname] = new_value
             self.app.tree_editor.draw_widget(item)
 
