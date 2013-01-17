@@ -30,6 +30,14 @@ WIDGET_ATTRS = (
     'class', 'id',
 )
 
+WIDGET_ATTRS_DESCR = {
+    'class': {
+        'input_method': 'entry',
+        'readonly': True
+    },
+    'id': {'input_method': 'entry'}
+}
+
 wprops = set()
 for c in CLASS_MAP:
     wprops.update(CLASS_MAP[c].properties)
@@ -41,7 +49,7 @@ WIDGET_PROPS = tuple(WIDGET_PROPS)
 WIDGET_GRID_PROPS = (
     #packing
     'row', 'column', 'rowspan', 'columnspan', 'padx', 'pady',
-    'ipadx', 'ipady', 'sticky', 'in_'
+    'ipadx', 'ipady', 'sticky'  #removed property: 'in_'
 )
 
 WIDGET_ATTRS_PLUS_WIDGET_PROPS = tuple(set(WIDGET_ATTRS + WIDGET_PROPS))
@@ -148,6 +156,11 @@ class WidgetPropertiesEditor:
 
         widgetvar = self.arrayvar.get_widget_prop(propertyname);
         wdata = {}
+
+        widget = None
+        if propertyname in WIDGET_ATTRS:
+            wdata = WIDGET_ATTRS_DESCR[propertyname]
+            wtype = wdata['input_method']
         if propertyname in tkproperties.TK_WIDGET_PROPS:
             wdata = tkproperties.TK_WIDGET_PROPS[propertyname]
             wtype = wdata['input_method']
@@ -169,8 +182,12 @@ class WidgetPropertiesEditor:
     def __create_widget(self, master, wdata, widgetvar):
         widget = None
         wtype = wdata.get('input_method', None)
+        default = wdata.get('default', '')
+
         if wtype == 'entry':
-            widget = ttk.Entry(master, textvariable=widgetvar)
+            readonly = wdata.get('readonly', False)
+            state = tkinter.DISABLED if readonly else tkinter.NORMAL
+            widget = ttk.Entry(master, textvariable=widgetvar, state=state)
         elif wtype == 'choice':
             widget = ttk.Combobox(master, textvariable=widgetvar,
                 state='readonly')
@@ -186,9 +203,12 @@ class WidgetPropertiesEditor:
             widget = tkinter.Spinbox(master, textvariable=widgetvar)
             vmin = wdata.get('min', 0)
             vmax = wdata.get('max', 99)
+            default = vmin if (vmin > 0 and default == '') else default
             widget.configure(from_=vmin, to=vmax)
         else:
             widget = ttk.Entry(master, textvariable=widgetvar)
+        widgetvar.set(default)
+
         return widget
 
 
@@ -206,19 +226,24 @@ class WidgetPropertiesEditor:
         self, group, widget, propertyname, classname, data):
         """Update widget property value with values from data."""
 
-        wtype = ''
+        wdata = {}
         if group == self.WIDGET_GROUP:
             if propertyname in tkproperties.TK_WIDGET_PROPS:
                 wdata = tkproperties.TK_WIDGET_PROPS[propertyname]
-                wtype = wdata['input_method']
+            elif propertyname in WIDGET_ATTRS_DESCR:
+                wdata = WIDGET_ATTRS_DESCR[propertyname]
         elif group == self.PACKING_GROUP:
             if propertyname in tkproperties.TK_GRID_PROPS:
                 wdata = tkproperties.TK_GRID_PROPS[propertyname]
-                wtype = wdata['input_method']
             elif propertyname in tkproperties.TK_GRID_RC_PROPS:
                 wdata = tkproperties.TK_GRID_RC_PROPS[propertyname]
-                wtype = wdata['input_method']
 
+        wtype = wdata.get('input_method', '')
+        default = wdata.get('default', '')
+        if wtype == 'spinbox':
+            vmin = wdata.get('min', 0)
+            vmax = wdata.get('max', 99)
+            default = vmin if (int(vmin) > 0 and default == '') else default
         if wtype == 'choice':
             values = wdata.get('values', None)
             if values is not None:
@@ -235,7 +260,10 @@ class WidgetPropertiesEditor:
         else:
             variable = self.arrayvar.get_packing_prop(propertyname)
         if propertyname in data:
-            variable.set(data[propertyname])
+            value = data[propertyname]
+            if not value:
+                value = default
+            variable.set(value)
 
 
     def edit(self, data):

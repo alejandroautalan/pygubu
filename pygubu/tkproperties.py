@@ -54,6 +54,7 @@ _sticky_prop = {
             )
         }
 
+
 TK_WIDGET_PROPS = {
     'activestyle': {
         'input_method': 'choice',
@@ -227,7 +228,7 @@ TK_GRID_PROPS = {
         'input_method': 'spinbox',
         'min': 1,
         'max': 999 },
-    'in_': _default_entry_prop,
+#    'in_': _default_entry_prop,
     'ipadx': _default_spinbox_prop,
     'ipady': _default_spinbox_prop,
     'padx': _default_spinbox_prop,
