@@ -184,7 +184,8 @@ class WidgetsTreeEditor:
         if selected_item:
             svalues = tree.set(selected_item)
             sclass = self.treedata[selected_item]['class']
-            if builder.CLASS_MAP[sclass].container == True:
+            selected_is_container = builder.CLASS_MAP[sclass].container
+            if selected_is_container:
                 #selected item is a container, set as root.
                 root = selected_item
             else:
@@ -197,9 +198,32 @@ class WidgetsTreeEditor:
             if builder.CLASS_MAP[wclass].container == False:
                 print('Warning: Widget to insert is not a container.')
                 return
+        if root:
+            rootclass = self.treedata[root]['class']
+            children_count = len(self.treeview.get_children(root))
+            maxchildren = builder.CLASS_MAP[rootclass].maxchildren
+            print('childrencount {}, maxchildren {}'.format(children_count, maxchildren))
+            if maxchildren is not None and children_count >= maxchildren:
+                print('Only {} children allowed'.format(maxchildren))
+                return
+            allowed_children = builder.CLASS_MAP[rootclass].allowed_children
+            print('class {} allowed {}'.format(rootclass, allowed_children))
+            if allowed_children is not None and wclass not in allowed_children:
+                print('Child class {} not allowed'.format(wclass))
+                return
+            allowed_parents = builder.CLASS_MAP[wclass].allowed_parents
+            print('class {} allowed parents {}'.format(rootclass, allowed_parents))
+            if allowed_parents is not None and rootclass not in allowed_parents:
+                print('Parent class {} not allowed for {}'.format(rootclass, wclass))
+                return
+        else:
+            ##Validate if it can be added at root level
+            allowed_parents = builder.CLASS_MAP[wclass].allowed_parents
+            if allowed_parents is not None and 'root' not in allowed_parents:
+                print('Class {} not allowed at root level'.format(wclass))
+                return
 
         #root item should be set at this point
-
         #increment class counter
         self.counter[wclass] += 1
 
@@ -226,7 +250,7 @@ class WidgetsTreeEditor:
                 pdescription = dict(pdescription, **pdescription[wclass])
             data[pname] = str(pdescription.get('default', ''))
             #default text for widgets with text prop:
-            if pname == 'text':
+            if pname in ('text', 'label'):
                 data[pname] = widget_id
 
         #default grid properties

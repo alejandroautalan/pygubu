@@ -41,6 +41,10 @@ def register_property(name, description):
 # Base class
 #
 class BuilderObject:
+    allowed_parents = None
+    allowed_children = None
+    maxchildren = None
+
     @classmethod
     def factory(cls, master, properties=None, layout_properties=None):
         clsobj = cls(master, properties, layout_properties)
@@ -225,6 +229,7 @@ class PanedWindowPane(BuilderObject):
 
 class TKPanedWindow(PanedWindow):
     class_ = tkinter.PanedWindow
+    allowed_children = ('tk.PanedWindow.Pane',)
     properties = ['background', 'borderwidth', 'cursor', 'handlepad',
         'handlesize', 'height', 'opaqueresize', 'orient', 'relief',
         'sashpad', 'sashrelief', 'sashwidth', 'showhandle', 'width']
@@ -235,6 +240,8 @@ register('tk.PanedWindow', TKPanedWindow)
 class TKPanedWindowPane(PanedWindowPane):
     class_ = None
     container = True
+    allowed_parents = ('tk.PanedWindow',)
+    maxchildren = 1
     properties = ['height', 'minsize', 'padx', 'pady', 'sticky']
 
 register('tk.PanedWindow.Pane', TKPanedWindowPane)
@@ -250,6 +257,8 @@ class TKMenubutton(BuilderObject):
         'highlightthickness', 'image', 'justify', 'padx',
         'pady', 'relief', 'state', 'takefocus', 'text', 'textvariable',
         'underline', 'width', 'wraplength']
+    allowed_children = ('tk.Menu',)
+    maxchildren = 1
 
     def add_child(self, cwidget):
         self.widget['menu'] = cwidget
@@ -324,6 +333,108 @@ class TKSpinbox(BuilderObject):
         'xscrollcommand']
 
 register('tk.Spinbox', TKSpinbox)
+
+
+class TKMenu(BuilderObject):
+    allowed_parents = ('root', 'tk.Menubutton', 'ttk.Menubutton')
+    allowed_children = ('tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
+        'tk.Menuitem.Command', 'tk.Menuitem.Radiobutton',
+        'tk.Menuitem.Separator')
+    class_ = tkinter.Menu
+    container = True
+    properties = ['activebackground', 'activeborderwidth', 'activeforeground',
+        'background', 'borderwidth', 'cursor', 'disabledforeground',
+        'font', 'foreground', 'postcommand', 'relief', 'selectcolor',
+        'tearoff', 'tearoffcommand', 'title']
+
+    def layout(self):
+        pass
+
+register('tk.Menu', TKMenu)
+
+
+class TKMenuitem(BuilderObject):
+    class_ = None
+    container = False
+    itemtype = None
+    #FIXME Move properties that are for specific items to the corresponding
+    #  subclass, eg: onvalue, offvalue to checkbutton
+    #FIXME Howto setup radio buttons variables ?
+    properties = ['accelerator', 'activebackground', 'activeforeground',
+        'background', 'bitmap', 'columnbreak', 'command', 'compound',
+        'font', 'foreground', 'hidemargin', 'image', 'label',
+        'offvalue', 'onvalue', 'selectcolor', 'selectimage', 'state',
+        'underline', 'value', 'variable']
+
+    def __init__(self, master, properties, layout_prop):
+        self.widget = master
+        master.add(self.itemtype, **properties)
+        self.properties= properties
+        self.layout_properties = layout_prop
+
+    def configure(self):
+        pass
+
+    def layout(self):
+        pass
+
+
+class TKMenuitemSubmenu(TKMenu):
+    allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
+    allowed_children = ('tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
+        'tk.Menuitem.Command', 'tk.Menuitem.Radiobutton',
+        'tk.Menuitem.Separator')
+    properties = list(set(TKMenu.properties + TKMenuitem.properties))
+
+    def __init__(self, master, properties, layout_prop):
+        menu_properties = dict((k, v) for k, v in properties.items()
+            if k in TKMenu.properties)
+
+        item_properties = dict((k, v) for k, v in properties.items()
+            if k in TKMenuitem.properties)
+
+        self.widget = submenu = TKMenu.class_(master, **menu_properties)
+        item_properties['menu'] = submenu
+        master.add(tkinter.constants.CASCADE, **item_properties)
+        self.properties = properties
+        self.layout_properties = layout_prop
+
+    def configure(self):
+        pass
+
+    def layout(self):
+        pass
+
+register('tk.Menuitem.Submenu', TKMenuitemSubmenu)
+
+
+class TKMenuitemCommand(TKMenuitem):
+    allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
+    itemtype = tkinter.constants.COMMAND
+
+register('tk.Menuitem.Command', TKMenuitemCommand)
+
+
+class TKMenuitemCheckbutton(TKMenuitem):
+    allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
+    itemtype = tkinter.constants.CHECKBUTTON
+
+register('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton)
+
+
+class TKMenuitemRadiobutton(TKMenuitem):
+    allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
+    itemtype = tkinter.constants.RADIOBUTTON
+
+register('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton)
+
+
+class TKMenuitemSeparator(TKMenuitem):
+    allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
+    itemtype = tkinter.constants.SEPARATOR
+    properties = []
+
+register('tk.Menuitem.Separator', TKMenuitemSeparator)
 
 
 #
@@ -459,6 +570,7 @@ register('ttk.Labelframe', TTKLabelframe)
 
 class TTKPanedwindow(PanedWindow):
     class_ = ttk.Panedwindow
+    allowed_children = ('ttk.PanedWindow.Pane',)
     properties = ['class_', 'cursor', 'height', 'orient',
             'style', 'takefocus', 'width']
 
@@ -468,6 +580,8 @@ register('ttk.Panedwindow', TTKPanedwindow)
 class TTKPanedwindowPane(PanedWindowPane):
     class_ = None
     container = True
+    allowed_parents = ('ttk.Panedwindow.Pane',)
+    maxchildren = 1
     properties = ['weight']
 
 register('ttk.Panedwindow.Pane', TTKPanedwindowPane)
@@ -476,6 +590,7 @@ register('ttk.Panedwindow.Pane', TTKPanedwindowPane)
 class TTKNotebook(BuilderObject):
     class_ = ttk.Notebook
     container = True
+    allowed_children = ('ttk.Notebook.Tab',)
     properties = ['class_', 'cursor', 'height',
             'padding', 'style', 'takefocus', 'width']
 
@@ -485,6 +600,7 @@ register('ttk.Notebook', TTKNotebook)
 class TTKNotebookTab(BuilderObject):
     class_ = None
     container = True
+    allowed_parents = ('ttk.Notebook',)
     properties = ['compound', 'padding', 'sticky',
         'image', 'text', 'underline']
 
@@ -511,101 +627,13 @@ class TTKMenubutton(BuilderObject):
     properties = ['class_', 'compound', 'cursor', 'direction',
             'image', 'style', 'takefocus', 'text', 'textvariable',
             'underline', 'width']
+    allowed_children = ('tk.Menu',)
+    maxchildren = 1
 
     def add_child(self, cwidget):
         self.widget['menu'] = cwidget
 
 register('ttk.Menubutton', TTKMenubutton)
-
-
-class TKMenu(BuilderObject):
-    class_ = tkinter.Menu
-    container = True
-    properties = ['activebackground', 'activeborderwidth', 'activeforeground',
-        'background', 'borderwidth', 'cursor', 'disabledforeground',
-        'font', 'foreground', 'postcommand', 'relief', 'selectcolor',
-        'tearoff', 'tearoffcommand', 'title']
-
-    def layout(self):
-        pass
-
-register('tk.Menu', TKMenu)
-
-
-class TKMenuitem(BuilderObject):
-    class_ = None
-    container = False
-    itemtype = None
-    #FIXME Move properties that are for specific items to the corresponding
-    #  subclass, eg: onvalue, offvalue to checkbutton
-    #FIXME Howto setup radio buttons variables ?
-    properties = ['accelerator', 'activebackground', 'activeforeground',
-        'background', 'bitmap', 'columnbreak', 'command', 'compound',
-        'font', 'foreground', 'hidemargin', 'image', 'label',
-        'offvalue', 'onvalue', 'selectcolor', 'selectimage', 'state',
-        'underline', 'value', 'variable']
-
-    def __init__(self, master, properties, layout_prop):
-        self.widget = master
-        master.add(self.itemtype, **properties)
-        self.properties= properties
-        self.layout_properties = layout_prop
-
-    def configure(self):
-        pass
-
-    def layout(self):
-        pass
-
-
-class TKMenuitemSubmenu(TKMenu):
-    properties = list(set(TKMenu.properties + TKMenuitem.properties))
-
-    def __init__(self, master, properties, layout_prop):
-        menu_properties = dict((k, v) for k, v in properties.items()
-            if k in TKMenu.properties)
-
-        item_properties = dict((k, v) for k, v in properties.items()
-            if k in TKMenuitem.properties)
-
-        self.widget = submenu = TKMenu.class_(master, **menu_properties)
-        item_properties['menu'] = submenu
-        master.add(tkinter.constants.CASCADE, **item_properties)
-        self.properties = properties
-        self.layout_properties = layout_prop
-
-    def configure(self):
-        pass
-
-    def layout(self):
-        pass
-
-register('tk.Menuitem.Submenu', TKMenuitemSubmenu)
-
-
-class TKMenuitemCommand(TKMenuitem):
-    itemtype = tkinter.constants.COMMAND
-
-register('tk.Menuitem.Command', TKMenuitemCommand)
-
-
-class TKMenuitemCheckbutton(TKMenuitem):
-    itemtype = tkinter.constants.CHECKBUTTON
-
-register('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton)
-
-
-class TKMenuitemRadiobutton(TKMenuitem):
-    itemtype = tkinter.constants.RADIOBUTTON
-
-register('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton)
-
-
-class TKMenuitemSeparator(TKMenuitem):
-    itemtype = tkinter.constants.SEPARATOR
-    properties = []
-
-register('tk.Menuitem.Separator', TKMenuitemSeparator)
 
 
 class TTKTreeview(BuilderObject):
