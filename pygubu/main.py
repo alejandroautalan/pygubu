@@ -115,6 +115,7 @@ class PygubuUI(util.Application):
         self.treeview = tree = builder.get_object('treeview1')
 
         #properties frame
+        self.propeditor_sframe = builder.get_object('pe_sframe')
         self.widget_props_frame = builder.get_object('propertiesframe')
         self.packing_props_frame = builder.get_object('packingframe')
         self.properties_editor = WidgetPropertiesEditor(self)

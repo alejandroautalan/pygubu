@@ -15,6 +15,7 @@
 #
 # For further info, check  http://pygubu.web.here
 
+import types
 import logging
 import xml.etree.ElementTree as ET
 import tkinter
@@ -741,26 +742,34 @@ class ScrolledFrame(BuilderObject):
 
         # track changes to the canvas and frame width and sync them,
         # also updating the scrollbar
-        def _configure_innerframe(event):
-            # update the scrollbars to match the size of the inner frame
+        def _configure_sframe(event):
             size = (innerframe.winfo_reqwidth(), innerframe.winfo_reqheight())
-            canvas.config(scrollregion="0 0 %s %s" % size)
             if innerframe.winfo_reqwidth() != canvas.winfo_width():
                 # update the canvas's width to fit the inner frame
                 canvas.config(width=innerframe.winfo_reqwidth())
+            if innerframe.winfo_height() != innerframe.winfo_reqheight():
+                canvas.itemconfigure(
+                    innerframe_id, height=innerframe.winfo_reqheight())
 
-        innerframe.bind('<Configure>', _configure_innerframe)
-
-        def _configure_canvas(event):
             if innerframe.winfo_reqwidth() < canvas.winfo_width():
                 # update the inner frame's width to fill the canvas
-                canvas.itemconfigure(innerframe_id, width=canvas.winfo_width(),
-                    height= canvas.winfo_height())
+                canvas.itemconfigure(innerframe_id, width=canvas.winfo_width())
             if innerframe.winfo_reqheight() < canvas.winfo_height():
                 canvas.itemconfigure(
                     innerframe_id, height= canvas.winfo_height())
 
-        canvas.bind('<Configure>', _configure_canvas)
+            canvas.config(scrollregion="0 0 %s %s" % size)
+
+        innerframe.bind('<Configure>', _configure_sframe)
+        canvas.bind('<Configure>', _configure_sframe)
+
+        def reposition(self):
+            """This method should be called when children are added,
+            removed, grid_remove, and grided in the scrolled frame."""
+            self.innerframe.update()
+            self.after_idle(_configure_sframe, None)
+
+        self.widget.reposition = types.MethodType(reposition, self.widget)
 
         # reset the view
         canvas.xview_moveto(0)

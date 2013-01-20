@@ -66,6 +66,7 @@ class WidgetPropertiesEditor:
         self.treeview = app.treeview
         self.propsframe = app.widget_props_frame
         self.packingframe = app.packing_props_frame
+        self.propeditor_sframe = app.propeditor_sframe
         self.arrayvar = PropertiesArray()
         self.prop_widget = {
             properties.GROUP_WIDGET: {},
@@ -207,6 +208,8 @@ class WidgetPropertiesEditor:
             if not value:
                 value = default
             variable.set(value)
+        else:
+            variable.set('')
 
 
     def edit(self, data):
@@ -256,6 +259,9 @@ class WidgetPropertiesEditor:
                     wclass, gdata)
             label.grid()
             widget.grid()
+
+        #
+        self.propeditor_sframe.reposition()
 
         #re-enable callback
         self.arrayvar.enable_cb()
