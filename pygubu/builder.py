@@ -777,7 +777,10 @@ class ScrolledFrame(BuilderObject):
 
 
     def configure(self):
-        pass
+        mainwidget = self.widget
+        self.widget = self.innerframe
+        super(ScrolledFrame, self).configure()
+        self.widget = mainwidget
 
 
     def get_child_master(self):
@@ -787,6 +790,7 @@ class ScrolledFrame(BuilderObject):
 class TKScrolledFrame(ScrolledFrame):
     class_ = tkinter.Frame
     scrollbar_class = tkinter.Scrollbar
+    properties = TKFrame.properties
 
 register('tk.ScrolledFrame', TKScrolledFrame)
 
@@ -794,6 +798,7 @@ register('tk.ScrolledFrame', TKScrolledFrame)
 class TTKScrolledFrame(ScrolledFrame):
     class_ = ttk.Frame
     scrollbar_class = ttk.Scrollbar
+    properties = TTKFrame.properties
 
 register('ttk.ScrolledFrame', TTKScrolledFrame)
 

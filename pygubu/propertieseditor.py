@@ -15,6 +15,7 @@
 #
 # For further info, check  http://pygubu.web.here
 
+from collections import defaultdict
 import tkinter
 from tkinter import ttk
 
@@ -66,14 +67,17 @@ class WidgetPropertiesEditor:
         self.treeview = app.treeview
         self.propsframe = app.widget_props_frame
         self.packingframe = app.packing_props_frame
-        self.propeditor_sframe = app.propeditor_sframe
         self.arrayvar = PropertiesArray()
         self.prop_widget = {
             properties.GROUP_WIDGET: {},
             properties.GROUP_LAYOUT_GRID: {},
-            properties.GROUP_CUSTOM: {}
+            properties.GROUP_LAYOUT_GRID_RC: {},
+            properties.GROUP_CUSTOM: {},
+            'internal': {}
         }
         self.create_properties()
+        self.create_grid_layout_editor()
+        self.hide_all()
         self.arrayvar.set_callback(self.on_array_variable_changed)
 
         self.treeview.bind('<<TreeviewSelect>>', self.on_treeview_select)
@@ -82,7 +86,7 @@ class WidgetPropertiesEditor:
     def create_properties(self):
         """Populate a frame with a list of all editable properties"""
 
-        editor_frame = self.propsframe
+        editor_frame = self.propsframe.innerframe
         prop_widget = self.prop_widget
         row=0
         col=0
@@ -92,8 +96,8 @@ class WidgetPropertiesEditor:
             label = ttk.Label(editor_frame, text=labeltext, anchor=tkinter.W)
             widget = self.create_property_widget(editor_frame,
                 properties.GROUP_CUSTOM, name)
-            label.grid(row=row, column=col, sticky=tkinter.EW)
-            widget.grid(row=row, column=col+1, sticky=tkinter.EW)
+            label.grid(row=row, column=col, sticky=tkinter.EW, pady=2)
+            widget.grid(row=row, column=col+1, sticky=tkinter.EW, pady=2)
             row += 1
             prop_widget[properties.GROUP_CUSTOM][name] = (label, widget)
 
@@ -102,24 +106,87 @@ class WidgetPropertiesEditor:
             label = ttk.Label(editor_frame, text=labeltext, anchor=tkinter.W)
             widget = self.create_property_widget(editor_frame,
                 properties.GROUP_WIDGET, name)
-            label.grid(row=row, column=col, sticky=tkinter.EW)
-            widget.grid(row=row, column=col+1, sticky=tkinter.EW)
+            label.grid(row=row, column=col, sticky=tkinter.EW, pady=2)
+            widget.grid(row=row, column=col+1, sticky=tkinter.EW, pady=2)
             row += 1
             prop_widget[properties.GROUP_WIDGET][name] = (label, widget)
 
-        editor_frame = self.packingframe
 
+    def create_grid_layout_editor(self):
+        master = self.packingframe.innerframe
+        prop_widget = self.prop_widget
+        frame = ttk.LabelFrame(master, text='Grid options:')
+        label_tpl = "{0}:"
+        row= col=0
         for name in properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]:
             labeltext = label_tpl.format(name)
-            label = ttk.Label(editor_frame, text=labeltext, anchor=tkinter.W)
-            widget = self.create_property_widget(editor_frame,
+            label = ttk.Label(frame, text=labeltext, anchor=tkinter.W)
+            widget = self.create_property_widget(frame,
                 properties.GROUP_LAYOUT_GRID, name)
-            label.grid(row=row, column=col, sticky=tkinter.EW)
-            widget.grid(row=row, column=col+1, sticky=tkinter.EW)
+            label.grid(row=row, column=col, sticky=tkinter.EW, pady=2)
+            widget.grid(row=row, column=col+1, sticky=tkinter.EW, pady=2)
             row += 1
             prop_widget[properties.GROUP_LAYOUT_GRID][name] = (label, widget)
 
-        self.hide_all()
+        frame.grid(row=0, column=0)
+
+        #labels
+        group = properties.GROUP_LAYOUT_GRID_RC
+        frame = ttk.LabelFrame(master, text='Grid row/column options:')
+        row = col = 0
+        icol = 1
+        headers=[]
+        for pname in properties.PropertiesMap[group]:
+            label = ttk.Label(frame, text=pname)
+            label.grid(row=row, column=icol)
+            headers.append(label)
+            icol += 1
+        prop_widget['internal']['grid_rc_headers']= headers
+
+        #
+        name_format = '{}_{}_{}' #{row/column}_{number}_{name}
+        max_rc = 50
+        #rowconfig
+        row += 1
+        for index in range(0, max_rc):
+            labeltext = 'Row {}:'.format(index)
+            label = ttk.Label(frame, text=labeltext)
+            label.grid(row=row, column=0)
+
+            labeltext = 'Column {}:'.format(index)
+            labelc = ttk.Label(frame, text=labeltext)
+            labelc.grid(row=row+max_rc, column=0, sticky=tkinter.E, pady=2)
+
+            icol = 1
+            for pname in properties.PropertiesMap[group]:
+                alias = name_format.format('row', index, pname)
+                widget = self.create_grid_rc_widget(frame, pname, alias)
+                widget.grid(row=row, column=icol, pady=2)
+                prop_widget[group][alias]= (label, widget)
+
+                alias = name_format.format('column', index, pname)
+                widget = self.create_grid_rc_widget(frame, pname, alias)
+                widget.grid(row=row+max_rc, column=icol, pady=2)
+                prop_widget[group][alias]= (labelc, widget)
+
+                icol += 1
+            row +=1
+
+        frame.grid(row=1, column=0, sticky=tkinter.NSEW)
+
+
+    def create_grid_rc_widget(self, master, name, alias):
+        group = properties.GROUP_LAYOUT_GRID_RC
+        widgetvar = self.arrayvar.get_property_variable(group, alias);
+        wdata = {}
+        widget = None
+        if name in properties.PropertiesMap[group]:
+            wdata = properties.PropertiesMap[group][name]
+            wtype = wdata['input_method']
+
+        widget = self.__create_widget(master, wdata, widgetvar)
+        widget.configure(width=4)
+        return widget
 
 
     def create_property_widget(self, master, group, propertyname):
@@ -172,13 +239,12 @@ class WidgetPropertiesEditor:
 
         for group in self.prop_widget:
             for pname in self.prop_widget[group]:
-                label, widget = self.prop_widget[group][pname]
-                label.grid_remove()
-                widget.grid_remove()
+                for widget in self.prop_widget[group][pname]:
+                    widget.grid_remove()
 
 
-    def update_property_widget(
-        self, group, widget, propertyname, classname, data):
+    def update_property_widget(self, group, widget, variable,
+        propertyname, classname, data):
         """Update widget property value with values from data."""
 
         wdata = {}
@@ -201,7 +267,7 @@ class WidgetPropertiesEditor:
             if values is not None:
                 widget.configure(values=values)
 
-        variable = self.arrayvar.get_property_variable(group, propertyname)
+        #variable = self.arrayvar.get_property_variable(group, propertyname)
 
         if propertyname in data:
             value = data[propertyname]
@@ -212,13 +278,14 @@ class WidgetPropertiesEditor:
             variable.set('')
 
 
-    def edit(self, data):
+    def edit(self, item):
         """Copies properties values from data to the
            properties editor so they can be edited."""
 
         #first disable callback
         self.arrayvar.disable_cb()
 
+        data = self.app.tree_editor.treedata[item]
         wclass = data['class']
         class_props = tuple(CLASS_MAP[wclass].properties)
 
@@ -226,7 +293,8 @@ class WidgetPropertiesEditor:
         for key in properties.PropertiesMap[group]:
             if (key in properties.OBJECT_DEFAULT_ATTRS or key in class_props):
                 label, widget = self.prop_widget[group][key]
-                self.update_property_widget(group, widget,
+                variable = self.arrayvar.get_property_variable(group, key)
+                self.update_property_widget(group, widget, variable,
                     key, wclass, data)
                 label.grid()
                 widget.grid()
@@ -240,7 +308,8 @@ class WidgetPropertiesEditor:
         for key in properties.PropertiesMap[group]:
             if key in class_props:
                 label, widget = self.prop_widget[group][key]
-                self.update_property_widget(group, widget,
+                variable = self.arrayvar.get_property_variable(group, key)
+                self.update_property_widget(group, widget, variable,
                     key, wclass, data)
                 label.grid()
                 widget.grid()
@@ -250,18 +319,55 @@ class WidgetPropertiesEditor:
                 label.grid_remove()
                 widget.grid_remove()
 
-        #packing properties
+        #grid layout properties
         group = properties.GROUP_LAYOUT_GRID
         for gkey in properties.PropertiesMap[group]:
             label, widget = self.prop_widget[group][gkey]
             gdata = data.get('packing', {})
-            self.update_property_widget(group, widget, gkey,
+            variable = self.arrayvar.get_property_variable(group, gkey)
+            self.update_property_widget(group, widget, variable, gkey,
                     wclass, gdata)
             label.grid()
             widget.grid()
 
+        group = properties.GROUP_LAYOUT_GRID_RC
+        max_row, max_col = self.get_max_row_col(item)
+        show_headers = False
+        is_container = CLASS_MAP[wclass].container
+        for key in self.prop_widget[group]:
+            rowcol, number, name = self.identify_gridrc_property(key)
+            number_str = str(number)
+            number = int(number)
+            if is_container and rowcol == 'row' and number <= max_row:
+                label, widget = self.prop_widget[group][key]
+                gdata = data.get('packing', {})
+                rcdata = gdata.get('rows',{}).get(number_str, {})
+                variable = self.arrayvar.get_property_variable(group, key)
+                self.update_property_widget(group, widget, variable, name,
+                    wclass, rcdata)
+                label.grid(); widget.grid()
+                show_headers = True
+            elif is_container and rowcol == 'column' and number <= max_col:
+                label, widget = self.prop_widget[group][key]
+                gdata = data.get('packing', {})
+                rcdata = gdata.get('columns',{}).get(number_str, {})
+                variable = self.arrayvar.get_property_variable(group, key)
+                self.update_property_widget(group, widget, variable, name,
+                    wclass, rcdata)
+                label.grid(); widget.grid()
+                show_headers = True
+            else:
+                label, widget = self.prop_widget[group][key]
+                label.grid_remove(); widget.grid_remove()
+
+        for widget in self.prop_widget['internal']['grid_rc_headers']:
+            if show_headers:
+                widget.grid()
+            else:
+                widget.grid_remove()
         #
-        self.propeditor_sframe.reposition()
+        self.propsframe.reposition()
+        self.packingframe.reposition()
 
         #re-enable callback
         self.arrayvar.enable_cb()
@@ -286,6 +392,14 @@ class WidgetPropertiesEditor:
             elif (pgroup == properties.GROUP_LAYOUT_GRID and pname in
                     properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]):
                 treedata[item]['packing'][pname] = new_value
+            elif (pgroup == properties.GROUP_LAYOUT_GRID_RC):
+                layoutdata = treedata[item]['packing']
+                row_col, number, name = self.identify_gridrc_property(pname)
+                number = str(number)
+                if row_col == 'row':
+                    layoutdata['rows'][number][name] = new_value
+                elif row_col == 'column':
+                    layoutdata['columns'][number][name] = new_value
             self.app.tree_editor.draw_widget(item)
 
 
@@ -300,9 +414,28 @@ class WidgetPropertiesEditor:
             #rootitem = self.get_toplevel_parent(item)
             #if rootitem not in self.previewer.tabs:
             #    self.draw_widget(rootitem)
-            self.edit(self.app.tree_editor.treedata[item])
+            self.edit(item)
         else:
             #No selection hide all
             self.hide_all()
 
+
+    def get_max_row_col(self, item):
+        tree = self.treeview
+        max_row = 0
+        max_col = 0
+        children = tree.get_children(item)
+        for child in children:
+            data = self.app.tree_editor.treedata[child].get('packing', {})
+            row = int(data.get('row', 0))
+            col = int(data.get('column', 0))
+            if row > max_row:
+                max_row = row
+            if col > max_col:
+                max_col = col
+        return (max_row, max_col)
+
+
+    def identify_gridrc_property(self, alias):
+        return alias.split('_')
 

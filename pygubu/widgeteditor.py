@@ -17,7 +17,7 @@
 
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
-from collections import Counter
+from collections import Counter, defaultdict
 
 from . import builder
 from . import util
@@ -146,6 +146,21 @@ class WidgetsTreeEditor:
                 pnode.set('name', prop)
                 pnode.text = pv
                 packing_node.append(pnode)
+        keys = {'rows':'row', 'columns':'column'}
+        for key in keys:
+            if key in pvalues:
+                erows = ET.Element(key)
+                for rowid in pvalues[key]:
+                    erow = ET.Element(keys[key])
+                    erow.set('id', rowid)
+                    for pname in pvalues[key][rowid]:
+                        eprop = ET.Element('property')
+                        eprop.set('name', pname)
+                        eprop.text = pvalues[key][rowid][pname]
+                        erow.append(eprop)
+                    erows.append(erow)
+                packing_node.append(erows)
+
         if has_packing:
             node.append(packing_node)
 
@@ -215,6 +230,7 @@ class WidgetsTreeEditor:
                 data[pname] = widget_id
 
         #default grid properties
+        is_container = builder.CLASS_MAP[wclass].container
         group = 'packing'
         data[group] = {}
         for prop_name in properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]:
@@ -223,6 +239,10 @@ class WidgetsTreeEditor:
         rownum = str(len(tree.get_children(root)) - 1)
         data[group]['row'] = rownum
         data[group]['column'] = '0'
+
+        if is_container:
+            data[group]['rows'] = defaultdict(dict)
+            data[group]['columns'] = defaultdict(dict)
 
         self.treedata[item] = data
 
@@ -273,6 +293,26 @@ class WidgetsTreeEditor:
                 properties = self.get_properties(packing_elem)
                 for key, value in properties.items():
                     data['packing'][key] = value
+                #get grid row and col properties:
+                rows_dict = defaultdict(dict)
+                erows = packing_elem.find('./rows')
+                if erows is not None:
+                    rows = erows.findall('./row')
+                    for row in rows:
+                        row_id = row.get('id')
+                        row_properties = self.get_properties(row)
+                        rows_dict[row_id] = row_properties
+                data['packing']['rows'] = rows_dict
+
+                columns_dict = defaultdict(dict)
+                ecolums = packing_elem.find('./columns')
+                if ecolums is not None:
+                    columns = ecolums.findall('./column')
+                    for column in columns:
+                        column_id = column.get('id')
+                        column_properties = self.get_properties(column)
+                        columns_dict[column_id] = column_properties
+                data['packing']['columns'] = columns_dict
 
             self.treedata[pwidget] = data
 

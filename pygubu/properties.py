@@ -297,17 +297,23 @@ PropertiesMap[GROUP_WIDGET] = OrderedDict(__widget)
 
 __grid = (
 #grid packing properties
-    ('row', _default_spinbox_prop),
-    ('column', _default_spinbox_prop),
+    ('row', {
+        'input_method': 'spinbox',
+        'min': 0,
+        'max': 50 }),
+    ('column', {
+        'input_method': 'spinbox',
+        'min': 0,
+        'max': 50 }),
     ('sticky', _sticky_prop),
     ('rowspan', {
         'input_method': 'spinbox',
         'min': 1,
-        'max': 999 }),
+        'max': 50 }),
     ('columnspan', {
         'input_method': 'spinbox',
         'min': 1,
-        'max': 999 }),
+        'max': 50 }),
     ('padx', _default_spinbox_prop),
     ('pady', _default_spinbox_prop),
     ('ipadx', _default_spinbox_prop),
@@ -318,7 +324,11 @@ PropertiesMap[GROUP_LAYOUT_GRID] = OrderedDict(__grid)
 
 __grid_rc = (
     #grid row and column properties (can be applied to each row or column)
-    ('minsize', _default_spinbox_prop),
+    ('minsize', {
+        'input_method': 'spinbox',
+        'min': 0,
+        'max': 999,
+        'default': 0}),
     ('pad', _default_spinbox_prop),
     ('weight', _default_spinbox_prop)
 )

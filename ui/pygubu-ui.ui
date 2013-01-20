@@ -168,16 +168,8 @@
                                                                 <property name="text">General</property>
                                                                 <property name="sticky">nsew</property>
                                                                 <child>
-                                                                    <object class="ttk.ScrolledFrame" id="pe_sframe">
-                                                                        <child>
-                                                                            <object class="ttk.Frame" id="propertiesframe">
-                                                                                <packing>
-                                                                                    <property name="sticky">nsew</property>
-                                                                                    <property name="row">0</property>
-                                                                                    <property name="column">0</property>
-                                                                                </packing>
-                                                                            </object>
-                                                                        </child>
+                                                                    <object class="ttk.ScrolledFrame" id="propertiesframe">
+                                                                    <property name="padding">5</property>
                                                                         <packing>
                                                                             <property name="sticky">nsew</property>
                                                                             <property name="row">0</property>
@@ -189,10 +181,11 @@
                                                         </child>
                                                         <child>
                                                             <object class="ttk.Notebook.Tab" id="packingtab">
-                                                                <property name="text">Packing</property>
+                                                                <property name="text">Layout</property>
                                                                 <property name="sticky">nsew</property>
                                                                 <child>
-                                                                    <object class="ttk.Frame" id="packingframe">
+                                                                    <object class="ttk.ScrolledFrame" id="packingframe">
+                                                                    <property name="padding">5</property>
                                                                         <packing>
                                                                             <property name="sticky">nsew</property>
                                                                             <property name="row">0</property>

@@ -53,6 +53,8 @@ class PreviewHelper:
         if identifier not in self.builders:
             canvas = util.create_scrollable(self.notebook, tkinter.Canvas,
                 background='white', scrollregion="0 0 80i 80i")
+            canvas.create_window(5, 5, anchor=tkinter.NW,
+                tags=self.preview_tag)
             self.canvases[identifier] = canvas
             self.notebook.add(canvas.frame, text=widget_id,
                 sticky=tkinter.NSEW)
@@ -115,7 +117,6 @@ class PygubuUI(util.Application):
         self.treeview = tree = builder.get_object('treeview1')
 
         #properties frame
-        self.propeditor_sframe = builder.get_object('pe_sframe')
         self.widget_props_frame = builder.get_object('propertiesframe')
         self.packing_props_frame = builder.get_object('packingframe')
         self.properties_editor = WidgetPropertiesEditor(self)
