@@ -64,8 +64,10 @@ class WidgetsTreeEditor:
         if item:
             item = self.get_toplevel_parent(item)
             widget_id = self.treedata[item]['id']
+            wclass = self.treedata[item]['class']
             xmlnode = self.tree_node_to_xml('', item)
-            self.previewer.draw(item, widget_id, xmlnode)
+            is_menu = True if wclass == 'tk.Menu' else False
+            self.previewer.draw(item, widget_id, xmlnode, is_menu)
 
 
     def on_treeview_double_click(self, event):

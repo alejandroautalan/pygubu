@@ -47,7 +47,7 @@ class PreviewHelper:
         self.windows = {}
         self.preview_tag = 'previewwindow'
 
-    def draw(self, identifier, widget_id, xmlnode):
+    def draw(self, identifier, widget_id, xmlnode, is_menu=False):
         uibuilder = pygubu.Builder()
         canvas = None
         if identifier not in self.builders:
@@ -69,13 +69,22 @@ class PreviewHelper:
         uibuilder.add_from_xmlnode(xmlnode)
         self.builders[identifier] = uibuilder
 
-        preview_widget = uibuilder.get_object(widget_id, canvas)
+        preview_widget = None
+        if is_menu:
+            menubutton = ttk.Menubutton(canvas, text='Menu preview')
+            widget = uibuilder.get_object(widget_id, menubutton)
+            menubutton.configure(menu=widget)
+            preview_widget = menubutton
+        else:
+            preview_widget = uibuilder.get_object(widget_id, canvas)
         self.windows[identifier] = preview_widget
         canvas.itemconfigure(self.preview_tag, window=preview_widget)
 
     def delete(self, identifier):
         self.notebook.forget(self.tabs[identifier])
         del self.tabs[identifier]
+        self.windows[identifier].destroy()
+        del self.windows[identifier]
 
 
 
