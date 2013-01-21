@@ -24,6 +24,10 @@ _default_entry_prop = {
     'input_method': 'entry',
 }
 
+_default_textentry_prop = {
+    'input_method': 'textentry',
+}
+
 _default_spinbox_prop = {
     'input_method': 'spinbox',
     'min': 0,
@@ -267,7 +271,7 @@ __widget = (
     ('takefocus', _default_true_false_prop),
     ('tearoff', _default_entry_prop),
     ('tearoffcommand', _default_entry_prop),
-    ('text', _default_entry_prop),
+    ('text', _default_textentry_prop),
     ('textvariable', _default_entry_prop),
     ('tickinterval', _default_spinbox_prop), #FIXME float property
     ('title', _default_entry_prop),

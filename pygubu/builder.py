@@ -190,7 +190,14 @@ class TKText(BuilderObject):
             'selectborderwidth', 'selectforeground', 'spacing1',
             'spacing2', 'spacing3', 'state', 'tabs', 'takefocus',
             'undo', 'width', 'wrap', 'xscrollcommand', 'yscrollcommand',
-            ]
+            'text'] #<- text is a custom property.
+
+    def configure(self):
+        for pname, value in self.properties.items():
+            if pname == 'text':
+                self.widget.insert('0.0', value)
+            else:
+                self.widget[pname] = value
 
 register('tk.Text', TKText)
 

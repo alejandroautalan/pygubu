@@ -22,6 +22,7 @@ from tkinter import ttk
 from . import util
 from . import builder
 from . import properties
+from .util.textentry import Textentry
 
 
 CLASS_MAP = builder.CLASS_MAP
@@ -215,6 +216,9 @@ class WidgetPropertiesEditor:
             readonly = wdata.get('readonly', False)
             state = tkinter.DISABLED if readonly else tkinter.NORMAL
             widget = ttk.Entry(master, textvariable=widgetvar, state=state)
+        elif wtype == 'textentry':
+            widget = Textentry(master, textvariable=widgetvar,
+                width=20, height=3)
         elif wtype == 'choice':
             widget = ttk.Combobox(master, textvariable=widgetvar,
                 state='readonly')
