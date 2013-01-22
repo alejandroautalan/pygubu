@@ -47,8 +47,9 @@ class BuilderObject:
     allowed_children = None
     maxchildren = None
     properties = None
-    ro_properties = None
+    ro_properties = tuple()
     layout_required = True
+    command_properties = tuple()
 
     @classmethod
     def factory(cls, master, properties=None, layout_properties=None):
@@ -62,11 +63,9 @@ class BuilderObject:
 
     def configure(self):
         for pname, value in self.properties.items():
-            if self.ro_properties is None:
+            if (pname not in self.ro_properties and
+                pname not in self.command_properties):
                 self.widget[pname] = value
-            else:
-                if pname not in self.ro_properties:
-                    self.widget[pname] = value
 
 
     def layout(self):
@@ -88,6 +87,27 @@ class BuilderObject:
 
     def add_child(self, cwidget):
         pass
+
+    def connect_commands(self, cmd_bag):
+        notconnected = []
+
+        if isinstance(cmd_bag, dict):
+            for cmd in self.command_properties:
+                cmd_name = self.properties.get(cmd, None)
+                if cmd_name is not None and cmd_name in cmd_bag:
+                    prop = {cmd: cmd_bag[cmd_name]}
+                    self.widget.configure(**prop)
+                else:
+                    notconnected.append(cmd_name)
+        else:
+            for cmd in self.command_properties:
+                cmd_name = self.properties.get(cmd, None)
+                if cmd_name is not None and hasattr(cmd_bag, cmd_name):
+                    prop = {cmd: getattr(cmd_bag, cmd_name)}
+                    self.widget.configure(**prop)
+                else:
+                    notconnected.append(cmd_name)
+        return notconnected
 
 
 #
@@ -155,6 +175,7 @@ class TKButton(BuilderObject):
         'image', 'justify', 'overrelief', 'padx', 'pady', 'relief',
         'repeatdelay', 'repeatinterval', 'state', 'takefocus', 'text',
         'textvariable', 'underline', 'width', 'wraplength']
+    command_properties = ('command',)
 
 register('tk.Button', TKButton)
 
@@ -515,6 +536,7 @@ class TTKButton(BuilderObject):
             'image', 'style', 'takefocus', 'text', 'textvariable',
             'underline']
     ro_properties = ('class_',)
+    command_properties = ('command',)
 
 register('ttk.Button', TTKButton)
 
@@ -904,13 +926,13 @@ class Builder:
     def __init__(self):
         self.tree = None
         self.root = None
-        self.widgets = {}
+        self.objects = {}
 
     def add_from_file(self, fpath):
         if self.tree is None:
             self.tree = tree = ET.parse(fpath)
             self.root = tree.getroot()
-            self.widgets = {}
+            self.objects = {}
         else:
             #TODO: append to current tree
             pass
@@ -922,7 +944,7 @@ class Builder:
             root.append(element)
             self.tree = tree = ET.ElementTree(root)
             self.root = tree.getroot()
-            self.widgets = {}
+            self.objects = {}
             ET.dump(tree)
         else:
             #TODO: append to current tree
@@ -931,8 +953,8 @@ class Builder:
 
     def get_object(self, name, master=None):
         widget = None
-        if name in self.widgets:
-            widget = self.widgets[name]
+        if name in self.objects:
+            widget = self.objects[name].widget
         else:
             xpath = ".//object[@id='{0}']".format(name)
             node = self.tree.find(xpath)
@@ -955,7 +977,7 @@ class Builder:
             builderobj.layout()
             pwidget = builderobj.widget
 
-            self.widgets[uniqueid] = pwidget
+            self.objects[uniqueid] = builderobj
 
             xpath = "./child"
             children = element.findall(xpath)
@@ -1016,3 +1038,14 @@ class Builder:
         return pdict
 
 
+    def connect_commands(self, commands_bag):
+        notconnected = []
+        for wname, builderobj in self.objects.items():
+            missing = builderobj.connect_commands(commands_bag)
+            notconnected.extend(missing)
+        if notconnected:
+            msg = 'Missing callbacks for commands: {}'.format(notconnected)
+            logger.warning(msg)
+            return notconnected
+        else:
+            return None

@@ -465,7 +465,7 @@ class WidgetPropertiesEditor:
                 if new_value:
                     treedata[item][pname] = new_value
                 else:
-                    if pname in treedata[item]:
+                    if pname in treedata[item] and pname != 'id':
                         del treedata[item][pname]
 
                 treenode_label = '{0} - {1}'.format(widget_id,wclass)
