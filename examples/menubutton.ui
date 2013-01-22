@@ -4,10 +4,10 @@
         <child>
             <object class="ttk.Label" id="label1">
                 <property name="text">Menubutton test:</property>
-                <packing>
+                <layout>
                     <property name="row">0</property>
                     <property name="column">0</property>
-                </packing>
+                </layout>
             </object>
         </child>
         <child>
@@ -67,13 +67,13 @@
                         </child>
                     </object>
                 </child>
-                <packing>
+                <layout>
                     <property name="row">1</property>
                     <property name="column">0</property>
-                </packing>
+                </layout>
             </object>
         </child>
-        <packing>
+        <layout>
             <property name="row">0</property>
             <property name="column">0</property>
             <property name="sticky">nsew</property>
@@ -87,6 +87,6 @@
                     <property name="weight">1</property>
                 </row>
             </rows>
-        </packing>
+        </layout>
     </object>
 </interface>

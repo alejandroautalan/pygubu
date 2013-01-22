@@ -5,34 +5,34 @@
             <object class="tk.Label" id="tk.Label_1">
                 <property name="background">red</property>
                 <property name="text">Long label</property>
-                <packing>
+                <layout>
                     <property name="row">0</property>
                     <property name="column">0</property>
                     <property name="columnspan">1</property>
-                </packing>
+                </layout>
             </object>
         </child>
         <child>
             <object class="tk.Button" id="tk.Button_1">
                 <property name="text">tk.Button_1</property>
-                <packing>
+                <layout>
                     <property name="row">1</property>
                     <property name="column">0</property>
-                </packing>
+                </layout>
             </object>
         </child>
         <child>
             <object class="tk.Button" id="tk.Button_2">
                 <property name="text">tk.Button_2</property>
-                <packing>
+                <layout>
                     <property name="row">1</property>
                     <property name="column">1</property>
-                </packing>
+                </layout>
             </object>
         </child>
-        <packing>
+        <layout>
             <property name="row">0</property>
             <property name="column">0</property>
-        </packing>
+        </layout>
     </object>
 </interface>

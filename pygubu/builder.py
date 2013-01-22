@@ -48,6 +48,7 @@ class BuilderObject:
     maxchildren = None
     properties = None
     ro_properties = None
+    layout_required = True
 
     @classmethod
     def factory(cls, master, properties=None, layout_properties=None):
@@ -228,6 +229,7 @@ class PanedWindowPane(BuilderObject):
     class_ = None
     container = True
     properties = []
+    layout_required = False
 
     def __init__(self, master, properties, layout_prop):
         self.widget = master
@@ -363,6 +365,7 @@ register('tk.Spinbox', TKSpinbox)
 
 
 class TKMenu(BuilderObject):
+    layout_required = False
     allowed_parents = ('root', 'tk.Menubutton', 'ttk.Menubutton')
     allowed_children = ('tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
         'tk.Menuitem.Command', 'tk.Menuitem.Radiobutton',
@@ -384,6 +387,7 @@ class TKMenuitem(BuilderObject):
     class_ = None
     container = False
     itemtype = None
+    layout_required = False
     #FIXME Move properties that are for specific items to the corresponding
     #  subclass, eg: onvalue, offvalue to checkbutton
     #FIXME Howto setup radio buttons variables ?
@@ -656,6 +660,7 @@ register('ttk.Notebook', TTKNotebook)
 class TTKNotebookTab(BuilderObject):
     class_ = None
     container = True
+    layout_required = False
     allowed_parents = ('ttk.Notebook',)
     properties = ['compound', 'padding', 'sticky',
         'image', 'text', 'underline']
@@ -720,6 +725,9 @@ class ScrollbarHelper(BuilderObject):
     class_ = None
     scrollbar_class = None
     container = True
+    maxchildren = 1
+    allowed_children = ('tk.Entry', 'ttk.Entry', 'tk.Text', 'tk.Canvas',
+        'tk.Listbox', 'ttk.Treeview' )
     properties = ['scrolltype']
     VERTICAL = 'vertical'
     HORIZONTAL = 'horizontal'
@@ -730,7 +738,7 @@ class ScrollbarHelper(BuilderObject):
         if scrolltype in (self.BOTH, self.VERTICAL):
             self.widget.vsb = self.scrollbar_class(self.widget,
                 orient="vertical")
-            #packing
+            #layout
             self.widget.vsb.grid(column=1, row=0, sticky=tkinter.NS)
 
         if scrolltype in (self.BOTH, self.HORIZONTAL):
@@ -746,18 +754,27 @@ class ScrollbarHelper(BuilderObject):
         scrolltype = self.properties.get('scrolltype', self.BOTH)
 
         if scrolltype in (self.BOTH, self.VERTICAL):
-            self.widget.vsb.configure(command=cwidget.yview)
-            cwidget.configure(yscrollcommand=lambda f, l: _autoscroll(self.widget.vsb, f, l))
+            if hasattr(cwidget, 'yview'):
+                self.widget.vsb.configure(command=cwidget.yview)
+                cwidget.configure(yscrollcommand=lambda f, l: _autoscroll(self.widget.vsb, f, l))
+            else:
+                msg = "widget {} has no attribute 'yview'".format(str(cwidget))
+                logger.warning(msg)
 
         if scrolltype in (self.BOTH, self.HORIZONTAL):
-            self.widget.hsb.configure(command=cwidget.xview)
-            cwidget.configure(xscrollcommand=lambda f, l: _autoscroll(self.widget.hsb, f, l))
+            if hasattr(cwidget, 'xview'):
+                self.widget.hsb.configure(command=cwidget.xview)
+                cwidget.configure(xscrollcommand=lambda f, l: _autoscroll(self.widget.hsb, f, l))
+            else:
+                msg = "widget {} has no attribute 'xview'".format(str(cwidget))
+                logger.warning(msg)
+
 
 __scrolltype_property = {
     'input_method': 'choice',
     'values': (ScrollbarHelper.BOTH, ScrollbarHelper.VERTICAL,
         ScrollbarHelper.HORIZONTAL),
-    'default': ScrollbarHelper.BOTH }
+    'default': ScrollbarHelper.HORIZONTAL }
 
 register_property('scrolltype', __scrolltype_property)
 
@@ -955,15 +972,15 @@ class Builder:
 
     def get_layout_properties(self, element):
         #use grid layout for all
-        #get packing properties
+        #get layout properties
         layout_properties = {}
-        packing_elem = element.find('./packing')
-        if packing_elem is not None:
-            layout_properties = self.get_properties(packing_elem)
+        layout_elem = element.find('./layout')
+        if layout_elem is not None:
+            layout_properties = self.get_properties(layout_elem)
 
             #get grid row and col properties:
             rows_dict = {}
-            erows = packing_elem.find('./rows')
+            erows = layout_elem.find('./rows')
             if erows is not None:
                 rows = erows.findall('./row')
                 for row in rows:
@@ -973,7 +990,7 @@ class Builder:
             layout_properties['grid_rows'] = rows_dict
 
             columns_dict = {}
-            ecolums = packing_elem.find('./columns')
+            ecolums = layout_elem.find('./columns')
             if ecolums is not None:
                 columns = ecolums.findall('./column')
                 for column in columns:
@@ -984,8 +1001,10 @@ class Builder:
         else:
             cname = element.get('class')
             uniqueid = element.get('id')
-            logger.warning('No packing information for: (%s, %s).',
-                cname, uniqueid)
+            layout_required = CLASS_MAP[cname].layout_required
+            if layout_required:
+                logger.warning('No layout information for: (%s, %s).',
+                    cname, uniqueid)
         return layout_properties
 
 

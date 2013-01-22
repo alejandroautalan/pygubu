@@ -36,7 +36,7 @@ _default_spinbox_prop = {
     'input_method': 'spinbox',
     'min': 0,
     'max': 999,
-    'validator': 'number_integer'
+    'validator': 'number_integer',
 }
 
 _default_spinbox_float_prop = {
@@ -357,11 +357,7 @@ PropertiesMap[GROUP_LAYOUT_GRID] = OrderedDict(__grid)
 
 __grid_rc = (
     #grid row and column properties (can be applied to each row or column)
-    ('minsize', {
-        'input_method': 'spinbox',
-        'min': 0,
-        'max': 999,
-        'default': 0}),
+    ('minsize', _default_spinbox_prop),
     ('pad', _default_spinbox_prop),
     ('weight', _default_spinbox_prop)
 )

@@ -127,7 +127,7 @@ class PygubuUI(util.Application):
 
         #properties frame
         self.widget_props_frame = builder.get_object('propertiesframe')
-        self.packing_props_frame = builder.get_object('packingframe')
+        self.layout_props_frame = builder.get_object('layoutframe')
         self.properties_editor = WidgetPropertiesEditor(self)
 
         nbpreview = builder.get_object('notebookpreview')

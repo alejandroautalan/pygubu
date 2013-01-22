@@ -4,10 +4,10 @@
         <child>
             <object class="ttk.Label" id="label1">
                 <property name="text">ScrollbarHelper test:</property>
-                <packing>
+                <layout>
                     <property name="row">0</property>
                     <property name="column">0</property>
-                </packing>
+                </layout>
             </object>
         </child>
         <child>
@@ -17,13 +17,13 @@
                     <object class="tk.Canvas" id="canvas1">
                         <property name="background">green</property>
                         <property name="scrollregion">0 0  600 600</property>
-                        <packing>
+                        <layout>
                             <property name="row">0</property>
                             <property name="column">0</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
-                <packing>
+                <layout>
                     <property name="row">1</property>
                     <property name="column">0</property>
                     <property name="sticky">nsew</property>
@@ -37,10 +37,10 @@
                             <property name="weight">1</property>
                         </row>
                     </rows>
-                </packing>
+                </layout>
             </object>
         </child>
-        <packing>
+        <layout>
             <property name="row">0</property>
             <property name="column">0</property>
             <property name="sticky">nsew</property>
@@ -54,6 +54,6 @@
                     <property name="weight">1</property>
                 </row>
             </rows>
-        </packing>
+        </layout>
     </object>
 </interface>

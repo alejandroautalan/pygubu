@@ -4,10 +4,10 @@
         <child>
             <object class="ttk.Label" id="label1">
                 <property name="text">VScrolledFrame test:</property>
-                <packing>
+                <layout>
                     <property name="row">0</property>
                     <property name="column">0</property>
-                </packing>
+                </layout>
             </object>
         </child>
         <child>
@@ -15,94 +15,94 @@
                 <child>
                     <object class="ttk.Button" id="button1">
                         <property name="text">a button</property>
-                        <packing>
+                        <layout>
                             <property name="row">0</property>
                             <property name="column">0</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
                 <child>
                     <object class="ttk.Button" id="button2">
                         <property name="text">a button 2</property>
-                        <packing>
+                        <layout>
                             <property name="row">1</property>
                             <property name="column">0</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
                 <child>
                     <object class="ttk.Button" id="button3">
                         <property name="text">a button 3</property>
-                        <packing>
+                        <layout>
                             <property name="row">2</property>
                             <property name="column">0</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
                 <child>
                     <object class="ttk.Button" id="button4">
                         <property name="text">a button 4</property>
-                        <packing>
+                        <layout>
                             <property name="row">3</property>
                             <property name="column">0</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
                 <child>
                     <object class="ttk.Button" id="button5">
                         <property name="text">a button 5</property>
-                        <packing>
+                        <layout>
                             <property name="row">4</property>
                             <property name="column">0</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
                 <child>
                     <object class="ttk.Button" id="button6">
                         <property name="text">a button 6</property>
-                        <packing>
+                        <layout>
                             <property name="row">5</property>
                             <property name="column">0</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
                 <child>
                     <object class="ttk.Button" id="button7">
                         <property name="text">a button 7</property>
-                        <packing>
+                        <layout>
                             <property name="row">6</property>
                             <property name="column">0</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
                 <child>
                     <object class="ttk.Button" id="button8">
                         <property name="text">a button 8</property>
-                        <packing>
+                        <layout>
                             <property name="row">7</property>
                             <property name="column">0</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
                 <child>
                     <object class="ttk.Button" id="button9">
                         <property name="text">a button 9</property>
-                        <packing>
+                        <layout>
                             <property name="row">8</property>
                             <property name="column">0</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
                 <child>
                     <object class="ttk.Button" id="button10">
                         <property name="text">a button 10</property>
-                        <packing>
+                        <layout>
                             <property name="row">9</property>
                             <property name="column">0</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
-                <packing>
+                <layout>
                     <property name="row">1</property>
                     <property name="column">0</property>
                     <property name="sticky">nsew</property>
@@ -116,10 +116,10 @@
                             <property name="weight">1</property>
                         </row>
                     </rows>
-                </packing>
+                </layout>
             </object>
         </child>
-        <packing>
+        <layout>
             <property name="row">0</property>
             <property name="column">0</property>
             <property name="sticky">nsew</property>
@@ -133,6 +133,6 @@
                     <property name="weight">1</property>
                 </row>
             </rows>
-        </packing>
+        </layout>
     </object>
 </interface>

@@ -34,23 +34,23 @@
                     <object class="ttk.Label" id="label_project">
                         <property name="text">Project:</property>
                         <property name="padding">0 0 10 0</property>
-                        <packing>
+                        <layout>
                             <property name="row">0</property>
                             <property name="column">0</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
                 <child>
                     <object class="ttk.Label" id="projectname_lbl">
                         <property name="text">Project file name here.</property>
-                        <packing>
+                        <layout>
                             <property name="sticky">we</property>
                             <property name="row">0</property>
                             <property name="column">1</property>
-                        </packing>
+                        </layout>
                     </object>
                 </child>
-                <packing>
+                <layout>
                     <property name="row">0</property>
                     <property name="column">0</property>
                     <property name="sticky">nsew</property>
@@ -65,7 +65,7 @@
                             <property name="pad">10</property>
                         </column>
                     </columns>
-                </packing>
+                </layout>
             </object>
         </child>
         <child>
@@ -81,14 +81,14 @@
                                         <property name="scrolltype">both</property>
                                         <child>
                                             <object class="ttk.Treeview" id="widgetlist">
-                                                <packing>
+                                                <layout>
                                                     <property name="sticky">nsew</property>
                                                     <property name="row">0</property>
                                                     <property name="column">0</property>
-                                                </packing>
+                                                </layout>
                                             </object>
                                         </child>
-                                        <packing>
+                                        <layout>
                                             <property name="row">0</property>
                                             <property name="column">0</property>
                                             <property name="sticky">nsew</property>
@@ -102,7 +102,7 @@
                                                     <property name="weight">1</property>
                                                 </row>
                                             </rows>
-                                        </packing>
+                                        </layout>
                                     </object>
                                 </child>
                                 <child>
@@ -116,14 +116,14 @@
                                                                 <property name="scrolltype">both</property>
                                                                 <child>
                                                                     <object class="ttk.Treeview" id="treeview1">
-                                                                        <packing>
+                                                                        <layout>
                                                                             <property name="sticky">nsew</property>
                                                                             <property name="row">0</property>
                                                                             <property name="column">0</property>
-                                                                        </packing>
+                                                                        </layout>
                                                                     </object>
                                                                 </child>
-                                                                <packing>
+                                                                <layout>
                                                                     <property name="row">1</property>
                                                                     <property name="column">0</property>
                                                                     <property name="sticky">nsew</property>
@@ -137,10 +137,10 @@
                                                                             <property name="weight">1</property>
                                                                         </row>
                                                                     </rows>
-                                                                </packing>
+                                                                </layout>
                                                             </object>
                                                         </child>
-                                                        <packing>
+                                                        <layout>
                                                             <property name="sticky">nsew</property>
                                                             <property name="row">0</property>
                                                             <property name="column">0</property>
@@ -154,7 +154,7 @@
                                                                     <property name="weight">1</property>
                                                                 </column>
                                                             </columns>
-                                                        </packing>
+                                                        </layout>
                                                     </object>
                                                 </child>
                                             </object>
@@ -170,27 +170,27 @@
                                                                 <child>
                                                                     <object class="ttk.ScrolledFrame" id="propertiesframe">
                                                                     <property name="padding">5</property>
-                                                                        <packing>
+                                                                        <layout>
                                                                             <property name="sticky">nsew</property>
                                                                             <property name="row">0</property>
                                                                             <property name="column">0</property>
-                                                                        </packing>
+                                                                        </layout>
                                                                     </object>
                                                                 </child>
                                                             </object>
                                                         </child>
                                                         <child>
-                                                            <object class="ttk.Notebook.Tab" id="packingtab">
+                                                            <object class="ttk.Notebook.Tab" id="layouttab">
                                                                 <property name="text">Layout</property>
                                                                 <property name="sticky">nsew</property>
                                                                 <child>
-                                                                    <object class="ttk.ScrolledFrame" id="packingframe">
+                                                                    <object class="ttk.ScrolledFrame" id="layoutframe">
                                                                     <property name="padding">5</property>
-                                                                        <packing>
+                                                                        <layout>
                                                                             <property name="sticky">nsew</property>
                                                                             <property name="row">0</property>
                                                                             <property name="column">0</property>
-                                                                        </packing>
+                                                                        </layout>
                                                                     </object>
                                                                 </child>
                                                             </object>
@@ -199,14 +199,14 @@
                                                 </child>
                                             </object>
                                         </child>
-                                        <packing>
+                                        <layout>
                                             <property name="sticky">nsew</property>
                                             <property name="row">0</property>
                                             <property name="column">1</property>
-                                        </packing>
+                                        </layout>
                                     </object>
                                 </child>
-                                <packing>
+                                <layout>
                                     <property name="sticky">nsew</property>
                                     <property name="row">0</property>
                                     <property name="column">0</property>
@@ -220,7 +220,7 @@
                                             <property name="weight">1</property>
                                         </row>
                                     </rows>
-                                </packing>
+                                </layout>
                             </object>
                         </child>
                     </object>
@@ -234,14 +234,14 @@
                         </child>
                     </object>
                 </child>
-                <packing>
+                <layout>
                     <property name="row">1</property>
                     <property name="column">0</property>
                     <property name="sticky">nsew</property>
-                </packing>
+                </layout>
             </object>
         </child>
-        <packing>
+        <layout>
             <property name="row">0</property>
             <property name="column">0</property>
             <property name="sticky">nsew</property>
@@ -255,6 +255,6 @@
                     <property name="weight">1</property>
                 </row>
             </rows>
-        </packing>
+        </layout>
     </object>
 </interface>

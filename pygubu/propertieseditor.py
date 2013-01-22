@@ -69,7 +69,7 @@ class WidgetPropertiesEditor:
         self.app = app
         self.treeview = app.treeview
         self.propsframe = app.widget_props_frame
-        self.packingframe = app.packing_props_frame
+        self.layoutframe = app.layout_props_frame
         self.arrayvar = PropertiesArray()
         self.prop_widget = {
             properties.GROUP_WIDGET: {},
@@ -156,7 +156,7 @@ class WidgetPropertiesEditor:
 
 
     def create_grid_layout_editor(self):
-        master = self.packingframe.innerframe
+        master = self.layoutframe.innerframe
         prop_widget = self.prop_widget
         frame = ttk.LabelFrame(master, text='Grid options:')
         label_tpl = "{0}:"
@@ -384,37 +384,46 @@ class WidgetPropertiesEditor:
                 label.grid_remove()
                 widget.grid_remove()
 
+        max_children = CLASS_MAP[wclass].maxchildren
+        max_children = 0 if max_children is None else max_children
+        is_container = CLASS_MAP[wclass].container
+        layout_required = CLASS_MAP[wclass].layout_required
+        show_layout = layout_required
         #grid layout properties
         group = properties.GROUP_LAYOUT_GRID
         for gkey in properties.PropertiesMap[group]:
             label, widget = self.prop_widget[group][gkey]
-            gdata = data.get('packing', {})
-            variable = self.arrayvar.get_property_variable(group, gkey)
-            self.update_property_widget(group, widget, variable, gkey,
-                    wclass, gdata)
-            label.grid()
-            widget.grid()
+            if show_layout:
+                gdata = data.get('layout', {})
+                variable = self.arrayvar.get_property_variable(group, gkey)
+                self.update_property_widget(group, widget, variable, gkey,
+                        wclass, gdata)
+                label.grid()
+                widget.grid()
+            else:
+                label.grid_remove()
+                widget.grid_remove()
 
         group = properties.GROUP_LAYOUT_GRID_RC
         max_row, max_col = self.get_max_row_col(item)
+        show_layout = (is_container and layout_required and max_children != 1)
         show_headers = False
-        is_container = CLASS_MAP[wclass].container
         for key in self.prop_widget[group]:
             rowcol, number, name = self.identify_gridrc_property(key)
             number_str = str(number)
             number = int(number)
-            if is_container and rowcol == 'row' and number <= max_row:
+            if show_layout and rowcol == 'row' and number <= max_row:
                 label, widget = self.prop_widget[group][key]
-                gdata = data.get('packing', {})
+                gdata = data.get('layout', {})
                 rcdata = gdata.get('rows',{}).get(number_str, {})
                 variable = self.arrayvar.get_property_variable(group, key)
                 self.update_property_widget(group, widget, variable, name,
                     wclass, rcdata)
                 label.grid(); widget.grid()
                 show_headers = True
-            elif is_container and rowcol == 'column' and number <= max_col:
+            elif show_layout and rowcol == 'column' and number <= max_col:
                 label, widget = self.prop_widget[group][key]
-                gdata = data.get('packing', {})
+                gdata = data.get('layout', {})
                 rcdata = gdata.get('columns',{}).get(number_str, {})
                 variable = self.arrayvar.get_property_variable(group, key)
                 self.update_property_widget(group, widget, variable, name,
@@ -432,7 +441,7 @@ class WidgetPropertiesEditor:
                 widget.grid_remove()
         #
         self.propsframe.reposition()
-        self.packingframe.reposition()
+        self.layoutframe.reposition()
 
         #re-enable callback
         self.arrayvar.enable_cb()
@@ -445,26 +454,47 @@ class WidgetPropertiesEditor:
         pgroup, pname = self.arrayvar.identify_property(elementname)
         tv = self.treeview
         treedata = self.app.tree_editor.treedata
+
         sel = tv.selection()
         if sel:
             item = sel[0]
+            widget_id = treedata[item]['id']
+            wclass = treedata[item]['class']
             if (pgroup in (properties.GROUP_WIDGET, properties.GROUP_CUSTOM)):
-                treedata[item][pname] = new_value
-                widget_id = treedata[item]['id']
-                wclass = treedata[item]['class']
+
+                if new_value:
+                    treedata[item][pname] = new_value
+                else:
+                    if pname in treedata[item]:
+                        del treedata[item][pname]
+
                 treenode_label = '{0} - {1}'.format(widget_id,wclass)
                 tv.item(item, text=treenode_label)
+
             elif (pgroup == properties.GROUP_LAYOUT_GRID and pname in
                     properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]):
-                treedata[item]['packing'][pname] = new_value
+
+                if new_value:
+                    treedata[item]['layout'][pname] = new_value
+                else:
+                    if pname in treedata[item]['layout']:
+                        del treedata[item]['layout'][pname]
+
             elif (pgroup == properties.GROUP_LAYOUT_GRID_RC):
-                layoutdata = treedata[item]['packing']
+                layoutdata = treedata[item]['layout']
                 row_col, number, name = self.identify_gridrc_property(pname)
                 number = str(number)
                 if row_col == 'row':
-                    layoutdata['rows'][number][name] = new_value
+                    lgroup = 'rows'
                 elif row_col == 'column':
-                    layoutdata['columns'][number][name] = new_value
+                    lgroup = 'columns'
+
+                if new_value:
+                    layoutdata[lgroup][number][name] = new_value
+                else:
+                    if name in layoutdata[lgroup][number]:
+                        del layoutdata[lgroup][number][name]
+
             self.app.tree_editor.draw_widget(item)
 
 
@@ -491,7 +521,7 @@ class WidgetPropertiesEditor:
         max_col = 0
         children = tree.get_children(item)
         for child in children:
-            data = self.app.tree_editor.treedata[child].get('packing', {})
+            data = self.app.tree_editor.treedata[child].get('layout', {})
             row = int(data.get('row', 0))
             col = int(data.get('column', 0))
             if row > max_row:
