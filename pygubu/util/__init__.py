@@ -17,6 +17,7 @@
 
 import tkinter
 from tkinter import ttk
+import tkinter.colorchooser
 
 
 class BaseFrame(ttk.Frame):
@@ -118,55 +119,35 @@ def create_scrollable(master, wclass, **kw):
     return widget
 
 
-class VerticalScrolledFrame(ttk.Frame):
-    """A pure Tkinter scrollable frame that actually works!
+def make_color_selector(master, textvariable):
+    frame = ttk.Frame(master)
+    entry = ttk.Entry(frame, textvariable=textvariable, state='readonly')
+    button = tkinter.Button(frame)
+    btn_bgcolor = button.cget('background')
 
-    * Use the 'innerframe' attribute to place widgets inside the scrollable frame
-    * Construct and pack/place/grid normally
-    * This frame only allows vertical scrolling
+    def on_entry_changed(varname, element, mode):
+        color = textvariable.get()
+        if color:
+            try:
+                button.configure(background=color)
+            except Exception as e:
+                pass
+        else:
+            #set button to the default color
+            button.configure(background=btn_bgcolor)
 
-    """
-    def __init__(self, parent, *args, **kw):
-        ttk.Frame.__init__(self, parent, *args, **kw)
+    def on_button_click():
+        current = entry.get()
+        _, txtcolor = tkinter.colorchooser.askcolor(color=current)
+        if txtcolor is not None:
+            textvariable.set(txtcolor)
 
-        # create a canvas object and a vertical scrollbar for scrolling it
-        vsb = ttk.Scrollbar(self, orient=tkinter.VERTICAL)
-        vsb.grid(row=0, column=1, sticky=tkinter.NS)
-        canvas = tkinter.Canvas(self, bd=0, highlightthickness=0,
-            yscrollcommand=lambda f, l: _autoscroll(vsb, f, l))
-        canvas.grid(row=0, column=0, sticky=tkinter.NSEW)
-        vsb.config(command=canvas.yview)
+    button.configure(command=on_button_click)
+    textvariable.trace('w', on_entry_changed)
+    entry.grid()
+    button.grid(row=0, column=1)
 
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
-
-        # reset the view
-        canvas.xview_moveto(0)
-        canvas.yview_moveto(0)
-
-        # create a frame inside the canvas which will be scrolled with it
-        self.innerframe = innerframe = ttk.Frame(canvas)
-        innerframe_id = canvas.create_window(0, 0, window=innerframe,
-            anchor=tkinter.NW)
-
-        # track changes to the canvas and frame width and sync them,
-        # also updating the scrollbar
-        def _configure_innerframe(event):
-            # update the scrollbars to match the size of the inner frame
-            size = (innerframe.winfo_reqwidth(), innerframe.winfo_reqheight())
-            canvas.config(scrollregion="0 0 %s %s" % size)
-            if innerframe.winfo_reqwidth() != canvas.winfo_width():
-                # update the canvas's width to fit the inner frame
-                canvas.config(width=innerframe.winfo_reqwidth())
-
-        innerframe.bind('<Configure>', _configure_innerframe)
-
-        def _configure_canvas(event):
-            if innerframe.winfo_reqwidth() != canvas.winfo_width():
-                # update the inner frame's width to fill the canvas
-                canvas.itemconfigure(innerframe_id, width=canvas.winfo_width())
-
-        canvas.bind('<Configure>', _configure_canvas)
+    return (frame, entry, button)
 
 
 def configure_treeview(tree, columns=None, headings=None, displaycolumns=None,

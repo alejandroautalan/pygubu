@@ -41,9 +41,13 @@ def register_property(name, description):
 # Base class
 #
 class BuilderObject:
+    class_ = None
+    container = False
     allowed_parents = None
     allowed_children = None
     maxchildren = None
+    properties = None
+    ro_properties = None
 
     @classmethod
     def factory(cls, master, properties=None, layout_properties=None):
@@ -57,7 +61,13 @@ class BuilderObject:
 
     def configure(self):
         for pname, value in self.properties.items():
-            self.widget[pname] = value
+            print('Setting property {} to {} at class {}'.format(pname, value, self.class_))
+            if self.ro_properties is None:
+                self.widget[pname] = value
+            else:
+                if pname not in self.ro_properties:
+                    self.widget[pname] = value
+
 
     def layout(self):
         #use grid layout for all
@@ -206,9 +216,10 @@ class PanedWindow(BuilderObject):
     class_ = None
     container = True
     properties = []
+    ro_properties = ('orient', )
 
     def __init__(self, master, properties, layout_prop):
-        orient = properties.pop('orient', 'vertical')
+        orient = properties.get('orient', 'vertical')
         self.widget = self.class_(master, orient=orient)
         self.properties = properties
         self.layout_properties = layout_prop
@@ -306,7 +317,7 @@ class TKScale(BuilderObject):
         'cursor', 'digits', 'font', 'foreground', 'from_',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
         'label', 'length', 'orient', 'relief', 'repeatdelay', 'repeatinterval',
-        'resolution', 'showvalue', 'sliderlenght', 'sliderrelief', 'state',
+        'resolution', 'showvalue', 'sliderlength', 'sliderrelief', 'state',
         'takefocus', 'tickinterval', 'to', 'troughcolor', 'variable', 'width']
 
 register('tk.Scale', TKScale)
@@ -325,7 +336,7 @@ register('tk.Scrollbar', TKScrollbar)
 
 
 class TKSpinbox(BuilderObject):
-    class_ = tkinter.Entry
+    class_ = tkinter.Spinbox
     container = False
     properties = ['activebackground', 'background', 'borderwidth',
         'buttonbackground', 'buttoncursor', 'buttondownrelief', 'buttonup',
@@ -338,6 +349,16 @@ class TKSpinbox(BuilderObject):
         'selectbackground', 'selectborderwidth', 'selectforeground', 'state',
         'takefocus', 'textvariable', 'to', 'values', 'width', 'wrap',
         'xscrollcommand']
+
+    def configure(self):
+        #hack to configure 'from_' and 'to' and avoid exception
+        if 'from_' in self.properties:
+            from_ = float(self.properties['from_'])
+            to = float(self.properties.get('to', 0))
+            if from_ > to:
+                to = from_ + 1
+                self.properties['to'] = str(to)
+        super(TKSpinbox, self).configure()
 
 register('tk.Spinbox', TKSpinbox)
 
@@ -444,6 +465,19 @@ class TKMenuitemSeparator(TKMenuitem):
 register('tk.Menuitem.Separator', TKMenuitemSeparator)
 
 
+class TKCanvas(BuilderObject):
+    class_ = tkinter.Canvas
+    container = False
+    properties = ['borderwidth', 'background', 'closeenough', 'confine',
+        'cursor', 'height', 'highlightbackground', 'highlightcolor',
+        'highlightthickness', 'relief', 'scrollregion', 'selectbackground',
+        'selectborderwidth', 'selectforeground', 'takefocus', 'width',
+        'xscrollincrement', 'xscrollcommand', 'yscrollincrement',
+        'yscrollcommand']
+
+register('tk.Canvas', TKCanvas)
+
+
 #
 # ttk widgets
 #
@@ -453,6 +487,7 @@ class TTKFrame(BuilderObject):
     container = True
     properties = ['class_', 'cursor', 'height', 'padding',
             'relief', 'style', 'takefocus', 'width']
+    ro_properties = ('class_',)
 
 register('ttk.Frame', TTKFrame)
 
@@ -465,6 +500,7 @@ class TTKLabel(BuilderObject):
             'image', 'justify', 'padding', 'relief',
             'style', 'takefocus', 'text', 'textvariable', 'underline',
             'width', 'wraplength']
+    ro_properties = ('class_',)
 
 register('ttk.Label', TTKLabel)
 
@@ -475,6 +511,7 @@ class TTKButton(BuilderObject):
     properties = ['class_', 'command', 'compound', 'cursor',
             'image', 'style', 'takefocus', 'text', 'textvariable',
             'underline']
+    ro_properties = ('class_',)
 
 register('ttk.Button', TTKButton)
 
@@ -485,6 +522,7 @@ class TTKCheckbutton(BuilderObject):
     properties = ['class_', 'command', 'compound', 'cursor',
             'image', 'style', 'takefocus', 'text', 'textvariable',
             'underline', 'variable', 'offvalue', 'onvalue', 'width']
+    ro_properties = ('class_',)
 
 register('ttk.Checkbutton', TTKCheckbutton)
 
@@ -495,6 +533,7 @@ class TTKRadiobutton(BuilderObject):
     properties = ['class_', 'command', 'compound', 'cursor',
             'image', 'style', 'takefocus', 'text', 'textvariable',
             'underline', 'value', 'variable', 'width']
+    ro_properties = ('class_',)
 
 register('ttk.Radiobutton', TTKRadiobutton)
 
@@ -506,6 +545,7 @@ class TTKCombobox(BuilderObject):
             'height', 'justify', 'postcommand', 'style', 'takefocus',
             'textvariable', 'validate', 'validatecommand', 'values',
             'width', 'xscrollcommand', 'state']
+    ro_properties = ('class_',)
 
 register('ttk.Combobox', TTKCombobox)
 
@@ -515,6 +555,7 @@ class TTKScrollbar(BuilderObject):
     container = False
     properties = ['class_', 'command', 'cursor', 'orient',
         'style', 'takefocus']
+    ro_properties = ('class_',)
 
 register('ttk.Scrollbar', TTKScrollbar)
 
@@ -523,6 +564,7 @@ class TTKSizegrip(BuilderObject):
     class_ = ttk.Sizegrip
     container = False
     properties = ['class_', 'style']
+    ro_properties = ('class_',)
 
 register('ttk.Sizegrip', TTKSizegrip)
 
@@ -534,6 +576,7 @@ class TTKEntry(BuilderObject):
             'invalidcommand', 'justify', 'show', 'style', 'takefocus',
             'textvariable', 'validate', 'validatecommand', 'values',
             'width', 'xscrollcommand']
+    ro_properties = ('class_',)
 
 register('ttk.Entry', TTKEntry)
 
@@ -543,6 +586,7 @@ class TTKProgressbar(BuilderObject):
     container = False
     properties = ['class_', 'cursor', 'length', 'maximum', 'mode',
             'orient', 'style', 'takefocus', 'variable']
+    ro_properties = ('class_',)
 
 register('ttk.Progressbar', TTKProgressbar)
 
@@ -553,6 +597,7 @@ class TTKScale(BuilderObject):
     properties = ['class_', 'command', 'cursor', 'from_', 'length',
             'orient', 'style', 'takefocus', 'to', 'variable', 'value',
             'variable']
+    ro_properties = ('class_',)
 
 register('ttk.Scale', TTKScale)
 
@@ -561,6 +606,7 @@ class TTKSeparator(BuilderObject):
     class_ = ttk.Separator
     container = False
     properties = ['class_', 'orient', 'style']
+    ro_properties = ('class_',)
 
 register('ttk.Separator', TTKSeparator)
 
@@ -571,15 +617,18 @@ class TTKLabelframe(BuilderObject):
     properties = ['borderwidth', 'class_', 'cursor', 'height',
             'labelanchor', 'labelwidget', 'padding',
             'relief', 'style', 'takefocus', 'text', 'underline', 'width']
+    ro_properties = ('class_',)
+
 #TODO: Add helper so the labelwidget can be configured on GUI
 register('ttk.Labelframe', TTKLabelframe)
 
 
 class TTKPanedwindow(PanedWindow):
     class_ = ttk.Panedwindow
-    allowed_children = ('ttk.PanedWindow.Pane',)
+    allowed_children = ('ttk.Panedwindow.Pane',)
     properties = ['class_', 'cursor', 'height', 'orient',
             'style', 'takefocus', 'width']
+    ro_properties = ('class_','orient')
 
 register('ttk.Panedwindow', TTKPanedwindow)
 
@@ -587,7 +636,7 @@ register('ttk.Panedwindow', TTKPanedwindow)
 class TTKPanedwindowPane(PanedWindowPane):
     class_ = None
     container = True
-    allowed_parents = ('ttk.Panedwindow.Pane',)
+    allowed_parents = ('ttk.Panedwindow',)
     maxchildren = 1
     properties = ['weight']
 
@@ -600,6 +649,7 @@ class TTKNotebook(BuilderObject):
     allowed_children = ('ttk.Notebook.Tab',)
     properties = ['class_', 'cursor', 'height',
             'padding', 'style', 'takefocus', 'width']
+    ro_properties = ('class_',)
 
 register('ttk.Notebook', TTKNotebook)
 
@@ -636,6 +686,7 @@ class TTKMenubutton(BuilderObject):
             'underline', 'width']
     allowed_children = ('tk.Menu',)
     maxchildren = 1
+    ro_properties = ('class_',)
 
     def add_child(self, cwidget):
         self.widget['menu'] = cwidget
@@ -648,23 +699,11 @@ class TTKTreeview(BuilderObject):
     container = False
     properties = ['class_', 'cursor', 'height', 'padding', 'selectmode',
         'show', 'style', 'takefocus']
+    ro_properties = ('class_',)
     #FIXME add support to properties: 'columns', 'displaycolumns'
     # and columns properties
 
 register('ttk.Treeview', TTKTreeview)
-
-
-class TKCanvas(BuilderObject):
-    class_ = tkinter.Canvas
-    container = False
-    properties = ['borderwidth', 'background', 'closeenough', 'confine',
-        'cursor', 'height', 'highlightbackground', 'highlightcolor',
-        'highlightthickness', 'relief', 'scrollregion', 'selectbackground',
-        'selectborderwidth', 'selectforeground', 'takefocus', 'width',
-        'xscrollincrement', 'xscrollcommand', 'yscrollincrement',
-        'yscrollcommand']
-
-register('tk.Canvas', TKCanvas)
 
 
 def _autoscroll(sbar, first, last):
@@ -834,6 +873,7 @@ class TTKScrolledFrame(ScrolledFrame):
     class_ = ttk.Frame
     scrollbar_class = ttk.Scrollbar
     properties = TTKFrame.properties
+    ro_properties = TTKFrame.ro_properties
 
 register('ttk.ScrolledFrame', TTKScrolledFrame)
 

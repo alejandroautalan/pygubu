@@ -15,6 +15,7 @@
 #
 # For further info, check  http://pygubu.web.here
 
+import re
 from collections import defaultdict
 import tkinter
 from tkinter import ttk
@@ -27,6 +28,7 @@ from .util.textentry import Textentry
 
 CLASS_MAP = builder.CLASS_MAP
 
+FLOAT_RE = re.compile(r'[+-]?(\d+(\.\d*)?)')
 
 class PropertiesArray(util.ArrayVar):
 
@@ -76,12 +78,40 @@ class WidgetPropertiesEditor:
             properties.GROUP_CUSTOM: {},
             'internal': {}
         }
+        #register validators
+        tkwidget = self.treeview
+        self.validators = {
+            'number_integer': (tkwidget.register(self.validator_integer),
+                '%d', '%P'),
+            'number_float': (tkwidget.register(self.validator_float),
+                '%d', '%P')
+        }
         self.create_properties()
         self.create_grid_layout_editor()
         self.hide_all()
         self.arrayvar.set_callback(self.on_array_variable_changed)
 
         self.treeview.bind('<<TreeviewSelect>>', self.on_treeview_select)
+
+
+    def validator_integer(self, action, newvalue):
+        valid = False
+        if action == '1': #1: insert 0: delete
+            valid = str(newvalue).isnumeric()
+        else:
+            valid = True
+        return valid
+
+
+    def validator_float(self, action, newvalue):
+        valid = False
+        if action == '1': #1: insert 0: delete
+            match = FLOAT_RE.match(newvalue)
+            if match is not None:
+                valid = True
+        else:
+            valid = True
+        return valid
 
 
     def create_properties(self):
@@ -219,6 +249,9 @@ class WidgetPropertiesEditor:
         elif wtype == 'textentry':
             widget = Textentry(master, textvariable=widgetvar,
                 width=20, height=3)
+        elif wtype == 'colorentry':
+            frame, _, _ = util.make_color_selector(master, widgetvar)
+            widget = frame
         elif wtype == 'choice':
             widget = ttk.Combobox(master, textvariable=widgetvar,
                 state='readonly')
@@ -229,8 +262,14 @@ class WidgetPropertiesEditor:
             widget = tkinter.Spinbox(master, textvariable=widgetvar)
             vmin = wdata.get('min', 0)
             vmax = wdata.get('max', 99)
+            increment = wdata.get('increment', 1)
             default = vmin if (vmin > 0 and default == '') else default
-            widget.configure(from_=vmin, to=vmax)
+            widget.configure(from_=vmin, to=vmax, increment=increment)
+            #validator
+            validator = wdata.get('validator', None)
+            if validator is not None:
+                widget.configure(validate='key',
+                    validatecommand=self.validators[validator])
         else:
             widget = ttk.Entry(master, textvariable=widgetvar)
         widgetvar.set(default)
