@@ -61,7 +61,6 @@ class BuilderObject:
 
     def configure(self):
         for pname, value in self.properties.items():
-            print('Setting property {} to {} at class {}'.format(pname, value, self.class_))
             if self.ro_properties is None:
                 self.widget[pname] = value
             else:

@@ -84,14 +84,26 @@ class WidgetPropertiesEditor:
             'number_integer': (tkwidget.register(self.validator_integer),
                 '%d', '%P'),
             'number_float': (tkwidget.register(self.validator_float),
-                '%d', '%P')
+                '%d', '%P'),
+            'alphanumeric': (tkwidget.register(self.validator_alphanumeric),
+                '%d', '%P'),
         }
+        self.dynamic_validator_mode = 'none'  #none, integer, float
         self.create_properties()
         self.create_grid_layout_editor()
         self.hide_all()
         self.arrayvar.set_callback(self.on_array_variable_changed)
 
         self.treeview.bind('<<TreeviewSelect>>', self.on_treeview_select)
+
+
+    def validator_alphanumeric(self, action, newvalue):
+        valid = False
+        if action == '1': #1: insert 0: delete
+            valid = str(newvalue).isalnum()
+        else:
+            valid = True
+        return valid
 
 
     def validator_integer(self, action, newvalue):
@@ -229,7 +241,6 @@ class WidgetPropertiesEditor:
         widget = None
         if propertyname in properties.PropertiesMap[group]:
             wdata = properties.PropertiesMap[group][propertyname]
-            wtype = wdata['input_method']
 
         widget = self.__create_widget(master, wdata, widgetvar)
         return widget
@@ -246,6 +257,11 @@ class WidgetPropertiesEditor:
             readonly = wdata.get('readonly', False)
             state = tkinter.DISABLED if readonly else tkinter.NORMAL
             widget = ttk.Entry(master, textvariable=widgetvar, state=state)
+            #validator
+            validator = wdata.get('validator', None)
+            if validator is not None:
+                widget.configure(validate='key',
+                    validatecommand=self.validators[validator])
         elif wtype == 'textentry':
             widget = Textentry(master, textvariable=widgetvar,
                 width=20, height=3)
@@ -301,6 +317,12 @@ class WidgetPropertiesEditor:
             wdata = dict(wdata, **wdata[classname])
 
         default = wdata.get('default', '')
+        if wtype == 'entry':
+            #switch validator mode for entry
+            validator = wdata.get('validator', None)
+            if validator is not None:
+                widget.configure(validate='key',
+                    validatecommand=self.validators[validator])
         if wtype == 'spinbox':
             vmin = wdata.get('min', 0)
             vmax = wdata.get('max', 99)

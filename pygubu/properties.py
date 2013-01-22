@@ -312,8 +312,9 @@ __widget = (
         'default': 'none'
         }),
     ('validatecommand', _default_entry_prop),
-    ('value', _default_entry_prop), #FIXME Should be alphanumeric
-                                    #for radiobuttons and float for ttk.Scale
+    ('value', { 'input_method': 'entry', 'validator': 'alphanumeric',
+        'ttk.Scale': { 'validator': 'number_float'}
+        }),
     ('values', _default_entry_prop), #FIXME This should be treated as a list?
     ('variable', _empty_choice), #FIXME Howto manage this property?
     ('weight', _default_spinbox_prop),
