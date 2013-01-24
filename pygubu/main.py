@@ -126,14 +126,15 @@ class PygubuUI(util.Application):
         #widget tree
         self.treeview = tree = builder.get_object('treeview1')
 
+        #Preview
+        nbpreview = builder.get_object('notebookpreview')
+        self.previewer = PreviewHelper(nbpreview)
+        #tree editor
+        self.tree_editor = WidgetsTreeEditor(self)
         #properties frame
         self.widget_props_frame = builder.get_object('propertiesframe')
         self.layout_props_frame = builder.get_object('layoutframe')
         self.properties_editor = WidgetPropertiesEditor(self)
-
-        nbpreview = builder.get_object('notebookpreview')
-        self.previewer = PreviewHelper(nbpreview)
-        self.tree_editor = WidgetsTreeEditor(self)
 
         self.grid(row=0, column=0, sticky='nswe')
         self.rowconfigure(0, weight=1)
