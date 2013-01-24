@@ -60,6 +60,7 @@ class PreviewHelper:
                 sticky=tkinter.NSEW)
             self.tabs[identifier] = canvas.frame
         else:
+            self.notebook.tab(self.tabs[identifier], text=widget_id)
             del self.builders[identifier]
             canvas = self.canvases[identifier]
             canvas.itemconfigure(self.preview_tag, window='')
