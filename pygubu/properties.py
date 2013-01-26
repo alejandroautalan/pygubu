@@ -142,6 +142,10 @@ __widget = (
     ('closeenough', _default_spinbox_prop),
     ('columnbreak', _default_true_false_prop),
     ('command', _default_entry_prop),
+    ('command_id_arg', {
+        'input_method': 'choice',
+        'values': ('True', 'False'),
+        'default': 'False'}),
     ('compound', {
         'input_method': 'choice',
         'values': ('', tkinter.TOP, tkinter.BOTTOM,
@@ -218,7 +222,6 @@ __widget = (
     ('insertofftime', _default_spinbox_prop),
     ('insertontime', _default_spinbox_prop),
     ('insertwidth', _default_dimension_prop),
-    ('invalidcommand', _default_entry_prop),
     ('image', _empty_choice), #FIXME image property
     ('jump', {'input_method': 'choice', 'values': ('', '0', '1')}),
     ('justify', {
@@ -312,6 +315,9 @@ __widget = (
         'default': 'none'
         }),
     ('validatecommand', _default_entry_prop),
+    ('validatecommand_args', _default_entry_prop),
+    ('invalidcommand', _default_entry_prop),
+    ('invalidcommand_args', _default_entry_prop),
     ('value', { 'input_method': 'entry', 'validator': 'alphanumeric',
         'ttk.Scale': { 'validator': 'number_float'}
         }),

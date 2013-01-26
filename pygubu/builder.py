@@ -52,11 +52,12 @@ class BuilderObject:
     command_properties = tuple()
 
     @classmethod
-    def factory(cls, master, properties=None, layout_properties=None):
-        clsobj = cls(master, properties, layout_properties)
+    def factory(cls, master, oid, properties=None, layout_properties=None):
+        clsobj = cls(master, oid, properties, layout_properties)
         return clsobj
 
-    def __init__(self, master, properties=None, layout_prop=None):
+    def __init__(self, master, oid, properties=None, layout_prop=None):
+        self.objetid = oid
         self.widget = self.class_(master)
         self.properties = properties
         self.layout_properties = layout_prop
@@ -65,8 +66,10 @@ class BuilderObject:
         for pname, value in self.properties.items():
             if (pname not in self.ro_properties and
                 pname not in self.command_properties):
-                self.widget[pname] = value
+                self.set_property(pname, value)
 
+    def set_property(self, pname, value):
+        self.widget[pname] = value
 
     def layout(self):
         #use grid layout for all
@@ -88,26 +91,39 @@ class BuilderObject:
     def add_child(self, cwidget):
         pass
 
+    def _create_callback(self, cpname, command):
+        return command
+
+    def _connect_command(self, cpname, callback):
+        prop = {cpname: callback}
+        self.widget.configure(**prop)
+
     def connect_commands(self, cmd_bag):
         notconnected = []
 
         if isinstance(cmd_bag, dict):
             for cmd in self.command_properties:
                 cmd_name = self.properties.get(cmd, None)
-                if cmd_name is not None and cmd_name in cmd_bag:
-                    prop = {cmd: cmd_bag[cmd_name]}
-                    self.widget.configure(**prop)
-                else:
-                    notconnected.append(cmd_name)
+                if cmd_name is not None:
+                    if cmd_name in cmd_bag:
+                        callback = self._create_callback(cmd, cmd_bag[cmd_name])
+                        self._connect_command(cmd, callback)
+                    else:
+                        notconnected.append(cmd_name)
         else:
             for cmd in self.command_properties:
                 cmd_name = self.properties.get(cmd, None)
-                if cmd_name is not None and hasattr(cmd_bag, cmd_name):
-                    prop = {cmd: getattr(cmd_bag, cmd_name)}
-                    self.widget.configure(**prop)
-                else:
-                    notconnected.append(cmd_name)
-        return notconnected
+                if cmd_name is not None:
+                    if hasattr(cmd_bag, cmd_name):
+                        callback = self._create_callback(cmd,
+                            getattr(cmd_bag, cmd_name))
+                        self._connect_command(cmd, callback)
+                    else:
+                        notconnected.append(cmd_name)
+        if notconnected:
+            return notconnected
+        else:
+            return None
 
 
 #
@@ -149,7 +165,28 @@ class TKLabelFrame(BuilderObject):
 register('tk.LabelFrame', TKLabelFrame)
 
 
-class TKEntry(BuilderObject):
+class EntryBaseBO(BuilderObject):
+    def set_property(self, pname, value):
+        if pname == 'text':
+            self.widget.insert('0', value)
+        elif pname in ('validatecommand_args', 'invalidcommand_args'):
+            pass
+        else:
+            super(EntryBaseBO, self).set_property(pname, value)
+
+    def _create_callback(self, cpname, command):
+        callback = command
+        if cpname in ('validatecommand', 'invalidcommand'):
+            args = self.properties.get(cpname + '_args', '')
+            if args:
+                args = args.split(' ')
+                callback = (self.widget.register(command),) + tuple(args)
+            else:
+                callback = self.widget.register(command)
+        return callback
+
+
+class TKEntry(EntryBaseBO):
     class_ = tkinter.Entry
     container = False
     properties = ['background', 'borderwidth', 'cursor',
@@ -160,7 +197,12 @@ class TKEntry(BuilderObject):
         'readonlybackground', 'relief', 'selectbackground',
         'selectborderwidth', 'selectforeground', 'show', 'state',
         'takefocus', 'textvariable', 'validate', 'validatecommand',
-        'width', 'wraplength', 'xscrollcommand']
+        'invalidcommand', 'width', 'wraplength', 'xscrollcommand',
+        'text', # < text is a custom property
+        'validatecommand_args',
+        'invalidcommand_args']
+    command_properties = ('validatecommand', 'invalidcommand',
+         'xscrollcommand')
 
 register('tk.Entry', TKEntry)
 
@@ -191,6 +233,7 @@ class TKCheckbutton(BuilderObject):
         'onvalue', 'overrelief', 'padx', 'pady', 'relief', 'selectcolor',
         'selectimage', 'state', 'takefocus', 'text', 'textvariable',
         'underline', 'variable', 'width', 'wraplength']
+    command_properties = ('command',)
 
 register('tk.Checkbutton', TKCheckbutton)
 
@@ -205,6 +248,7 @@ class TKListbox(BuilderObject):
             'selectbackground', 'selectborderwidth', 'selectforeground',
             'selectmode', 'state', 'takefocus', 'width', 'xscrollcommand',
             'yscrollcommand']
+    command_properties = ('xscrollcommand', 'yscrollcommand')
 
 register('tk.Listbox', TKListbox)
 
@@ -222,13 +266,14 @@ class TKText(BuilderObject):
             'spacing2', 'spacing3', 'state', 'tabs', 'takefocus',
             'undo', 'width', 'wrap', 'xscrollcommand', 'yscrollcommand',
             'text'] #<- text is a custom property.
+    command_properties = ('xscrollcommand', 'yscrollcommand')
 
-    def configure(self):
-        for pname, value in self.properties.items():
-            if pname == 'text':
-                self.widget.insert('0.0', value)
-            else:
-                self.widget[pname] = value
+    def set_property(self, pname, value):
+        if pname == 'text':
+            self.widget.insert('0.0', value)
+        else:
+            super(TKText, self).set_property(pname, value)
+
 
 register('tk.Text', TKText)
 
@@ -239,7 +284,8 @@ class PanedWindow(BuilderObject):
     properties = []
     ro_properties = ('orient', )
 
-    def __init__(self, master, properties, layout_prop):
+    def __init__(self, master, oid, properties, layout_prop):
+        self.objectid = oid
         orient = properties.get('orient', 'vertical')
         self.widget = self.class_(master, orient=orient)
         self.properties = properties
@@ -252,7 +298,8 @@ class PanedWindowPane(BuilderObject):
     properties = []
     layout_required = False
 
-    def __init__(self, master, properties, layout_prop):
+    def __init__(self, master, oid, properties, layout_prop):
+        self.objectid = oid
         self.widget = master
         self.properties= properties
         self.layout_properties = layout_prop
@@ -301,7 +348,7 @@ class TKMenubutton(BuilderObject):
     maxchildren = 1
 
     def add_child(self, cwidget):
-        self.widget['menu'] = cwidget
+        self.set_property('menu', cwidget)
 
 register('tk.Menubutton', TKMenubutton)
 
@@ -328,6 +375,7 @@ class TKRadiobutton(BuilderObject):
         'padx', 'pady', 'relief', 'selectcolor', 'selectimage', 'state',
         'takefocus', 'text', 'textvariable',
         'underline', 'variable', 'width', 'wraplength']
+    command_properties = ('command',)
 
 register('tk.Radiobutton', TKRadiobutton)
 
@@ -341,6 +389,7 @@ class TKScale(BuilderObject):
         'label', 'length', 'orient', 'relief', 'repeatdelay', 'repeatinterval',
         'resolution', 'showvalue', 'sliderlength', 'sliderrelief', 'state',
         'takefocus', 'tickinterval', 'to', 'troughcolor', 'variable', 'width']
+    command_properties = ('command',)
 
 register('tk.Scale', TKScale)
 
@@ -353,6 +402,7 @@ class TKScrollbar(BuilderObject):
         'highlightbackground', 'highlightcolor', 'highlightthickness',
         'jump', 'orient', 'relief', 'repeatdelay', 'repeatinterval',
         'takefocus', 'troughcolor', 'width']
+    command_properties = ('command',)
 
 register('tk.Scrollbar', TKScrollbar)
 
@@ -371,6 +421,7 @@ class TKSpinbox(BuilderObject):
         'selectbackground', 'selectborderwidth', 'selectforeground', 'state',
         'takefocus', 'textvariable', 'to', 'values', 'width', 'wrap',
         'xscrollcommand']
+    command_properties = ('command', 'xscrollcommand')
 
     def configure(self):
         #hack to configure 'from_' and 'to' and avoid exception
@@ -397,6 +448,7 @@ class TKMenu(BuilderObject):
         'background', 'borderwidth', 'cursor', 'disabledforeground',
         'font', 'foreground', 'postcommand', 'relief', 'selectcolor',
         'tearoff', 'tearoffcommand', 'title']
+    command_properties = ('postcommand', 'tearoffcommand')
 
     def layout(self):
         pass
@@ -416,11 +468,20 @@ class TKMenuitem(BuilderObject):
         'background', 'bitmap', 'columnbreak', 'command', 'compound',
         'font', 'foreground', 'hidemargin', 'image', 'label',
         'offvalue', 'onvalue', 'selectcolor', 'selectimage', 'state',
-        'underline', 'value', 'variable']
+        'underline', 'value', 'variable',
+        'command_id_arg', #<< custom property !!
+        ]
+    command_properties = ('command',)
 
-    def __init__(self, master, properties, layout_prop):
+    def __init__(self, master, oid, properties, layout_prop):
+        self.objectid = oid
         self.widget = master
-        master.add(self.itemtype, **properties)
+        itemproperties = properties
+        if 'command_id_arg' in itemproperties:
+            itemproperties = dict(properties)
+            itemproperties.pop('command_id_arg')
+        master.add(self.itemtype, **itemproperties)
+        self.__index = master.index(tkinter.END)
         self.properties= properties
         self.layout_properties = layout_prop
 
@@ -430,6 +491,24 @@ class TKMenuitem(BuilderObject):
     def layout(self):
         pass
 
+    def set_property(self, pname, value):
+        if pname == 'command_id_arg':
+            pass
+        else:
+            super(TKMenuitem, self).set_property(pname, value)
+
+    def _create_callback(self, cpname, callback):
+        command = callback
+        include_id = self.properties.get('command_id_arg', 'False')
+        if include_id != 'False':
+            def item_callback(item_id=self.objectid):
+                callback(item_id)
+            command = item_callback
+        return command
+
+    def _connect_command(self, cpname, callback):
+        self.widget.entryconfigure(self.__index, command=callback)
+
 
 class TKMenuitemSubmenu(TKMenu):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
@@ -438,7 +517,8 @@ class TKMenuitemSubmenu(TKMenu):
         'tk.Menuitem.Separator')
     properties = list(set(TKMenu.properties + TKMenuitem.properties))
 
-    def __init__(self, master, properties, layout_prop):
+    def __init__(self, master, oid, properties, layout_prop):
+        self.objectid = oid
         menu_properties = dict((k, v) for k, v in properties.items()
             if k in TKMenu.properties)
 
@@ -485,6 +565,7 @@ class TKMenuitemSeparator(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tkinter.constants.SEPARATOR
     properties = []
+    command_properties = tuple()
 
 register('tk.Menuitem.Separator', TKMenuitemSeparator)
 
@@ -498,6 +579,7 @@ class TKCanvas(BuilderObject):
         'selectborderwidth', 'selectforeground', 'takefocus', 'width',
         'xscrollincrement', 'xscrollcommand', 'yscrollincrement',
         'yscrollcommand']
+    command_properties = ('xscrollcommand', 'yscrollcommand')
 
 register('tk.Canvas', TKCanvas)
 
@@ -548,6 +630,7 @@ class TTKCheckbutton(BuilderObject):
             'image', 'style', 'takefocus', 'text', 'textvariable',
             'underline', 'variable', 'offvalue', 'onvalue', 'width']
     ro_properties = ('class_',)
+    command_properties = ('command',)
 
 register('ttk.Checkbutton', TTKCheckbutton)
 
@@ -559,6 +642,7 @@ class TTKRadiobutton(BuilderObject):
             'image', 'style', 'takefocus', 'text', 'textvariable',
             'underline', 'value', 'variable', 'width']
     ro_properties = ('class_',)
+    command_properties = ('command',)
 
 register('ttk.Radiobutton', TTKRadiobutton)
 
@@ -568,9 +652,30 @@ class TTKCombobox(BuilderObject):
     container = False
     properties = ['class_', 'cursor', 'exportselection',
             'height', 'justify', 'postcommand', 'style', 'takefocus',
-            'textvariable', 'validate', 'validatecommand', 'values',
-            'width', 'xscrollcommand', 'state']
+            'textvariable', 'validate', 'validatecommand', 'invalidcommand',
+            'values', 'width', 'xscrollcommand', 'state',
+            'validatecommand_args',
+            'invalidcommand_args']
     ro_properties = ('class_',)
+    command_properties = ('postcommand', 'validatecommand',
+        'invalidcommand', 'xscrollcommand')
+
+    def set_property(self, pname, value):
+        if pname in ('validatecommand_args', 'invalidcommand_args'):
+            pass
+        else:
+            super(TTKCombobox, self).set_property(pname, value)
+
+    def _create_callback(self, cpname, command):
+        callback = command
+        if cpname in ('validatecommand', 'invalidcommand'):
+            args = self.properties.get(cpname + '_args', '')
+            if args:
+                args = args.split(' ')
+                callback = (self.widget.register(command),) + tuple(args)
+            else:
+                callback = self.widget.register(command)
+        return callback
 
 register('ttk.Combobox', TTKCombobox)
 
@@ -581,6 +686,7 @@ class TTKScrollbar(BuilderObject):
     properties = ['class_', 'command', 'cursor', 'orient',
         'style', 'takefocus']
     ro_properties = ('class_',)
+    command_properties = ('command',)
 
 register('ttk.Scrollbar', TTKScrollbar)
 
@@ -594,14 +700,20 @@ class TTKSizegrip(BuilderObject):
 register('ttk.Sizegrip', TTKSizegrip)
 
 
-class TTKEntry(BuilderObject):
+class TTKEntry(EntryBaseBO):
     class_ = ttk.Entry
     container = False
     properties = ['class_', 'cursor', 'exportselection', 'font',
             'invalidcommand', 'justify', 'show', 'style', 'takefocus',
             'textvariable', 'validate', 'validatecommand', 'values',
-            'width', 'xscrollcommand']
+            'width', 'xscrollcommand',
+            'text', # < text is a custom property
+            'validatecommand_args',
+            'invalidcommand_args']
     ro_properties = ('class_',)
+    command_properties = ('validatecommand', 'invalidcommand',
+        'xscrollcommand')
+
 
 register('ttk.Entry', TTKEntry)
 
@@ -620,9 +732,9 @@ class TTKScale(BuilderObject):
     class_ = ttk.Scale
     container = False
     properties = ['class_', 'command', 'cursor', 'from_', 'length',
-            'orient', 'style', 'takefocus', 'to', 'variable', 'value',
-            'variable']
+            'orient', 'style', 'takefocus', 'to', 'variable', 'value']
     ro_properties = ('class_',)
+    command_properties = ('command',)
 
 register('ttk.Scale', TTKScale)
 
@@ -687,7 +799,8 @@ class TTKNotebookTab(BuilderObject):
     properties = ['compound', 'padding', 'sticky',
         'image', 'text', 'underline']
 
-    def __init__(self, master, properties, layout_prop):
+    def __init__(self, master, oid, properties, layout_prop):
+        self.objectid = oid
         self.widget = master
         self.properties= properties
         self.layout_properties = layout_prop
@@ -715,7 +828,7 @@ class TTKMenubutton(BuilderObject):
     ro_properties = ('class_',)
 
     def add_child(self, cwidget):
-        self.widget['menu'] = cwidget
+        self.set_property('menu', cwidget)
 
 register('ttk.Menubutton', TTKMenubutton)
 
@@ -821,7 +934,8 @@ class ScrolledFrame(BuilderObject):
     container = True
     properties = []
 
-    def __init__(self, master, properties, layout_prop):
+    def __init__(self, master, oid, properties, layout_prop):
+        self.objectid = oid
         self.properties = properties
         self.layout_properties = layout_prop
         self.widget = self.class_(master)
@@ -972,7 +1086,8 @@ class Builder:
         if cname in CLASS_MAP:
             properties = self.get_properties(element)
             layout = self.get_layout_properties(element)
-            builderobj = CLASS_MAP[cname].factory(master, properties, layout)
+            builderobj = CLASS_MAP[cname].factory(master, uniqueid,
+                properties, layout)
             builderobj.configure()
             builderobj.layout()
             pwidget = builderobj.widget
@@ -1042,10 +1157,13 @@ class Builder:
         notconnected = []
         for wname, builderobj in self.objects.items():
             missing = builderobj.connect_commands(commands_bag)
-            notconnected.extend(missing)
+            if missing is not None:
+                notconnected.extend(missing)
         if notconnected:
+            notconnected = list(set(notconnected))
             msg = 'Missing callbacks for commands: {}'.format(notconnected)
             logger.warning(msg)
             return notconnected
         else:
             return None
+
