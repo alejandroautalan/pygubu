@@ -235,7 +235,6 @@ class WidgetsTreeEditor:
         widget_id = '{0}_{1}'.format(wclass, self.counter[wclass])
 
         treenode_label = '{0} - {1}'.format(widget_id,wclass)
-        item = tree.insert(root, 'end', text=treenode_label)
 
         data = {}
         data['class'] = wclass
@@ -264,7 +263,7 @@ class WidgetsTreeEditor:
         for prop_name in properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]:
             data[group][prop_name] = ''
 
-        rownum = str(len(tree.get_children(root)) - 1)
+        rownum = str(self.get_max_row(root)+1)
         data[group]['row'] = rownum
         data[group]['column'] = '0'
 
@@ -272,6 +271,7 @@ class WidgetsTreeEditor:
             data[group]['rows'] = defaultdict(dict)
             data[group]['columns'] = defaultdict(dict)
 
+        item = tree.insert(root, 'end', text=treenode_label)
         self.treedata[item] = data
 
         #select and show the item created
@@ -364,3 +364,14 @@ class WidgetsTreeEditor:
             pdict[p.get('name')] = p.text
         return pdict
 
+
+    def get_max_row(self, item):
+        tree = self.treeview
+        max_row = -1
+        children = tree.get_children(item)
+        for child in children:
+            data = self.app.tree_editor.treedata[child].get('layout', {})
+            row = int(data.get('row', 0))
+            if row > max_row:
+                max_row = row
+        return max_row
