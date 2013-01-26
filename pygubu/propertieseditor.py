@@ -110,14 +110,12 @@ class WidgetPropertiesEditor:
 
     def connect_focusout_cb(self, widget, pname):
         def focusout_handler(event, self=self, pname=pname):
-            print('focusout_handler for ', pname)
             self.on_property_changed(pname)
-        widget.bind('<FocusOut>', focusout_handler)
+        widget.bind('<FocusOut>', focusout_handler, add='+')
 
 
     def connect_command_cb(self, widget, pname):
         def command_handler(self=self, pname=pname):
-            print('command_handler for ', pname)
             self.on_property_changed(pname)
         widget.configure(command=command_handler)
 
@@ -137,6 +135,7 @@ class WidgetPropertiesEditor:
 
         new_value = self.arrayvar[pname]
         old_value = self._var_prev_value.get(pname, '')
+        print(pname, old_value, new_value)
 
         #Do not redraw if same values
         if new_value == old_value:
