@@ -30,6 +30,7 @@ CLASS_MAP = builder.CLASS_MAP
 
 FLOAT_RE = re.compile(r'[+-]?(\d+(\.\d*)?)')
 
+
 class PropertiesArray(util.ArrayVar):
 
     def get_property_variable(self, group, name):
@@ -72,11 +73,31 @@ class WidgetPropertiesEditor:
                 '%d', '%P'),
             'alphanumeric': (tkwidget.register(self.validator_alphanumeric),
                 '%d', '%P'),
+            'tkpadding': (tkwidget.register(self.validator_tkpadding),
+                '%d', '%P'),
         }
         self.create_properties()
         self.create_grid_layout_editor()
         self.hide_all()
         self.treeview.bind('<<TreeviewSelect>>', self.on_treeview_select)
+
+
+    def validator_tkpadding(self, action, newvalue):
+        valid = True
+        if action == '1': #1: insert 0: delete
+            nums = newvalue.split()
+            print(nums)
+            if len(nums) <= 4:
+                for num in nums:
+                    if not num.isnumeric():
+                        valid = False
+                        break;
+            else:
+                valid = False
+        else:
+            valid = True
+        print(valid)
+        return valid
 
 
     def validator_alphanumeric(self, action, newvalue):
@@ -152,16 +173,15 @@ class WidgetPropertiesEditor:
             item = sel[0]
             widget_id = treedata[item]['id']
             wclass = treedata[item]['class']
+            print(pname, pgroup, widget_id, wclass)
             if (pgroup in (properties.GROUP_WIDGET, properties.GROUP_CUSTOM)):
 
                 if new_value:
                     treedata[item][pname] = new_value
                 else:
-                    if pname in treedata[item] and pname != 'id':
+                    if (pname in treedata[item] and
+                        pname not in properties.GROUP_CUSTOM):
                         del treedata[item][pname]
-
-                treenode_label = '{0} - {1}'.format(widget_id,wclass)
-                tv.item(item, text=treenode_label)
 
             elif (pgroup == properties.GROUP_LAYOUT_GRID and pname in
                     properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]):
@@ -187,6 +207,7 @@ class WidgetPropertiesEditor:
                     if name in layoutdata[lgroup][number]:
                         del layoutdata[lgroup][number][name]
 
+            self.app.tree_editor.update_item(item)
             self.app.tree_editor.draw_widget(item)
 
 

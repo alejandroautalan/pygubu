@@ -256,7 +256,7 @@ __widget = (
         'default': tkinter.HORIZONTAL
         }),
     ('overrelief', _default_relief_prop),
-    ('padding', _default_dimension_prop),
+    ('padding', {'input_method': 'entry', 'validator': 'tkpadding'}),
     ('padx', _default_spinbox_prop),
     ('pady', _default_spinbox_prop),
     ('postcommand', _default_entry_prop),
@@ -299,9 +299,9 @@ __widget = (
         }),
     ('sticky', _sticky_prop),
     ('style', _empty_choice), #FIXME Howto manage this property?
-    ('tabs', _default_entry_prop), #FIXME see tk.Text tab property 
+    ('tabs', _default_entry_prop), #FIXME see tk.Text tab property
     ('takefocus', _default_true_false_prop),
-    ('tearoff', _default_entry_prop),
+    ('tearoff', _default_true_false_prop),
     ('tearoffcommand', _default_entry_prop),
     ('text', _default_textentry_prop),
     ('textvariable', _empty_choice), #FIXME Howto manage this property?

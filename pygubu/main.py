@@ -24,6 +24,7 @@ import xml.etree.ElementTree as ET
 import tkinter
 from tkinter import ttk
 from tkinter import filedialog
+from tkinter import messagebox
 
 import pygubu
 from . import util
@@ -78,8 +79,10 @@ class PreviewHelper:
             preview_widget = menubutton
         else:
             preview_widget = uibuilder.get_object(widget_id, canvas)
+
         self.windows[identifier] = preview_widget
         canvas.itemconfigure(self.preview_tag, window=preview_widget)
+
 
     def delete(self, identifier):
         self.notebook.forget(self.tabs[identifier])
@@ -97,6 +100,8 @@ class PygubuUI(util.Application):
 
         self.preview = None
         self.builder = builder = pygubu.Builder()
+        self.currentfile = None
+        self.is_changed = False
 
         uifile = os.path.join(os.path.dirname(__file__),"../ui/pygubu-ui.ui")
         builder.add_from_file(uifile)
@@ -106,15 +111,6 @@ class PygubuUI(util.Application):
         toplevel = self.winfo_toplevel()
         menu = builder.get_object('mainmenu', toplevel)
         toplevel['menu'] = menu
-
-        #menu
-        menu = builder.get_object('filemenu')
-        #fileopen
-        menu.entryconfigure(1, command=self.on_menuitem_open_clicked)
-        #filesave
-        menu.entryconfigure(2, command=self.on_menuitem_save_clicked)
-        #filequit
-        menu.entryconfigure(4, command=self.quit)
 
         #project name
         self.project_name = self.builder.get_object('projectname_lbl')
@@ -135,6 +131,8 @@ class PygubuUI(util.Application):
         self.widget_props_frame = builder.get_object('propertiesframe')
         self.layout_props_frame = builder.get_object('layoutframe')
         self.properties_editor = WidgetPropertiesEditor(self)
+
+        self.builder.connect_commands(self)
 
         self.grid(row=0, column=0, sticky='nswe')
         self.rowconfigure(0, weight=1)
@@ -167,29 +165,81 @@ class PygubuUI(util.Application):
             self.tree_editor.add_widget(wclass)
 
 
+    def on_menuitem_new_clicked(self):
+        new = True
+        if self.is_changed:
+            new = openfile = messagebox.askokcancel('File changed',
+                'Changes not saved. Discard Changes?')
+        if new:
+            self.tree_editor.remove_all()
+            self.is_changed = False
+            self.project_name.configure(text='<None>')
+
+
     def on_menuitem_open_clicked(self):
         """Opens xml file and load to treeview"""
-
-        fname = filedialog.askopenfilename()
-        if fname:
-            self.load_file(fname)
+        openfile = True
+        if self.is_changed:
+            openfile = messagebox.askokcancel('File changed',
+                'Changes not saved. Open new file anyway?')
+        if openfile:
+            fname = filedialog.askopenfilename()
+            if fname:
+                self.load_file(fname)
+                self.currentfile = fname
+                self.is_changed = False
 
 
     def on_menuitem_save_clicked(self):
         """Save treeview to xml file"""
 
+        if self.currentfile:
+            if self.is_changed:
+                self.do_save(self.currentfile)
+        else:
+            self.do_save_as()
+
+
+    def on_menuitem_saveas_clicked(self):
+        self.do_save_as()
+
+
+    def on_menuitem_quit_clicked(self):
+        self.on_close_execute()
+
+
+    def on_close_execute(self):
+        quit = True
+        if self.is_changed:
+            quit = messagebox.askokcancel('File changed',
+                'Changes not saved. Quit anyway?')
+        return quit
+
+
+    def do_save(self, fname):
+        self.save_file(fname)
+        self.currentfile = fname
+        self.is_changed = False
+
+
+    def do_save_as(self):
         fname = filedialog.asksaveasfilename()
         if fname:
-            self.save_file(fname)
+            self.do_save(fname)
 
 
     def save_file(self, filename):
+        self.project_name.configure(text=filename)
         xml_tree = self.tree_editor.tree_to_xml()
         xmlvar = xml.dom.minidom.parseString(
             ET.tostring(xml_tree.getroot()))
         pretty_xml_as_string = xmlvar.toprettyxml(indent=' '*4)
         with open(filename, 'w') as f:
             f.write(pretty_xml_as_string)
+
+
+    def set_changed(self):
+        self.is_changed = True
 
 
     def load_file(self, filename):

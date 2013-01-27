@@ -37,9 +37,9 @@ class WidgetsTreeEditor:
     def config_treeview(self):
         """Sets treeview columns and other params"""
         tree = self.treeview
-        columns = tuple()
-        dcols = tuple()
-        hcols = ('Widget Tree',) + columns
+        columns = ('class', 'row', 'col', 'space_trick')
+        dcols = columns
+        hcols = ('Widget Tree', ' '*10, ' '*2, ' '*2, ' ')
         util.configure_treeview(tree, columns, displaycolumns=dcols,
             headings=hcols, show_tree=True)
         tree.bind('<KeyPress-Delete>', self.on_treeview_delete_item)
@@ -76,7 +76,9 @@ class WidgetsTreeEditor:
         toplevel_items = tv.get_children()
         if sel:
             item = sel[0]
-            self.draw_widget(item)
+            if tv.parent(item) == '':
+                #only redraw if toplevel is double clicked
+                self.draw_widget(item)
 
 
     def on_treeview_delete_item(self, event):
@@ -171,6 +173,38 @@ class WidgetsTreeEditor:
         return node
 
 
+    def _insert_item(self, root, data):
+        tree = self.treeview
+        treelabel = data['id']
+        row = col = ''
+        if root != '' and 'layout' in data:
+            if 'row' in data['layout']:
+                row = data['layout']['row']
+                col = data['layout']['column']
+        values = (data['class'], row, col)
+        item = tree.insert(root, 'end', text=treelabel, values=values)
+        self.app.set_changed()
+
+        return item
+
+
+    def update_item(self, item):
+        tree = self.treeview
+        data = self.treedata[item]
+        if data['id'] != tree.item(item, 'text'):
+            tree.item(item, text=data['id'])
+        if tree.parent(item) != '' and 'layout' in data:
+            if 'row' in data['layout'] and 'column' in data['layout']:
+                row = data['layout']['row']
+                col = data['layout']['column']
+                values = tree.item(item, 'values')
+                if (row != values[1] or col != values[2]):
+                    values = (data['class'], data['layout']['row'],
+                        data['layout']['column'])
+                tree.item(item, values=values)
+        self.app.set_changed()
+
+
     def add_widget(self, wclass):
         """Adds a new item to the treeview."""
 
@@ -234,8 +268,6 @@ class WidgetsTreeEditor:
         #setup properties
         widget_id = '{0}_{1}'.format(wclass, self.counter[wclass])
 
-        treenode_label = '{0} - {1}'.format(widget_id,wclass)
-
         data = {}
         data['class'] = wclass
         data['id'] = widget_id
@@ -263,7 +295,9 @@ class WidgetsTreeEditor:
         for prop_name in properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]:
             data[group][prop_name] = ''
 
-        rownum = str(self.get_max_row(root)+1)
+        rownum = '0'
+        if root:
+            rownum = str(self.get_max_row(root)+1)
         data[group]['row'] = rownum
         data[group]['column'] = '0'
 
@@ -271,7 +305,7 @@ class WidgetsTreeEditor:
             data[group]['rows'] = defaultdict(dict)
             data[group]['columns'] = defaultdict(dict)
 
-        item = tree.insert(root, 'end', text=treenode_label)
+        item = self._insert_item(root, data)
         self.treedata[item] = data
 
         #select and show the item created
@@ -281,12 +315,20 @@ class WidgetsTreeEditor:
         self.draw_widget(item)
 
 
+    def remove_all(self):
+        children = self.treeview.get_children()
+        if children:
+            self.treeview.delete(*children)
+
+
     def load_file(self, filename):
         """Load file into treeview"""
 
         self.counter.clear()
         etree = ET.parse(filename)
         eroot = etree.getroot()
+
+        self.remove_all()
 
         for element in eroot:
             self.populate_tree('', eroot, element)
@@ -302,9 +344,7 @@ class WidgetsTreeEditor:
         if cname in builder.CLASS_MAP:
             #update counter
             self.counter[cname] += 1
-            treenode_label = '{0} - {1}'.format(uniqueid, cname)
-            pwidget = self.treeview.insert(master, 'end',
-                text=treenode_label)
+
             data['class'] = cname
             data['id'] = uniqueid
 
@@ -342,6 +382,7 @@ class WidgetsTreeEditor:
                         columns_dict[column_id] = column_properties
                 data['layout']['columns'] = columns_dict
 
+            pwidget = self._insert_item(master, data)
             self.treedata[pwidget] = data
 
             xpath = "./child"
