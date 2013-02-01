@@ -1,1 +1,1 @@
-Bienbenido a pygubu un diseñador de interfaces para tkinter.
+Bienvenido a pygubu un diseñador de interfaces para tkinter.

@@ -50,13 +50,15 @@ class BuilderObject:
     ro_properties = tuple()
     layout_required = True
     command_properties = tuple()
+    tkvar_properties = ('listvariable', 'textvariable', 'variable')
 
     @classmethod
-    def factory(cls, master, oid, properties=None, layout_properties=None):
-        clsobj = cls(master, oid, properties, layout_properties)
+    def factory(cls, builder, master, oid, properties=None, layout_properties=None):
+        clsobj = cls(builder, master, oid, properties, layout_properties)
         return clsobj
 
-    def __init__(self, master, oid, properties=None, layout_prop=None):
+    def __init__(self, builder, master, oid, properties=None, layout_prop=None):
+        self.builder = builder
         self.objetid = oid
         self.widget = self.class_(master)
         self.properties = properties
@@ -68,8 +70,13 @@ class BuilderObject:
                 pname not in self.command_properties):
                 self.set_property(pname, value)
 
+
     def set_property(self, pname, value):
+        propvalue = value
+        if pname in self.tkvar_properties:
+            propvalue = self.builder.get_variable(value)
         self.widget[pname] = value
+
 
     def layout(self):
         #use grid layout for all
@@ -159,7 +166,7 @@ class TKLabelFrame(BuilderObject):
     properties = ['background', 'borderwidth', 'cursor', 'height',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
         'labelanchor', 'labelwidget', 'padx', 'pady', 'relief',
-        'takefocus', 'width']
+        'text', 'takefocus', 'width']
 #TODO: Add helper so the labelwidget can be configured on GUI
 
 register('tk.LabelFrame', TKLabelFrame)
@@ -284,7 +291,8 @@ class PanedWindow(BuilderObject):
     properties = []
     ro_properties = ('orient', )
 
-    def __init__(self, master, oid, properties, layout_prop):
+    def __init__(self, builder, master, oid, properties, layout_prop):
+        self.builder = builder
         self.objectid = oid
         orient = properties.get('orient', 'vertical')
         self.widget = self.class_(master, orient=orient)
@@ -298,7 +306,8 @@ class PanedWindowPane(BuilderObject):
     properties = []
     layout_required = False
 
-    def __init__(self, master, oid, properties, layout_prop):
+    def __init__(self, builder, master, oid, properties, layout_prop):
+        self.builder = builder
         self.objectid = oid
         self.widget = master
         self.properties= properties
@@ -473,7 +482,8 @@ class TKMenuitem(BuilderObject):
         ]
     command_properties = ('command',)
 
-    def __init__(self, master, oid, properties, layout_prop):
+    def __init__(self, builder, master, oid, properties, layout_prop):
+        self.builder = builder
         self.objectid = oid
         self.widget = master
         itemproperties = properties
@@ -517,7 +527,8 @@ class TKMenuitemSubmenu(TKMenu):
         'tk.Menuitem.Separator')
     properties = list(set(TKMenu.properties + TKMenuitem.properties))
 
-    def __init__(self, master, oid, properties, layout_prop):
+    def __init__(self, builder, master, oid, properties, layout_prop):
+        self.builder = builder
         self.objectid = oid
         menu_properties = dict((k, v) for k, v in properties.items()
             if k in TKMenu.properties)
@@ -799,7 +810,8 @@ class TTKNotebookTab(BuilderObject):
     properties = ['compound', 'padding', 'sticky',
         'image', 'text', 'underline']
 
-    def __init__(self, master, oid, properties, layout_prop):
+    def __init__(self, builder, master, oid, properties, layout_prop):
+        self.builder = builder
         self.objectid = oid
         self.widget = master
         self.properties= properties
@@ -934,7 +946,8 @@ class ScrolledFrame(BuilderObject):
     container = True
     properties = []
 
-    def __init__(self, master, oid, properties, layout_prop):
+    def __init__(self, builder, master, oid, properties, layout_prop):
+        self.builder = builder
         self.objectid = oid
         self.properties = properties
         self.layout_properties = layout_prop
@@ -1041,6 +1054,18 @@ class Builder:
         self.tree = None
         self.root = None
         self.objects = {}
+        self.tkvariables = {}
+
+
+    def get_variable(self, varname, vtype='StringVar'):
+        var = None
+        if varname in self.tkvariables:
+            var = self.tkvariables[varname]
+        else:
+            var = tkinter.StringVar()
+            self.tkvariables[varname] = var
+        return var
+
 
     def add_from_file(self, fpath):
         if self.tree is None:
@@ -1086,7 +1111,7 @@ class Builder:
         if cname in CLASS_MAP:
             properties = self.get_properties(element)
             layout = self.get_layout_properties(element)
-            builderobj = CLASS_MAP[cname].factory(master, uniqueid,
+            builderobj = CLASS_MAP[cname].factory(self, master, uniqueid,
                 properties, layout)
             builderobj.configure()
             builderobj.layout()

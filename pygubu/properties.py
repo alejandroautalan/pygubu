@@ -239,7 +239,7 @@ __widget = (
         }),
     ('labelwidget', _empty_choice),
     ('length', _default_dimension_prop),
-    ('listvariable', _default_entry_prop),
+    ('listvariable', _default_entry_prop), #FIXME tkvariable propery
     ('maximum', _default_spinbox_prop),
     ('maxundo', {
         'input_method': 'spinbox', 'min':-1, 'max':999, 'default': ''}),
@@ -304,7 +304,7 @@ __widget = (
     ('tearoff', _default_true_false_prop),
     ('tearoffcommand', _default_entry_prop),
     ('text', _default_textentry_prop),
-    ('textvariable', _empty_choice), #FIXME Howto manage this property?
+    ('textvariable', _default_entry_prop), #FIXME Howto manage this property?
     ('tickinterval', _default_spinbox_float_prop),
     ('title', _default_entry_prop),
     ('troughcolor', _default_color_prop),
@@ -322,7 +322,7 @@ __widget = (
         'ttk.Scale': { 'validator': 'number_float'}
         }),
     ('values', _default_entry_prop), #FIXME This should be treated as a list?
-    ('variable', _empty_choice), #FIXME Howto manage this property?
+    ('variable', _default_entry_prop), #FIXME Howto manage this property?
     ('weight', _default_spinbox_prop),
     ('wrap', { 'input_method': 'choice',
         'values': ('', tkinter.TRUE, tkinter.FALSE),

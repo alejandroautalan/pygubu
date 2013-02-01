@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<interface>
+    <object class="tk.Frame" id="tk.Frame_1">
+        <property name="height">250</property>
+        <property name="width">250</property>
+        <child>
+            <object class="tk.Entry" id="tk.Entry_1">
+                <property name="validate">none</property>
+                <property name="text">tk.Entry_1</property>
+                <layout>
+                    <property name="row">0</property>
+                    <property name="column">0</property>
+                </layout>
+            </object>
+        </child>
+        <child>
+            <object class="tk.Label" id="tk.Label_1">
+                <property name="text">tk.Label_1</property>
+                <layout>
+                    <property name="row">1</property>
+                    <property name="column">0</property>
+                </layout>
+            </object>
+        </child>
+        <layout>
+            <property name="row">0</property>
+            <property name="column">0</property>
+            <rows/>
+            <columns/>
+        </layout>
+    </object>
+</interface>
