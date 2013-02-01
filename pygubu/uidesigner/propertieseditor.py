@@ -20,8 +20,8 @@ from collections import defaultdict
 import tkinter
 from tkinter import ttk
 
+from pygubu import builder
 from . import util
-from . import builder
 from . import properties
 from .util.textentry import Textentry
 

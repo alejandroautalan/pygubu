@@ -27,8 +27,8 @@ from tkinter import filedialog
 from tkinter import messagebox
 
 import pygubu
+from pygubu import builder
 from . import util
-from . import builder
 from . import properties
 from .propertieseditor import WidgetPropertiesEditor
 from .widgeteditor import WidgetsTreeEditor
@@ -103,7 +103,9 @@ class PygubuUI(util.Application):
         self.currentfile = None
         self.is_changed = False
 
-        uifile = os.path.join(os.path.dirname(__file__),"../ui/pygubu-ui.ui")
+        print(os.path.dirname(os.path.abspath(__file__)))
+        uifile = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),"ui/pygubu-ui.ui")
         builder.add_from_file(uifile)
 
         #build main ui

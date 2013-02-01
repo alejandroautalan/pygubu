@@ -45,7 +45,7 @@ else:
 if project_basedir not in sys.path:
     sys.path.insert(0, project_basedir)
 
-from pygubu import main
+from pygubu.uidesigner import main
 
 main.start_pygubu()
 

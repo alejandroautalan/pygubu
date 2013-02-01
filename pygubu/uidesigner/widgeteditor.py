@@ -19,7 +19,7 @@ import xml.dom.minidom
 import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 
-from . import builder
+from pygubu import builder
 from . import util
 from . import properties
 
