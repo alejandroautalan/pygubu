@@ -207,7 +207,7 @@ class PygubuUI(util.Application):
 
 
     def on_menuitem_quit_clicked(self):
-        self.on_close_execute()
+        self.quit()
 
 
     def on_close_execute(self):
