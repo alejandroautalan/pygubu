@@ -53,16 +53,23 @@ class BuilderObject:
     tkvar_properties = ('listvariable', 'textvariable', 'variable')
 
     @classmethod
-    def factory(cls, builder, master, oid, properties=None, layout_properties=None):
-        clsobj = cls(builder, master, oid, properties, layout_properties)
+    def factory(cls, builder, wdata):
+        clsobj = cls(builder, wdata)
         return clsobj
 
-    def __init__(self, builder, master, oid, properties=None, layout_prop=None):
+
+    def __init__(self, builder, wdescr):
         self.builder = builder
-        self.objetid = oid
+        self.objetid = wdescr['id']
+        self.descr = wdescr
+        self.properties = wdescr.get('properties', {})
+        self.layout_properties = wdescr.get('layout', {})
+
+
+    def realize(self, master):
         self.widget = self.class_(master)
-        self.properties = properties
-        self.layout_properties = layout_prop
+        return self.widget
+
 
     def configure(self):
         for pname, value in self.properties.items():
@@ -291,13 +298,10 @@ class PanedWindow(BuilderObject):
     properties = []
     ro_properties = ('orient', )
 
-    def __init__(self, builder, master, oid, properties, layout_prop):
-        self.builder = builder
-        self.objectid = oid
-        orient = properties.get('orient', 'vertical')
+    def realize(self, master):
+        orient = self.properties.get('orient', 'vertical')
         self.widget = self.class_(master, orient=orient)
-        self.properties = properties
-        self.layout_properties = layout_prop
+        return self.widget
 
 
 class PanedWindowPane(BuilderObject):
@@ -306,12 +310,9 @@ class PanedWindowPane(BuilderObject):
     properties = []
     layout_required = False
 
-    def __init__(self, builder, master, oid, properties, layout_prop):
-        self.builder = builder
-        self.objectid = oid
+    def realize(self, master):
         self.widget = master
-        self.properties= properties
-        self.layout_properties = layout_prop
+        return self.widget
 
     def configure(self):
         pass
@@ -482,18 +483,14 @@ class TKMenuitem(BuilderObject):
         ]
     command_properties = ('command',)
 
-    def __init__(self, builder, master, oid, properties, layout_prop):
-        self.builder = builder
-        self.objectid = oid
+    def realize(self, master):
         self.widget = master
-        itemproperties = properties
+        itemproperties = self.properties
         if 'command_id_arg' in itemproperties:
-            itemproperties = dict(properties)
+            itemproperties = dict(itemproperties)
             itemproperties.pop('command_id_arg')
         master.add(self.itemtype, **itemproperties)
         self.__index = master.index(tkinter.END)
-        self.properties= properties
-        self.layout_properties = layout_prop
 
     def configure(self):
         pass
@@ -501,11 +498,6 @@ class TKMenuitem(BuilderObject):
     def layout(self):
         pass
 
-    def set_property(self, pname, value):
-        if pname == 'command_id_arg':
-            pass
-        else:
-            super(TKMenuitem, self).set_property(pname, value)
 
     def _create_callback(self, cpname, callback):
         command = callback
@@ -527,20 +519,17 @@ class TKMenuitemSubmenu(TKMenu):
         'tk.Menuitem.Separator')
     properties = list(set(TKMenu.properties + TKMenuitem.properties))
 
-    def __init__(self, builder, master, oid, properties, layout_prop):
-        self.builder = builder
-        self.objectid = oid
-        menu_properties = dict((k, v) for k, v in properties.items()
+    def realize(self, master):
+        menu_properties = dict((k, v) for k, v in self.properties.items()
             if k in TKMenu.properties)
 
-        item_properties = dict((k, v) for k, v in properties.items()
-            if k in TKMenuitem.properties)
+        item_properties = dict((k, v) for k, v in self.properties.items()
+            if k in TKMenuitem.properties and k != 'command_id_arg')
 
         self.widget = submenu = TKMenu.class_(master, **menu_properties)
         item_properties['menu'] = submenu
         master.add(tkinter.constants.CASCADE, **item_properties)
-        self.properties = properties
-        self.layout_properties = layout_prop
+
 
     def configure(self):
         pass
@@ -810,12 +799,8 @@ class TTKNotebookTab(BuilderObject):
     properties = ['compound', 'padding', 'sticky',
         'image', 'text', 'underline']
 
-    def __init__(self, builder, master, oid, properties, layout_prop):
-        self.builder = builder
-        self.objectid = oid
+    def realize(self, master):
         self.widget = master
-        self.properties= properties
-        self.layout_properties = layout_prop
 
     def configure(self):
         pass
@@ -946,11 +931,7 @@ class ScrolledFrame(BuilderObject):
     container = True
     properties = []
 
-    def __init__(self, builder, master, oid, properties, layout_prop):
-        self.builder = builder
-        self.objectid = oid
-        self.properties = properties
-        self.layout_properties = layout_prop
+    def realize(self, master):
         self.widget = self.class_(master)
         self.canvas = canvas = tkinter.Canvas(self.widget, bd=0, highlightthickness=0)
         self.innerframe = innerframe = self.class_(self.canvas)
@@ -1013,6 +994,7 @@ class ScrolledFrame(BuilderObject):
         # reset the view
         canvas.xview_moveto(0)
         canvas.yview_moveto(0)
+        return self.widget
 
 
     def configure(self):
@@ -1041,6 +1023,67 @@ class TTKScrolledFrame(ScrolledFrame):
     ro_properties = TTKFrame.ro_properties
 
 register('ttk.ScrolledFrame', TTKScrolledFrame)
+
+
+#
+#
+#
+def data_xmlnode_to_dict(element):
+    data = {}
+
+    data['class'] = element.get('class')
+    data['id'] = element.get('id')
+
+    #properties
+    properties = element.findall('./property')
+    pdict= {}
+    for p in properties:
+        pdict[p.get('name')] = p.text
+
+    data['properties'] = pdict
+
+    #get layout properties
+    #use grid layout for all
+    layout_properties = {}
+    layout_elem = element.find('./layout')
+    if layout_elem is not None:
+        props = layout_elem.findall('./property')
+        for p in props:
+            layout_properties[p.get('name')] = p.text
+
+        #get grid row and col properties:
+        rows_dict = {}
+        erows = layout_elem.find('./rows')
+        if erows is not None:
+            rows = erows.findall('./row')
+            for row in rows:
+                row_id = row.get('id')
+                row_properties = {}
+                props = row.findall('./property')
+                for p in props:
+                    row_properties[p.get('name')] = p.text
+                rows_dict[row_id] = row_properties
+        layout_properties['grid_rows'] = rows_dict
+
+        columns_dict = {}
+        ecolums = layout_elem.find('./columns')
+        if ecolums is not None:
+            columns = ecolums.findall('./column')
+            for column in columns:
+                column_id = column.get('id')
+                column_properties = {}
+                props = column.findall('./property')
+                for p in props:
+                    column_properties[p.get('name')] = p.text
+                columns_dict[column_id] = column_properties
+        layout_properties['grid_columns'] = columns_dict
+
+    data['layout'] = layout_properties
+    return data
+
+
+def data_dict_to_xmlnode(data):
+    pass
 
 
 #
@@ -1105,17 +1148,15 @@ class Builder:
 
 
     def realize(self, master, element):
-        cname = element.get('class')
-        uniqueid = element.get('id')
+        data = data_xmlnode_to_dict(element)
+        self.check_data(data)
+        cname = data['class']
+        uniqueid = data['id']
 
         if cname in CLASS_MAP:
-            properties = self.get_properties(element)
-            layout = self.get_layout_properties(element)
-            builderobj = CLASS_MAP[cname].factory(self, master, uniqueid,
-                properties, layout)
+            builderobj = CLASS_MAP[cname].factory(self, data)
+            pwidget = builderobj.realize(master)
             builderobj.configure()
-            builderobj.layout()
-            pwidget = builderobj.widget
 
             self.objects[uniqueid] = builderobj
 
@@ -1127,55 +1168,20 @@ class Builder:
                 cwidget = self.realize(cmaster, child_object)
                 builderobj.add_child(cwidget)
 
+            builderobj.layout()
             return pwidget
         else:
             raise Exception('Class "{0}" not mapped'.format(cname))
 
 
-    def get_layout_properties(self, element):
-        #use grid layout for all
-        #get layout properties
-        layout_properties = {}
-        layout_elem = element.find('./layout')
-        if layout_elem is not None:
-            layout_properties = self.get_properties(layout_elem)
-
-            #get grid row and col properties:
-            rows_dict = {}
-            erows = layout_elem.find('./rows')
-            if erows is not None:
-                rows = erows.findall('./row')
-                for row in rows:
-                    row_id = row.get('id')
-                    row_properties = self.get_properties(row)
-                    rows_dict[row_id] = row_properties
-            layout_properties['grid_rows'] = rows_dict
-
-            columns_dict = {}
-            ecolums = layout_elem.find('./columns')
-            if ecolums is not None:
-                columns = ecolums.findall('./column')
-                for column in columns:
-                    column_id = column.get('id')
-                    column_properties = self.get_properties(column)
-                    columns_dict[column_id] = column_properties
-            layout_properties['grid_columns'] = columns_dict
-        else:
-            cname = element.get('class')
-            uniqueid = element.get('id')
-            layout_required = CLASS_MAP[cname].layout_required
-            if layout_required:
-                logger.warning('No layout information for: (%s, %s).',
-                    cname, uniqueid)
-        return layout_properties
-
-
-    def get_properties(self, element):
-        properties = element.findall('./property')
-        pdict= {}
-        for p in properties:
-            pdict[p.get('name')] = p.text
-        return pdict
+    def check_data(self, data):
+        cname = data['class']
+        uniqueid = data['id']
+        layout = data['layout']
+        layout_required = CLASS_MAP[cname].layout_required
+        if layout_required and not layout:
+            logger.warning('No layout information for: (%s, %s).',
+                cname, uniqueid)
 
 
     def connect_commands(self, commands_bag):
