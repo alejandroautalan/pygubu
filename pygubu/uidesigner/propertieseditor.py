@@ -86,7 +86,6 @@ class WidgetPropertiesEditor:
         valid = True
         if action == '1': #1: insert 0: delete
             nums = newvalue.split()
-            print(nums)
             if len(nums) <= 4:
                 for num in nums:
                     if not num.isnumeric():
@@ -96,7 +95,6 @@ class WidgetPropertiesEditor:
                 valid = False
         else:
             valid = True
-        print(valid)
         return valid
 
 
@@ -135,6 +133,13 @@ class WidgetPropertiesEditor:
         widget.bind('<FocusOut>', focusout_handler, add='+')
 
 
+    def connect_on_enterkey_cb(self, widget, pname):
+        def enterkey_handler(event, self=self, pname=pname):
+            self.on_property_changed(pname)
+        widget.bind('<KeyPress-Return>', enterkey_handler, add='+')
+        widget.bind('<KeyPress-KP_Enter>', enterkey_handler, add='+')
+
+
     def connect_command_cb(self, widget, pname):
         def command_handler(self=self, pname=pname):
             self.on_property_changed(pname)
@@ -156,7 +161,6 @@ class WidgetPropertiesEditor:
 
         new_value = self.arrayvar[pname]
         old_value = self._var_prev_value.get(pname, '')
-        print(pname, old_value, new_value)
 
         #Do not redraw if same values
         if new_value == old_value:
@@ -173,7 +177,7 @@ class WidgetPropertiesEditor:
             item = sel[0]
             widget_id = treedata[item]['id']
             wclass = treedata[item]['class']
-            print(pname, pgroup, widget_id, wclass)
+
             if (pgroup in (properties.GROUP_WIDGET, properties.GROUP_CUSTOM)):
 
                 if new_value:
@@ -354,6 +358,7 @@ class WidgetPropertiesEditor:
                 widget.configure(validate='key',
                     validatecommand=self.validators[validator])
             self.connect_focusout_cb(widget, propalias)
+            self.connect_on_enterkey_cb(widget, propalias)
         elif wtype == 'textentry':
             widget = Textentry(master, textvariable=widgetvar,
                 width=20, height=3)
@@ -386,10 +391,12 @@ class WidgetPropertiesEditor:
                     validatecommand=self.validators[validator])
             self.connect_focusout_cb(widget, propalias)
             self.connect_command_cb(widget, propalias)
+            self.connect_on_enterkey_cb(widget, propalias)
         else:
             widget = ttk.Entry(master, textvariable=widgetvar)
             togrid = widget
             self.connect_focusout_cb(widget, propalias)
+            self.connect_on_enterkey_cb(widget, propalias)
         widgetvar.set(default)
 
         return (togrid, widget)
@@ -558,9 +565,9 @@ class WidgetPropertiesEditor:
         sel = tv.selection()
         if sel:
             item = sel[0]
-            #rootitem = self.get_toplevel_parent(item)
-            #if rootitem not in self.previewer.tabs:
-            #    self.draw_widget(rootitem)
+            #hack to update the last edition
+            tv.update_idletasks()
+            #
             self.edit(item)
         else:
             #No selection hide all
