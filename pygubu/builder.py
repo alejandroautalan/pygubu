@@ -82,6 +82,8 @@ class BuilderObject:
         propvalue = value
         if pname in self.tkvar_properties:
             propvalue = self.builder.get_variable(value)
+            if 'text' in self.properties:
+                propvalue.set(self.properties['text'])
         self.widget[pname] = value
 
 

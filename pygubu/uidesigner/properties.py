@@ -96,7 +96,16 @@ _sticky_prop = {
             tkinter.NS + tkinter.W,
             tkinter.NS + tkinter.E,
             tkinter.NSEW
-            )
+            ),
+        'tk.Frame': {'default': tkinter.NSEW},
+        'ttk.Frame': {'default': tkinter.NSEW},
+        'tk.LabelFrame': {'default': tkinter.NSEW},
+        'ttk.Labelframe': {'default': tkinter.NSEW},
+        'tk.ScrollbarHelper': {'default': tkinter.NSEW},
+        'ttk.ScrollbarHelper': {'default': tkinter.NSEW},
+        'tk.ScrolledFrame': {'default': tkinter.NSEW},
+        'ttk.ScrolledFrame': {'default': tkinter.NSEW},
+        'ttk.Notebook': {'default': tkinter.NSEW},
         }
 
 GROUP_WIDGET = 'widget__'
