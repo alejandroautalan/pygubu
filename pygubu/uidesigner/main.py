@@ -32,64 +32,12 @@ from . import util
 from . import properties
 from .propertieseditor import WidgetPropertiesEditor
 from .widgeteditor import WidgetsTreeEditor
+from .previewer import PreviewHelper
 
 
 #Initilize properties from custom widgets
 for pname, descr in builder.CUSTOM_PROPERTIES.items():
     properties.register_custom(pname, descr)
-
-
-class PreviewHelper:
-    def __init__(self, notebook):
-        self.notebook = notebook
-        self.builders = {}
-        self.canvases = {}
-        self.tabs = {}
-        self.windows = {}
-        self.preview_tag = 'previewwindow'
-
-    def draw(self, identifier, widget_id, xmlnode, is_menu=False):
-        uibuilder = pygubu.Builder()
-        canvas = None
-        if identifier not in self.builders:
-            canvas = util.create_scrollable(self.notebook, tkinter.Canvas,
-                background='white', scrollregion="0 0 80i 80i")
-            canvas.create_window(5, 5, anchor=tkinter.NW,
-                tags=self.preview_tag)
-            self.canvases[identifier] = canvas
-            self.notebook.add(canvas.frame, text=widget_id,
-                sticky=tkinter.NSEW)
-            self.tabs[identifier] = canvas.frame
-        else:
-            self.notebook.tab(self.tabs[identifier], text=widget_id)
-            del self.builders[identifier]
-            canvas = self.canvases[identifier]
-            canvas.itemconfigure(self.preview_tag, window='')
-            window = self.windows[identifier]
-            window.destroy()
-
-        uibuilder.add_from_xmlnode(xmlnode)
-        self.builders[identifier] = uibuilder
-
-        preview_widget = None
-        if is_menu:
-            menubutton = ttk.Menubutton(canvas, text='Menu preview')
-            widget = uibuilder.get_object(widget_id, menubutton)
-            menubutton.configure(menu=widget)
-            preview_widget = menubutton
-        else:
-            preview_widget = uibuilder.get_object(widget_id, canvas)
-
-        self.windows[identifier] = preview_widget
-        canvas.itemconfigure(self.preview_tag, window=preview_widget)
-
-
-    def delete(self, identifier):
-        self.notebook.forget(self.tabs[identifier])
-        del self.tabs[identifier]
-        self.windows[identifier].destroy()
-        del self.windows[identifier]
-
 
 
 class PygubuUI(util.Application):
@@ -173,6 +121,7 @@ class PygubuUI(util.Application):
             new = openfile = messagebox.askokcancel('File changed',
                 'Changes not saved. Discard Changes?')
         if new:
+            self.previewer.remove_all()
             self.tree_editor.remove_all()
             self.is_changed = False
             self.project_name.configure(text='<None>')
