@@ -20,25 +20,78 @@ from tkinter import ttk
 
 import pygubu
 from . import util
+from .util.stockimage import StockImage
 
 
 class UIPreview():
     window_tag = 'window'
-
+    indicators_tag = ('nw', 'ne', 'sw', 'se')
 
     def __init__(self, notebook):
+        self.is_menu = False
         self.notebook = notebook
         self.builder = None
         self.canvas_window = None
-        self.canvas = canvas = util.create_scrollable(self.notebook,
-                tkinter.Canvas, background='white', highlightthickness=0)
-        canvas.create_window(5, 5, anchor=tkinter.NW,
+        self.canvas = util.create_scrollable(self.notebook, tkinter.Canvas,
+                background='white', highlightthickness=0)
+        self.canvas.create_window(10, 10, anchor=tkinter.NW,
                 tags=self.window_tag)
-        self.notebook.add(canvas.frame, text='Preview', sticky=tkinter.NSEW)
-        self.tab_id = canvas.frame
+        self.notebook.add(self.canvas.frame, text='Preview', sticky=tkinter.NSEW)
+        self.tab_id = self.canvas.frame
 
+        #selected indicators
+        self.indicators = []
+        anchors = {'nw': tkinter.SE, 'ne': tkinter.SW,
+                'sw': tkinter.NE, 'se': tkinter.NW}
+        for sufix in self.indicators_tag:
+            label = tkinter.Label(self.canvas,
+                    image=StockImage.get('indicator_' + sufix))
+            self.indicators.append(label)
+            self.canvas.create_window(-10, -10, anchor=anchors[sufix],
+                    window=label, tags=sufix)
+
+
+    def show_selected(self, selected_id=None):
+        canvas = self.canvas
+        if selected_id is None or self.is_menu == True:
+            for indicator in self.indicators:
+                canvas.itemconfigure(indicator, state=tkinter.HIDDEN)
+        else:
+            canvas.update_idletasks()
+            #canvas.itemconfigure(self.indicator_tag, state=tkinter.NORMAL)
+            widget = self.builder.get_object(selected_id)
+            for indicatorw in self.indicators:
+                indicatorw.lift(widget)
+            for tag in self.indicators_tag:
+                x, y = self._calculate_indicator_coords(tag, widget)
+                ox, oy = canvas.coords(tag)
+                canvas.move(tag, x - ox, y - oy)
+
+
+    def _calculate_indicator_coords(self, tag, widget):
+        x = y = 0
+        wx = widget.winfo_rootx()
+        wy = widget.winfo_rooty()
+        ww = widget.winfo_width()
+        wh = widget.winfo_height()
+        cx = self.canvas.winfo_rootx()
+        cy = self.canvas.winfo_rooty()
+        if tag == 'nw':
+            x = wx - cx
+            y = wy - cy
+        if tag == 'ne':
+            x = (wx - cx) + ww
+            y = (wy - cy)
+        if tag == 'sw':
+            x = (wx - cx)
+            y = (wy - cy) + wh
+        if tag == 'se':
+            x = (wx - cx) + ww
+            y = (wy - cy) + wh
+        return (x, y)
 
     def update(self, widget_id, xmlnode, is_menu=False):
+        self.is_menu = is_menu
         #update tab text
         self.notebook.tab(self.tab_id, text=widget_id)
 
@@ -96,6 +149,11 @@ class PreviewHelper:
         preview.update(widget_id, xmlnode, is_menu)
 
 
+    def show_selected(self, identifier, selected_id):
+        if identifier in self.tabs:
+            self.tabs[identifier].show_selected(selected_id)
+
+
     def delete(self, identifier):
         preview = self.tabs[identifier]
         preview.canvas_window.destroy()
@@ -104,7 +162,7 @@ class PreviewHelper:
 
 
     def remove_all(self):
-        for identifier in self.tabs:
+        for identifier in list(self.tabs.keys()):
             self.delete(identifier)
 
 

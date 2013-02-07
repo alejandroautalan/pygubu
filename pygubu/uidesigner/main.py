@@ -20,6 +20,7 @@
 import os
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
+import logging
 
 import tkinter
 from tkinter import ttk
@@ -33,11 +34,46 @@ from . import properties
 from .propertieseditor import WidgetPropertiesEditor
 from .widgeteditor import WidgetsTreeEditor
 from .previewer import PreviewHelper
+from .util.stockimage import StockImage
 
 
 #Initilize properties from custom widgets
 for pname, descr in builder.CUSTOM_PROPERTIES.items():
     properties.register_custom(pname, descr)
+
+
+#Initialize images
+StockImage.register_from_dir(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)),"images"))
+
+#Initialize logger
+logger = logging.getLogger('pygubu.designer')
+
+
+class StatusBarHandler(logging.Handler):
+    def __init__(self, tklabel, level=logging.NOTSET):
+        super(StatusBarHandler, self).__init__(level)
+        self.tklabel = tklabel
+        self._clear = True
+        self._cb_id = None
+
+    def emit(self, record):
+        try:
+            msg = self.format(record)
+            if not self._clear and self._cb_id is not None:
+                self.tklabel.after_cancel(self._cb_id)
+            self._clear = False
+            self._cb_id = self.tklabel.after(5000, self.clear)
+            self.tklabel.configure(text=msg, foreground='red')
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            self.handleError(record)
+
+    def clear(self):
+        self.tklabel.configure(text='', foreground='black')
+        self._clear = True
+
 
 
 class PygubuUI(util.Application):
@@ -51,7 +87,6 @@ class PygubuUI(util.Application):
         self.currentfile = None
         self.is_changed = False
 
-        print(os.path.dirname(os.path.abspath(__file__)))
         uifile = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),"ui/pygubu-ui.ui")
         builder.add_from_file(uifile)
@@ -84,6 +119,13 @@ class PygubuUI(util.Application):
 
         self.builder.connect_commands(self)
 
+        #Status bar
+        self.statusbar = self.builder.get_object('statusbar')
+        handler = StatusBarHandler(self.statusbar)
+        handler.setLevel(logging.INFO)
+        logger.addHandler(handler)
+
+        #app grid
         self.grid(row=0, column=0, sticky='nswe')
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
@@ -91,6 +133,15 @@ class PygubuUI(util.Application):
         self.set_resizable()
 
         #app config
+        top = self.winfo_toplevel()
+        try:
+            top.wm_iconname('pygubu')
+            top.tk.call('wm', 'iconphoto', '.', StockImage.get('pygubu'))
+        except Exception as e:
+            pass
+
+        top.withdraw()
+        top.deiconify()
         self.set_title('Pygubu a GUI builder for tkinter')
         self.set_size('800x600')
 
@@ -134,7 +185,9 @@ class PygubuUI(util.Application):
             openfile = messagebox.askokcancel('File changed',
                 'Changes not saved. Open new file anyway?')
         if openfile:
-            fname = filedialog.askopenfilename()
+            options = { 'defaultextension': '.ui',
+                'filetypes':(('pygubu ui', '*.ui'), ('All', '*.*')) }
+            fname = filedialog.askopenfilename(**options)
             if fname:
                 self.load_file(fname)
                 self.currentfile = fname
@@ -174,7 +227,9 @@ class PygubuUI(util.Application):
 
 
     def do_save_as(self):
-        fname = filedialog.asksaveasfilename()
+        options = { 'defaultextension': '.ui',
+            'filetypes':(('pygubu ui', '*.ui'), ('All', '*.*')) }
+        fname = filedialog.asksaveasfilename(**options)
         if fname:
             self.do_save(fname)
 
@@ -184,7 +239,7 @@ class PygubuUI(util.Application):
         xml_tree = self.tree_editor.tree_to_xml()
         xmlvar = xml.dom.minidom.parseString(
             ET.tostring(xml_tree.getroot()))
-        pretty_xml_as_string = xmlvar.toprettyxml(indent=' '*4)
+        pretty_xml_as_string = xmlvar.toprettyxml(indent=' '*2)
         with open(filename, 'w') as f:
             f.write(pretty_xml_as_string)
 

@@ -79,7 +79,8 @@ class WidgetPropertiesEditor:
         self.create_properties()
         self.create_grid_layout_editor()
         self.hide_all()
-        self.treeview.bind('<<TreeviewSelect>>', self.on_treeview_select)
+        self.treeview.bind('<<TreeviewSelect>>',
+                self.on_treeview_select, add='+')
 
 
     def validator_tkpadding(self, action, newvalue):
@@ -565,9 +566,6 @@ class WidgetPropertiesEditor:
         sel = tv.selection()
         if sel:
             item = sel[0]
-            #hack to update the last edition
-            tv.update_idletasks()
-            #
             self.edit(item)
         else:
             #No selection hide all

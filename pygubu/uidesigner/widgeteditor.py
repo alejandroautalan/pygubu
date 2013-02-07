@@ -18,10 +18,14 @@
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
+import logging
 
 from pygubu import builder
 from . import util
 from . import properties
+
+
+logger = logging.getLogger('pygubu.designer')
 
 
 class WidgetsTreeEditor:
@@ -44,6 +48,7 @@ class WidgetsTreeEditor:
             headings=hcols, show_tree=True)
         tree.bind('<KeyPress-Delete>', self.on_treeview_delete_item)
         tree.bind('<Double-1>', self.on_treeview_double_click)
+        tree.bind('<<TreeviewSelect>>', self.on_treeview_select, add='+')
 
 
     def get_toplevel_parent(self, treeitem):
@@ -62,12 +67,14 @@ class WidgetsTreeEditor:
         tv = self.treeview
 
         if item:
+            selected_id = self.treedata[item]['id']
             item = self.get_toplevel_parent(item)
             widget_id = self.treedata[item]['id']
             wclass = self.treedata[item]['class']
             xmlnode = self.tree_node_to_xml('', item)
             is_menu = True if wclass == 'tk.Menu' else False
             self.previewer.draw(item, widget_id, xmlnode, is_menu)
+            self.previewer.show_selected(item, selected_id)
 
 
     def on_treeview_double_click(self, event):
@@ -234,31 +241,32 @@ class WidgetsTreeEditor:
         #check that item to insert is a container.
         if not root:
             if builder.CLASS_MAP[wclass].container == False:
-                print('Warning: Widget to insert is not a container.')
+                logger.warning('{0} is not a container.'.format(wclass))
                 return
         if root:
             rootclass = self.treedata[root]['class']
             children_count = len(self.treeview.get_children(root))
             maxchildren = builder.CLASS_MAP[rootclass].maxchildren
-            print('childrencount {}, maxchildren {}'.format(children_count, maxchildren))
+            #print('childrencount {}, maxchildren {}'.format(children_count, maxchildren))
             if maxchildren is not None and children_count >= maxchildren:
-                print('Only {} children allowed'.format(maxchildren))
+                logger.warning('Only {} children allowed'.format(maxchildren))
                 return
             allowed_children = builder.CLASS_MAP[rootclass].allowed_children
-            print('class {} allowed {}'.format(rootclass, allowed_children))
+            #print('class {} allowed {}'.format(rootclass, allowed_children))
             if allowed_children is not None and wclass not in allowed_children:
-                print('Child class {} not allowed'.format(wclass))
+                msg = '{0} is not allowed as child of {1}'.format(wclass, rootclass)
+                logger.warning(msg)
                 return
             allowed_parents = builder.CLASS_MAP[wclass].allowed_parents
-            print('class {} allowed parents {}'.format(rootclass, allowed_parents))
+            #print('class {} allowed parents {}'.format(rootclass, allowed_parents))
             if allowed_parents is not None and rootclass not in allowed_parents:
-                print('Parent class {} not allowed for {}'.format(rootclass, wclass))
+                logger.warning('{0} is not allowed as parent of {1}'.format(rootclass, wclass))
                 return
         else:
             ##Validate if it can be added at root level
             allowed_parents = builder.CLASS_MAP[wclass].allowed_parents
             if allowed_parents is not None and 'root' not in allowed_parents:
-                print('Class {} not allowed at root level'.format(wclass))
+                logger.warning('{0} not allowed at root level'.format(wclass))
                 return
 
         #root item should be set at this point
@@ -411,8 +419,21 @@ class WidgetsTreeEditor:
         max_row = -1
         children = tree.get_children(item)
         for child in children:
-            data = self.app.tree_editor.treedata[child].get('layout', {})
+            data = self.treedata[child].get('layout', {})
             row = int(data.get('row', 0))
             if row > max_row:
                 max_row = row
         return max_row
+
+
+    def on_treeview_select(self, event):
+        tree = self.treeview
+        sel = tree.selection()
+        if sel:
+            item = sel[0]
+            top = self.get_toplevel_parent(item)
+            selected_id = self.treedata[item]['id']
+            self.previewer.show_selected(top, selected_id)
+
+
+

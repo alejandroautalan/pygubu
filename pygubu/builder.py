@@ -1129,7 +1129,7 @@ class Builder:
             self.tree = tree = ET.ElementTree(root)
             self.root = tree.getroot()
             self.objects = {}
-            ET.dump(tree)
+            #ET.dump(tree)
         else:
             #TODO: append to current tree
             pass
