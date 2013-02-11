@@ -50,8 +50,9 @@ class PropertiesArray(util.ArrayVar):
 class WidgetPropertiesEditor:
 
     def __init__(self, app):
-        self.app = app
-        self.treeview = app.treeview
+        self.current = None #data to edit
+        #self.app = app
+        #self.treeview = app.treeview
         self.propsframe = app.widget_props_frame
         self.layoutframe = app.layout_props_frame
         self.arrayvar = PropertiesArray()
@@ -65,7 +66,7 @@ class WidgetPropertiesEditor:
         self._editor_ready = False
         self._var_prev_value = {}
         #register validators
-        tkwidget = self.treeview
+        tkwidget = self.propsframe
         self.validators = {
             'number_integer': (tkwidget.register(self.validator_integer),
                 '%d', '%P'),
@@ -79,8 +80,6 @@ class WidgetPropertiesEditor:
         self.create_properties()
         self.create_grid_layout_editor()
         self.hide_all()
-        self.treeview.bind('<<TreeviewSelect>>',
-                self.on_treeview_select, add='+')
 
 
     def validator_tkpadding(self, action, newvalue):
@@ -170,50 +169,47 @@ class WidgetPropertiesEditor:
         self._var_prev_value[pname] = new_value
 
         pgroup, pname = self.arrayvar.identify_property(pname)
-        tv = self.treeview
-        treedata = self.app.tree_editor.treedata
-
-        sel = tv.selection()
-        if sel:
-            item = sel[0]
-            widget_id = treedata[item]['id']
-            wclass = treedata[item]['class']
+        changed = False
+        if self.current is not None:
+            data = self.current
+            widget_id = data.get_id()
+            wclass = data.get_class()
 
             if (pgroup in (properties.GROUP_WIDGET, properties.GROUP_CUSTOM)):
 
                 if new_value:
-                    treedata[item][pname] = new_value
+                    data.set_property(pname, new_value)
+                    changed = True
                 else:
-                    if (pname in treedata[item] and
-                        pname not in properties.GROUP_CUSTOM):
-                        del treedata[item][pname]
+                    data.set_property(pname, '')
 
             elif (pgroup == properties.GROUP_LAYOUT_GRID and pname in
                     properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]):
 
                 if new_value:
-                    treedata[item]['layout'][pname] = new_value
+                    data.set_layout_propery(pname, new_value)
+                    changed = True
                 else:
-                    if pname in treedata[item]['layout']:
-                        del treedata[item]['layout'][pname]
+                    data.set_layout_propery(pname, '')
 
             elif (pgroup == properties.GROUP_LAYOUT_GRID_RC):
-                layoutdata = treedata[item]['layout']
                 row_col, number, name = self.identify_gridrc_property(pname)
                 number = str(number)
                 if row_col == 'row':
-                    lgroup = 'rows'
+                    if new_value:
+                        data.set_grid_row_property(name, new_value)
+                        changed = True
+                    else:
+                        data.set_grid_row_property(name, '')
                 elif row_col == 'column':
-                    lgroup = 'columns'
+                    if new_value:
+                        data.set_grid_col_property(name, new_value)
+                        changed = True
+                    else:
+                        data.set_grid_col_property(name, '')
 
-                if new_value:
-                    layoutdata[lgroup][number][name] = new_value
-                else:
-                    if name in layoutdata[lgroup][number]:
-                        del layoutdata[lgroup][number][name]
-
-            self.app.tree_editor.update_item(item)
-            self.app.tree_editor.draw_widget(item)
+            if changed:
+                data.notify(self)
 
 
     def create_properties(self):
@@ -405,7 +401,7 @@ class WidgetPropertiesEditor:
 
     def hide_all(self):
         """Hide all properties from property editor."""
-
+        self.current = None
         for group in self.prop_widget:
             for pname in self.prop_widget[group]:
                 for widget in self.prop_widget[group][pname]:
@@ -450,15 +446,15 @@ class WidgetPropertiesEditor:
         variable.set(value)
 
 
-    def edit(self, item):
+    def edit(self, data, max_row=1, max_col=1):
         """Copies properties values from data to the
            properties editor so they can be edited."""
 
         #
         self._editor_ready = False
+        self.current = data
 
-        data = self.app.tree_editor.treedata[item]
-        wclass = data['class']
+        wclass = data.get_class()
         class_props = tuple(CLASS_MAP[wclass].properties)
 
         group = properties.GROUP_CUSTOM
@@ -515,7 +511,7 @@ class WidgetPropertiesEditor:
                 widget.grid_remove()
 
         group = properties.GROUP_LAYOUT_GRID_RC
-        max_row, max_col = self.get_max_row_col(item)
+        #max_row, max_col = self.get_max_row_col(item)
         show_layout = (is_container and layout_required and max_children != 1)
         show_headers = False
         for key in self.prop_widget[group]:
@@ -556,36 +552,6 @@ class WidgetPropertiesEditor:
         self.layoutframe.reposition()
         #
         self._editor_ready = True
-
-
-    def on_treeview_select(self, event):
-        """Get the selected treeitem and display properties in
-            property editor."""
-
-        tv = self.treeview
-        sel = tv.selection()
-        if sel:
-            item = sel[0]
-            self.edit(item)
-        else:
-            #No selection hide all
-            self.hide_all()
-
-
-    def get_max_row_col(self, item):
-        tree = self.treeview
-        max_row = 0
-        max_col = 0
-        children = tree.get_children(item)
-        for child in children:
-            data = self.app.tree_editor.treedata[child].get('layout', {})
-            row = int(data.get('row', 0))
-            col = int(data.get('column', 0))
-            if row > max_row:
-                max_row = row
-            if col > max_col:
-                max_col = col
-        return (max_row, max_col)
 
 
     def identify_gridrc_property(self, alias):

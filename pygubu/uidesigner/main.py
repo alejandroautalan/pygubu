@@ -89,12 +89,12 @@ class PygubuUI(util.Application):
 
         uifile = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),"ui/pygubu-ui.ui")
-        builder.add_from_file(uifile)
+        self.builder.add_from_file(uifile)
 
         #build main ui
-        builder.get_object('mainwindow', self)
+        self.builder.get_object('mainwindow', self)
         toplevel = self.winfo_toplevel()
-        menu = builder.get_object('mainmenu', toplevel)
+        menu = self.builder.get_object('mainmenu', toplevel)
         toplevel['menu'] = menu
 
         #project name
@@ -105,10 +105,10 @@ class PygubuUI(util.Application):
         self.configure_widget_list()
 
         #widget tree
-        self.treeview = tree = builder.get_object('treeview1')
+        self.treeview = tree = self.builder.get_object('treeview1')
 
         #Preview
-        nbpreview = builder.get_object('notebookpreview')
+        nbpreview = self.builder.get_object('notebookpreview')
         self.previewer = PreviewHelper(nbpreview)
         #tree editor
         self.tree_editor = WidgetsTreeEditor(self)
@@ -124,6 +124,7 @@ class PygubuUI(util.Application):
         handler = StatusBarHandler(self.statusbar)
         handler.setLevel(logging.INFO)
         logger.addHandler(handler)
+        pygubu.builder.logger.addHandler(handler)
 
         #app grid
         self.grid(row=0, column=0, sticky='nswe')

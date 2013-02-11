@@ -23,6 +23,7 @@ import logging
 from pygubu import builder
 from . import util
 from . import properties
+from .widgetdescr import WidgetDescr
 
 
 logger = logging.getLogger('pygubu.designer')
@@ -61,6 +62,7 @@ class WidgetsTreeEditor:
             item = tv.parent(item)
 
         return item
+
 
     def draw_widget(self, item):
         """Create a preview of the selected treeview item"""
@@ -123,20 +125,8 @@ class WidgetsTreeEditor:
         """Converts a treeview item and children to xml nodes"""
 
         tree = self.treeview
-        values = self.treedata[item]
-        node = ET.Element('object')
-
-        for prop in properties.OBJECT_DEFAULT_ATTRS:
-            node.set(prop, values[prop])
-
-        wclass_props = builder.CLASS_MAP[values['class']].properties
-        for prop in wclass_props:
-            pv = values.get(prop, None)
-            if pv:
-                pnode = ET.Element('property')
-                pnode.set('name', prop)
-                pnode.text = pv
-                node.append(pnode)
+        data = self.treedata[item]
+        node = data.to_xml_node()
 
         children = tree.get_children(item)
         for child in children:
@@ -145,71 +135,25 @@ class WidgetsTreeEditor:
             cnode.append(cwidget)
             node.append(cnode)
 
-        layout_required = builder.CLASS_MAP[values['class']].layout_required
-        if layout_required:
-            #create layout node
-            pvalues = values['layout']
-            layout_node = ET.Element('layout')
-            has_layout = False
-            for prop in properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]:
-                pv = pvalues.get(prop, None)
-                if pv:
-                    has_layout = True
-                    pnode = ET.Element('property')
-                    pnode.set('name', prop)
-                    pnode.text = pv
-                    layout_node.append(pnode)
-            keys = {'rows':'row', 'columns':'column'}
-            for key in keys:
-                if key in pvalues:
-                    erows = ET.Element(key)
-                    for rowid in pvalues[key]:
-                        erow = ET.Element(keys[key])
-                        erow.set('id', rowid)
-                        for pname in pvalues[key][rowid]:
-                            eprop = ET.Element('property')
-                            eprop.set('name', pname)
-                            eprop.text = pvalues[key][rowid][pname]
-                            erow.append(eprop)
-                        erows.append(erow)
-                    layout_node.append(erows)
-
-            if has_layout:
-                node.append(layout_node)
-
         return node
 
 
     def _insert_item(self, root, data):
         tree = self.treeview
-        treelabel = data['id']
+        treelabel = data.get_id()
         row = col = ''
         if root != '' and 'layout' in data:
-            if 'row' in data['layout']:
-                row = data['layout']['row']
-                col = data['layout']['column']
-        values = (data['class'], row, col)
+            #if 'row' in data['layout']:
+            #    row = data['layout']['row']
+            #    col = data['layout']['column']
+            row = data.get_layout_propery('row')
+            col = data.get_layout_propery('column')
+        values = (data.get_class(), row, col)
         item = tree.insert(root, 'end', text=treelabel, values=values)
+        data.attach(self)
         self.app.set_changed()
 
         return item
-
-
-    def update_item(self, item):
-        tree = self.treeview
-        data = self.treedata[item]
-        if data['id'] != tree.item(item, 'text'):
-            tree.item(item, text=data['id'])
-        if tree.parent(item) != '' and 'layout' in data:
-            if 'row' in data['layout'] and 'column' in data['layout']:
-                row = data['layout']['row']
-                col = data['layout']['column']
-                values = tree.item(item, 'values')
-                if (row != values[1] or col != values[2]):
-                    values = (data['class'], data['layout']['row'],
-                        data['layout']['column'])
-                tree.item(item, values=values)
-        self.app.set_changed()
 
 
     def add_widget(self, wclass):
@@ -228,7 +172,7 @@ class WidgetsTreeEditor:
         #check if selected item is a container
         if selected_item:
             svalues = tree.set(selected_item)
-            sclass = self.treedata[selected_item]['class']
+            sclass = self.treedata[selected_item].get_class()
             selected_is_container = builder.CLASS_MAP[sclass].container
             if selected_is_container:
                 #selected item is a container, set as root.
@@ -244,7 +188,7 @@ class WidgetsTreeEditor:
                 logger.warning('{0} is not a container.'.format(wclass))
                 return
         if root:
-            rootclass = self.treedata[root]['class']
+            rootclass = self.treedata[root].get_class()
             children_count = len(self.treeview.get_children(root))
             maxchildren = builder.CLASS_MAP[rootclass].maxchildren
             #print('childrencount {}, maxchildren {}'.format(children_count, maxchildren))
@@ -276,11 +220,9 @@ class WidgetsTreeEditor:
         #setup properties
         widget_id = '{0}_{1}'.format(wclass, self.counter[wclass])
 
-        data = {}
-        data['class'] = wclass
-        data['id'] = widget_id
+        data = WidgetDescr(wclass, widget_id)
 
-        #setup properties
+        #setup default values for properties
         for pname in builder.CLASS_MAP[wclass].properties:
             pdescription = {}
             pgroup = properties.GROUP_WIDGET
@@ -291,27 +233,26 @@ class WidgetsTreeEditor:
                 pdescription = properties.PropertiesMap[pgroup][pname]
             if wclass in pdescription:
                 pdescription = dict(pdescription, **pdescription[wclass])
-            data[pname] = str(pdescription.get('default', ''))
+            default_value = str(pdescription.get('default', ''))
+            data.set_property(pname, default_value)
             #default text for widgets with text prop:
             if pname in ('text', 'label'):
-                data[pname] = widget_id
+                data.set_property(pname, widget_id)
 
         #default grid properties
         is_container = builder.CLASS_MAP[wclass].container
-        group = 'layout'
-        data[group] = {}
         for prop_name in properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]:
-            data[group][prop_name] = ''
+            data.set_layout_propery(prop_name, '')
 
         rownum = '0'
         if root:
             rownum = str(self.get_max_row(root)+1)
-        data[group]['row'] = rownum
-        data[group]['column'] = '0'
+        data.set_layout_propery('row', rownum)
+        data.set_layout_propery('column', '0')
 
-        if is_container:
-            data[group]['rows'] = defaultdict(dict)
-            data[group]['columns'] = defaultdict(dict)
+        #if is_container:
+        #    data[group]['rows'] = defaultdict(dict)
+        #    data[group]['columns'] = defaultdict(dict)
 
         item = self._insert_item(root, data)
         self.treedata[item] = data
@@ -345,50 +286,14 @@ class WidgetsTreeEditor:
     def populate_tree(self, master, parent, element):
         """Reads xml nodes and populates tree item"""
 
-        cname = element.get('class')
-        uniqueid = element.get('id')
-        data = {}
+        data = WidgetDescr(None, None)
+        data.from_xml_node(element)
+        cname = data.get_class()
+        uniqueid = data.get_id()
 
         if cname in builder.CLASS_MAP:
             #update counter
             self.counter[cname] += 1
-
-            data['class'] = cname
-            data['id'] = uniqueid
-
-            #properties
-            properties = self.get_properties(element)
-            for pname, value in properties.items():
-                data[pname] = value
-
-            #layout element
-            data['layout'] = {}
-            xpath = './layout'
-            layout_elem = element.find(xpath)
-            if layout_elem is not None:
-                properties = self.get_properties(layout_elem)
-                for key, value in properties.items():
-                    data['layout'][key] = value
-                #get grid row and col properties:
-                rows_dict = defaultdict(dict)
-                erows = layout_elem.find('./rows')
-                if erows is not None:
-                    rows = erows.findall('./row')
-                    for row in rows:
-                        row_id = row.get('id')
-                        row_properties = self.get_properties(row)
-                        rows_dict[row_id] = row_properties
-                data['layout']['rows'] = rows_dict
-
-                columns_dict = defaultdict(dict)
-                ecolums = layout_elem.find('./columns')
-                if ecolums is not None:
-                    columns = ecolums.findall('./column')
-                    for column in columns:
-                        column_id = column.get('id')
-                        column_properties = self.get_properties(column)
-                        columns_dict[column_id] = column_properties
-                data['layout']['columns'] = columns_dict
 
             pwidget = self._insert_item(master, data)
             self.treedata[pwidget] = data
@@ -402,16 +307,6 @@ class WidgetsTreeEditor:
             return pwidget
         else:
             raise Exception('Class "{0}" not mapped'.format(cname))
-
-
-    def get_properties(self, element):
-        """Gets name, value from property nodes in element"""
-
-        properties = element.findall('./property')
-        pdict= {}
-        for p in properties:
-            pdict[p.get('name')] = p.text
-        return pdict
 
 
     def get_max_row(self, item):
@@ -432,8 +327,54 @@ class WidgetsTreeEditor:
         if sel:
             item = sel[0]
             top = self.get_toplevel_parent(item)
-            selected_id = self.treedata[item]['id']
+            selected_id = self.treedata[item].get_id()
             self.previewer.show_selected(top, selected_id)
+            max_rc = self.get_max_row_col(item)
+            self.app.properties_editor.edit(self.treedata[item], *max_rc)
+        else:
+            #No selection hide all
+            self.app.properties_editor.hide_all()
 
 
+    def get_max_row_col(self, item):
+        tree = self.treeview
+        max_row = 0
+        max_col = 0
+        children = tree.get_children(item)
+        for child in children:
+            data = self.treedata[child]
+            row = int(data.get_layout_propery('row'))
+            col = int(data.get_layout_propery('column'))
+            if row > max_row:
+                max_row = row
+            if col > max_col:
+                max_col = col
+        return (max_row, max_col)
 
+
+    def update_event(self, obj):
+        tree = self.treeview
+        data = obj
+        item = self.get_item_by_data(obj)
+        if item:
+            if data.get_id() != tree.item(item, 'text'):
+                tree.item(item, text=data.get_id())
+            #if tree.parent(item) != '' and 'layout' in data:
+            if tree.parent(item) != '':
+                row = data.get_layout_propery('row')
+                col = data.get_layout_propery('column')
+                values = tree.item(item, 'values')
+                if (row != values[1] or col != values[2]):
+                    values = (data.get_class(), row, col)
+                tree.item(item, values=values)
+            self.draw_widget(item)
+            self.app.set_changed()
+
+
+    def get_item_by_data(self, data):
+        skey = None
+        for key, value in self.treedata.items():
+            if value == data:
+                skey = key
+                break
+        return skey

@@ -20,6 +20,7 @@ import logging
 import xml.etree.ElementTree as ET
 import tkinter
 from tkinter import ttk
+from collections import defaultdict
 
 
 logging.basicConfig(level=logging.WARNING)
@@ -84,14 +85,19 @@ class BuilderObject:
             propvalue = self.builder.get_variable(value)
             if 'text' in self.properties:
                 propvalue.set(self.properties['text'])
-        self.widget[pname] = value
+        try:
+            self.widget[pname] = value
+        except tkinter.TclError as e:
+            msg = "Failed to set property '{0}'. TclError: {1}"
+            msg = msg.format(pname, str(e))
+            logger.error(msg)
 
 
     def layout(self):
         #use grid layout for all
-        properties = self.layout_properties
-        grid_rows = properties.pop('grid_rows', {})
-        grid_cols = properties.pop('grid_columns', {})
+        properties = dict(self.layout_properties)
+        grid_rows = properties.pop('rows', {})
+        grid_cols = properties.pop('columns', {})
 
         self.widget.grid(**properties)
 
@@ -101,18 +107,23 @@ class BuilderObject:
         for col in grid_cols:
             self.widget.columnconfigure(col, **grid_cols[col])
 
+
     def get_child_master(self):
         return self.widget
+
 
     def add_child(self, cwidget):
         pass
 
+
     def _create_callback(self, cpname, command):
         return command
+
 
     def _connect_command(self, cpname, callback):
         prop = {cpname: callback}
         self.widget.configure(**prop)
+
 
     def connect_commands(self, cmd_bag):
         notconnected = []
@@ -1054,7 +1065,7 @@ def data_xmlnode_to_dict(element):
             layout_properties[p.get('name')] = p.text
 
         #get grid row and col properties:
-        rows_dict = {}
+        rows_dict = defaultdict(dict)
         erows = layout_elem.find('./rows')
         if erows is not None:
             rows = erows.findall('./row')
@@ -1065,9 +1076,9 @@ def data_xmlnode_to_dict(element):
                 for p in props:
                     row_properties[p.get('name')] = p.text
                 rows_dict[row_id] = row_properties
-        layout_properties['grid_rows'] = rows_dict
+        layout_properties['rows'] = rows_dict
 
-        columns_dict = {}
+        columns_dict = defaultdict(dict)
         ecolums = layout_elem.find('./columns')
         if ecolums is not None:
             columns = ecolums.findall('./column')
@@ -1078,14 +1089,60 @@ def data_xmlnode_to_dict(element):
                 for p in props:
                     column_properties[p.get('name')] = p.text
                 columns_dict[column_id] = column_properties
-        layout_properties['grid_columns'] = columns_dict
+        layout_properties['columns'] = columns_dict
 
     data['layout'] = layout_properties
     return data
 
 
 def data_dict_to_xmlnode(data):
-    pass
+    node = ET.Element('object')
+
+    for prop in ('id', 'class'):
+        node.set(prop, data[prop])
+
+    wclass_props = CLASS_MAP[data['class']].properties
+    for prop in wclass_props:
+        pv = data['properties'].get(prop, None)
+        if pv:
+            pnode = ET.Element('property')
+            pnode.set('name', prop)
+            pnode.text = pv
+            node.append(pnode)
+
+    layout_required = CLASS_MAP[data['class']].layout_required
+    if layout_required:
+        #create layout node
+        layout = data['layout']
+        layout_node = ET.Element('layout')
+        has_layout = False
+        for prop in layout:
+            pv = layout[prop]
+            if pv and prop != 'rows' and prop != 'columns':
+                has_layout = True
+                pnode = ET.Element('property')
+                pnode.set('name', prop)
+                pnode.text = pv
+                layout_node.append(pnode)
+        keys = {'rows':'row', 'columns':'column'}
+        for key in keys:
+            if key in layout:
+                erows = ET.Element(key)
+                for rowid in layout[key]:
+                    erow = ET.Element(keys[key])
+                    erow.set('id', rowid)
+                    for pname in layout[key][rowid]:
+                        eprop = ET.Element('property')
+                        eprop.set('name', pname)
+                        eprop.text = layout[key][rowid][pname]
+                        erow.append(eprop)
+                    erows.append(erow)
+                layout_node.append(erows)
+
+        if has_layout:
+            node.append(layout_node)
+
+    return node
 
 
 #

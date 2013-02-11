@@ -61,7 +61,10 @@ class UIPreview():
             #canvas.itemconfigure(self.indicator_tag, state=tkinter.NORMAL)
             widget = self.builder.get_object(selected_id)
             for indicatorw in self.indicators:
-                indicatorw.lift(widget)
+                try:
+                    indicatorw.lift(widget)
+                except tkinter.TclError:
+                    pass
             for tag in self.indicators_tag:
                 x, y = self._calculate_indicator_coords(tag, widget)
                 ox, oy = canvas.coords(tag)

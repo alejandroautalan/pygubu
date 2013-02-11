@@ -22,9 +22,8 @@ import sys
 import tkinter
 from tkinter import ttk
 
-import util
 import builder
-
+import uidesigner.util as util
 
 class UITester(util.Application):
     def _create_ui(self):
