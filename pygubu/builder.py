@@ -61,7 +61,7 @@ class BuilderObject:
 
     def __init__(self, builder, wdescr):
         self.builder = builder
-        self.objetid = wdescr['id']
+        self.objectid = wdescr['id']
         self.descr = wdescr
         self.properties = wdescr.get('properties', {})
         self.layout_properties = wdescr.get('layout', {})
