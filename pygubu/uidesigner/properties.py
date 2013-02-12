@@ -310,7 +310,11 @@ __widget = (
     ('style', _empty_choice), #FIXME Howto manage this property?
     ('tabs', _default_entry_prop), #FIXME see tk.Text tab property
     ('takefocus', _default_true_false_prop),
-    ('tearoff', _default_true_false_prop),
+    ('tearoff', { 'input_method': 'choice',
+        'values': ('', tkinter.TRUE, tkinter.FALSE),
+        'tk.Menu': {'default': tkinter.FALSE},
+        'tk.Menuitem.Submenu': {'default': tkinter.FALSE}
+        }),
     ('tearoffcommand', _default_entry_prop),
     ('text', _default_textentry_prop),
     ('textvariable', _default_entry_prop), #FIXME Howto manage this property?
@@ -366,6 +370,8 @@ __grid = (
     ('pady', _default_spinbox_prop),
     ('ipadx', _default_spinbox_prop),
     ('ipady', _default_spinbox_prop),
+    ('propagate', {'input_method': 'choice',
+        'values': ('True', 'False'), 'default': 'True'})
 )
 
 PropertiesMap[GROUP_LAYOUT_GRID] = OrderedDict(__grid)

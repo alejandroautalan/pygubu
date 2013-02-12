@@ -96,10 +96,14 @@ class BuilderObject:
     def layout(self):
         #use grid layout for all
         properties = dict(self.layout_properties)
+        grid_propagate = properties.pop('propagate', 'True')
         grid_rows = properties.pop('rows', {})
         grid_cols = properties.pop('columns', {})
 
         self.widget.grid(**properties)
+
+        if grid_propagate != 'True':
+            self.widget.grid_propagate(0)
 
         #get grid row and col properties:
         for row in grid_rows:
