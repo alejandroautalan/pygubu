@@ -169,7 +169,6 @@ class WidgetPropertiesEditor:
         self._var_prev_value[pname] = new_value
 
         pgroup, pname = self.arrayvar.identify_property(pname)
-        changed = False
         if self.current is not None:
             data = self.current
             widget_id = data.get_id()
@@ -179,7 +178,6 @@ class WidgetPropertiesEditor:
 
                 if new_value:
                     data.set_property(pname, new_value)
-                    changed = True
                 else:
                     data.set_property(pname, '')
 
@@ -188,7 +186,6 @@ class WidgetPropertiesEditor:
 
                 if new_value:
                     data.set_layout_propery(pname, new_value)
-                    changed = True
                 else:
                     data.set_layout_propery(pname, '')
 
@@ -198,18 +195,15 @@ class WidgetPropertiesEditor:
                 if row_col == 'row':
                     if new_value:
                         data.set_grid_row_property(name, new_value)
-                        changed = True
                     else:
                         data.set_grid_row_property(name, '')
                 elif row_col == 'column':
                     if new_value:
                         data.set_grid_col_property(name, new_value)
-                        changed = True
                     else:
                         data.set_grid_col_property(name, '')
 
-            if changed:
-                data.notify(self)
+            data.notify(self)
 
 
     def create_properties(self):
