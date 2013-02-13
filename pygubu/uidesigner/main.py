@@ -1,7 +1,7 @@
 # This file is part of pygubu.
 
 #
-# Copyright 2012 Alejandro Autalán
+# Copyright 2012-2013 Alejandro Autalán
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 3, as published
@@ -21,6 +21,7 @@ import os
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 import logging
+import webbrowser
 
 import tkinter
 from tkinter import ttk
@@ -35,6 +36,7 @@ from .propertieseditor import WidgetPropertiesEditor
 from .widgeteditor import WidgetsTreeEditor
 from .previewer import PreviewHelper
 from .util.stockimage import StockImage
+from .util.dialog import DialogBase
 
 
 #Initilize properties from custom widgets
@@ -76,6 +78,22 @@ class StatusBarHandler(logging.Handler):
 
 
 
+class AboutDialog(DialogBase):
+    def _create_body(self, master):
+        self.builder = pygubu.Builder()
+        uifile = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),"ui/about_dialog.ui")
+        self.builder.add_from_file(uifile)
+
+        self.builder.get_object('aboutdialog', master)
+        self.builder.connect_commands(self)
+        return self.builder.get_object('close_btn')
+
+    def _create_btnbox(self, master):
+        #No button box needed
+        pass
+
+
 class PygubuUI(util.Application):
     """Main gui class"""
 
@@ -83,6 +101,7 @@ class PygubuUI(util.Application):
         """Creates all gui widgets"""
 
         self.preview = None
+        self.about_dialog = None
         self.builder = builder = pygubu.Builder()
         self.currentfile = None
         self.is_changed = False
@@ -254,6 +273,32 @@ class PygubuUI(util.Application):
 
         self.tree_editor.load_file(filename)
         self.project_name.configure(text=filename)
+
+
+    #Edit menu
+    def on_edit_menuitem_clicked(self, itemid):
+        if itemid == 'edit_item_up':
+            self.tree_editor.on_item_move_up(None)
+        elif itemid == 'edit_item_down':
+            self.tree_editor.on_item_move_down(None)
+        elif itemid == 'edit_item_delete':
+            self.tree_editor.on_treeview_delete_item(None)
+
+    #Help menu
+    def on_help_menuitem_clicked(self, itemid):
+        if itemid == 'help_online':
+            url = 'https://github.com/alejandroautalan/pygubu/wiki'
+            webbrowser.open_new_tab(url)
+        elif itemid == 'help_about':
+            self.show_about_dialog()
+
+
+    def show_about_dialog(self):
+        if self.about_dialog is None:
+            self.about_dialog = AboutDialog(self)
+            self.about_dialog.run()
+        else:
+            self.about_dialog.show()
 
 
 def start_pygubu():

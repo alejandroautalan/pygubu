@@ -50,6 +50,8 @@ class WidgetsTreeEditor:
         tree.bind('<KeyPress-Delete>', self.on_treeview_delete_item)
         tree.bind('<Double-1>', self.on_treeview_double_click)
         tree.bind('<<TreeviewSelect>>', self.on_treeview_select, add='+')
+        tree.bind('<Control-KeyPress-i>', self.on_item_move_up)
+        tree.bind('<Control-KeyPress-k>', self.on_item_move_down)
 
 
     def get_toplevel_parent(self, treeitem):
@@ -105,7 +107,10 @@ class WidgetsTreeEditor:
                 self.previewer.delete(item)
             del self.treedata[item]
             tv.delete(item)
-            self.draw_widget(parent)
+            if parent:
+                self.draw_widget(parent)
+            else:
+                self.app.properties_editor.hide_all()
 
 
     def tree_to_xml(self):
@@ -378,3 +383,28 @@ class WidgetsTreeEditor:
                 skey = key
                 break
         return skey
+
+
+    def on_item_move_up(self, event):
+        tree = self.treeview
+        sel = tree.selection()
+        if sel:
+            item = sel[0]
+            parent = tree.parent(item)
+            prev = tree.prev(item)
+            if prev:
+                prev_idx = tree.index(prev)
+                tree.move(item, parent, prev_idx)
+
+
+    def on_item_move_down(self, event):
+        tree = self.treeview
+        sel = tree.selection()
+        if sel:
+            item = sel[0]
+            parent = tree.parent(item)
+            next = tree.next(item)
+            if next:
+                next_idx = tree.index(next)
+                tree.move(item, parent, next_idx)
+

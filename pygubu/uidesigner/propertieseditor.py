@@ -194,14 +194,14 @@ class WidgetPropertiesEditor:
                 number = str(number)
                 if row_col == 'row':
                     if new_value:
-                        data.set_grid_row_property(name, new_value)
+                        data.set_grid_row_property(number, name, new_value)
                     else:
-                        data.set_grid_row_property(name, '')
+                        data.set_grid_row_property(number, name, '')
                 elif row_col == 'column':
                     if new_value:
-                        data.set_grid_col_property(name, new_value)
+                        data.set_grid_col_property(number, name, new_value)
                     else:
-                        data.set_grid_col_property(name, '')
+                        data.set_grid_col_property(number, name, '')
 
             data.notify(self)
 
@@ -403,7 +403,7 @@ class WidgetPropertiesEditor:
 
 
     def update_property_widget(self, group, widget, variable,
-        propertyname, classname, data):
+        propertyname, classname, data, roc=None, rc_id=None):
         """Update widget property value with values from data."""
 
         wdata = {}
@@ -433,10 +433,19 @@ class WidgetPropertiesEditor:
                 widget.configure(values=values)
 
         value = ''
-        if propertyname in data:
-            value = data[propertyname]
-            if not value:
-                value = default
+        if group in (properties.GROUP_CUSTOM, properties.GROUP_WIDGET):
+            value = data.get_property(propertyname)
+        elif group == properties.GROUP_LAYOUT_GRID:
+            value = data.get_layout_propery(propertyname)
+        elif group == properties.GROUP_LAYOUT_GRID_RC:
+            if roc == 'row':
+                value = data.get_grid_row_property(rc_id, propertyname)
+            else:
+                value = data.get_grid_col_property(rc_id, propertyname)
+
+        if not value and default:
+            value = default
+
         variable.set(value)
 
 
@@ -493,10 +502,9 @@ class WidgetPropertiesEditor:
         for gkey in properties.PropertiesMap[group]:
             label, widget = self.prop_widget[group][gkey]
             if show_layout:
-                gdata = data.get('layout', {})
                 variable = self.arrayvar.get_property_variable(group, gkey)
                 self.update_property_widget(group, widget, variable, gkey,
-                        wclass, gdata)
+                        wclass, data)
                 label.grid()
                 widget.grid()
                 self._var_prev_value[group+gkey] = variable.get()
@@ -514,21 +522,17 @@ class WidgetPropertiesEditor:
             number = int(number)
             if show_layout and rowcol == 'row' and number <= max_row:
                 label, widget = self.prop_widget[group][key]
-                gdata = data.get('layout', {})
-                rcdata = gdata.get('rows',{}).get(number_str, {})
                 variable = self.arrayvar.get_property_variable(group, key)
                 self.update_property_widget(group, widget, variable, name,
-                    wclass, rcdata)
+                    wclass, data, rowcol, number_str)
                 label.grid(); widget.grid()
                 show_headers = True
                 self._var_prev_value[group+key] = variable.get()
             elif show_layout and rowcol == 'column' and number <= max_col:
                 label, widget = self.prop_widget[group][key]
-                gdata = data.get('layout', {})
-                rcdata = gdata.get('columns',{}).get(number_str, {})
                 variable = self.arrayvar.get_property_variable(group, key)
                 self.update_property_widget(group, widget, variable, name,
-                    wclass, rcdata)
+                    wclass, data, rowcol, number_str)
                 label.grid(); widget.grid()
                 show_headers = True
                 self._var_prev_value[group+key] = variable.get()

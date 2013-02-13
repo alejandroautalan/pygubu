@@ -13,6 +13,8 @@ class WidgetDescr(dict, Observable):
         self['id'] = _id
         self['properties'] = {}
         self['layout'] = {}
+        self['layout']['rows'] = defaultdict(dict)
+        self['layout']['columns'] = defaultdict(dict)
 
 
     def get_class(self):
@@ -24,14 +26,17 @@ class WidgetDescr(dict, Observable):
 
 
     def set_property(self, name, value):
-        if name == 'id':
+        if name in ('id', 'class'):
             self[name] = value
         else:
             self['properties'][name] = value
 
 
     def get_property(self, name):
-        return self['properties'].get(name, None)
+        if name in ('id', 'class'):
+            return self[name]
+        else:
+            return self['properties'].get(name, '')
 
 
     def set_layout_propery(self, name, value):
@@ -39,27 +44,26 @@ class WidgetDescr(dict, Observable):
 
 
     def get_layout_propery(self, name):
-        return self['layout'].get(name, None)
+        default = ''
+        if name in ('row', 'column'):
+            default = '0'
+        return self['layout'].get(name, default)
 
 
     def set_grid_row_property(self, row, name, value):
-        if 'rows' not in self['layout']:
-            self['layout']['rows'] = defaultdict(dict)
         self['layout']['rows'][row][name] = value
 
 
     def get_grid_row_property(self, row, name):
-        return self['layout']['rows'][row].get(name, None)
+        return self['layout']['rows'][row].get(name, '0')
 
 
     def set_grid_col_property(self, col, name, value):
-        if 'rows' not in self['layout']:
-            self['layout']['columns'] = defaultdict(dict)
         self['layout']['columns'][col][name] = value
 
 
     def get_grid_col_property(self, col, name):
-        return self['layout']['columns'][col].get(name, None)
+        return self['layout']['columns'][col].get(name, '0')
 
 
     def to_xml_node(self):

@@ -1,0 +1,114 @@
+<?xml version="1.0" ?>
+<interface>
+  <object class="ttk.Frame" id="aboutdialog">
+    <property name="height">250</property>
+    <property name="padding">10</property>
+    <property name="width">400</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+      <rows>
+        <row id="1"/>
+        <row id="0"/>
+        <row id="3"/>
+        <row id="2"/>
+        <row id="4"/>
+      </rows>
+      <columns>
+        <column id="0"/>
+      </columns>
+    </layout>
+    <child>
+      <object class="ttk.Label" id="name">
+        <property name="anchor">center</property>
+        <property name="font">Sans 18 bold</property>
+        <property name="padding">0 0 0 20</property>
+        <property name="text">pygubu</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="row">0</property>
+          <property name="sticky">e</property>
+          <rows/>
+          <columns/>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Label" id="description">
+        <property name="padding">0 10 0 10</property>
+        <property name="text">pygubu is a graphical user interface designer for tkinter</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="row">1</property>
+          <property name="sticky">n</property>
+          <rows/>
+          <columns/>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Label" id="copyr">
+        <property name="font">Sans 8</property>
+        <property name="padding">0 20 0 20</property>
+        <property name="text">Copyright © 2012-2013 Alejandro Autalán</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="row">2</property>
+          <property name="sticky">e</property>
+          <rows/>
+          <columns/>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Label" id="warranty">
+        <property name="anchor">e</property>
+        <property name="font">Sans 8</property>
+        <property name="padding">0 10 0 0</property>
+        <property name="text">This program comes with ABSOLUTELY NO WARRANTY
+for details, visit http://www.gnu.org/licenses/gpl-3.0.html</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="row">3</property>
+          <property name="sticky">e</property>
+          <rows/>
+          <columns/>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="ttk.Frame_8">
+        <property name="height">250</property>
+        <property name="padding">0 5 0 0</property>
+        <property name="width">250</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="row">4</property>
+          <property name="sticky">ew</property>
+          <rows>
+            <row id="0"/>
+          </rows>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="close_btn">
+            <property name="command">on_ok_execute</property>
+            <property name="text">Close</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="row">0</property>
+              <property name="sticky">e</property>
+              <rows/>
+              <columns/>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
