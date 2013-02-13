@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <interface>
-    <object class="tk.Frame" id="tk.Frame_1">
+    <object class="tk.Frame" id="mainwindow">
         <property name="height">250</property>
         <property name="width">250</property>
         <child>

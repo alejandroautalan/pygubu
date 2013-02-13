@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <interface>
-    <object class="tk.Menu" id="tk.Menu_1">
+    <object class="tk.Menu" id="mainmenu">
         <child>
             <object class="tk.Menuitem.Command" id="tk.Menuitem.Command_1">
                 <property name="label">tk.Menuitem.Command_1</property>

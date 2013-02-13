@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <interface>
-    <object class="ttk.Frame" id="ttk.Frame_1">
+    <object class="ttk.Frame" id="mainwindow">
         <property name="height">250</property>
         <property name="width">250</property>
         <child>

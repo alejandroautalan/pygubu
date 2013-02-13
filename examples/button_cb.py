@@ -15,7 +15,7 @@ class Myapp:
         fpath = os.path.join(os.path.dirname(__file__),"button_cb.ui")
         builder.add_from_file(fpath)
 
-        mainwindow = builder.get_object('mainwindow1')
+        mainwindow = builder.get_object('mainwindow')
         mainwindow.grid()
 
         builder.connect_commands(self)
