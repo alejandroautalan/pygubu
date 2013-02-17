@@ -83,10 +83,12 @@ class BuilderObject:
         propvalue = value
         if pname in self.tkvar_properties:
             propvalue = self.builder.get_variable(value)
-            if 'text' in self.properties:
+            if 'text' in self.properties and pname == 'textvariable':
                 propvalue.set(self.properties['text'])
+            elif 'value' in self.properties and pname == 'variable':
+                propvalue.set(self.properties['value'])
         try:
-            self.widget[pname] = value
+            self.widget[pname] = propvalue
         except tkinter.TclError as e:
             msg = "Failed to set property '{0}'. TclError: {1}"
             msg = msg.format(pname, str(e))
@@ -1163,12 +1165,25 @@ class Builder:
         self.tkvariables = {}
 
 
-    def get_variable(self, varname, vtype='StringVar'):
+    def get_variable(self, varname, vtype=None):
         var = None
         if varname in self.tkvariables:
             var = self.tkvariables[varname]
         else:
-            var = tkinter.StringVar()
+            if vtype is None:
+                #get type from name
+                lvname = varname.lower()
+                if lvname.startswith('int'):
+                    var = tkinter.IntVar()
+                elif lvname.startswith('bool'):
+                    var = tkinter.BooleanVar()
+                elif lvname.startswith('double'):
+                    var = tkinter.DoubleVar()
+                else:
+                    var = tkinter.StringVar()
+            else:
+                var = vtype()
+
             self.tkvariables[varname] = var
         return var
 
