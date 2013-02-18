@@ -222,6 +222,8 @@ class ArrayVar(tkinter.Variable):
         for (k, v) in dictvalue.items():
             self._tk.call("array", "set", self._name, k, v)
 
+    initialize = set
+
 
     def get(self):
         '''Return a dictionary that represents the Tcl array'''
