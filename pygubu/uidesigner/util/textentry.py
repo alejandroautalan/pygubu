@@ -1,5 +1,5 @@
 #
-# Copyright 2012 Alejandro Autalán
+# Copyright 2012-2013 Alejandro Autalán
 #
 # This program is free software: you can redistribute it and/or modify it
 # under the terms of the GNU General Public License version 3, as published
@@ -14,6 +14,7 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # For further info, check  http://pygubu.web.here
+
 import tkinter
 import tkinter.ttk as ttk
 
