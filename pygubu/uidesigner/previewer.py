@@ -158,10 +158,11 @@ class PreviewHelper:
 
 
     def delete(self, identifier):
-        preview = self.tabs[identifier]
-        preview.canvas_window.destroy()
-        del self.tabs[identifier]
-        self.notebook.forget(preview.tab_id)
+        if identifier in self.tabs:
+            preview = self.tabs[identifier]
+            preview.canvas_window.destroy()
+            del self.tabs[identifier]
+            self.notebook.forget(preview.tab_id)
 
 
     def remove_all(self):
