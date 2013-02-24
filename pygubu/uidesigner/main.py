@@ -163,7 +163,7 @@ class PygubuUI(util.Application):
         top.withdraw()
         top.deiconify()
         self.set_title('Pygubu a GUI builder for tkinter')
-        self.set_size('800x600')
+        self.set_size('640x480')
 
 
     def configure_widget_list(self):
