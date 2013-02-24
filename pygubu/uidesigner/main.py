@@ -273,6 +273,7 @@ class PygubuUI(util.Application):
 
         self.tree_editor.load_file(filename)
         self.project_name.configure(text=filename)
+        self.previewer.remove_all()
 
 
     #Edit menu
