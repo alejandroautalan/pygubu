@@ -510,6 +510,7 @@ class TKMenuitem(BuilderObject):
             itemproperties.pop('command_id_arg')
         master.add(self.itemtype, **itemproperties)
         self.__index = master.index(tkinter.END)
+        return self.widget
 
     def configure(self):
         pass
@@ -548,6 +549,7 @@ class TKMenuitemSubmenu(TKMenu):
         self.widget = submenu = TKMenu.class_(master, **menu_properties)
         item_properties['menu'] = submenu
         master.add(tkinter.constants.CASCADE, **item_properties)
+        return self.widget
 
 
     def configure(self):
@@ -820,6 +822,7 @@ class TTKNotebookTab(BuilderObject):
 
     def realize(self, master):
         self.widget = master
+        return self.widget
 
     def configure(self):
         pass
@@ -1134,16 +1137,22 @@ def data_dict_to_xmlnode(data):
         for key in keys:
             if key in layout:
                 erows = ET.Element(key)
+                include_key = False
                 for rowid in layout[key]:
                     erow = ET.Element(keys[key])
                     erow.set('id', rowid)
+                    inlcude_rc = False
                     for pname in layout[key][rowid]:
+                        include_key = True
+                        inlcude_rc = True
                         eprop = ET.Element('property')
                         eprop.set('name', pname)
                         eprop.text = layout[key][rowid][pname]
                         erow.append(eprop)
-                    erows.append(erow)
-                layout_node.append(erows)
+                    if inlcude_rc:
+                        erows.append(erow)
+                if include_key:
+                    layout_node.append(erows)
 
         if has_layout:
             node.append(layout_node)

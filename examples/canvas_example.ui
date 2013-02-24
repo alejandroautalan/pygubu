@@ -1,31 +1,29 @@
 <?xml version="1.0" ?>
 <interface>
-    <object class="tk.Frame" id="mainwindow">
-        <property name="height">250</property>
-        <property name="width">250</property>
-        <child>
-            <object class="tk.Label" id="tk.Label_1">
-                <property name="text">Canvas Example</property>
-                <layout>
-                    <property name="row">0</property>
-                    <property name="column">0</property>
-                </layout>
-            </object>
-        </child>
-        <child>
-            <object class="tk.Canvas" id="tk.Canvas_1">
-                <property name="background">#ffffc1</property>
-                <layout>
-                    <property name="row">1</property>
-                    <property name="column">0</property>
-                </layout>
-            </object>
-        </child>
+  <object class="tk.Frame" id="mainwindow">
+    <property name="height">250</property>
+    <property name="width">250</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="tk.Label" id="tk.Label_1">
+        <property name="text">Canvas Example</property>
         <layout>
-            <property name="row">0</property>
-            <property name="column">0</property>
-            <rows/>
-            <columns/>
+          <property name="column">0</property>
+          <property name="row">0</property>
         </layout>
-    </object>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Canvas" id="tk.Canvas_1">
+        <property name="background">#ffffc1</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="row">1</property>
+        </layout>
+      </object>
+    </child>
+  </object>
 </interface>

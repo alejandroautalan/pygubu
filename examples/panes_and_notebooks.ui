@@ -1,86 +1,80 @@
 <?xml version="1.0" ?>
 <interface>
-    <object class="ttk.Frame" id="mainwindow">
-        <property name="height">250</property>
-        <property name="width">250</property>
-        <child>
-            <object class="ttk.Panedwindow" id="ttk.Panedwindow_1">
-                <property name="orient">horizontal</property>
-                <child>
-                    <object class="ttk.Panedwindow.Pane" id="ttk.Panedwindow.Pane_1">
-                        <child>
-                            <object class="ttk.Notebook" id="ttk.Notebook_1">
-                                <child>
-                                    <object class="ttk.Notebook.Tab" id="ttk.Notebook.Tab_1">
-                                        <property name="padding">10</property>
-                                        <property name="sticky">nw</property>
-                                        <property name="text">ttk.Notebook.Tab_1</property>
-                                        <child>
-                                            <object class="ttk.Entry" id="ttk.Entry_1">
-                                                <property name="validate">none</property>
-                                                <layout>
-                                                    <property name="row">0</property>
-                                                    <property name="column">0</property>
-                                                </layout>
-                                            </object>
-                                        </child>
-                                    </object>
-                                </child>
-                                <child>
-                                    <object class="ttk.Notebook.Tab" id="ttk.Notebook.Tab_2">
-                                        <property name="padding">10</property>
-                                        <property name="sticky">nw</property>
-                                        <property name="text">ttk.Notebook.Tab_2</property>
-                                        <child>
-                                            <object class="ttk.Entry" id="ttk.Entry_2">
-                                                <property name="validate">none</property>
-                                                <layout>
-                                                    <property name="row">0</property>
-                                                    <property name="column">0</property>
-                                                </layout>
-                                            </object>
-                                        </child>
-                                    </object>
-                                </child>
-                                <layout>
-                                    <property name="row">0</property>
-                                    <property name="column">0</property>
-                                    <rows/>
-                                    <columns/>
-                                </layout>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-                <child>
-                    <object class="ttk.Panedwindow.Pane" id="ttk.Panedwindow.Pane_2">
-                        <child>
-                            <object class="tk.Text" id="tk.Text_1">
-                                <property name="height">10</property>
-                                <property name="width">50</property>
-                                <property name="wrap">char</property>
-                                <property name="text">tk.Text_1</property>
-                                <layout>
-                                    <property name="row">0</property>
-                                    <property name="column">0</property>
-                                </layout>
-                            </object>
-                        </child>
-                    </object>
-                </child>
-                <layout>
-                    <property name="row">0</property>
-                    <property name="column">0</property>
-                    <rows/>
-                    <columns/>
-                </layout>
-            </object>
-        </child>
+  <object class="ttk.Frame" id="mainwindow">
+    <property name="height">250</property>
+    <property name="width">250</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="ttk.Panedwindow" id="ttk.Panedwindow_1">
+        <property name="orient">horizontal</property>
         <layout>
-            <property name="row">0</property>
-            <property name="column">0</property>
-            <rows/>
-            <columns/>
+          <property name="column">0</property>
+          <property name="row">0</property>
         </layout>
-    </object>
+        <child>
+          <object class="ttk.Panedwindow.Pane" id="ttk.Panedwindow.Pane_1">
+            <child>
+              <object class="ttk.Notebook" id="ttk.Notebook_1">
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">0</property>
+                </layout>
+                <child>
+                  <object class="ttk.Notebook.Tab" id="ttk.Notebook.Tab_1">
+                    <property name="padding">10</property>
+                    <property name="sticky">nw</property>
+                    <property name="text">ttk.Notebook.Tab_1</property>
+                    <child>
+                      <object class="ttk.Entry" id="ttk.Entry_1">
+                        <property name="validate">none</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+                <child>
+                  <object class="ttk.Notebook.Tab" id="ttk.Notebook.Tab_2">
+                    <property name="padding">10</property>
+                    <property name="sticky">nw</property>
+                    <property name="text">ttk.Notebook.Tab_2</property>
+                    <child>
+                      <object class="ttk.Entry" id="ttk.Entry_2">
+                        <property name="validate">none</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Panedwindow.Pane" id="ttk.Panedwindow.Pane_2">
+            <child>
+              <object class="tk.Text" id="tk.Text_1">
+                <property name="height">10</property>
+                <property name="width">50</property>
+                <property name="wrap">char</property>
+                <property name="text">tk.Text_1</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
 </interface>
