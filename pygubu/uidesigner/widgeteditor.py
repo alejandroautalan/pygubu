@@ -107,6 +107,7 @@ class WidgetsTreeEditor:
                 self.previewer.delete(item)
             del self.treedata[item]
             tv.delete(item)
+            self.app.set_changed()
             if parent:
                 self.draw_widget(parent)
             else:
@@ -246,8 +247,13 @@ class WidgetsTreeEditor:
 
         #default grid properties
         is_container = builder.CLASS_MAP[wclass].container
-        for prop_name in properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]:
-            data.set_layout_propery(prop_name, '')
+        pgroup = properties.GROUP_LAYOUT_GRID
+        for prop_name in properties.PropertiesMap[pgroup]:
+            pdescription = properties.PropertiesMap[pgroup][prop_name]
+            if wclass in pdescription:
+                pdescription = dict(pdescription, **pdescription[wclass])
+            default_value = str(pdescription.get('default', ''))
+            data.set_layout_propery(prop_name, default_value)
 
         rownum = '0'
         if root:
