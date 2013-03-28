@@ -458,7 +458,7 @@ class WidgetPropertiesEditor:
         self.current = data
 
         wclass = data.get_class()
-        class_props = tuple(CLASS_MAP[wclass].properties)
+        class_props = tuple(CLASS_MAP[wclass].classobj.properties)
 
         group = properties.GROUP_CUSTOM
         for key in properties.PropertiesMap[group]:
@@ -492,10 +492,10 @@ class WidgetPropertiesEditor:
                 label.grid_remove()
                 widget.grid_remove()
 
-        max_children = CLASS_MAP[wclass].maxchildren
+        max_children = CLASS_MAP[wclass].classobj.maxchildren
         max_children = 0 if max_children is None else max_children
-        is_container = CLASS_MAP[wclass].container
-        layout_required = CLASS_MAP[wclass].layout_required
+        is_container = CLASS_MAP[wclass].classobj.container
+        layout_required = CLASS_MAP[wclass].classobj.layout_required
         show_layout = layout_required
         #grid layout properties
         group = properties.GROUP_LAYOUT_GRID

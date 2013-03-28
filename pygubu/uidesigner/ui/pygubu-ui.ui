@@ -190,7 +190,7 @@
                   </columns>
                 </layout>
                 <child>
-                  <object class="ttk.ScrollbarHelper" id="p1f1sbh1">
+                  <object class="pygubu.widgets.scrollbarhelper" id="p1f1sbh1">
                     <property name="scrolltype">both</property>
                     <layout>
                       <property name="column">0</property>
@@ -245,7 +245,7 @@
                               </columns>
                             </layout>
                             <child>
-                              <object class="ttk.ScrollbarHelper" id="sbh1">
+                              <object class="pygubu.widgets.scrollbarhelper" id="sbh1">
                                 <property name="scrolltype">both</property>
                                 <layout>
                                   <property name="column">0</property>
@@ -292,7 +292,7 @@
                                 <property name="sticky">nsew</property>
                                 <property name="text">General</property>
                                 <child>
-                                  <object class="ttk.ScrolledFrame" id="propertiesframe">
+                                  <object class="pygubu.widgets.scrolledframe" id="propertiesframe">
                                     <property name="padding">5</property>
                                     <layout>
                                       <property name="column">0</property>
@@ -308,7 +308,7 @@
                                 <property name="sticky">nsew</property>
                                 <property name="text">Layout</property>
                                 <child>
-                                  <object class="ttk.ScrolledFrame" id="layoutframe">
+                                  <object class="pygubu.widgets.scrolledframe" id="layoutframe">
                                     <property name="padding">5</property>
                                     <layout>
                                       <property name="column">0</property>

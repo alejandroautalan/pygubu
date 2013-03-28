@@ -18,12 +18,20 @@
 # For further info, check  http://pygubu.web.here
 
 import sys
-
+import os
 import tkinter
 from tkinter import ttk
 
+
+pygubu_basedir = os.path.abspath(os.path.dirname(
+                    os.path.dirname(os.path.realpath(sys.argv[0]))))
+if pygubu_basedir not in sys.path:
+    sys.path.insert(0, pygubu_basedir)
+
+
 import builder
 import uidesigner.util as util
+
 
 class UITester(util.Application):
     def _create_ui(self):

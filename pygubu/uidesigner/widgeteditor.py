@@ -179,7 +179,7 @@ class WidgetsTreeEditor:
         if selected_item:
             svalues = tree.set(selected_item)
             sclass = self.treedata[selected_item].get_class()
-            selected_is_container = builder.CLASS_MAP[sclass].container
+            selected_is_container = builder.CLASS_MAP[sclass].classobj.container
             if selected_is_container:
                 #selected item is a container, set as root.
                 root = selected_item
@@ -190,31 +190,31 @@ class WidgetsTreeEditor:
         #if insertion is at top level,
         #check that item to insert is a container.
         if not root:
-            if builder.CLASS_MAP[wclass].container == False:
+            if builder.CLASS_MAP[wclass].classobj.container == False:
                 logger.warning('{0} is not a container.'.format(wclass))
                 return
         if root:
             rootclass = self.treedata[root].get_class()
             children_count = len(self.treeview.get_children(root))
-            maxchildren = builder.CLASS_MAP[rootclass].maxchildren
+            maxchildren = builder.CLASS_MAP[rootclass].classobj.maxchildren
             #print('childrencount {}, maxchildren {}'.format(children_count, maxchildren))
             if maxchildren is not None and children_count >= maxchildren:
                 logger.warning('Only {} children allowed'.format(maxchildren))
                 return
-            allowed_children = builder.CLASS_MAP[rootclass].allowed_children
+            allowed_children = builder.CLASS_MAP[rootclass].classobj.allowed_children
             #print('class {} allowed {}'.format(rootclass, allowed_children))
             if allowed_children is not None and wclass not in allowed_children:
                 msg = '{0} is not allowed as child of {1}'.format(wclass, rootclass)
                 logger.warning(msg)
                 return
-            allowed_parents = builder.CLASS_MAP[wclass].allowed_parents
+            allowed_parents = builder.CLASS_MAP[wclass].classobj.allowed_parents
             #print('class {} allowed parents {}'.format(rootclass, allowed_parents))
             if allowed_parents is not None and rootclass not in allowed_parents:
                 logger.warning('{0} is not allowed as parent of {1}'.format(rootclass, wclass))
                 return
         else:
             ##Validate if it can be added at root level
-            allowed_parents = builder.CLASS_MAP[wclass].allowed_parents
+            allowed_parents = builder.CLASS_MAP[wclass].classobj.allowed_parents
             if allowed_parents is not None and 'root' not in allowed_parents:
                 logger.warning('{0} not allowed at root level'.format(wclass))
                 return
@@ -229,7 +229,7 @@ class WidgetsTreeEditor:
         data = WidgetDescr(wclass, widget_id)
 
         #setup default values for properties
-        for pname in builder.CLASS_MAP[wclass].properties:
+        for pname in builder.CLASS_MAP[wclass].classobj.properties:
             pdescription = {}
             pgroup = properties.GROUP_WIDGET
             if pname in properties.PropertiesMap[pgroup]:
@@ -246,7 +246,7 @@ class WidgetsTreeEditor:
                 data.set_property(pname, widget_id)
 
         #default grid properties
-        is_container = builder.CLASS_MAP[wclass].container
+        is_container = builder.CLASS_MAP[wclass].classobj.container
         pgroup = properties.GROUP_LAYOUT_GRID
         for prop_name in properties.PropertiesMap[pgroup]:
             pdescription = properties.PropertiesMap[pgroup][prop_name]

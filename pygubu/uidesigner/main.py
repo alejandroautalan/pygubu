@@ -22,8 +22,10 @@ import xml.dom.minidom
 import xml.etree.ElementTree as ET
 import logging
 import webbrowser
+import importlib
+from collections import defaultdict
 
-import tkinter
+import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
@@ -37,6 +39,16 @@ from .widgeteditor import WidgetsTreeEditor
 from .previewer import PreviewHelper
 from .util.stockimage import StockImage
 from .util.dialog import DialogBase
+
+
+#initialize extra widgets
+widgets_pkg = 'pygubu.widgets'
+mwidgets = importlib.import_module('pygubu.widgets')
+mwpath = os.path.dirname(mwidgets.__file__)
+for mfile in os.listdir(mwpath):
+    if mfile.endswith('.py') and not mfile.startswith('__'):
+        modulename = "{0}.{1}".format(widgets_pkg, mfile[:-3])
+        importlib.import_module(modulename)
 
 
 #Initilize properties from custom widgets
@@ -170,10 +182,44 @@ class PygubuUI(util.Application):
         tv = self.widgetlist
         tv.heading('#0', text='Widget List')
         tv.bind('<Double-1>', lambda e: self.on_add_widget_event())
-        values = list(builder.CLASS_MAP.keys())
-        values.sort()
-        for value in values:
-            tv.insert('', tkinter.END, text=value)
+
+        root_tagset = set(('tk', 'ttk'))
+
+        #create unique tag set
+        tagset = set()
+        for c in builder.CLASS_MAP.keys():
+            wc = builder.CLASS_MAP[c]
+            tagset.update(wc.tags)
+        tagset.difference_update(root_tagset)
+
+        treelist = []
+        for c in builder.CLASS_MAP.keys():
+            wc = builder.CLASS_MAP[c]
+            ctags = set(wc.tags)
+            roots = (root_tagset & ctags)
+            sections = (tagset & ctags)
+            for r in roots:
+                for s in sections:
+                    key = '{0}>{1}'.format(r,s)
+                    treelist.append((key, wc))
+
+        #sort tags by label
+        def by_label(t):
+            return "{0}{1}".format(t[0], t[1].label)
+        treelist.sort(key=by_label)
+
+        roots = {}
+        sections = {}
+        tv.itemdata = {}
+        for key, wc in treelist:
+            root, section = key.split('>')
+            if root not in roots:
+                roots[root] = tv.insert('', tk.END, text=root)
+            if key not in sections:
+                sections[key] = tv.insert(roots[root], tk.END, text=section)
+            i = tv.insert(sections[key], tk.END, text=wc.label)
+            tv.itemdata[i] = wc.classname
+
 
 
     def on_add_widget_event(self):
@@ -182,8 +228,9 @@ class PygubuUI(util.Application):
         selection = wlist.selection()
         if selection:
             item = selection[0]
-            wclass = wlist.item(item, 'text')
-            self.tree_editor.add_widget(wclass)
+            if item in wlist.itemdata:
+                wclass = wlist.itemdata[item]
+                self.tree_editor.add_widget(wclass)
 
 
     def on_menuitem_new_clicked(self):
@@ -303,7 +350,7 @@ class PygubuUI(util.Application):
 
 
 def start_pygubu():
-    app = PygubuUI(tkinter.Tk())
+    app = PygubuUI(tk.Tk())
     app.run()
 
 
