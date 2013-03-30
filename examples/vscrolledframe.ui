@@ -26,7 +26,7 @@
       </object>
     </child>
     <child>
-      <object class="ttk.ScrolledFrame" id="vsf1">
+      <object class="pygubu.widgets.scrolledframe" id="vsf1">
         <layout>
           <property name="column">0</property>
           <property name="sticky">nsew</property>

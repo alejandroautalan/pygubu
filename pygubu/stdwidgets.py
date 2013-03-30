@@ -208,7 +208,7 @@ class TKPanedWindowPane(PanedWindowPane):
     properties = ['height', 'minsize', 'padx', 'pady', 'sticky']
 
 register_widget('tk.PanedWindow.Pane', TKPanedWindowPane,
-    'PanedWindow.Pane', ('Containers', 'tk'))
+    'PanedWindow.Pane', ('Control & Display', 'tk'))
 
 
 class TKMenubutton(BuilderObject):
@@ -227,7 +227,7 @@ class TKMenubutton(BuilderObject):
     def add_child(self, cwidget):
         self.set_property('menu', cwidget)
 
-register_widget('tk.Menubutton', TKMenubutton, 'Menubutton', ('Containers', 'tk',))
+register_widget('tk.Menubutton', TKMenubutton, 'Menubutton', ('Control & Display', 'tk',))
 
 
 class TKMessage(BuilderObject):
@@ -410,7 +410,7 @@ class TKMenuitemSubmenu(TKMenu):
         pass
 
 register_widget('tk.Menuitem.Submenu', TKMenuitemSubmenu,
-        'Menuitem.Submenu', ('Containers', 'tk', 'ttk'))
+        'Menuitem.Submenu', ('Control & Display', 'tk', 'ttk'))
 
 
 class TKMenuitemCommand(TKMenuitem):
@@ -418,7 +418,7 @@ class TKMenuitemCommand(TKMenuitem):
     itemtype = tkinter.constants.COMMAND
 
 register_widget('tk.Menuitem.Command', TKMenuitemCommand,
-    'Menuitem.Command', ('Containers', 'tk', 'ttk'))
+    'Menuitem.Command', ('Control & Display', 'tk', 'ttk'))
 
 
 class TKMenuitemCheckbutton(TKMenuitem):
@@ -426,7 +426,7 @@ class TKMenuitemCheckbutton(TKMenuitem):
     itemtype = tkinter.constants.CHECKBUTTON
 
 register_widget('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton,
-    'Menuitem.Checkbutton', ('Containers', 'tk', 'ttk'))
+    'Menuitem.Checkbutton', ('Control & Display', 'tk', 'ttk'))
 
 
 class TKMenuitemRadiobutton(TKMenuitem):
@@ -434,7 +434,7 @@ class TKMenuitemRadiobutton(TKMenuitem):
     itemtype = tkinter.constants.RADIOBUTTON
 
 register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
-    'Menuitem.Radiobutton', ('Containers', 'tk', 'ttk'))
+    'Menuitem.Radiobutton', ('Control & Display', 'tk', 'ttk'))
 
 
 class TKMenuitemSeparator(TKMenuitem):
@@ -444,7 +444,7 @@ class TKMenuitemSeparator(TKMenuitem):
     command_properties = tuple()
 
 register_widget('tk.Menuitem.Separator', TKMenuitemSeparator,
-        'Menuitem.Separator', ('Containers','tk', 'ttk'))
+        'Menuitem.Separator', ('Control & Display','tk', 'ttk'))
 
 
 class TKCanvas(BuilderObject):
@@ -665,7 +665,7 @@ class TTKPanedwindowPane(PanedWindowPane):
     properties = ['weight']
 
 register_widget('ttk.Panedwindow.Pane', TTKPanedwindowPane,
-        'Panedwindow.Pane', ('Containers', 'ttk'))
+        'Panedwindow.Pane', ('Control & Display', 'ttk'))
 
 
 class TTKNotebook(BuilderObject):
@@ -702,7 +702,7 @@ class TTKNotebookTab(BuilderObject):
         self.widget.add(cwidget, **self.properties)
 
 register_widget('ttk.Notebook.Tab', TTKNotebookTab,
-        'Notebook.Tab', ('Containers', 'ttk'))
+        'Notebook.Tab', ('Control & Display', 'ttk'))
 
 
 class TTKMenubutton(BuilderObject):
