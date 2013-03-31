@@ -1,4 +1,11 @@
+import logging
+import tkinter as tk
 from collections import namedtuple
+
+
+logging.basicConfig(level=logging.WARNING)
+logger = logging.getLogger('pygubu.builderobject')
+
 
 WidgetDescr = namedtuple('WidgetDescr', ['classname', 'classobj', 'label', 'tags'])
 
@@ -23,6 +30,8 @@ def register_property(name, description):
 # Base class
 #
 class BuilderObject:
+    """Base class for Widgets created with Builder"""
+
     class_ = None
     container = False
     allowed_parents = None
@@ -49,8 +58,19 @@ class BuilderObject:
 
 
     def realize(self, master):
-        self.widget = self.class_(master)
+        args = self._get_init_args()
+        self.widget = self.class_(master, **args)
         return self.widget
+
+
+    def _get_init_args(self):
+        """Creates dict with properties marked as readonly"""
+
+        args = {}
+        for rop in self.ro_properties:
+            if rop in self.properties:
+                args[rop] = self.properties[rop]
+        return args
 
 
     def configure(self):
@@ -70,7 +90,7 @@ class BuilderObject:
                 propvalue.set(self.properties['value'])
         try:
             self.widget[pname] = propvalue
-        except tkinter.TclError as e:
+        except tk.TclError as e:
             msg = "Failed to set property '{0}'. TclError: {1}"
             msg = msg.format(pname, str(e))
             logger.error(msg)

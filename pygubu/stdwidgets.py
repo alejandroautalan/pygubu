@@ -164,8 +164,10 @@ class PanedWindow(BuilderObject):
     ro_properties = ('orient', )
 
     def realize(self, master):
-        orient = self.properties.get('orient', 'vertical')
-        self.widget = self.class_(master, orient=orient)
+        args = self._get_init_args()
+        if 'orient' not in args:
+            args['orient'] = 'vertical'
+        self.widget = self.class_(master, **args)
         return self.widget
 
 
