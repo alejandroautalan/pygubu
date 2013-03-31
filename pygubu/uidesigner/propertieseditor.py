@@ -76,6 +76,8 @@ class WidgetPropertiesEditor:
                 '%d', '%P'),
             'tkpadding': (tkwidget.register(self.validator_tkpadding),
                 '%d', '%P'),
+            'entry_validate_args': (tkwidget.register(
+                self.validator_entry_validate_args), '%d', '%P'),
         }
         self.create_properties()
         self.create_grid_layout_editor()
@@ -122,6 +124,20 @@ class WidgetPropertiesEditor:
             match = FLOAT_RE.match(newvalue)
             if match is not None:
                 valid = True
+        else:
+            valid = True
+        return valid
+
+
+    def validator_entry_validate_args(self, action, newvalue):
+        valid = True
+        valid_args = ('%', '%d', '%i', '%P', '%s', '%S', '%v', '%V', '%W')
+        if action == '1': #1: insert 0: delete
+            args = newvalue.split()
+            for arg in args:
+                if arg not in valid_args:
+                    valid = False
+                    break
         else:
             valid = True
         return valid

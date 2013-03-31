@@ -16,7 +16,7 @@
 # For further info, check  http://pygubu.web.here
 
 from collections import OrderedDict
-import tkinter
+import tkinter as tk
 from tkinter import ttk
 
 
@@ -56,14 +56,14 @@ _default_dimension_prop = {
 
 _default_relief_prop = {
     'input_method': 'choice',
-    'values': ('', tkinter.FLAT, tkinter.RAISED, tkinter.SUNKEN,
-        tkinter.GROOVE, tkinter.RIDGE)
+    'values': ('', tk.FLAT, tk.RAISED, tk.SUNKEN,
+        tk.GROOVE, tk.RIDGE)
 }
 
 _empty_choice = {'input_method': 'choice', 'readonly': True }
 
 _default_true_false_prop = { 'input_method': 'choice',
-    'values': ('', tkinter.TRUE, tkinter.FALSE)}
+    'values': ('', tk.TRUE, tk.FALSE)}
 
 _default_cursor_prop = {
     'input_method': 'choice',
@@ -88,24 +88,25 @@ _default_cursor_prop = {
 
 _sticky_prop = {
         'input_method': 'choice',
-        'values': ('', tkinter.N, tkinter.S,
-            tkinter.E, tkinter.W,
-            tkinter.NE, tkinter.NW,
-            tkinter.SE, tkinter.SW,
-            tkinter.EW, tkinter.NS,
-            tkinter.NS + tkinter.W,
-            tkinter.NS + tkinter.E,
-            tkinter.NSEW
+        'values': ('', tk.N, tk.S,
+            tk.E, tk.W,
+            tk.NE, tk.NW,
+            tk.SE, tk.SW,
+            tk.EW, tk.NS,
+            tk.NS + tk.W,
+            tk.NS + tk.E,
+            #tk.NSEW
+            tk.NE + tk.SW
             ),
-        'tk.Frame': {'default': tkinter.NSEW},
-        'ttk.Frame': {'default': tkinter.NSEW},
-        'tk.LabelFrame': {'default': tkinter.NSEW},
-        'ttk.Labelframe': {'default': tkinter.NSEW},
-        'tk.ScrollbarHelper': {'default': tkinter.NSEW},
-        'ttk.ScrollbarHelper': {'default': tkinter.NSEW},
-        'tk.ScrolledFrame': {'default': tkinter.NSEW},
-        'ttk.ScrolledFrame': {'default': tkinter.NSEW},
-        'ttk.Notebook': {'default': tkinter.NSEW},
+        'tk.Frame': {'default': tk.NSEW},
+        'ttk.Frame': {'default': tk.NSEW},
+        'tk.LabelFrame': {'default': tk.NSEW},
+        'ttk.Labelframe': {'default': tk.NSEW},
+        'tk.ScrollbarHelper': {'default': tk.NSEW},
+        'ttk.ScrollbarHelper': {'default': tk.NSEW},
+        'tk.ScrolledFrame': {'default': tk.NSEW},
+        'ttk.ScrolledFrame': {'default': tk.NSEW},
+        'ttk.Notebook': {'default': tk.NSEW},
         }
 
 GROUP_WIDGET = 'widget__'
@@ -131,7 +132,7 @@ __widget = (
     ('after', _empty_choice),
     ('anchor', {
         'input_method': 'choice',
-        'values': ('', tkinter.W, tkinter.CENTER, tkinter.E),
+        'values': ('', tk.W, tk.CENTER, tk.E),
         }),
     ('aspect', _default_spinbox_prop),
     ('autoseparators', _default_true_false_prop),
@@ -157,32 +158,32 @@ __widget = (
         'default': 'False'}),
     ('compound', {
         'input_method': 'choice',
-        'values': ('', tkinter.TOP, tkinter.BOTTOM,
-            tkinter.LEFT, tkinter.RIGHT),
+        'values': ('', tk.TOP, tk.BOTTOM,
+            tk.LEFT, tk.RIGHT),
         'tk.Radiobutton': {
-            'values': ('', tkinter.NONE, tkinter.TOP, tkinter.BOTTOM,
-                tkinter.LEFT, tkinter.RIGHT)},
+            'values': ('', tk.NONE, tk.TOP, tk.BOTTOM,
+                tk.LEFT, tk.RIGHT)},
         'tk.Menubutton': {
-            'values': ('', tkinter.NONE, tkinter.TOP, tkinter.BOTTOM,
-                tkinter.LEFT, tkinter.RIGHT)},
+            'values': ('', tk.NONE, tk.TOP, tk.BOTTOM,
+                tk.LEFT, tk.RIGHT)},
         'ttk.Label': {
-            'values' : ('', tkinter.BOTTOM, 'image', tkinter.LEFT, 'none',
-                tkinter.RIGHT, 'text', tkinter.TOP)},
+            'values' : ('', tk.BOTTOM, 'image', tk.LEFT, 'none',
+                tk.RIGHT, 'text', tk.TOP)},
         }),
     ('confine', _default_true_false_prop),
     ('cursor', _default_cursor_prop),
     ('digits', _default_spinbox_prop),
     ('default', {
         'input_method': 'choice',
-        'values': (tkinter.NORMAL, tkinter.DISABLED)
+        'values': (tk.NORMAL, tk.DISABLED)
         }),
     ('direction', {
         'input_method': 'choice', 'values': None,
         'tk.Menubutton': {
-            'values': ('', tkinter.LEFT, tkinter.RIGHT, 'above')},
+            'values': ('', tk.LEFT, tk.RIGHT, 'above')},
         'ttk.Menubutton': {
             'values': ('', 'above', 'below', 'flush',
-                tkinter.LEFT, tkinter.RIGHT)},
+                tk.LEFT, tk.RIGHT)},
         }),
     ('disabledbackground', _default_color_prop),
     ('disabledforeground', _default_color_prop),
@@ -235,16 +236,16 @@ __widget = (
     ('jump', {'input_method': 'choice', 'values': ('', '0', '1')}),
     ('justify', {
         'input_method': 'choice',
-        'values': ('', tkinter.LEFT, tkinter.CENTER,
-            tkinter.RIGHT),
+        'values': ('', tk.LEFT, tk.CENTER,
+            tk.RIGHT),
         }),
     ('label', _default_entry_prop),
     ('labelanchor', {
         'input_method': 'choice',
-        'values': ('', tkinter.NW, tkinter.N, tkinter.NE,
-            tkinter.E + tkinter.N, tkinter.E, tkinter.E + tkinter.S,
-            tkinter.W + tkinter.N, tkinter.W, tkinter.W + tkinter.S,
-            tkinter.SW, tkinter.S, tkinter.SE)
+        'values': ('', tk.NW, tk.N, tk.NE,
+            tk.E + tk.N, tk.E, tk.E + tk.S,
+            tk.W + tk.N, tk.W, tk.W + tk.S,
+            tk.SW, tk.S, tk.SE)
         }),
     ('labelwidget', _empty_choice),
     ('length', _default_dimension_prop),
@@ -261,8 +262,8 @@ __widget = (
     ('opaqueresize', _default_true_false_prop),
     ('orient', {
         'input_method': 'choice',
-        'values': (tkinter.VERTICAL, tkinter.HORIZONTAL),
-        'default': tkinter.HORIZONTAL
+        'values': (tk.VERTICAL, tk.HORIZONTAL),
+        'default': tk.HORIZONTAL
         }),
     ('overrelief', _default_relief_prop),
     ('padding', {'input_method': 'entry', 'validator': 'tkpadding'}),
@@ -285,8 +286,8 @@ __widget = (
     ('selectimage', _empty_choice), #FIXME image property
     ('selectmode', {
         'input_method': 'choice',
-        'values': ('', tkinter.BROWSE, tkinter.SINGLE,
-            tkinter.MULTIPLE, tkinter.EXTENDED)
+        'values': ('', tk.BROWSE, tk.SINGLE,
+            tk.MULTIPLE, tk.EXTENDED)
         }),
     ('show', _default_entry_prop),
     ('showhandle', _default_true_false_prop),
@@ -298,22 +299,24 @@ __widget = (
     ('spacing3', _default_spinbox_prop),
     ('state', {
         'input_method': 'choice',
-        'values': ('', tkinter.NORMAL, tkinter.DISABLED),
+        'values': ('', tk.NORMAL, tk.DISABLED),
         'tk.Entry': {
-            'values': ('', tkinter.NORMAL, tkinter.DISABLED, 'disabled')},
+            'values': ('', tk.NORMAL, tk.DISABLED, 'disabled')},
         'tk.Combobox': {'values': ('', 'readonly')},
         'ttk.Entry': {
-            'values': ('', tkinter.NORMAL, tkinter.DISABLED, 'disabled')},
+            'values': ('', tk.NORMAL, tk.DISABLED, 'disabled')},
         'ttk.Combobox': { 'values': ('', 'readonly')},
         }),
     ('sticky', _sticky_prop),
-    ('style', _empty_choice), #FIXME Howto manage this property?
+    ('style', {
+        'input_method': 'entry'
+        }), #FIXME Howto manage this property?
     ('tabs', _default_entry_prop), #FIXME see tk.Text tab property
     ('takefocus', _default_true_false_prop),
     ('tearoff', { 'input_method': 'choice',
-        'values': ('', tkinter.TRUE, tkinter.FALSE),
-        'tk.Menu': {'default': tkinter.FALSE},
-        'tk.Menuitem.Submenu': {'default': tkinter.FALSE}
+        'values': ('', tk.TRUE, tk.FALSE),
+        'tk.Menu': {'default': tk.FALSE},
+        'tk.Menuitem.Submenu': {'default': tk.FALSE}
         }),
     ('tearoffcommand', _default_entry_prop),
     ('text', _default_textentry_prop),
@@ -328,9 +331,11 @@ __widget = (
         'default': 'none'
         }),
     ('validatecommand', _default_entry_prop),
-    ('validatecommand_args', _default_entry_prop),
+    ('validatecommand_args', { 'input_method': 'entry',
+        'validator': 'entry_validate_args' }),
     ('invalidcommand', _default_entry_prop),
-    ('invalidcommand_args', _default_entry_prop),
+    ('invalidcommand_args',  { 'input_method': 'entry',
+        'validator': 'entry_validate_args' }),
     ('value', { 'input_method': 'entry', 'validator': 'alphanumeric',
         'ttk.Scale': { 'validator': 'number_float'}
         }),
@@ -338,10 +343,10 @@ __widget = (
     ('variable', _default_entry_prop), #FIXME Howto manage this property?
     ('weight', _default_spinbox_prop),
     ('wrap', { 'input_method': 'choice',
-        'values': ('', tkinter.TRUE, tkinter.FALSE),
+        'values': ('', tk.TRUE, tk.FALSE),
         'tk.Text': {
-            'values': (tkinter.CHAR, tkinter.WORD, tkinter.NONE),
-            'default': tkinter.CHAR}
+            'values': (tk.CHAR, tk.WORD, tk.NONE),
+            'default': tk.CHAR}
         }),
     ('wraplength', _default_dimension_prop),
     ('xscrollcommand', _default_entry_prop),
