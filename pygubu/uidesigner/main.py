@@ -241,6 +241,7 @@ class PygubuUI(util.Application):
         if new:
             self.previewer.remove_all()
             self.tree_editor.remove_all()
+            self.properties_editor.hide_all()
             self.is_changed = False
             self.project_name.configure(text='<None>')
 
@@ -257,6 +258,7 @@ class PygubuUI(util.Application):
             fname = filedialog.askopenfilename(**options)
             if fname:
                 self.load_file(fname)
+                self.properties_editor.hide_all()
                 self.currentfile = fname
                 self.is_changed = False
 
