@@ -1,5 +1,5 @@
 import types
-import tkinter
+import tkinter as ttk
 from tkinter import ttk
 
 from .builderobject import *
@@ -8,7 +8,7 @@ from .builderobject import *
 # tkinter widgets
 #
 class TKFrame(BuilderObject):
-    class_ = tkinter.Frame
+    class_ = tk.Frame
     container = True
     properties = ['background', 'borderwidth', 'cursor', 'height',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
@@ -18,7 +18,7 @@ register_widget('tk.Frame', TKFrame, 'Frame', ('Containers', 'tk'))
 
 
 class TKLabel(BuilderObject):
-    class_ = tkinter.Label
+    class_ = tk.Label
     container = False
     properties = ['activebackground', 'activeforeground', 'anchor',
         'background', 'bitmap', 'borderwidth', 'compound',
@@ -32,7 +32,7 @@ register_widget('tk.Label', TKLabel, 'Label', ('Control & Display', 'tk'))
 
 
 class TKLabelFrame(BuilderObject):
-    class_ = tkinter.LabelFrame
+    class_ = tk.LabelFrame
     container = True
     properties = ['background', 'borderwidth', 'cursor', 'height',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
@@ -46,6 +46,7 @@ register_widget('tk.LabelFrame', TKLabelFrame, 'LabelFrame', ('Containers', 'tk'
 class EntryBaseBO(BuilderObject):
     def set_property(self, pname, value):
         if pname == 'text':
+            self.widget.delete('0', tk.END)
             self.widget.insert('0', value)
         elif pname in ('validatecommand_args', 'invalidcommand_args'):
             pass
@@ -65,7 +66,7 @@ class EntryBaseBO(BuilderObject):
 
 
 class TKEntry(EntryBaseBO):
-    class_ = tkinter.Entry
+    class_ = tk.Entry
     container = False
     properties = ['background', 'borderwidth', 'cursor',
         'disabledbackground', 'disabledforeground', 'exportselection',
@@ -86,7 +87,7 @@ register_widget('tk.Entry', TKEntry, 'Entry', ('Control & Display', 'tk'))
 
 
 class TKButton(BuilderObject):
-    class_ = tkinter.Button
+    class_ = tk.Button
     container = False
     properties = ['activebackground', 'activeforeground', 'anchor',
         'borderwidth', 'background', 'bitmap', 'command', 'cursor',
@@ -101,7 +102,7 @@ register_widget('tk.Button', TKButton, 'Button', ('Control & Display', 'tk'))
 
 
 class TKCheckbutton(BuilderObject):
-    class_ = tkinter.Checkbutton
+    class_ = tk.Checkbutton
     container = False
     properties = ['activebackground', 'activeforeground', 'anchor',
         'background', 'bitmap', 'borderwidth', 'command', 'compound',
@@ -118,7 +119,7 @@ register_widget('tk.Checkbutton', TKCheckbutton,
 
 
 class TKListbox(BuilderObject):
-    class_ =  tkinter.Listbox
+    class_ =  tk.Listbox
     container = False
     properties = ['activestyle', 'background', 'borderwidth', 'cursor',
             'disabledforeground', 'exportselection', 'font',
@@ -133,7 +134,7 @@ register_widget('tk.Listbox', TKListbox, 'Listbox', ('Control & Display', 'tk'))
 
 
 class TKText(BuilderObject):
-    class_ = tkinter.Text
+    class_ = tk.Text
     container = False
     properties = ['autoseparators', 'background', 'borderwidth', 'cursor',
             'exportselection', 'font',
@@ -192,7 +193,7 @@ class PanedWindowPane(BuilderObject):
 
 
 class TKPanedWindow(PanedWindow):
-    class_ = tkinter.PanedWindow
+    class_ = tk.PanedWindow
     allowed_children = ('tk.PanedWindow.Pane',)
     properties = ['background', 'borderwidth', 'cursor', 'handlepad',
         'handlesize', 'height', 'opaqueresize', 'orient', 'relief',
@@ -214,7 +215,7 @@ register_widget('tk.PanedWindow.Pane', TKPanedWindowPane,
 
 
 class TKMenubutton(BuilderObject):
-    class_ = tkinter.Menubutton
+    class_ = tk.Menubutton
     container = True
     properties = ['activebackground', 'activeforeground', 'anchor',
         'background', 'bitmap', 'borderwidth', 'compound', 'cursor',
@@ -233,7 +234,7 @@ register_widget('tk.Menubutton', TKMenubutton, 'Menubutton', ('Control & Display
 
 
 class TKMessage(BuilderObject):
-    class_ = tkinter.Message
+    class_ = tk.Message
     container = False
     properties = ['aspect', 'background', 'borderwidth', 'cursor',
         'font', 'foreground', 'highlightbackground', 'highlightcolor',
@@ -245,7 +246,7 @@ register_widget('tk.Message', TKMessage,
 
 
 class TKRadiobutton(BuilderObject):
-    class_ = tkinter.Radiobutton
+    class_ = tk.Radiobutton
     container = False
     properties = ['activebackground', 'activeforeground', 'anchor',
         'background', 'bitmap', 'borderwidth', 'command', 'compound',
@@ -262,7 +263,7 @@ register_widget('tk.Radiobutton', TKRadiobutton,
 
 
 class TKScale(BuilderObject):
-    class_ = tkinter.Scale
+    class_ = tk.Scale
     container = False
     properties = ['activebackground', 'background', 'borderwidth', 'command',
         'cursor', 'digits', 'font', 'foreground', 'from_',
@@ -276,7 +277,7 @@ register_widget('tk.Scale', TKScale, 'Scale', ('Control & Display', 'tk'))
 
 
 class TKScrollbar(BuilderObject):
-    class_ = tkinter.Scrollbar
+    class_ = tk.Scrollbar
     container = False
     properties = ['activebackground', 'activerelief', 'background',
         'borderwidth', 'command', 'cursor', 'elementborderwidth',
@@ -290,7 +291,7 @@ register_widget('tk.Scrollbar', TKScrollbar,
 
 
 class TKSpinbox(BuilderObject):
-    class_ = tkinter.Spinbox
+    class_ = tk.Spinbox
     container = False
     properties = ['activebackground', 'background', 'borderwidth',
         'buttonbackground', 'buttoncursor', 'buttondownrelief', 'buttonup',
@@ -324,7 +325,7 @@ class TKMenu(BuilderObject):
     allowed_children = ('tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
         'tk.Menuitem.Command', 'tk.Menuitem.Radiobutton',
         'tk.Menuitem.Separator')
-    class_ = tkinter.Menu
+    class_ = tk.Menu
     container = True
     properties = ['activebackground', 'activeborderwidth', 'activeforeground',
         'background', 'borderwidth', 'cursor', 'disabledforeground',
@@ -362,7 +363,7 @@ class TKMenuitem(BuilderObject):
             itemproperties = dict(itemproperties)
             itemproperties.pop('command_id_arg')
         master.add(self.itemtype, **itemproperties)
-        self.__index = master.index(tkinter.END)
+        self.__index = master.index(tk.END)
         return self.widget
 
     def configure(self):
@@ -401,7 +402,7 @@ class TKMenuitemSubmenu(TKMenu):
 
         self.widget = submenu = TKMenu.class_(master, **menu_properties)
         item_properties['menu'] = submenu
-        master.add(tkinter.constants.CASCADE, **item_properties)
+        master.add(tk.constants.CASCADE, **item_properties)
         return self.widget
 
 
@@ -417,7 +418,7 @@ register_widget('tk.Menuitem.Submenu', TKMenuitemSubmenu,
 
 class TKMenuitemCommand(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
-    itemtype = tkinter.constants.COMMAND
+    itemtype = tk.constants.COMMAND
 
 register_widget('tk.Menuitem.Command', TKMenuitemCommand,
     'Menuitem.Command', ('Control & Display', 'tk', 'ttk'))
@@ -425,7 +426,7 @@ register_widget('tk.Menuitem.Command', TKMenuitemCommand,
 
 class TKMenuitemCheckbutton(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
-    itemtype = tkinter.constants.CHECKBUTTON
+    itemtype = tk.constants.CHECKBUTTON
 
 register_widget('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton,
     'Menuitem.Checkbutton', ('Control & Display', 'tk', 'ttk'))
@@ -433,7 +434,7 @@ register_widget('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton,
 
 class TKMenuitemRadiobutton(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
-    itemtype = tkinter.constants.RADIOBUTTON
+    itemtype = tk.constants.RADIOBUTTON
 
 register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
     'Menuitem.Radiobutton', ('Control & Display', 'tk', 'ttk'))
@@ -441,7 +442,7 @@ register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
 
 class TKMenuitemSeparator(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
-    itemtype = tkinter.constants.SEPARATOR
+    itemtype = tk.constants.SEPARATOR
     properties = []
     command_properties = tuple()
 
@@ -450,7 +451,7 @@ register_widget('tk.Menuitem.Separator', TKMenuitemSeparator,
 
 
 class TKCanvas(BuilderObject):
-    class_ = tkinter.Canvas
+    class_ = tk.Canvas
     container = False
     properties = ['borderwidth', 'background', 'closeenough', 'confine',
         'cursor', 'height', 'highlightbackground', 'highlightcolor',
@@ -590,7 +591,8 @@ class TTKEntry(EntryBaseBO):
     container = False
     properties = ['class_', 'cursor', 'exportselection', 'font',
             'invalidcommand', 'justify', 'show', 'style', 'takefocus',
-            'textvariable', 'validate', 'validatecommand', 'values',
+            'textvariable', 'validate', 'validatecommand',
+            #'values',  << Commented, only useful on Combobox widget ?
             'width', 'xscrollcommand',
             'text', # < text is a custom property
             'validatecommand_args',
