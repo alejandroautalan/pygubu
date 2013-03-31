@@ -188,6 +188,16 @@ class Builder:
             pass
 
 
+    def add_from_string(self, strdata):
+        if self.tree is None:
+            self.tree = tree = ET.ElementTree(ET.fromstring(strdata))
+            self.root = tree.getroot()
+            self.objects = {}
+        else:
+            #TODO: append to current tree
+            pass
+
+
     def add_from_xmlnode(self, element):
         if self.tree is None:
             root = ET.Element('interface')
