@@ -7,7 +7,7 @@ logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('pygubu.builderobject')
 
 
-WidgetDescr = namedtuple('WidgetDescr', ['classname', 'classobj', 'label', 'tags'])
+WidgetClassDescr = namedtuple('WidgetClassDescr', ['classname', 'classobj', 'label', 'tags'])
 
 CLASS_MAP = {}
 
@@ -17,7 +17,7 @@ def register_widget(classname, classobj, label=None, tags=None):
     if tags is None:
         tags = tuple()
 
-    CLASS_MAP[classname] = WidgetDescr(classname, classobj, label, tags)
+    CLASS_MAP[classname] = WidgetClassDescr(classname, classobj, label, tags)
 
 
 CUSTOM_PROPERTIES = {}
