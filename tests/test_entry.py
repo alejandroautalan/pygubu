@@ -156,6 +156,22 @@ class TestEntry(unittest.TestCase):
 
         self.widget.destroy()
 
+    def test_justify(self):
+        prop = 'justify'
+        expected_value = 'center'
+        tclobj = self.widget.cget(prop)
+        value = str(tclobj)
+        self.assertEqual(expected_value, value)
+        self.widget.destroy()
+
+    def test_validate(self):
+        prop = 'validate'
+        expected_value = 'key'
+        tclobj = self.widget.cget(prop)
+        value = str(tclobj)
+        self.assertEqual(expected_value, value)
+        self.widget.destroy()
+
 
 
 
