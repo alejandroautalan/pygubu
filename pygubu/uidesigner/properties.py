@@ -98,15 +98,15 @@ _sticky_prop = {
             #tk.NSEW
             tk.NE + tk.SW
             ),
-        'tk.Frame': {'default': tk.NSEW},
-        'ttk.Frame': {'default': tk.NSEW},
-        'tk.LabelFrame': {'default': tk.NSEW},
-        'ttk.Labelframe': {'default': tk.NSEW},
-        'tk.ScrollbarHelper': {'default': tk.NSEW},
-        'ttk.ScrollbarHelper': {'default': tk.NSEW},
-        'tk.ScrolledFrame': {'default': tk.NSEW},
-        'ttk.ScrolledFrame': {'default': tk.NSEW},
-        'ttk.Notebook': {'default': tk.NSEW},
+        'tk.Frame': {'default': tk.NE + tk.SW},
+        'ttk.Frame': {'default': tk.NE + tk.SW},
+        'tk.LabelFrame': {'default': tk.NE + tk.SW},
+        'ttk.Labelframe': {'default': tk.NE + tk.SW},
+        'tk.ScrollbarHelper': {'default': tk.NE + tk.SW},
+        'ttk.ScrollbarHelper': {'default': tk.NE + tk.SW},
+        'tk.ScrolledFrame': {'default': tk.NE + tk.SW},
+        'ttk.ScrolledFrame': {'default': tk.NE + tk.SW},
+        'ttk.Notebook': {'default': tk.NE + tk.SW},
         }
 
 GROUP_WIDGET = 'widget__'
