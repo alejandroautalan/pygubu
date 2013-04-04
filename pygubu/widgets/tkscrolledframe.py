@@ -77,11 +77,18 @@ class TkScrolledFrame(tk.Frame):
             canvas.itemconfigure(
                 innerframe_id, height= canvas.winfo_height())
 
+        itemsize = (int(canvas.itemcget(innerframe_id, 'width')),
+                int(canvas.itemcget(innerframe_id, 'height')))
+        if itemsize[0] < size[0] or itemsize[1] < size[1]:
+            canvas.itemconfigure( innerframe_id,
+                    width= size[0], height= size[1])
+
     def reposition(self):
         """This method should be called when children are added,
         removed, grid_remove, and grided in the scrolled frame."""
         self.innerframe.update()
         self.after_idle(self._on_iframe_configure, None)
+        self.after_idle(self._on_canvas_configure, None)
 
 
 class TKScrolledFrameBO(BuilderObject):
