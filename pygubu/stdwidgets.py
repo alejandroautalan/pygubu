@@ -689,6 +689,7 @@ class TTKNotebookTab(BuilderObject):
     container = True
     layout_required = False
     allowed_parents = ('ttk.Notebook',)
+    maxchildren = 1
     properties = ['compound', 'padding', 'sticky',
         'image', 'text', 'underline']
 
