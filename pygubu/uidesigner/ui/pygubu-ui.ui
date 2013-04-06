@@ -5,10 +5,11 @@
     <child>
       <object class="tk.Menuitem.Submenu" id="filemenu">
         <property name="label">File</property>
-        <property name="tearoff">0</property>
         <property name="underline">0</property>
+        <property name="tearoff">0</property>
         <child>
           <object class="tk.Menuitem.Command" id="filenew">
+            <property name="accelerator">Ctrl+N</property>
             <property name="command">on_menuitem_new_clicked</property>
             <property name="label">New</property>
             <property name="command_id_arg">False</property>
@@ -16,14 +17,16 @@
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="fileopen">
+            <property name="accelerator">Ctrl+O</property>
             <property name="command">on_menuitem_open_clicked</property>
             <property name="label">Open …</property>
           </object>
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="filesave">
+            <property name="accelerator">Ctrl+S</property>
             <property name="command">on_menuitem_save_clicked</property>
-            <property name="label">Save …</property>
+            <property name="label">Save</property>
           </object>
         </child>
         <child>
@@ -38,6 +41,7 @@
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="filequit">
+            <property name="accelerator">Ctrl+Q</property>
             <property name="command">on_menuitem_quit_clicked</property>
             <property name="label">Quit …</property>
           </object>
@@ -47,14 +51,30 @@
     <child>
       <object class="tk.Menuitem.Submenu" id="editmenu">
         <property name="label">Edit</property>
+        <property name="underline">0</property>
         <property name="command_id_arg">False</property>
         <property name="tearoff">0</property>
-        <property name="underline">0</property>
         <child>
-          <object class="tk.Menuitem.Command" id="edit_item_delete">
-            <property name="accelerator">Del</property>
+          <object class="tk.Menuitem.Command" id="edit_copy">
+            <property name="accelerator">Ctrl+C</property>
             <property name="command">on_edit_menuitem_clicked</property>
-            <property name="label">Item delete</property>
+            <property name="label">Copy</property>
+            <property name="command_id_arg">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Command" id="edit_paste">
+            <property name="accelerator">Ctrl+V</property>
+            <property name="command">on_edit_menuitem_clicked</property>
+            <property name="label">Paste</property>
+            <property name="command_id_arg">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Command" id="edit_cut">
+            <property name="accelerator">Ctrl+X</property>
+            <property name="command">on_edit_menuitem_clicked</property>
+            <property name="label">Cut</property>
             <property name="command_id_arg">True</property>
           </object>
         </child>
@@ -63,7 +83,7 @@
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="edit_item_up">
-            <property name="accelerator">Ctrl+i</property>
+            <property name="accelerator">Ctrl+I</property>
             <property name="command">on_edit_menuitem_clicked</property>
             <property name="label">Item up</property>
             <property name="command_id_arg">True</property>
@@ -71,9 +91,17 @@
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="edit_item_down">
-            <property name="accelerator">Ctrl+k</property>
+            <property name="accelerator">Ctrl+K</property>
             <property name="command">on_edit_menuitem_clicked</property>
             <property name="label">Item down</property>
+            <property name="command_id_arg">True</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Command" id="edit_item_delete">
+            <property name="accelerator">Del</property>
+            <property name="command">on_edit_menuitem_clicked</property>
+            <property name="label">Item delete</property>
             <property name="command_id_arg">True</property>
           </object>
         </child>
@@ -82,9 +110,9 @@
     <child>
       <object class="tk.Menuitem.Submenu" id="helpmenu">
         <property name="label">Help</property>
+        <property name="underline">0</property>
         <property name="command_id_arg">False</property>
         <property name="tearoff">0</property>
-        <property name="underline">0</property>
         <child>
           <object class="tk.Menuitem.Command" id="help_online">
             <property name="command">on_help_menuitem_clicked</property>
@@ -105,45 +133,45 @@
   <object class="ttk.Frame" id="mainwindow">
     <property name="padding">2</property>
     <layout>
+      <property name="row">0</property>
       <property name="column">0</property>
       <property name="sticky">nsew</property>
-      <property name="row">0</property>
-      <rows>
-        <row id="1">
-          <property name="weight">1</property>
-        </row>
-      </rows>
       <columns>
         <column id="0">
           <property name="weight">1</property>
         </column>
       </columns>
+      <rows>
+        <row id="1">
+          <property name="weight">1</property>
+        </row>
+      </rows>
     </layout>
     <child>
-      <object class="ttk.Frame" id="frame_2">
+      <object class="ttk.Frame" id="top_frame">
         <layout>
+          <property name="row">0</property>
           <property name="column">0</property>
           <property name="sticky">nsew</property>
-          <property name="row">0</property>
+          <columns>
+            <column id="1">
+              <property name="weight">1</property>
+              <property name="pad">10</property>
+            </column>
+          </columns>
           <rows>
             <row id="0">
               <property name="pad">10</property>
             </row>
           </rows>
-          <columns>
-            <column id="1">
-              <property name="pad">10</property>
-              <property name="weight">1</property>
-            </column>
-          </columns>
         </layout>
         <child>
           <object class="ttk.Label" id="label_project">
             <property name="padding">0 0 10 0</property>
             <property name="text">Project:</property>
             <layout>
-              <property name="column">0</property>
               <property name="row">0</property>
+              <property name="column">0</property>
             </layout>
           </object>
         </child>
@@ -151,168 +179,191 @@
           <object class="ttk.Label" id="projectname_lbl">
             <property name="text">&lt;None&gt;</property>
             <layout>
+              <property name="row">0</property>
               <property name="column">1</property>
               <property name="sticky">we</property>
-              <property name="row">0</property>
             </layout>
           </object>
         </child>
       </object>
     </child>
     <child>
-      <object class="ttk.Panedwindow" id="panedwindow_1">
-        <property name="orient">horizontal</property>
+      <object class="ttk.Frame" id="middle_frame">
+        <property name="height">250</property>
+        <property name="padding">2</property>
+        <property name="width">250</property>
         <layout>
-          <property name="column">0</property>
-          <property name="sticky">nsew</property>
           <property name="row">1</property>
+          <property name="column">0</property>
+          <property name="sticky">nesw</property>
+          <property name="propagate">True</property>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
+          <rows>
+            <row id="0">
+              <property name="weight">1</property>
+            </row>
+          </rows>
         </layout>
         <child>
-          <object class="ttk.Panedwindow.Pane" id="pane1">
+          <object class="ttk.Panedwindow" id="panedwindow_1">
+            <property name="orient">horizontal</property>
+            <layout>
+              <property name="row">0</property>
+              <property name="column">0</property>
+              <property name="sticky">nsew</property>
+            </layout>
             <child>
-              <object class="ttk.Frame" id="pane1frame1">
-                <layout>
-                  <property name="column">0</property>
-                  <property name="sticky">nsew</property>
-                  <property name="row">0</property>
-                  <rows>
-                    <row id="0">
-                      <property name="weight">1</property>
-                    </row>
-                  </rows>
-                  <columns>
-                    <column id="1">
-                      <property name="weight">1</property>
-                    </column>
-                  </columns>
-                </layout>
+              <object class="ttk.Panedwindow.Pane" id="pane1">
                 <child>
-                  <object class="pygubu.widgets.scrollbarhelper" id="p1f1sbh1">
-                    <property name="scrolltype">both</property>
-                    <property name="padding">0 0 5 0</property>
+                  <object class="ttk.Frame" id="pane1frame1">
                     <layout>
+                      <property name="row">0</property>
                       <property name="column">0</property>
                       <property name="sticky">nsew</property>
-                      <property name="row">0</property>
+                      <columns>
+                        <column id="1">
+                          <property name="weight">1</property>
+                        </column>
+                      </columns>
                       <rows>
                         <row id="0">
                           <property name="weight">1</property>
                         </row>
                       </rows>
-                      <columns>
-                        <column id="0">
-                          <property name="weight">1</property>
-                        </column>
-                      </columns>
                     </layout>
                     <child>
-                      <object class="ttk.Treeview" id="widgetlist">
+                      <object class="pygubu.widgets.scrollbarhelper" id="p1f1sbh1">
+                        <property name="scrolltype">both</property>
+                        <property name="padding">0 0 5 0</property>
                         <layout>
+                          <property name="row">0</property>
                           <property name="column">0</property>
                           <property name="sticky">nsew</property>
-                          <property name="row">0</property>
+                          <columns>
+                            <column id="0">
+                              <property name="weight">1</property>
+                            </column>
+                          </columns>
+                          <rows>
+                            <row id="0">
+                              <property name="weight">1</property>
+                            </row>
+                          </rows>
                         </layout>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <child>
-                  <object class="ttk.Panedwindow" id="panew2">
-                    <layout>
-                      <property name="column">1</property>
-                      <property name="sticky">nsew</property>
-                      <property name="row">0</property>
-                    </layout>
-                    <child>
-                      <object class="ttk.Panedwindow.Pane" id="tvpane">
                         <child>
-                          <object class="ttk.Frame" id="addwframe1">
+                          <object class="ttk.Treeview" id="widgetlist">
                             <layout>
+                              <property name="row">0</property>
                               <property name="column">0</property>
                               <property name="sticky">nsew</property>
-                              <property name="row">0</property>
-                              <rows>
-                                <row id="1">
-                                  <property name="weight">1</property>
-                                </row>
-                              </rows>
-                              <columns>
-                                <column id="0">
-                                  <property name="weight">1</property>
-                                </column>
-                              </columns>
                             </layout>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Panedwindow" id="panew2">
+                        <layout>
+                          <property name="row">0</property>
+                          <property name="column">1</property>
+                          <property name="sticky">nsew</property>
+                        </layout>
+                        <child>
+                          <object class="ttk.Panedwindow.Pane" id="tvpane">
                             <child>
-                              <object class="pygubu.widgets.scrollbarhelper" id="sbh1">
-                                <property name="scrolltype">both</property>
+                              <object class="ttk.Frame" id="addwframe1">
                                 <layout>
+                                  <property name="row">0</property>
                                   <property name="column">0</property>
                                   <property name="sticky">nsew</property>
-                                  <property name="row">1</property>
-                                  <rows>
-                                    <row id="0">
-                                      <property name="weight">1</property>
-                                    </row>
-                                  </rows>
                                   <columns>
                                     <column id="0">
                                       <property name="weight">1</property>
                                     </column>
                                   </columns>
+                                  <rows>
+                                    <row id="1">
+                                      <property name="weight">1</property>
+                                    </row>
+                                  </rows>
                                 </layout>
                                 <child>
-                                  <object class="ttk.Treeview" id="treeview1">
+                                  <object class="pygubu.widgets.scrollbarhelper" id="sbh1">
+                                    <property name="scrolltype">both</property>
                                     <layout>
+                                      <property name="row">1</property>
                                       <property name="column">0</property>
                                       <property name="sticky">nsew</property>
-                                      <property name="row">0</property>
+                                      <columns>
+                                        <column id="0">
+                                          <property name="weight">1</property>
+                                        </column>
+                                      </columns>
+                                      <rows>
+                                        <row id="0">
+                                          <property name="weight">1</property>
+                                        </row>
+                                      </rows>
                                     </layout>
+                                    <child>
+                                      <object class="ttk.Treeview" id="treeview1">
+                                        <layout>
+                                          <property name="row">0</property>
+                                          <property name="column">0</property>
+                                          <property name="sticky">nsew</property>
+                                        </layout>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
                               </object>
                             </child>
                           </object>
                         </child>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="ttk.Panedwindow.Pane" id="pane22">
                         <child>
-                          <object class="ttk.Notebook" id="notebook1">
-                            <property name="height">200</property>
-                            <property name="width">300</property>
-                            <layout>
-                              <property name="column">0</property>
-                              <property name="row">0</property>
-                            </layout>
+                          <object class="ttk.Panedwindow.Pane" id="pane22">
                             <child>
-                              <object class="ttk.Notebook.Tab" id="generaltab">
-                                <property name="sticky">nsew</property>
-                                <property name="text">General</property>
+                              <object class="ttk.Notebook" id="notebook1">
+                                <property name="height">200</property>
+                                <property name="width">300</property>
+                                <layout>
+                                  <property name="row">0</property>
+                                  <property name="column">0</property>
+                                </layout>
                                 <child>
-                                  <object class="pygubu.widgets.scrolledframe" id="propertiesframe">
-                                    <property name="padding">5</property>
-                                    <layout>
-                                      <property name="column">0</property>
-                                      <property name="sticky">nsew</property>
-                                      <property name="row">0</property>
-                                    </layout>
+                                  <object class="ttk.Notebook.Tab" id="generaltab">
+                                    <property name="sticky">nsew</property>
+                                    <property name="text">General</property>
+                                    <child>
+                                      <object class="pygubu.widgets.scrolledframe" id="propertiesframe">
+                                        <property name="padding">5</property>
+                                        <layout>
+                                          <property name="row">0</property>
+                                          <property name="column">0</property>
+                                          <property name="sticky">nsew</property>
+                                        </layout>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="ttk.Notebook.Tab" id="layouttab">
-                                <property name="sticky">nsew</property>
-                                <property name="text">Layout</property>
                                 <child>
-                                  <object class="pygubu.widgets.scrolledframe" id="layoutframe">
-                                    <property name="padding">5</property>
-                                    <layout>
-                                      <property name="column">0</property>
-                                      <property name="sticky">nsew</property>
-                                      <property name="row">0</property>
-                                    </layout>
+                                  <object class="ttk.Notebook.Tab" id="layouttab">
+                                    <property name="sticky">nsew</property>
+                                    <property name="text">Layout</property>
+                                    <child>
+                                      <object class="pygubu.widgets.scrolledframe" id="layoutframe">
+                                        <property name="padding">5</property>
+                                        <layout>
+                                          <property name="row">0</property>
+                                          <property name="column">0</property>
+                                          <property name="sticky">nsew</property>
+                                        </layout>
+                                      </object>
+                                    </child>
                                   </object>
                                 </child>
                               </object>
@@ -325,18 +376,18 @@
                 </child>
               </object>
             </child>
-          </object>
-        </child>
-        <child>
-          <object class="ttk.Panedwindow.Pane" id="pane2">
             <child>
-              <object class="ttk.Notebook" id="notebookpreview">
-                <property name="height">200</property>
-                <property name="width">200</property>
-                <layout>
-                  <property name="column">0</property>
-                  <property name="row">0</property>
-                </layout>
+              <object class="ttk.Panedwindow.Pane" id="pane2">
+                <child>
+                  <object class="ttk.Notebook" id="notebookpreview">
+                    <property name="height">200</property>
+                    <property name="width">200</property>
+                    <layout>
+                      <property name="row">0</property>
+                      <property name="column">0</property>
+                    </layout>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
@@ -346,11 +397,13 @@
     <child>
       <object class="ttk.Frame" id="statusFrame">
         <property name="height">250</property>
+        <property name="padding">2</property>
+        <property name="relief">sunken</property>
         <property name="width">250</property>
         <layout>
+          <property name="row">2</property>
           <property name="column">0</property>
           <property name="sticky">ew</property>
-          <property name="row">2</property>
           <columns>
             <column id="0">
               <property name="weight">1</property>
@@ -361,21 +414,20 @@
           <object class="ttk.Label" id="statusbar">
             <property name="anchor">w</property>
             <property name="padding">2</property>
-            <property name="relief">sunken</property>
             <property name="text">Status Bar</property>
             <layout>
+              <property name="row">0</property>
               <property name="column">0</property>
               <property name="sticky">ew</property>
-              <property name="row">0</property>
             </layout>
           </object>
         </child>
         <child>
           <object class="ttk.Sizegrip" id="ttk.Sizegrip_2">
             <layout>
+              <property name="row">0</property>
               <property name="column">1</property>
               <property name="sticky">nsew</property>
-              <property name="row">0</property>
             </layout>
           </object>
         </child>

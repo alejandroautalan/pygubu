@@ -168,6 +168,35 @@ class PygubuUI(util.Application):
 
         self.set_resizable()
 
+        #
+        #Application bindings
+        #
+        self.bind_all('<Control-KeyPress-n>',
+                lambda e: self.on_menuitem_new_clicked())
+        self.bind_all('<Control-KeyPress-o>',
+                lambda e: self.on_menuitem_open_clicked())
+        self.bind_all('<Control-KeyPress-s>',
+                lambda e: self.on_menuitem_save_clicked())
+        self.bind_all('<Control-KeyPress-q>',
+                lambda e: self.on_menuitem_quit_clicked())
+        self.bind_all('<Control-KeyPress-c>',
+                lambda e: self.tree_editor.copy_to_clipboard())
+        self.bind_all('<Control-KeyPress-v>',
+                lambda e: self.tree_editor.paste_from_clipboard())
+        self.bind_all('<Control-KeyPress-x>',
+                lambda e: self.tree_editor.cut_to_clipboard())
+        self.bind_all('<Control-KeyPress-i>',
+                lambda e: self.on_edit_menuitem_clicked('edit_item_up'))
+        self.bind_all('<Control-KeyPress-k>',
+                lambda e: self.on_edit_menuitem_clicked('edit_item_down'))
+
+        #
+        # Widget bindings
+        #
+        self.tree_editor.treeview.bind('<KeyPress-Delete>',
+                lambda e: self.on_edit_menuitem_clicked('edit_item_delete'))
+
+
         #app config
         top = self.winfo_toplevel()
         try:
@@ -176,8 +205,6 @@ class PygubuUI(util.Application):
         except Exception as e:
             pass
 
-        top.withdraw()
-        top.deiconify()
         self.set_title('Pygubu a GUI builder for tkinter')
         self.set_size('640x480')
 
@@ -337,7 +364,17 @@ class PygubuUI(util.Application):
         elif itemid == 'edit_item_down':
             self.tree_editor.on_item_move_down(None)
         elif itemid == 'edit_item_delete':
-            self.tree_editor.on_treeview_delete_item(None)
+            do_delete = messagebox.askokcancel('Delete items',
+                'Delete selected items?')
+            if do_delete:
+                self.tree_editor.on_treeview_delete_selection(None)
+        elif itemid == 'edit_copy':
+            self.tree_editor.copy_to_clipboard()
+        elif itemid == 'edit_paste':
+            self.tree_editor.paste_from_clipboard()
+        elif itemid == 'edit_cut':
+            self.tree_editor.cut_to_clipboard()
+
 
     #Help menu
     def on_help_menuitem_clicked(self, itemid):
@@ -357,7 +394,10 @@ class PygubuUI(util.Application):
 
 
 def start_pygubu():
-    app = PygubuUI(tk.Tk())
+    root = tk.Tk()
+    root.withdraw()
+    app = PygubuUI(root)
+    root.deiconify()
     app.run()
 
 

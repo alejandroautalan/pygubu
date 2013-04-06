@@ -19,6 +19,7 @@ import xml.dom.minidom
 import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 import logging
+import tkinter as tk
 
 from pygubu import builder
 from . import util
@@ -44,14 +45,11 @@ class WidgetsTreeEditor:
         tree = self.treeview
         columns = ('class', 'row', 'col', 'space_trick')
         dcols = columns
-        hcols = ('Widget Tree', ' '*10, ' '*2, ' '*2, ' ')
+        hcols = ('Widget Id     ', 'Class', 'R', 'C', ' ')
         util.configure_treeview(tree, columns, displaycolumns=dcols,
             headings=hcols, show_tree=True)
-        tree.bind('<KeyPress-Delete>', self.on_treeview_delete_item)
         tree.bind('<Double-1>', self.on_treeview_double_click)
         tree.bind('<<TreeviewSelect>>', self.on_treeview_select, add='+')
-        tree.bind('<Control-KeyPress-i>', self.on_item_move_up)
-        tree.bind('<Control-KeyPress-k>', self.on_item_move_down)
 
 
     def get_toplevel_parent(self, treeitem):
@@ -92,26 +90,28 @@ class WidgetsTreeEditor:
                 self.draw_widget(item)
 
 
-    def on_treeview_delete_item(self, event):
-        """Removes item from treeview"""
+    def on_treeview_delete_selection(self, event=None):
+        """Removes selected items from treeview"""
 
         tv = self.treeview
-        sel = tv.selection()
+        selection = tv.selection()
         toplevel_items = tv.get_children()
-        if sel:
-            item = sel[0]
-            parent = ''
-            if item not in toplevel_items:
-                parent = self.get_toplevel_parent(item)
-            else:
-                self.previewer.delete(item)
-            del self.treedata[item]
-            tv.delete(item)
-            self.app.set_changed()
-            if parent:
-                self.draw_widget(parent)
-            else:
+        for item in selection:
+            try:
+                parent = ''
+                if item not in toplevel_items:
+                    parent = self.get_toplevel_parent(item)
+                else:
+                    self.previewer.delete(item)
+                del self.treedata[item]
+                tv.delete(item)
+                self.app.set_changed()
+                if parent:
+                    self.draw_widget(parent)
                 self.app.properties_editor.hide_all()
+            except tk.TclError as e:
+                #Selection of parent and child items ??
+                pass
 
 
     def tree_to_xml(self):
@@ -145,21 +145,187 @@ class WidgetsTreeEditor:
 
 
     def _insert_item(self, root, data):
+        """Insert a item on the treeview and fills columns from data"""
+
         tree = self.treeview
         treelabel = data.get_id()
         row = col = ''
         if root != '' and 'layout' in data:
-            #if 'row' in data['layout']:
-            #    row = data['layout']['row']
-            #    col = data['layout']['column']
             row = data.get_layout_propery('row')
             col = data.get_layout_propery('column')
+
+            #fix row position when using copy and paste
+            #If collision, increase by 1
+            row_count = self.get_max_row(root)
+            if row_count > int(row):
+                row = str(row_count + 1)
+                data.set_layout_propery('row', row)
+
         values = (data.get_class(), row, col)
         item = tree.insert(root, 'end', text=treelabel, values=values)
         data.attach(self)
         self.app.set_changed()
 
         return item
+
+
+    def copy_to_clipboard(self):
+        """
+        Copies selected items to clipboard.
+        """
+        tree = self.treeview
+        #get the selected item:
+        selected_item = ''
+        selection = tree.selection()
+        if selection:
+            root = ET.Element('selection')
+            for item in selection:
+                node = self.tree_node_to_xml('', item)
+                root.append(node)
+            text = ET.tostring(root, encoding='unicode')
+            tree.clipboard_clear()
+            tree.clipboard_append(text)
+
+
+    def cut_to_clipboard(self):
+        self.copy_to_clipboard()
+        self.on_treeview_delete_selection()
+
+
+    def _validate_add(self, root_item, classname):
+        tree = self.treeview
+        is_valid = True
+
+        new_boclass = builder.CLASS_MAP[classname].classobj
+        root = root_item
+
+        if root:
+            root_classname = self.treedata[root].get_class()
+            root_boclass = builder.CLASS_MAP[root_classname].classobj
+            #print('rootclass:', root_classname)
+
+            if root_boclass.container == False:
+                msg = 'Not allowed, {0} is not a container.'\
+                    .format(root_classname)
+                logger.warning(msg)
+                is_valid = False
+                return is_valid
+
+            children_count = len(self.treeview.get_children(root))
+            maxchildren = root_boclass.maxchildren
+            #print('root children:', children_count)
+            if maxchildren is not None and children_count >= maxchildren:
+                logger.warning('Only {} children allowed'.format(maxchildren))
+                is_valid = False
+                return is_valid
+
+            allowed_children = root_boclass.allowed_children
+            #print('allowed_children:', allowed_children)
+            if (allowed_children is not None and
+                    classname not in allowed_children):
+                msg = '{0} is not allowed as child of {1}.'.format(
+                        classname, root_classname)
+                logger.warning(msg)
+                is_valid = False
+                return is_valid
+
+#            allowed_parents = root_boclass.allowed_parents
+#            print('allowed_parents:', allowed_parents)
+#            if allowed_parents is not None and \
+#                        root_classname not in allowed_parents:
+#                msg = '{0} is not allowed as parent of {1}'.format(
+#                        root_classname, classname)
+#                logger.warning(msg)
+#                is_valid = False
+#                return is_valid
+
+            allowed_parents = new_boclass.allowed_parents
+            if allowed_parents is not None and \
+                        root_classname not in allowed_parents:
+                msg = '{0} not allowed as parent of {1}'.format(
+                        root_classname, classname)
+                logger.warning(msg)
+                is_valid = False
+                return is_valid
+        else:
+            #if insertion is at top level,
+            ##Validate if it can be added at root level
+            allowed_parents = new_boclass.allowed_parents
+            if allowed_parents is not None and 'root' not in allowed_parents:
+                logger.warning('{0} not allowed at root level'.format(classname))
+                is_valid = False
+                return is_valid
+
+            #if parents are not specified as parent,
+            #check that item to insert is a container.
+            #only containers are allowed at root level
+            if new_boclass.container == False:
+                msg = 'Not allowed at root level, {0} is not a container.'\
+                    .format(classname)
+                logger.warning(msg)
+                is_valid = False
+                return is_valid
+        return is_valid
+
+
+    def _is_unique_id(self, root, widget_id):
+        unique = True
+        if root != '':
+            data = self.treedata[root]
+            if data.get_id() == widget_id:
+                unique = False
+        if unique is True:
+            for item in self.treeview.get_children(root):
+                unique = self._is_unique_id(item, widget_id)
+                if unique is False:
+                    break
+        return unique
+
+
+    def _generate_id(self, classname, index, base=None):
+        class_base_name = classname.split('.')[-1]
+        name = class_base_name
+        if base is not None:
+            name = base
+            if class_base_name in base:
+                name = name.split('_')[0]
+        name = '{0}_{1}'.format(name, index)
+        return name
+
+
+    def get_unique_id(self, classname, start_id=None):
+        if start_id is None:
+            self.counter[classname] += 1
+            start_id = self._generate_id(classname, self.counter[classname])
+
+        is_unique = self._is_unique_id('', start_id)
+        while is_unique is False:
+            self.counter[classname] += 1
+            start_id = self._generate_id(classname,
+                self.counter[classname], start_id)
+            is_unique = self._is_unique_id('', start_id)
+
+        #print('unique_calculated:', start_id)
+        return start_id
+
+
+    def paste_from_clipboard(self):
+        tree = self.treeview
+        selected_item = ''
+        selection = tree.selection()
+        if selection:
+            selected_item = selection[0]
+        text = tree.selection_get(selection='CLIPBOARD')
+        try:
+            root = ET.fromstring(text)
+            for element in root:
+                data = WidgetDescr(None, None)
+                data.from_xml_node(element)
+                if self._validate_add(selected_item, data.get_class()):
+                    self.populate_tree(selected_item, root, element)
+            self.draw_widget(selected_item)
+        except ET.ParseError as e:
+            pass
 
 
     def add_widget(self, wclass):
@@ -187,44 +353,13 @@ class WidgetsTreeEditor:
                 #the item parent should be the container
                 root = tree.parent(selected_item)
 
-        #if insertion is at top level,
-        #check that item to insert is a container.
-        if not root:
-            if builder.CLASS_MAP[wclass].classobj.container == False:
-                logger.warning('{0} is not a container.'.format(wclass))
-                return
-        if root:
-            rootclass = self.treedata[root].get_class()
-            children_count = len(self.treeview.get_children(root))
-            maxchildren = builder.CLASS_MAP[rootclass].classobj.maxchildren
-            #print('childrencount {}, maxchildren {}'.format(children_count, maxchildren))
-            if maxchildren is not None and children_count >= maxchildren:
-                logger.warning('Only {} children allowed'.format(maxchildren))
-                return
-            allowed_children = builder.CLASS_MAP[rootclass].classobj.allowed_children
-            #print('class {} allowed {}'.format(rootclass, allowed_children))
-            if allowed_children is not None and wclass not in allowed_children:
-                msg = '{0} is not allowed as child of {1}'.format(wclass, rootclass)
-                logger.warning(msg)
-                return
-            allowed_parents = builder.CLASS_MAP[wclass].classobj.allowed_parents
-            #print('class {} allowed parents {}'.format(rootclass, allowed_parents))
-            if allowed_parents is not None and rootclass not in allowed_parents:
-                logger.warning('{0} is not allowed as parent of {1}'.format(rootclass, wclass))
-                return
-        else:
-            ##Validate if it can be added at root level
-            allowed_parents = builder.CLASS_MAP[wclass].classobj.allowed_parents
-            if allowed_parents is not None and 'root' not in allowed_parents:
-                logger.warning('{0} not allowed at root level'.format(wclass))
-                return
+        #check if the widget can be added at selected point
+        if not self._validate_add(root, wclass):
+            return
 
         #root item should be set at this point
-        #increment class counter
-        self.counter[wclass] += 1
-
         #setup properties
-        widget_id = '{0}_{1}'.format(wclass, self.counter[wclass])
+        widget_id = self.get_unique_id(wclass)
 
         data = WidgetDescr(wclass, widget_id)
 
@@ -261,10 +396,6 @@ class WidgetsTreeEditor:
         data.set_layout_propery('row', rownum)
         data.set_layout_propery('column', '0')
 
-        #if is_container:
-        #    data[group]['rows'] = defaultdict(dict)
-        #    data[group]['columns'] = defaultdict(dict)
-
         item = self._insert_item(root, data)
         self.treedata[item] = data
 
@@ -300,12 +431,10 @@ class WidgetsTreeEditor:
         data = WidgetDescr(None, None)
         data.from_xml_node(element)
         cname = data.get_class()
-        uniqueid = data.get_id()
+        uniqueid = self.get_unique_id(cname, data.get_id())
+        data.set_id(uniqueid)
 
         if cname in builder.CLASS_MAP:
-            #update counter
-            self.counter[cname] += 1
-
             pwidget = self._insert_item(master, data)
             self.treedata[pwidget] = data
 
@@ -364,6 +493,8 @@ class WidgetsTreeEditor:
 
 
     def update_event(self, obj):
+        """Updates tree colums when itemdata is changed."""
+
         tree = self.treeview
         data = obj
         item = self.get_item_by_data(obj)

@@ -416,6 +416,8 @@ class WidgetPropertiesEditor:
             for pname in self.prop_widget[group]:
                 for widget in self.prop_widget[group][pname]:
                     widget.grid_remove()
+        self.propsframe.reposition()
+        self.layoutframe.reposition()
 
 
     def update_property_widget(self, group, widget, variable,

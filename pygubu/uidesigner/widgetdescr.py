@@ -41,6 +41,9 @@ class WidgetDescr(dict, Observable):
     def get_id(self):
         return self['id']
 
+    def set_id(self, newid):
+        self['id'] = newid
+
 
     def set_property(self, name, value):
         if name in ('id', 'class'):
