@@ -62,6 +62,7 @@ StockImage.register_from_dir(
 
 #Initialize logger
 logger = logging.getLogger('pygubu.designer')
+logger.setLevel(logging.INFO)
 
 
 class StatusBarHandler(logging.Handler):
@@ -78,7 +79,10 @@ class StatusBarHandler(logging.Handler):
                 self.tklabel.after_cancel(self._cb_id)
             self._clear = False
             self._cb_id = self.tklabel.after(5000, self.clear)
-            self.tklabel.configure(text=msg, foreground='red')
+            txtcolor = 'red'
+            if record.levelno == logging.INFO:
+                txtcolor = 'black'
+            self.tklabel.configure(text=msg, foreground=txtcolor)
         except (KeyboardInterrupt, SystemExit):
             raise
         except:
@@ -293,6 +297,7 @@ class PygubuUI(util.Application):
         self.save_file(fname)
         self.currentfile = fname
         self.is_changed = False
+        logger.info('Project saved to {0}'.format(fname))
 
 
     def do_save_as(self):
