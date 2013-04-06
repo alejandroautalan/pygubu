@@ -83,7 +83,7 @@ class BuilderObject:
     def set_property(self, pname, value):
         propvalue = value
         if pname in self.tkvar_properties:
-            propvalue = self.builder.get_variable(value)
+            propvalue = self.builder.create_variable(value)
             if 'text' in self.properties and pname == 'textvariable':
                 propvalue.set(self.properties['text'])
             elif 'value' in self.properties and pname == 'variable':

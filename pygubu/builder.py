@@ -155,7 +155,20 @@ class Builder:
         self.tkvariables = {}
 
 
-    def get_variable(self, varname, vtype=None):
+    def get_variable(self, varname):
+        """
+        Returns a tk variable created previously.
+        """
+        return self.tkvariables[varname]
+
+
+    def create_variable(self, varname, vtype=None):
+        """
+        Create a tk variable
+
+        If the variable was created previously return that instance.
+        """
+
         var = None
         if varname in self.tkvariables:
             var = self.tkvariables[varname]
@@ -234,7 +247,7 @@ class Builder:
             importlib.import_module(cname)
 
         if cname in CLASS_MAP:
-            self.check_data(data)
+            self._check_data(data)
             builderobj = CLASS_MAP[cname].classobj.factory(self, data)
             pwidget = builderobj.realize(master)
             builderobj.configure()
@@ -255,7 +268,7 @@ class Builder:
             raise Exception('Class "{0}" not mapped'.format(cname))
 
 
-    def check_data(self, data):
+    def _check_data(self, data):
         cname = data['class']
         uniqueid = data['id']
         layout = data['layout']
