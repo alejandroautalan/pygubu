@@ -315,8 +315,8 @@ class WidgetsTreeEditor:
         selection = tree.selection()
         if selection:
             selected_item = selection[0]
-        text = tree.selection_get(selection='CLIPBOARD')
         try:
+            text = tree.selection_get(selection='CLIPBOARD')
             root = ET.fromstring(text)
             for element in root:
                 data = WidgetDescr(None, None)
@@ -325,6 +325,8 @@ class WidgetsTreeEditor:
                     self.populate_tree(selected_item, root, element)
             self.draw_widget(selected_item)
         except ET.ParseError as e:
+            pass
+        except tk.TclError as e:
             pass
 
 
