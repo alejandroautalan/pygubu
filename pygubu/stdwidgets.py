@@ -211,7 +211,7 @@ class TKPanedWindowPane(PanedWindowPane):
     properties = ['height', 'minsize', 'padx', 'pady', 'sticky']
 
 register_widget('tk.PanedWindow.Pane', TKPanedWindowPane,
-    'PanedWindow.Pane', ('Control & Display', 'tk'))
+    'PanedWindow.Pane', ('Pygubu Helpers', 'tk'))
 
 
 class TKMenubutton(BuilderObject):
@@ -413,7 +413,7 @@ class TKMenuitemSubmenu(TKMenu):
         pass
 
 register_widget('tk.Menuitem.Submenu', TKMenuitemSubmenu,
-        'Menuitem.Submenu', ('Control & Display', 'tk', 'ttk'))
+        'Menuitem.Submenu', ('Pygubu Helpers', 'tk', 'ttk'))
 
 
 class TKMenuitemCommand(TKMenuitem):
@@ -421,7 +421,7 @@ class TKMenuitemCommand(TKMenuitem):
     itemtype = tk.constants.COMMAND
 
 register_widget('tk.Menuitem.Command', TKMenuitemCommand,
-    'Menuitem.Command', ('Control & Display', 'tk', 'ttk'))
+    'Menuitem.Command', ('Pygubu Helpers', 'tk', 'ttk'))
 
 
 class TKMenuitemCheckbutton(TKMenuitem):
@@ -429,7 +429,7 @@ class TKMenuitemCheckbutton(TKMenuitem):
     itemtype = tk.constants.CHECKBUTTON
 
 register_widget('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton,
-    'Menuitem.Checkbutton', ('Control & Display', 'tk', 'ttk'))
+    'Menuitem.Checkbutton', ('Pygubu Helpers', 'tk', 'ttk'))
 
 
 class TKMenuitemRadiobutton(TKMenuitem):
@@ -437,7 +437,7 @@ class TKMenuitemRadiobutton(TKMenuitem):
     itemtype = tk.constants.RADIOBUTTON
 
 register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
-    'Menuitem.Radiobutton', ('Control & Display', 'tk', 'ttk'))
+    'Menuitem.Radiobutton', ('Pygubu Helpers', 'tk', 'ttk'))
 
 
 class TKMenuitemSeparator(TKMenuitem):
@@ -447,7 +447,7 @@ class TKMenuitemSeparator(TKMenuitem):
     command_properties = tuple()
 
 register_widget('tk.Menuitem.Separator', TKMenuitemSeparator,
-        'Menuitem.Separator', ('Control & Display','tk', 'ttk'))
+        'Menuitem.Separator', ('Pygubu Helpers','tk', 'ttk'))
 
 
 class TKCanvas(BuilderObject):
@@ -669,7 +669,7 @@ class TTKPanedwindowPane(PanedWindowPane):
     properties = ['weight']
 
 register_widget('ttk.Panedwindow.Pane', TTKPanedwindowPane,
-        'Panedwindow.Pane', ('Control & Display', 'ttk'))
+        'Panedwindow.Pane', ('Pygubu Helpers', 'ttk'))
 
 
 class TTKNotebook(BuilderObject):
@@ -707,7 +707,7 @@ class TTKNotebookTab(BuilderObject):
         self.widget.add(cwidget, **self.properties)
 
 register_widget('ttk.Notebook.Tab', TTKNotebookTab,
-        'Notebook.Tab', ('Control & Display', 'ttk'))
+        'Notebook.Tab', ('Pygubu Helpers', 'ttk'))
 
 
 class TTKMenubutton(BuilderObject):

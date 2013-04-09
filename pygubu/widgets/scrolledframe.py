@@ -105,5 +105,5 @@ class TTKScrolledFrameBO(BuilderObject):
 
 
 register_widget('pygubu.widgets.scrolledframe', TTKScrolledFrameBO,
-    'ScrolledFrame', ('Pygubu Utilities', 'ttk'))
+    'ScrolledFrame', ('Pygubu Widgets', 'ttk'))
 

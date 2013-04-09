@@ -86,5 +86,5 @@ if 'scrolltype' not in CUSTOM_PROPERTIES:
 
 
 register_widget('pygubu.widgets.tkscrollbarhelper', TKSBHelperBO,
-    'ScrollbarHelper', ('Pygubu Utilities', 'tk'))
+    'ScrollbarHelper', ('Pygubu Helpers', 'tk'))
 

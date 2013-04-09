@@ -88,5 +88,5 @@ register_property('scrolltype', __scrolltype_property)
 
 
 register_widget('pygubu.widgets.scrollbarhelper', TTKSBHelperBO,
-    'ScrollbarHelper', ('Pygubu Utilities', 'ttk'))
+    'ScrollbarHelper', ('Pygubu Helpers', 'ttk'))
 

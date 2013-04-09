@@ -105,5 +105,5 @@ class TKScrolledFrameBO(BuilderObject):
         return self.widget.innerframe
 
 register_widget('pygubu.widgets.tkscrolledframe', TKScrolledFrameBO,
-    'ScrolledFrame', ('Pygubu Utilities', 'tk'))
+    'ScrolledFrame', ('Pygubu Widgets', 'tk'))
 
