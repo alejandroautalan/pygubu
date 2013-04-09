@@ -18,6 +18,7 @@
 # For further info, check  http://pygubu.web.here
 
 import os
+import sys
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 import logging
@@ -179,12 +180,6 @@ class PygubuUI(util.Application):
                 lambda e: self.on_menuitem_save_clicked())
         self.bind_all('<Control-KeyPress-q>',
                 lambda e: self.on_menuitem_quit_clicked())
-        self.bind_all('<Control-KeyPress-c>',
-                lambda e: self.tree_editor.copy_to_clipboard())
-        self.bind_all('<Control-KeyPress-v>',
-                lambda e: self.tree_editor.paste_from_clipboard())
-        self.bind_all('<Control-KeyPress-x>',
-                lambda e: self.tree_editor.cut_to_clipboard())
         self.bind_all('<Control-KeyPress-i>',
                 lambda e: self.on_edit_menuitem_clicked('edit_item_up'))
         self.bind_all('<Control-KeyPress-k>',
@@ -193,6 +188,12 @@ class PygubuUI(util.Application):
         #
         # Widget bindings
         #
+        self.tree_editor.treeview.bind('<Control-KeyPress-c>',
+                lambda e: self.tree_editor.copy_to_clipboard())
+        self.tree_editor.treeview.bind('<Control-KeyPress-v>',
+                lambda e: self.tree_editor.paste_from_clipboard())
+        self.tree_editor.treeview.bind('<Control-KeyPress-x>',
+                lambda e: self.tree_editor.cut_to_clipboard())
         self.tree_editor.treeview.bind('<KeyPress-Delete>',
                 lambda e: self.on_edit_menuitem_clicked('edit_item_delete'))
 
@@ -289,9 +290,6 @@ class PygubuUI(util.Application):
             fname = filedialog.askopenfilename(**options)
             if fname:
                 self.load_file(fname)
-                self.properties_editor.hide_all()
-                self.currentfile = fname
-                self.is_changed = False
 
 
     def on_menuitem_save_clicked(self):
@@ -355,6 +353,9 @@ class PygubuUI(util.Application):
         self.tree_editor.load_file(filename)
         self.project_name.configure(text=filename)
         self.previewer.remove_all()
+        self.properties_editor.hide_all()
+        self.currentfile = filename
+        self.is_changed = False
 
 
     #Edit menu
@@ -398,6 +399,16 @@ def start_pygubu():
     root.withdraw()
     app = PygubuUI(root)
     root.deiconify()
+
+    filename = None
+    if len(sys.argv) > 1:
+        farg = sys.argv[1]
+        if os.path.isfile(farg):
+            filename = farg
+
+    if filename is not None:
+        app.load_file(filename)
+
     app.run()
 
 
