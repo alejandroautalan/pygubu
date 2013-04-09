@@ -376,6 +376,11 @@ class PygubuUI(util.Application):
         elif itemid == 'edit_cut':
             self.tree_editor.cut_to_clipboard()
 
+    #preview menu
+    def on_previewmenu_action(self, itemid):
+        if itemid == 'preview_toplevel':
+            self.tree_editor.preview_in_toplevel()
+
 
     #Help menu
     def on_help_menuitem_clicked(self, itemid):

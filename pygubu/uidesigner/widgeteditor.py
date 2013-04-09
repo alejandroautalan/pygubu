@@ -79,6 +79,21 @@ class WidgetsTreeEditor:
             self.previewer.show_selected(item, selected_id)
 
 
+    def preview_in_toplevel(self):
+        tv = self.treeview
+        sel = tv.selection()
+        if sel:
+            item = sel[0]
+            item = self.get_toplevel_parent(item)
+            widget_id = self.treedata[item]['id']
+            wclass = self.treedata[item]['class']
+            xmlnode = self.tree_node_to_xml('', item)
+            is_menu = True if wclass == 'tk.Menu' else False
+            self.previewer.preview_in_toplevel(widget_id, xmlnode, is_menu)
+        else:
+            logger.warning('No item selected.')
+
+
     def on_treeview_double_click(self, event):
         tv = self.treeview
         sel = tv.selection()

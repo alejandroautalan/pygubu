@@ -170,3 +170,20 @@ class PreviewHelper:
             self.delete(identifier)
 
 
+    def preview_in_toplevel(self, widget_id, xmlnode, is_menu=False):
+        #Create preview
+        builder = pygubu.Builder()
+        builder.add_from_xmlnode(xmlnode)
+        top = tkinter.Toplevel(self.notebook)
+        top.columnconfigure(0, weight=1)
+        top.rowconfigure(0, weight=1)
+
+        if is_menu:
+            menu = builder.get_object(widget_id, top)
+            top['menu'] = menu
+        else:
+            builder.get_object(widget_id, top)
+
+
+
+
