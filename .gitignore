@@ -3,3 +3,6 @@ __pycache__/
 *.pyc
 output.tkb
 exampleui_2.tkb
+build/
+dist/
+MANIFEST
