@@ -23,7 +23,11 @@ import tkinter
 
 stock_data = {}
 
-logger = logging.getLogger('stockimage')
+logger = logging.getLogger(__name__)
+
+
+class StockImageException(Exception):
+    pass
 
 
 #class StockImage(Object):
@@ -32,10 +36,13 @@ class StockImage:
 When image is used, the class maintains it on memory for tkinter"""
     _stock = stock_data
     _cached = {}
+    _formats = ('.gif',)
 
 
     @classmethod
     def register(cls, key, filename):
+        """Register a image file using key"""
+
         if key in cls._stock:
             logger.info('Warning, replacing resource ' + str(key))
         cls._stock[key] = {'type': 'custom', 'filename': filename}
@@ -43,28 +50,47 @@ When image is used, the class maintains it on memory for tkinter"""
 
 
     @classmethod
-    def register_from_dir(cls, dir_path):
+    def register_from_dir(cls, dir_path, prefix=''):
+        """List files from dir_path and register images with
+            filename as key (without extension)
+        Additionaly a prefix for the key can be provided,
+        so the resulting key will be prefix + filename
+        """
+
         for filename in os.listdir(dir_path):
-            filekey = filename.lower()
-            if filekey.endswith('.gif'):
-                cls.register(filekey[:-4], os.path.join(dir_path, filename))
+            name, file_ext = os.path.splitext(filename)
+            if file_ext in cls._formats:
+                fkey = '{0}{1}'.format(prefix, name)
+                cls.register(fkey, os.path.join(dir_path, filename))
+
+
+    @classmethod
+    def _load_image(cls, rkey):
+        """Load image from file or return the cached instance."""
+
+        v = cls._stock[rkey]
+        img = None
+        if v['type'] == 'stock':
+            img = tkinter.PhotoImage(format=v['format'],data=v['data'])
+        else:
+            img = tkinter.PhotoImage(file=v['filename'])
+        cls._cached[rkey] = img
+        logger.info('Loaded resource %s.' % rkey)
+        return img
 
 
     @classmethod
     def get(cls, rkey):
+        """Get image previously registered with key rkey.
+        If key not exist, raise StockImageException
+        """
+
         if rkey in cls._cached:
             logger.info('Resource %s is in cache.' % rkey)
             return cls._cached[rkey]
         if rkey in cls._stock:
-            v = cls._stock[rkey]
-            img = None
-            if v['type'] == 'stock':
-                img = tkinter.PhotoImage(format=v['format'],data=v['data'])
-            else:
-                img = tkinter.PhotoImage(file=v['filename'])
-            cls._cached[rkey] = img
-            logger.info('Loaded resource %s.' % rkey)
+            img = cls._load_image(rkey)
             return img
         else:
-            raise Exception('StockImage: %s not registered.' % rkey)
+            raise StockImageException('StockImage: %s not registered.' % rkey)
 
