@@ -38,7 +38,7 @@ from . import properties
 from .propertieseditor import WidgetPropertiesEditor
 from .widgeteditor import WidgetsTreeEditor
 from .previewer import PreviewHelper
-from .util.stockimage import StockImage
+from .util.stockimage import StockImage, StockImageException
 from .util.dialog import DialogBase
 
 
@@ -58,8 +58,13 @@ for pname, descr in builder.CUSTOM_PROPERTIES.items():
 
 
 #Initialize images
+DESIGNER_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGES_DIR = os.path.join(DESIGNER_DIR, "images")
+StockImage.register_from_dir(IMAGES_DIR)
 StockImage.register_from_dir(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)),"images"))
+        os.path.join(IMAGES_DIR, 'widgets', '22x22'), '22x22-')
+StockImage.register_from_dir(
+        os.path.join(IMAGES_DIR, 'widgets', '16x16'), '16x16-')
 
 #Initialize logger
 logger = logging.getLogger('pygubu.designer')
@@ -203,7 +208,7 @@ class PygubuUI(util.Application):
         try:
             top.wm_iconname('pygubu')
             top.tk.call('wm', 'iconphoto', '.', StockImage.get('pygubu'))
-        except Exception as e:
+        except StockImageException as e:
             pass
 
         self.set_title('Pygubu a GUI builder for tkinter')
@@ -240,16 +245,33 @@ class PygubuUI(util.Application):
             return "{0}{1}".format(t[0], t[1].label)
         treelist.sort(key=by_label)
 
+        #Default widget image:
+        default_image = ''
+        try:
+            default_image = StockImage.get('22x22-tk.default')
+        except StockImageException as e:
+            pass
+
+        #Start building widget tree selector
         roots = {}
         sections = {}
         tv.itemdata = {}
         for key, wc in treelist:
             root, section = key.split('>')
+            #insert root
             if root not in roots:
-                roots[root] = tv.insert('', tk.END, text=root)
+                roots[root] = tv.insert('', tk.END, text=root, open=True)
+            #insert section
             if key not in sections:
                 sections[key] = tv.insert(roots[root], tk.END, text=section)
-            i = tv.insert(sections[key], tk.END, text=wc.label)
+
+            #insert widget
+            w_image = default_image
+            try:
+                w_image = StockImage.get('22x22-{0}'.format(wc.classname))
+            except StockImageException as e:
+                pass
+            i = tv.insert(sections[key], tk.END, text=wc.label, image=w_image)
             tv.itemdata[i] = wc.classname
 
 

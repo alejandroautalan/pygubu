@@ -25,6 +25,7 @@ from pygubu import builder
 from . import util
 from . import properties
 from .widgetdescr import WidgetDescr
+from .util.stockimage import StockImage, StockImageException
 
 
 logger = logging.getLogger('pygubu.designer')
@@ -45,7 +46,7 @@ class WidgetsTreeEditor:
         tree = self.treeview
         columns = ('class', 'row', 'col', 'space_trick')
         dcols = columns
-        hcols = ('Widget Id     ', 'Class', 'R', 'C', ' ')
+        hcols = ('Widget Id           ', 'Class', 'R', 'C', ' ')
         util.configure_treeview(tree, columns, displaycolumns=dcols,
             headings=hcols, show_tree=True)
         tree.bind('<Double-1>', self.on_treeview_double_click)
@@ -176,8 +177,20 @@ class WidgetsTreeEditor:
                 row = str(row_count + 1)
                 data.set_layout_propery('row', row)
 
+        image = ''
+        try:
+            image = StockImage.get('16x16-tk.default')
+        except StockImageException as e:
+            pass
+
+        try:
+            image = StockImage.get('16x16-{0}'.format(data.get_class()))
+        except StockImageException as e:
+            pass
+
         values = (data.get_class(), row, col)
-        item = tree.insert(root, 'end', text=treelabel, values=values)
+        item = tree.insert(root, 'end', text=treelabel, values=values,
+                image=image)
         data.attach(self)
         self.app.set_changed()
 
@@ -226,20 +239,23 @@ class WidgetsTreeEditor:
                 is_valid = False
                 return is_valid
 
-            children_count = len(self.treeview.get_children(root))
-            maxchildren = root_boclass.maxchildren
-            #print('root children:', children_count)
-            if maxchildren is not None and children_count >= maxchildren:
-                logger.warning('Only {} children allowed'.format(maxchildren))
-                is_valid = False
-                return is_valid
-
             allowed_children = root_boclass.allowed_children
             #print('allowed_children:', allowed_children)
             if (allowed_children is not None and
                     classname not in allowed_children):
-                msg = '{0} is not allowed as child of {1}.'.format(
-                        classname, root_classname)
+                str_children = ', '.join(allowed_children)
+                msg = 'Allowed children: {0}.'.format(
+                        str_children)
+                logger.warning(msg)
+                is_valid = False
+                return is_valid
+
+            children_count = len(self.treeview.get_children(root))
+            maxchildren = root_boclass.maxchildren
+            #print('root children:', children_count)
+            if maxchildren is not None and children_count >= maxchildren:
+                msg = 'Only {0} children allowed for {1}'.format(
+                        maxchildren, root_classname)
                 logger.warning(msg)
                 is_valid = False
                 return is_valid
