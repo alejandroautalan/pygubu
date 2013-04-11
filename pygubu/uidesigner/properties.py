@@ -367,10 +367,10 @@ __grid = (
     ('sticky', _sticky_prop),
     ('rowspan', {
         'input_method': 'spinbox',
-        'min': 1, 'max': 50, 'validator': 'number_integer'}),
+        'min': 1, 'max': 50, 'validator': 'number_integer', 'readonly': True}),
     ('columnspan', {
         'input_method': 'spinbox',
-        'min': 1, 'max': 50, 'validator': 'number_integer'}),
+        'min': 1, 'max': 50, 'validator': 'number_integer', 'readonly': True}),
     ('padx', _default_spinbox_prop),
     ('pady', _default_spinbox_prop),
     ('ipadx', _default_spinbox_prop),
@@ -383,9 +383,15 @@ PropertiesMap[GROUP_LAYOUT_GRID] = OrderedDict(__grid)
 
 __grid_rc = (
     #grid row and column properties (can be applied to each row or column)
-    ('minsize', _default_spinbox_prop),
-    ('pad', _default_spinbox_prop),
-    ('weight', _default_spinbox_prop)
+    ('minsize', {
+        'input_method': 'spinbox',
+        'min': 0, 'validator': 'number_integer', 'readonly': True}),
+    ('pad', {
+        'input_method': 'spinbox',
+        'min': 0, 'validator': 'number_integer', 'readonly': True}),
+    ('weight', {
+        'input_method': 'spinbox',
+        'min': 0, 'validator': 'number_integer', 'readonly': True})
 )
 
 PropertiesMap[GROUP_LAYOUT_GRID_RC] = OrderedDict(__grid_rc)

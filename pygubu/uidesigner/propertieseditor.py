@@ -384,7 +384,12 @@ class WidgetPropertiesEditor:
                 widget.configure(values=values)
             self.connect_variable_cb(widgetvar, propalias)
         elif wtype == 'spinbox':
-            widget = tkinter.Spinbox(master, textvariable=widgetvar)
+            status= tkinter.NORMAL
+            readonly = wdata.get('readonly', False)
+            if readonly:
+                status = 'readonly'
+            widget = tkinter.Spinbox(master, textvariable=widgetvar,
+                        state=status, readonlybackground='white')
             togrid = widget
             vmin = wdata.get('min', 0)
             vmax = wdata.get('max', 99)
