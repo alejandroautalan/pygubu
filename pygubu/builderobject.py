@@ -50,15 +50,17 @@ class BuilderObject:
 
 
     def __init__(self, builder, wdescr):
+        self.widget = None
         self.builder = builder
-        self.objectid = wdescr['id']
+        self.objectid = wdescr.get('id', None)
         self.descr = wdescr
         self.properties = wdescr.get('properties', {})
         self.layout_properties = wdescr.get('layout', {})
 
 
-    def realize(self, master):
+    def realize(self, parent):
         args = self._get_init_args()
+        master = parent.get_child_master()
         self.widget = self.class_(master, **args)
         return self.widget
 
@@ -119,7 +121,7 @@ class BuilderObject:
         return self.widget
 
 
-    def add_child(self, cwidget):
+    def add_child(self, bobject):
         pass
 
 

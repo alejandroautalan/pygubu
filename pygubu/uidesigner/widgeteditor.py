@@ -220,70 +220,67 @@ class WidgetsTreeEditor:
         self.on_treeview_delete_selection()
 
 
-    def _validate_add(self, root_item, classname):
+    def _validate_add(self, root_item, classname, show_warnings=True):
         tree = self.treeview
         is_valid = True
 
         new_boclass = builder.CLASS_MAP[classname].classobj
         root = root_item
-
         if root:
             root_classname = self.treedata[root].get_class()
             root_boclass = builder.CLASS_MAP[root_classname].classobj
-            #print('rootclass:', root_classname)
-
-            if root_boclass.container == False:
-                msg = 'Not allowed, {0} is not a container.'\
-                    .format(root_classname)
-                logger.warning(msg)
-                is_valid = False
-                return is_valid
+#            print('rootclass:', root_classname)
 
             allowed_children = root_boclass.allowed_children
-            #print('allowed_children:', allowed_children)
-            if (allowed_children is not None and
-                    classname not in allowed_children):
-                str_children = ', '.join(allowed_children)
-                msg = 'Allowed children: {0}.'.format(
-                        str_children)
-                logger.warning(msg)
-                is_valid = False
-                return is_valid
+#            print('allowed_children:', allowed_children)
+
+            if allowed_children:
+                if classname not in allowed_children:
+                    str_children = ', '.join(allowed_children)
+                    msg = 'Allowed children: {0}.'.format(
+                            str_children)
+                    if show_warnings:
+                        logger.warning(msg)
+                    is_valid = False
+                    return is_valid
 
             children_count = len(self.treeview.get_children(root))
             maxchildren = root_boclass.maxchildren
-            #print('root children:', children_count)
+#            print('root children:', children_count)
             if maxchildren is not None and children_count >= maxchildren:
                 msg = 'Only {0} children allowed for {1}'.format(
                         maxchildren, root_classname)
-                logger.warning(msg)
+                if show_warnings:
+                    logger.warning(msg)
                 is_valid = False
                 return is_valid
-
-#            allowed_parents = root_boclass.allowed_parents
-#            print('allowed_parents:', allowed_parents)
-#            if allowed_parents is not None and \
-#                        root_classname not in allowed_parents:
-#                msg = '{0} is not allowed as parent of {1}'.format(
-#                        root_classname, classname)
-#                logger.warning(msg)
-#                is_valid = False
-#                return is_valid
 
             allowed_parents = new_boclass.allowed_parents
             if allowed_parents is not None and \
                         root_classname not in allowed_parents:
                 msg = '{0} not allowed as parent of {1}'.format(
                         root_classname, classname)
-                logger.warning(msg)
+                if show_warnings:
+                    logger.warning(msg)
                 is_valid = False
                 return is_valid
+
+            if allowed_children is None and root_boclass.container == False:
+                msg = 'Not allowed, {0} is not a container.'\
+                    .format(root_classname)
+                if show_warnings:
+                    logger.warning(msg)
+                is_valid = False
+                return is_valid
+
         else:
+            #allways show warning when inserting in top level
             #if insertion is at top level,
             ##Validate if it can be added at root level
             allowed_parents = new_boclass.allowed_parents
             if allowed_parents is not None and 'root' not in allowed_parents:
-                logger.warning('{0} not allowed at root level'.format(classname))
+                msg = '{0} not allowed at root level'.format(classname)
+                logger.warning(msg)
                 is_valid = False
                 return is_valid
 
@@ -371,24 +368,18 @@ class WidgetsTreeEditor:
         if tsel:
             selected_item = tsel[0]
 
-        #by default insert at top level
-        root = ''
-
-        #check if selected item is a container
-        if selected_item:
-            svalues = tree.set(selected_item)
-            sclass = self.treedata[selected_item].get_class()
-            selected_is_container = builder.CLASS_MAP[sclass].classobj.container
-            if selected_is_container:
-                #selected item is a container, set as root.
-                root = selected_item
-            else:
-                #the item parent should be the container
-                root = tree.parent(selected_item)
-
+        root = selected_item
         #check if the widget can be added at selected point
-        if not self._validate_add(root, wclass):
-            return
+        if not self._validate_add(root, wclass, False):
+            #if not try to add at item parent level
+            parent = tree.parent(root)
+            if parent != root:
+                if self._validate_add(parent, wclass):
+                    root = parent
+                else:
+                    return
+            else:
+                return
 
         #root item should be set at this point
         #setup properties

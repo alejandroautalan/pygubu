@@ -74,7 +74,8 @@ class TTKSBHelperBO(BuilderObject):
     ro_properties = ('scrolltype', )
 
 
-    def add_child(self, cwidget):
+    def add_child(self, bobject):
+        cwidget = bobject.widget
         self.widget.add_child(cwidget)
 
 

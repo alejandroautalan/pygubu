@@ -93,7 +93,7 @@ class ScrolledFrame(ttk.Frame):
 
 class TTKScrolledFrameBO(BuilderObject):
     class_ = ScrolledFrame
-    container = True
+    container = False
     maxchildren = 1
     allowed_children = ('tk.Frame', 'ttk.Frame' )
     properties = ['class_', 'cursor', 'height', 'padding',

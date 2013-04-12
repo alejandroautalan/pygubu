@@ -1,4 +1,6 @@
 import types
+from collections import OrderedDict
+
 import tkinter as ttk
 from tkinter import ttk
 
@@ -164,7 +166,8 @@ class PanedWindow(BuilderObject):
     properties = []
     ro_properties = ('orient', )
 
-    def realize(self, master):
+    def realize(self, parent):
+        master = parent.widget
         args = self._get_init_args()
         if 'orient' not in args:
             args['orient'] = 'vertical'
@@ -178,8 +181,8 @@ class PanedWindowPane(BuilderObject):
     properties = []
     layout_required = False
 
-    def realize(self, master):
-        self.widget = master
+    def realize(self, parent):
+        self.widget = parent.widget
         return self.widget
 
     def configure(self):
@@ -188,8 +191,8 @@ class PanedWindowPane(BuilderObject):
     def layout(self):
         pass
 
-    def add_child(self, cwidget):
-        self.widget.add(cwidget, **self.properties)
+    def add_child(self, bobject):
+        self.widget.add(bobject.widget, **self.properties)
 
 
 class TKPanedWindow(PanedWindow):
@@ -216,7 +219,7 @@ register_widget('tk.PanedWindow.Pane', TKPanedWindowPane,
 
 class TKMenubutton(BuilderObject):
     class_ = tk.Menubutton
-    container = True
+    container = False
     properties = ['activebackground', 'activeforeground', 'anchor',
         'background', 'bitmap', 'borderwidth', 'compound', 'cursor',
         'direction', 'disabledforeground', 'foreground', 'font',
@@ -227,8 +230,8 @@ class TKMenubutton(BuilderObject):
     allowed_children = ('tk.Menu',)
     maxchildren = 1
 
-    def add_child(self, cwidget):
-        self.set_property('menu', cwidget)
+    def add_child(self, bobject):
+        self.set_property('menu', bobject.widget)
 
 register_widget('tk.Menubutton', TKMenubutton, 'Menubutton', ('Control & Display', 'tk',))
 
@@ -356,8 +359,8 @@ class TKMenuitem(BuilderObject):
         ]
     command_properties = ('command',)
 
-    def realize(self, master):
-        self.widget = master
+    def realize(self, parent):
+        self.widget = master = parent.widget
         itemproperties = self.properties
         if 'command_id_arg' in itemproperties:
             itemproperties = dict(itemproperties)
@@ -393,7 +396,8 @@ class TKMenuitemSubmenu(TKMenu):
         'tk.Menuitem.Separator')
     properties = list(set(TKMenu.properties + TKMenuitem.properties))
 
-    def realize(self, master):
+    def realize(self, parent):
+        master = parent.widget
         menu_properties = dict((k, v) for k, v in self.properties.items()
             if k in TKMenu.properties)
 
@@ -693,8 +697,8 @@ class TTKNotebookTab(BuilderObject):
     properties = ['compound', 'padding', 'sticky',
         'image', 'text', 'underline']
 
-    def realize(self, master):
-        self.widget = master
+    def realize(self, parent):
+        self.widget = parent.widget
         return self.widget
 
     def configure(self):
@@ -703,16 +707,16 @@ class TTKNotebookTab(BuilderObject):
     def layout(self):
         pass
 
-    def add_child(self, cwidget):
-        self.widget.add(cwidget, **self.properties)
+    def add_child(self, bobject):
+        self.widget.add(bobject.widget, **self.properties)
 
 register_widget('ttk.Notebook.Tab', TTKNotebookTab,
         'Notebook.Tab', ('Pygubu Helpers', 'ttk'))
 
 
-class TTKMenubutton(BuilderObject):
+class TTKMenubuttonBO(BuilderObject):
     class_ = ttk.Menubutton
-    container = True
+    container = False
     properties = ['class_', 'compound', 'cursor', 'direction',
             'image', 'style', 'takefocus', 'text', 'textvariable',
             'underline', 'width']
@@ -720,23 +724,117 @@ class TTKMenubutton(BuilderObject):
     maxchildren = 1
     ro_properties = ('class_',)
 
-    def add_child(self, cwidget):
-        self.set_property('menu', cwidget)
+    def add_child(self, bobject):
+        self.set_property('menu', bobject.widget)
 
-register_widget('ttk.Menubutton', TTKMenubutton,
+register_widget('ttk.Menubutton', TTKMenubuttonBO,
         'Menubutton', ('Control & Display', 'ttk',))
 
 
-class TTKTreeview(BuilderObject):
+class TTKTreeviewBO(BuilderObject):
     class_ = ttk.Treeview
     container = False
+    allowed_children = ('ttk.Treeview.Column',)
     properties = ['class_', 'cursor', 'height', 'padding', 'selectmode',
         'show', 'style', 'takefocus']
     ro_properties = ('class_',)
-    #FIXME add support to properties: 'columns', 'displaycolumns'
-    # and columns properties
 
-register_widget('ttk.Treeview', TTKTreeview,
+    def __init__(self, builder, wdescr):
+        super(TTKTreeviewBO, self).__init__(builder, wdescr)
+        self._columns = None
+        self._headings = None
+        self._dcolumns = None
+
+    def configure(self):
+        super(TTKTreeviewBO,self).configure()
+        self.__configure_columns()
+
+    def __configure_columns(self):
+        if self._columns:
+            columns = tuple(self._columns.keys())
+            displaycolumns = self._dcolumns
+            self.widget.configure(columns=columns,
+                                    displaycolumns=displaycolumns)
+            for col in self._columns:
+                self.widget.column(col, **self._columns[col])
+        if self._headings:
+            for col in self._headings:
+                self.widget.heading(col, **self._headings[col])
+
+    def add_column(self, col_id, attrs, visible=True):
+        if self._columns is None:
+            self._columns = OrderedDict()
+            self._dcolumns = list()
+        self._columns[col_id] = attrs
+        if visible:
+            self._dcolumns.append(col_id)
+
+    def set_heading(self, col_id, attrs):
+        if self._headings is None:
+            self._headings = OrderedDict()
+        self._headings[col_id] = attrs
+
+
+register_widget('ttk.Treeview', TTKTreeviewBO,
         'Treeview', ('Control & Display', 'ttk'))
+
+
+class TTKTreeviewColBO(BuilderObject):
+    class_ = None
+    container = False
+    layout_required = False
+    allowed_parents = ('ttk.Treeview',)
+    properties = [
+        'tree_column', 'visible', 'text', 'image', 'command', 'heading_anchor',
+        'column_anchor', 'minwidth', 'stretch', 'width' ]
+    command_properties = ('command',)
+
+
+    def realize(self, parent):
+        self.widget = master = parent.widget
+
+        col_props = dict(self.properties) #copy properties
+
+        tree_column = col_props.pop('tree_column', 'False')
+        tree_column = True if tree_column == 'True' else False
+        column_id = '#0' if tree_column else self.objectid
+        is_visible = True if col_props.pop('visible') == 'True' else False
+
+        #configure heading properties
+        command= col_props.pop('command', '')
+        hprops = {
+            'anchor': col_props.pop('heading_anchor', tk.W),
+            'image': col_props.pop('image', ''),
+            'text': col_props.pop('text', '')
+        }
+        parent.set_heading(column_id, hprops)
+
+        #configure column properties
+        cprops = {
+            'anchor': col_props.pop('column_anchor'),
+            'stretch': col_props.pop('stretch', '1'),
+            'width': col_props.pop('width', '200'),
+            'minwidth': col_props.pop('minwidth', '20')
+        }
+        if not tree_column:
+            parent.add_column(column_id, cprops, is_visible)
+        return self.widget
+
+
+    def configure(self):
+        pass
+
+    def layout(self):
+        pass
+
+    def _connect_command(self, cpname, callback):
+        tree_column = self.properties.get('tree_column', 'False')
+        tree_column = True if tree_column == 'True' else False
+        column_id = '#0' if tree_column else self.objectid
+        self.master.heading(column_id, command=callback)
+
+
+register_widget('ttk.Treeview.Column', TTKTreeviewColBO,
+        'Treeview.Column', ('Pygubu Helpers', 'ttk'))
 
 

@@ -222,6 +222,7 @@ __widget = (
         'tk.Frame': { 'default': 250 },
         'ttk.Frame': { 'default': 250 },
         'tk.Text': { 'default': 50 },
+        'ttk.Treeview.Column': {'min':5, 'default': 200 },
         }), #FIXME width is not a dimension for Entry
     ('highlightbackground', _default_color_prop),
     ('highlightcolor', _default_color_prop),
@@ -254,6 +255,8 @@ __widget = (
     ('maxundo', {
         'input_method': 'spinbox', 'min':-1, 'max':999, 'default': ''}),
     ('minsize', _default_dimension_prop),
+    ('minwidth', {
+        'input_method': 'spinbox', 'min':5, 'max':999, 'default': '20'}),
     ('mode', { 'input_method': 'choice',
         'values': ('', 'determinate', 'indeterminate')}),
     ('offrelief', _default_relief_prop),
@@ -289,7 +292,12 @@ __widget = (
         'values': ('', tk.BROWSE, tk.SINGLE,
             tk.MULTIPLE, tk.EXTENDED)
         }),
-    ('show', _default_entry_prop),
+    ('show', {
+        'input_method': 'choice',
+        'values': ('', 'tree', 'headings'),
+        'default': '',
+        'readonly': True,
+        }),
     ('showhandle', _default_true_false_prop),
     ('showvalue', _default_true_false_prop),
     ('sliderlength', _default_dimension_prop),
@@ -308,6 +316,10 @@ __widget = (
         'ttk.Combobox': { 'values': ('', 'readonly')},
         }),
     ('sticky', _sticky_prop),
+    ('stretch', {
+        'input_method': 'choice',
+        'values': ('True', 'False'),
+        'default': 'True'}),
     ('style', {
         'input_method': 'entry'
         }), #FIXME Howto manage this property?
@@ -402,6 +414,27 @@ __custom = (
         'readonly': True
         }),
     ('id', {'input_method': 'entry'}),
+    ('tree_column', {
+        'input_method': 'choice',
+        'values': ('True', 'False'),
+        'default': 'False',
+        }),
+    ('visible', {
+        'input_method': 'choice',
+        'values': ('True', 'False'),
+        'default': 'True'}),
+    ('heading_anchor', {
+        'input_method': 'choice',
+        'values': ('', tk.W, tk.CENTER, tk.E, tk.N, tk.NE, tk.SE, tk.S,
+                tk.SW, tk.NW),
+        'default': tk.W,
+        }),
+    ('column_anchor', {
+        'input_method': 'choice',
+        'values': ('', tk.W, tk.CENTER, tk.E, tk.N, tk.NE, tk.SE, tk.S,
+                tk.SW, tk.NW),
+        'default': tk.W,
+        }),
 )
 
 PropertiesMap[GROUP_CUSTOM] = OrderedDict(__custom)

@@ -62,7 +62,7 @@ class TkScrollbarHelper(tk.Frame):
 
 class TKSBHelperBO(BuilderObject):
     class_ = TkScrollbarHelper
-    container = True
+    container = False
     maxchildren = 1
     allowed_children = ('tk.Entry', 'ttk.Entry', 'tk.Text', 'tk.Canvas',
         'tk.Listbox', 'ttk.Treeview' )
@@ -71,7 +71,8 @@ class TKSBHelperBO(BuilderObject):
         'padx', 'pady', 'relief', 'takefocus', 'width']
     ro_properties = ('scrolltype', )
 
-    def add_child(self, cwidget):
+    def add_child(self, bobject):
+        cwidget = bobject.widget
         self.widget.add_child(cwidget)
 
 

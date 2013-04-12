@@ -232,13 +232,18 @@ class Builder:
             xpath = ".//object[@id='{0}']".format(name)
             node = self.tree.find(xpath)
             if node is not None:
-                widget = self.realize(master, node)
+                root = BuilderObject(self, dict())
+                root.widget = master
+                bobject = self.realize(root, node)
+                widget = bobject.widget
         if widget is None:
             raise Exception('Widget not defined.')
         return widget
 
 
     def realize(self, master, element):
+        """Builds a widget from xml element using master as parent"""
+
         data = data_xmlnode_to_dict(element)
         cname = data['class']
         uniqueid = data['id']
@@ -248,22 +253,21 @@ class Builder:
 
         if cname in CLASS_MAP:
             self._check_data(data)
-            builderobj = CLASS_MAP[cname].classobj.factory(self, data)
-            pwidget = builderobj.realize(master)
-            builderobj.configure()
+            parent = CLASS_MAP[cname].classobj.factory(self, data)
+            widget = parent.realize(master)
 
-            self.objects[uniqueid] = builderobj
+            self.objects[uniqueid] = parent
 
             xpath = "./child"
             children = element.findall(xpath)
             for child in children:
-                child_object = child.find('./object')
-                cmaster = builderobj.get_child_master()
-                cwidget = self.realize(cmaster, child_object)
-                builderobj.add_child(cwidget)
+                child_xml = child.find('./object')
+                child = self.realize(parent, child_xml)
+                parent.add_child(child)
 
-            builderobj.layout()
-            return pwidget
+            parent.configure()
+            parent.layout()
+            return parent
         else:
             raise Exception('Class "{0}" not mapped'.format(cname))
 
