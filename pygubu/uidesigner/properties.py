@@ -401,7 +401,7 @@ __grid_rc = (
     #grid row and column properties (can be applied to each row or column)
     ('minsize', {
         'input_method': 'spinbox',
-        'min': 0, 'validator': 'number_integer', 'readonly': True}),
+        'min': 0, 'max':999, 'validator': 'number_integer', 'readonly': True}),
     ('pad', {
         'input_method': 'spinbox',
         'min': 0, 'validator': 'number_integer', 'readonly': True}),
