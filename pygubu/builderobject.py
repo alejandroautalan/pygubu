@@ -161,3 +161,71 @@ class BuilderObject:
         else:
             return None
 
+
+#
+# Base clases for some widgets
+#
+class EntryBaseBO(BuilderObject):
+    """Base class for tk.Entry and ttk.Entry builder objects"""
+    def set_property(self, pname, value):
+        if pname == 'text':
+            self.widget.delete('0', tk.END)
+            self.widget.insert('0', value)
+        elif pname in ('validatecommand_args', 'invalidcommand_args'):
+            pass
+        else:
+            super(EntryBaseBO, self).set_property(pname, value)
+
+    def _create_callback(self, cpname, command):
+        callback = command
+        if cpname in ('validatecommand', 'invalidcommand'):
+            args = self.properties.get(cpname + '_args', '')
+            if args:
+                args = args.split(' ')
+                callback = (self.widget.register(command),) + tuple(args)
+            else:
+                callback = self.widget.register(command)
+        return callback
+
+
+class PanedWindow(BuilderObject):
+    """Base class for tk.PanedWindow and ttk.Panedwindow builder objects"""
+    class_ = None
+    container = True
+    properties = []
+    ro_properties = ('orient', )
+
+    def realize(self, parent):
+        master = parent.widget
+        args = self._get_init_args()
+        if 'orient' not in args:
+            args['orient'] = 'vertical'
+        self.widget = self.class_(master, **args)
+        return self.widget
+
+
+#
+# Base clases for some widget Helpers
+#
+class PanedWindowPane(BuilderObject):
+    class_ = None
+    container = True
+    properties = []
+    layout_required = False
+
+    def realize(self, parent):
+        self.widget = parent.widget
+        return self.widget
+
+    def configure(self):
+        pass
+
+    def layout(self):
+        pass
+
+    def add_child(self, bobject):
+        self.widget.add(bobject.widget, **self.properties)
+
+
+
+

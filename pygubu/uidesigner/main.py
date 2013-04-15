@@ -41,6 +41,8 @@ from .previewer import PreviewHelper
 from .util.stockimage import StockImage, StockImageException
 from .util.dialog import DialogBase
 
+#initialize standard ttk widgets
+import pygubu.ttkstdwidgets
 
 #initialize extra widgets
 widgets_pkg = 'pygubu.widgets'

@@ -23,7 +23,7 @@ from tkinter import ttk
 from collections import defaultdict
 
 from pygubu.builderobject import *
-import pygubu.stdwidgets
+import pygubu.tkstdwidgets
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('pygubu.builder')
@@ -146,8 +146,8 @@ def data_dict_to_xmlnode(data):
 #
 
 class Builder:
-    #TODO: Add a method 'bind' or similar to map commands to a function
-    # something like: builder.bind(self)
+    """Allows to build a tk interface from xml definition."""
+
     def __init__(self):
         self.tree = None
         self.root = None
@@ -241,6 +241,13 @@ class Builder:
         return widget
 
 
+    def _import_class(self, modulename):
+        if modulename.startswith('ttk.'):
+            importlib.import_module('pygubu.ttkstdwidgets')
+        else:
+            importlib.import_module(modulename)
+
+
     def realize(self, master, element):
         """Builds a widget from xml element using master as parent"""
 
@@ -249,7 +256,7 @@ class Builder:
         uniqueid = data['id']
 
         if cname not in CLASS_MAP:
-            importlib.import_module(cname)
+            self._import_class(cname)
 
         if cname in CLASS_MAP:
             self._check_data(data)
