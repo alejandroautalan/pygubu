@@ -1,0 +1,59 @@
+<?xml version="1.0" ?>
+<interface>
+  <object class="ttk.Frame" id="mainwindow">
+    <property name="height">250</property>
+    <property name="width">250</property>
+    <layout>
+      <property name="propagate">True</property>
+      <property name="column">0</property>
+      <property name="sticky">nesw</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="ttk.Treeview" id="treeview">
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+        <child>
+          <object class="ttk.Treeview.Column" id="treecolumn">
+            <property name="tree_column">True</property>
+            <property name="visible">True</property>
+            <property name="text">Tree</property>
+            <property name="command">on_treecolumn_click</property>
+            <property name="heading_anchor">w</property>
+            <property name="column_anchor">w</property>
+            <property name="minwidth">333</property>
+            <property name="stretch">True</property>
+            <property name="width">333</property>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Treeview.Column" id="column1">
+            <property name="tree_column">False</property>
+            <property name="visible">True</property>
+            <property name="text">Column 1</property>
+            <property name="heading_anchor">center</property>
+            <property name="column_anchor">w</property>
+            <property name="minwidth">333</property>
+            <property name="stretch">False</property>
+            <property name="width">333</property>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Treeview.Column" id="hidden_column">
+            <property name="tree_column">False</property>
+            <property name="visible">False</property>
+            <property name="text">hidden</property>
+            <property name="heading_anchor">w</property>
+            <property name="column_anchor">w</property>
+            <property name="minwidth">333</property>
+            <property name="stretch">True</property>
+            <property name="width">333</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
