@@ -290,7 +290,11 @@ __widget = (
     ('selectmode', {
         'input_method': 'choice',
         'values': ('', tk.BROWSE, tk.SINGLE,
-            tk.MULTIPLE, tk.EXTENDED)
+            tk.MULTIPLE, tk.EXTENDED),
+        'ttk.Treeview': {
+            'values': (tk.EXTENDED, tk.BROWSE, tk.NONE),
+            'default': tk.EXTENDED,
+            }
         }),
     ('show', {
         'input_method': 'choice',
@@ -425,14 +429,12 @@ __custom = (
         'default': 'True'}),
     ('heading_anchor', {
         'input_method': 'choice',
-        'values': ('', tk.W, tk.CENTER, tk.E, tk.N, tk.NE, tk.SE, tk.S,
-                tk.SW, tk.NW),
+        'values': ('', tk.W, tk.CENTER, tk.E),
         'default': tk.W,
         }),
     ('column_anchor', {
         'input_method': 'choice',
-        'values': ('', tk.W, tk.CENTER, tk.E, tk.N, tk.NE, tk.SE, tk.S,
-                tk.SW, tk.NW),
+        'values': ('', tk.W, tk.CENTER, tk.E),
         'default': tk.W,
         }),
 )
