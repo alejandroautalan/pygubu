@@ -751,7 +751,9 @@ class TTKTreeviewBO(BuilderObject):
 
     def __configure_columns(self):
         if self._columns:
-            columns = tuple(self._columns.keys())
+            columns = list(self._columns.keys())
+            if '#0' in columns:
+                columns.remove('#0')
             displaycolumns = self._dcolumns
             self.widget.configure(columns=columns,
                                     displaycolumns=displaycolumns)
@@ -761,12 +763,12 @@ class TTKTreeviewBO(BuilderObject):
             for col in self._headings:
                 self.widget.heading(col, **self._headings[col])
 
-    def add_column(self, col_id, attrs, visible=True):
+    def set_column(self, col_id, attrs, visible=True):
         if self._columns is None:
             self._columns = OrderedDict()
             self._dcolumns = list()
         self._columns[col_id] = attrs
-        if visible:
+        if visible and col_id != '#0':
             self._dcolumns.append(col_id)
 
     def set_heading(self, col_id, attrs):
@@ -811,13 +813,12 @@ class TTKTreeviewColBO(BuilderObject):
 
         #configure column properties
         cprops = {
-            'anchor': col_props.pop('column_anchor'),
+            'anchor': col_props.pop('column_anchor', ''),
             'stretch': col_props.pop('stretch', '1'),
             'width': col_props.pop('width', '200'),
             'minwidth': col_props.pop('minwidth', '20')
         }
-        if not tree_column:
-            parent.add_column(column_id, cprops, is_visible)
+        parent.set_column(column_id, cprops, is_visible)
         return self.widget
 
 
@@ -831,7 +832,7 @@ class TTKTreeviewColBO(BuilderObject):
         tree_column = self.properties.get('tree_column', 'False')
         tree_column = True if tree_column == 'True' else False
         column_id = '#0' if tree_column else self.objectid
-        self.master.heading(column_id, command=callback)
+        self.widget.heading(column_id, command=callback)
 
 
 register_widget('ttk.Treeview.Column', TTKTreeviewColBO,
