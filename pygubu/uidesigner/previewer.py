@@ -36,7 +36,8 @@ class UIPreview():
                 background='white', highlightthickness=0)
         self.canvas.create_window(10, 10, anchor=tkinter.NW,
                 tags=self.window_tag)
-        self.notebook.add(self.canvas.frame, text='Preview', sticky=tkinter.NSEW)
+        self.notebook.add(self.canvas.frame, text='Preview',
+                padding=1, sticky=tkinter.NSEW)
         self.tab_id = self.canvas.frame
 
         #selected indicators
@@ -124,8 +125,8 @@ class UIPreview():
 
 
     def _on_canvaswin_updated(self, event):
-            size = (self.canvas_window.winfo_reqwidth() + 10,
-                self.canvas_window.winfo_reqheight() + 10)
+            size = (self.canvas_window.winfo_reqwidth() + 20,
+                self.canvas_window.winfo_reqheight() + 20)
             self.canvas.config(scrollregion="0 0 %s %s" % size)
 
 
