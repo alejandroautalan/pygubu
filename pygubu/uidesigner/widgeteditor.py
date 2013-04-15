@@ -44,11 +44,6 @@ class WidgetsTreeEditor:
     def config_treeview(self):
         """Sets treeview columns and other params"""
         tree = self.treeview
-        columns = ('class', 'row', 'col', 'space_trick')
-        dcols = columns
-        hcols = ('Widget Id           ', 'Class', 'R', 'C', ' ')
-        util.configure_treeview(tree, columns, displaycolumns=dcols,
-            headings=hcols, show_tree=True)
         tree.bind('<Double-1>', self.on_treeview_double_click)
         tree.bind('<<TreeviewSelect>>', self.on_treeview_select, add='+')
 

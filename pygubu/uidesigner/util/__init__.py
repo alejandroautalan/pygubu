@@ -150,35 +150,6 @@ def make_color_selector(master, textvariable):
     return (frame, entry, button)
 
 
-def configure_treeview(tree, columns=None, headings=None, displaycolumns=None,
-    show_tree=False):
-    """Configures an already created treeview."""
-
-    dcols = None
-    show_headings = None if show_tree else 'headings'
-    if columns is None:
-        columns = []
-    if displaycolumns is None:
-        dcols = columns
-    if show_tree == True:
-        #dcols = '#all' if displaycolumns else displaycolumns
-        dcols = displaycolumns
-
-    tree.configure(show=show_headings, columns=columns,
-        displaycolumns=dcols)
-
-    hlabels = headings
-    if headings is None:
-        hlabels = [ x.capitalize() for x in columns]
-    if show_tree and len(columns) == len(hlabels):
-        hlabels = ['Tree'] + list(hlabels)
-
-    hcols = ['#0'] + list(columns) if show_tree else columns
-    for i, col in enumerate(hcols):
-        tree.heading(col, text=hlabels[i])
-        tree.column(col, width=len(hlabels[i])*10+20)
-
-
 class ArrayVar(tkinter.Variable):
     '''A variable that works as a Tcl array variable'''
 

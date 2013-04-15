@@ -217,7 +217,6 @@ class PygubuUI(util.Application):
 
     def configure_widget_list(self):
         tv = self.widgetlist
-        tv.heading('#0', text='Widget List')
         tv.bind('<Double-1>', lambda e: self.on_add_widget_event())
 
         root_tagset = set(('tk', 'ttk'))
