@@ -296,14 +296,11 @@ class TKMenuitem(BuilderObject):
     container = False
     itemtype = None
     layout_required = False
-    #FIXME Move properties that are for specific items to the corresponding
-    #  subclass, eg: onvalue, offvalue to checkbutton
     #FIXME Howto setup radio buttons variables ?
     properties = ['accelerator', 'activebackground', 'activeforeground',
         'background', 'bitmap', 'columnbreak', 'command', 'compound',
-        'font', 'foreground', 'hidemargin', 'image', 'label',
-        'offvalue', 'onvalue', 'selectcolor', 'selectimage', 'state',
-        'underline', 'value', 'variable',
+        'font', 'foreground', 'hidemargin', 'image', 'label', 'state',
+        'underline',
         'command_id_arg', #<< custom property !!
         ]
     #FIXME: fix setting variable
@@ -315,9 +312,10 @@ class TKMenuitem(BuilderObject):
         if 'command_id_arg' in itemproperties:
             itemproperties = dict(itemproperties)
             itemproperties.pop('command_id_arg')
-        if 'image' in itemproperties:
-            name = itemproperties['image']
-            itemproperties['image'] = self.builder.get_image(name)
+        for imageprop in ('image', 'selectimage'):
+            if imageprop in itemproperties:
+                name = itemproperties[imageprop]
+                itemproperties[imageprop] = self.builder.get_image(name)
         master.add(self.itemtype, **itemproperties)
         self.__index = master.index(tk.END)
         return self.widget
@@ -384,6 +382,8 @@ register_widget('tk.Menuitem.Command', TKMenuitemCommand,
 class TKMenuitemCheckbutton(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.constants.CHECKBUTTON
+    properties = TKMenuitem.properties + \
+            ['indicatoron', 'selectcolor', 'selectimage', 'variable']
 
 register_widget('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton,
     'Menuitem.Checkbutton', ('Pygubu Helpers', 'tk', 'ttk'))
@@ -392,6 +392,8 @@ register_widget('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton,
 class TKMenuitemRadiobutton(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.constants.RADIOBUTTON
+    properties = TKMenuitemCheckbutton.properties + \
+            ['onvalue', 'offvalue', 'value']
 
 register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
     'Menuitem.Radiobutton', ('Pygubu Helpers', 'tk', 'ttk'))
