@@ -32,6 +32,10 @@ _default_color_prop = {
     'input_method': 'colorentry',
 }
 
+_default_image_prop = {
+    'input_method': 'imageentry',
+}
+
 _default_spinbox_prop = {
     'input_method': 'spinbox',
     'min': 0,
@@ -233,7 +237,7 @@ __widget = (
     ('insertofftime', _default_spinbox_prop),
     ('insertontime', _default_spinbox_prop),
     ('insertwidth', _default_dimension_prop),
-    ('image', _empty_choice), #FIXME image property
+    ('image', _default_image_prop),
     ('jump', {'input_method': 'choice', 'values': ('', '0', '1')}),
     ('justify', {
         'input_method': 'choice',
@@ -286,7 +290,7 @@ __widget = (
     ('selectbackground', _default_color_prop),
     ('selectborderwidth', _default_spinbox_prop),
     ('selectforeground', _default_color_prop),
-    ('selectimage', _empty_choice), #FIXME image property
+    ('selectimage', _default_image_prop),
     ('selectmode', {
         'input_method': 'choice',
         'values': ('', tk.BROWSE, tk.SINGLE,

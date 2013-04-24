@@ -14,10 +14,14 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # For further info, check  http://pygubu.web.here
+import os
 
-import tkinter
+import tkinter as tk
 from tkinter import ttk
 import tkinter.colorchooser
+import tkinter.filedialog
+
+from pygubu.stockimage import *
 
 
 class BaseFrame(ttk.Frame):
@@ -150,7 +154,7 @@ def make_color_selector(master, textvariable):
 
     def on_button_click():
         current = entry.get()
-        _, txtcolor = tkinter.colorchooser.askcolor(color=current)
+        _, txtcolor = tk.colorchooser.askcolor(color=current)
         if txtcolor is not None:
             textvariable.set(txtcolor)
 
@@ -162,7 +166,32 @@ def make_color_selector(master, textvariable):
     return (frame, entry, button)
 
 
-class ArrayVar(tkinter.Variable):
+def make_image_selector(master, textvariable):
+    frame = ttk.Frame(master)
+    entry = ttk.Entry(frame, textvariable=textvariable)
+    button = ttk.Button(frame, text='…', style='ImageSelectorButton.TButton')
+
+    def on_button_click():
+        options = {
+            'filetypes':[('GIF', '*.gif'), ('PGM', '*.pgm'), ('PPM', '*.ppm')] }
+        if tk.TkVersion >= 8.6:
+            options['filetypes'].append(('PNG', '*.png'))
+
+        fname = tk.filedialog.askopenfilename(**options)
+        if fname:
+            base, name = os.path.split(fname)
+            if not StockImage.is_registered(name):
+                StockImage.register(name, fname)
+            textvariable.set(name)
+
+    button.configure(command=on_button_click)
+    entry.grid()
+    button.grid(row=0, column=1)
+
+    return (frame, entry, button)
+
+
+class ArrayVar(tk.Variable):
     '''A variable that works as a Tcl array variable'''
 
     _default = {}
@@ -216,7 +245,7 @@ class ArrayVar(tkinter.Variable):
         return value
 
 
-class ArrayElementVar(tkinter.StringVar):
+class ArrayElementVar(tk.StringVar):
     '''A StringVar that represents an element of an array'''
     _default = ""
 

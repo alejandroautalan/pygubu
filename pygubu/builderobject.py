@@ -42,6 +42,7 @@ class BuilderObject:
     layout_required = True
     command_properties = tuple()
     tkvar_properties = ('listvariable', 'textvariable', 'variable')
+    tkimage_properties = ('image', 'selectimage')
 
     @classmethod
     def factory(cls, builder, wdata):
@@ -90,6 +91,8 @@ class BuilderObject:
                 propvalue.set(self.properties['text'])
             elif 'value' in self.properties and pname == 'variable':
                 propvalue.set(self.properties['value'])
+        elif pname in self.tkimage_properties:
+            propvalue = self.builder.get_image(value)
         try:
             self.widget[pname] = propvalue
         except tk.TclError as e:

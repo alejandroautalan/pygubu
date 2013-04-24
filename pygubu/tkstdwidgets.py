@@ -306,6 +306,7 @@ class TKMenuitem(BuilderObject):
         'underline', 'value', 'variable',
         'command_id_arg', #<< custom property !!
         ]
+    #FIXME: fix setting variable
     command_properties = ('command',)
 
     def realize(self, parent):
@@ -314,6 +315,9 @@ class TKMenuitem(BuilderObject):
         if 'command_id_arg' in itemproperties:
             itemproperties = dict(itemproperties)
             itemproperties.pop('command_id_arg')
+        if 'image' in itemproperties:
+            name = itemproperties['image']
+            itemproperties['image'] = self.builder.get_image(name)
         master.add(self.itemtype, **itemproperties)
         self.__index = master.index(tk.END)
         return self.widget

@@ -375,6 +375,10 @@ class WidgetPropertiesEditor:
             frame, widget, _ = util.make_color_selector(master, widgetvar)
             togrid = frame
             self.connect_variable_cb(widgetvar, propalias)
+        elif wtype == 'imageentry':
+            frame, widget, _ = util.make_image_selector(master, widgetvar)
+            togrid = frame
+            self.connect_variable_cb(widgetvar, propalias)
         elif wtype == 'choice':
             widget = ttk.Combobox(master, textvariable=widgetvar,
                 state='readonly')

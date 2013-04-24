@@ -15,6 +15,7 @@
 #
 # For further info, check  http://pygubu.web.here
 
+import os
 import importlib
 import logging
 import xml.etree.ElementTree as ET
@@ -23,6 +24,7 @@ from tkinter import ttk
 from collections import defaultdict
 
 from pygubu.builderobject import *
+from pygubu.stockimage import *
 import pygubu.tkstdwidgets
 
 logging.basicConfig(level=logging.WARNING)
@@ -153,6 +155,34 @@ class Builder:
         self.root = None
         self.objects = {}
         self.tkvariables = {}
+        self._resource_paths = []
+
+
+    def add_resource_path(self, path):
+        self._resource_paths.append(path)
+
+
+    def get_image(self, name):
+        image = ''
+        if not StockImage.is_registered(name):
+            ipath = self.__find_image(name)
+            if ipath is not None:
+                StockImage.register(name, ipath)
+        try:
+            image = StockImage.get(name)
+        except StockImageException as e:
+            pass
+        return image
+
+
+    def __find_image(self, name):
+        image_path = None
+        for rp in self._resource_paths:
+            path = os.path.join(rp, name)
+            if os.path.exists(path):
+                image_path = path
+                break
+        return image_path
 
 
     def get_variable(self, varname):
@@ -193,6 +223,8 @@ class Builder:
 
     def add_from_file(self, fpath):
         if self.tree is None:
+            base, name = os.path.split(fpath)
+            self.add_resource_path(base)
             self.tree = tree = ET.parse(fpath)
             self.root = tree.getroot()
             self.objects = {}

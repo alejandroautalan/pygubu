@@ -225,6 +225,7 @@ class PygubuUI(util.Application):
     def _setup_styles(self):
         s = ttk.Style()
         s.configure('ColorSelectorButton.TButton', width='2')
+        s.configure('ImageSelectorButton.TButton', width='2')
 
 
     def configure_widget_list(self):
