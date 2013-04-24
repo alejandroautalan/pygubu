@@ -254,7 +254,7 @@ __widget = (
         }),
     ('labelwidget', _empty_choice),
     ('length', _default_dimension_prop),
-    ('listvariable', _default_entry_prop), #FIXME tkvariable propery
+    ('listvariable', _default_entry_prop),
     ('maximum', _default_spinbox_prop),
     ('maxundo', {
         'input_method': 'spinbox', 'min':-1, 'max':999, 'default': ''}),
@@ -302,9 +302,14 @@ __widget = (
         }),
     ('show', {
         'input_method': 'choice',
-        'values': ('', 'tree', 'headings'),
-        'default': '',
-        'readonly': True,
+        'tk.Entry': {
+            'values': ('', '•'),
+            'readonly': False,
+            'default': ''},
+        'ttk.Treeview': {
+            'values': ('', 'tree', 'headings'),
+            'default': '',
+            'readonly': True},
         }),
     ('showhandle', _default_true_false_prop),
     ('showvalue', _default_true_false_prop),
@@ -317,7 +322,7 @@ __widget = (
         'input_method': 'choice',
         'values': ('', tk.NORMAL, tk.DISABLED),
         'tk.Entry': {
-            'values': ('', tk.NORMAL, tk.DISABLED, 'disabled')},
+            'values': ('', tk.NORMAL, tk.DISABLED, 'readonly')},
         'tk.Combobox': {'values': ('', 'readonly')},
         'ttk.Entry': {
             'values': ('', tk.NORMAL, tk.DISABLED, 'disabled')},
@@ -340,7 +345,7 @@ __widget = (
         }),
     ('tearoffcommand', _default_entry_prop),
     ('text', _default_textentry_prop),
-    ('textvariable', _default_entry_prop), #FIXME Howto manage this property?
+    ('textvariable', _default_entry_prop),
     ('tickinterval', _default_spinbox_float_prop),
     ('title', _default_entry_prop),
     ('troughcolor', _default_color_prop),
@@ -360,7 +365,7 @@ __widget = (
         'ttk.Scale': { 'validator': 'number_float'}
         }),
     ('values', _default_entry_prop), #FIXME This should be treated as a list?
-    ('variable', _default_entry_prop), #FIXME Howto manage this property?
+    ('variable', _default_entry_prop),
     ('weight', _default_spinbox_prop),
     ('wrap', { 'input_method': 'choice',
         'values': ('', tk.TRUE, tk.FALSE),
