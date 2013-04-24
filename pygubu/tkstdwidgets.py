@@ -296,22 +296,24 @@ class TKMenuitem(BuilderObject):
     container = False
     itemtype = None
     layout_required = False
-    #FIXME Howto setup radio buttons variables ?
     properties = ['accelerator', 'activebackground', 'activeforeground',
         'background', 'bitmap', 'columnbreak', 'command', 'compound',
         'font', 'foreground', 'hidemargin', 'image', 'label', 'state',
         'underline',
         'command_id_arg', #<< custom property !!
         ]
-    #FIXME: fix setting variable
     command_properties = ('command',)
 
     def realize(self, parent):
         self.widget = master = parent.widget
-        itemproperties = self.properties
-        if 'command_id_arg' in itemproperties:
-            itemproperties = dict(itemproperties)
-            itemproperties.pop('command_id_arg')
+        itemproperties = dict(self.properties)
+        pname = 'command_id_arg'
+        if pname in itemproperties:
+            itemproperties.pop(pname)
+        pname = 'variable'
+        if pname in itemproperties:
+            varname = itemproperties[pname]
+            itemproperties[pname] = self.builder.create_variable(name)
         for imageprop in ('image', 'selectimage'):
             if imageprop in itemproperties:
                 name = itemproperties[imageprop]
