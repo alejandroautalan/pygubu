@@ -22,10 +22,10 @@ import logging
 import tkinter as tk
 
 from pygubu import builder
+from pygubu.stockimage import StockImage, StockImageException
 from . import util
 from . import properties
 from .widgetdescr import WidgetDescr
-from .util.stockimage import StockImage, StockImageException
 
 
 logger = logging.getLogger('pygubu.designer')

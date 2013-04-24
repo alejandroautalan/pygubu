@@ -33,12 +33,12 @@ from tkinter import messagebox
 
 import pygubu
 from pygubu import builder
+from pygubu.stockimage import StockImage, StockImageException
 from . import util
 from . import properties
 from .propertieseditor import WidgetPropertiesEditor
 from .widgeteditor import WidgetsTreeEditor
 from .previewer import PreviewHelper
-from .util.stockimage import StockImage, StockImageException
 from .util.dialog import DialogBase
 
 #initialize standard ttk widgets

@@ -19,8 +19,8 @@ import tkinter
 from tkinter import ttk
 
 import pygubu
+from pygubu.stockimage import StockImage, StockImageException
 from . import util
-from .util.stockimage import StockImage
 
 
 class UIPreview():
