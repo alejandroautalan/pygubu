@@ -15,7 +15,7 @@
 #
 # For further info, check  http://pygubu.web.here
 
-__all__ = ['StockImage']
+__all__ = ['StockImage', 'StockImageException']
 
 import os
 import logging
@@ -47,6 +47,11 @@ When image is used, the class maintains it on memory for tkinter"""
             logger.info('Warning, replacing resource ' + str(key))
         cls._stock[key] = {'type': 'custom', 'filename': filename}
         logger.info('%s registered as %s' % (filename, key))
+
+
+    @classmethod
+    def is_registered(cls, key):
+        return key in cls._stock
 
 
     @classmethod
