@@ -380,8 +380,10 @@ class WidgetPropertiesEditor:
             togrid = frame
             self.connect_variable_cb(widgetvar, propalias)
         elif wtype == 'choice':
+            readonly = wdata.get('readonly', False)
+            status = 'readonly' if readonly else tkinter.NORMAL
             widget = ttk.Combobox(master, textvariable=widgetvar,
-                state='readonly')
+                state=status)
             togrid = widget
             values = wdata.get('values', None)
             if values is not None:
@@ -455,9 +457,11 @@ class WidgetPropertiesEditor:
             vmax = wdata.get('max', 99)
             default = vmin if (int(vmin) > 0 and default == '') else default
         if wtype == 'choice':
+            readonly = wdata.get('readonly', False)
+            status = 'readonly' if readonly else tkinter.NORMAL
             values = wdata.get('values', None)
             if values is not None:
-                widget.configure(values=values)
+                widget.configure(values=values, state=status)
 
         value = ''
         if group in (properties.GROUP_CUSTOM, properties.GROUP_WIDGET):
