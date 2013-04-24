@@ -205,6 +205,11 @@ class PygubuUI(util.Application):
                 lambda e: self.on_edit_menuitem_clicked('edit_item_delete'))
 
 
+        #
+        # Setup tkk styles
+        #
+        self._setup_styles()
+
         #app config
         top = self.winfo_toplevel()
         try:
@@ -215,6 +220,11 @@ class PygubuUI(util.Application):
 
         self.set_title('Pygubu a GUI builder for tkinter')
         self.set_size('640x480')
+
+
+    def _setup_styles(self):
+        s = ttk.Style()
+        s.configure('ColorSelectorButton.TButton', width='2')
 
 
     def configure_widget_list(self):

@@ -119,22 +119,34 @@ def create_scrollable(master, wclass, **kw):
     return widget
 
 
+_selector_id = 0
+_ttk_style = None
+
 def make_color_selector(master, textvariable):
+    global _selector_id
+    global _ttk_style
+
+    if _ttk_style is None:
+        _ttk_style = ttk.Style()
+
     frame = ttk.Frame(master)
-    entry = ttk.Entry(frame, textvariable=textvariable, state='readonly')
-    button = tkinter.Button(frame)
-    btn_bgcolor = button.cget('background')
+    entry = ttk.Entry(frame, textvariable=textvariable)
+    _selector_id += 1
+    stylename = 'ID{0}.ColorSelectorButton.TButton'.format(_selector_id)
+    button = ttk.Button(frame, text='…', style=stylename)
+    btn_bgcolor = _ttk_style.lookup('TButton', 'background')
 
     def on_entry_changed(varname, element, mode):
         color = textvariable.get()
+        stylename = button.cget('style')
         if color:
             try:
-                button.configure(background=color)
+                _ttk_style.configure(stylename, background=color)
             except Exception as e:
                 pass
         else:
             #set button to the default color
-            button.configure(background=btn_bgcolor)
+            _ttk_style.configure(stylename, background=btn_bgcolor)
 
     def on_button_click():
         current = entry.get()
