@@ -367,7 +367,7 @@ class PreviewHelper:
         #Create preview
         builder = pygubu.Builder()
         builder.add_from_xmlnode(xmlnode)
-        top = tkinter.Toplevel(self.notebook)
+        top = tk.Toplevel(self.canvas)
         top.columnconfigure(0, weight=1)
         top.rowconfigure(0, weight=1)
 
