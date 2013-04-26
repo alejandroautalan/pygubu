@@ -151,8 +151,8 @@ class PygubuUI(util.Application):
         self.treeview = tree = self.builder.get_object('treeview1')
 
         #Preview
-        nbpreview = self.builder.get_object('notebookpreview')
-        self.previewer = PreviewHelper(nbpreview)
+        previewc = self.builder.get_object('preview_canvas')
+        self.previewer = PreviewHelper(previewc)
         #tree editor
         self.tree_editor = WidgetsTreeEditor(self)
         #properties frame
