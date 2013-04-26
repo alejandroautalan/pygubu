@@ -439,9 +439,14 @@ class WidgetsTreeEditor:
         eroot = etree.getroot()
 
         self.remove_all()
+        self.previewer.remove_all()
 
         for element in eroot:
             self.populate_tree('', eroot, element)
+        children = self.treeview.get_children('')
+        for child in children:
+            self.draw_widget(child)
+        self.previewer.show_selected(None, None)
 
 
     def populate_tree(self, master, parent, element):
