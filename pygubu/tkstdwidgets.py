@@ -313,7 +313,7 @@ class TKMenuitem(BuilderObject):
         pname = 'variable'
         if pname in itemproperties:
             varname = itemproperties[pname]
-            itemproperties[pname] = self.builder.create_variable(name)
+            itemproperties[pname] = self.builder.create_variable(pname)
         for imageprop in ('image', 'selectimage'):
             if imageprop in itemproperties:
                 name = itemproperties[imageprop]
