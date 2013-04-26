@@ -189,7 +189,7 @@ class TTKLabelframe(BuilderObject):
 
 #TODO: Add helper so the labelwidget can be configured on GUI
 register_widget('ttk.Labelframe', TTKLabelframe,
-        'LabelFrame', ('Containers', 'ttk'))
+        'Labelframe', ('Containers', 'ttk'))
 
 
 class TTKPanedwindow(PanedWindow):
