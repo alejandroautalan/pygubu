@@ -38,7 +38,22 @@ class WidgetsTreeEditor:
         self.previewer = app.previewer
         self.treedata = {}
         self.counter = Counter()
+        #Filter vars
+        self.filter_on = False
+        self.filtervar = app.builder.get_variable('filtervar')
+        self.filter_btn = app.builder.get_object('filterclear_btn')
+        self._detached = []
+
         self.config_treeview()
+        self.config_filter()
+
+    def config_filter(self):
+        def on_filtervar_changed(varname, element, mode):
+            self.filter_by(self.filtervar.get())
+        self.filtervar.trace('w', on_filtervar_changed)
+        def on_filterbtn_click():
+            self.filtervar.set('')
+        self.filter_btn.configure(command=on_filterbtn_click)
 
 
     def config_treeview(self):
@@ -363,6 +378,9 @@ class WidgetsTreeEditor:
         if tsel:
             selected_item = tsel[0]
 
+        #Need to remove filter if set
+        self.filter_remove()
+
         root = selected_item
         #check if the widget can be added at selected point
         if not self._validate_add(root, wclass, False):
@@ -420,7 +438,7 @@ class WidgetsTreeEditor:
 
         #select and show the item created
         tree.selection_set(item)
-        tree.see(item)
+        tree.after_idle(lambda: tree.see(item))
         #Do redraw
         self.draw_widget(item)
 
@@ -569,3 +587,86 @@ class WidgetsTreeEditor:
                 next_idx = tree.index(next)
                 tree.move(item, parent, next_idx)
 
+    #
+    # Filter functions
+    #
+    def filter_by(self, string):
+        """Filters treeview"""
+
+        self._reatach()
+        self.filter_on = True
+        if string == '':
+            self.filter_on = False
+            return
+
+        self._expand_all()
+        self.treeview.selection_set('')
+
+        children = self.treeview.get_children('')
+        for item in children:
+            _, detached = self._detach(item)
+            if detached:
+                self._detached.extend(detached)
+        for i, p, idx in self._detached:
+            txt = self.treeview.item(i, 'text')
+            self.treeview.detach(i)
+
+    def filter_remove(self):
+        self._reatach()
+        self.filtervar.set('')
+        self.filter_on = False
+
+    def _expand_all(self, rootitem=''):
+        children = self.treeview.get_children(rootitem)
+        for item in children:
+            self._expand_all(item)
+        if rootitem != '' and children:
+            self.treeview.item(rootitem, open=True)
+
+    def _reatach(self):
+        """Reinsert the hidden items."""
+        for item, p, idx in self._detached:
+            self.treeview.move(item, p, idx)
+        self._detached = []
+
+    def _detach(self, item):
+        """Hide items from treeview that do not match the search string."""
+        to_detach = []
+        children_det = []
+        children_match = False
+        match_found = False
+
+        value = self.filtervar.get()
+        txt = self.treeview.item(item, 'text').lower()
+        if value in txt:
+            match_found = True
+        else:
+            class_txt = self.treedata[item].get_class().lower()
+            if value in class_txt:
+                match_found = True
+
+        parent = self.treeview.parent(item)
+        idx = self.treeview.index(item)
+        children = self.treeview.get_children(item)
+        if children:
+            for child in children:
+                match, detach = self._detach(child)
+                children_match = children_match | match
+                if detach:
+                    children_det.extend(detach)
+
+        if match_found:
+            if children_det:
+                to_detach.extend(children_det)
+        else:
+            if children_match:
+                if children_det:
+                    to_detach.extend(children_det)
+            else:
+                to_detach.append((item, parent, idx))
+        match_found = match_found | children_match
+        return match_found, to_detach
+
+    #
+    # End Filter functions
+    #

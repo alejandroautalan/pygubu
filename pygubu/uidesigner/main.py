@@ -228,6 +228,7 @@ class PygubuUI(util.Application):
         s = ttk.Style()
         s.configure('ColorSelectorButton.TButton', width='2')
         s.configure('ImageSelectorButton.TButton', width='2')
+        s.configure('FilterClearButton.TButton', width='2', relief=tk.FLAT)
 
 
     def configure_widget_list(self):
