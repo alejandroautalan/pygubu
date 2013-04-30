@@ -139,7 +139,7 @@ class TestTreeview(unittest.TestCase):
             success.append(1)
 
         cbdic = { 'on_treecolumn_click': on_treecolumn_click }
-        self.builder.connect_commands(cbdic)
+        self.builder.connect_callbacks(cbdic)
 
         x, y = self.widget.winfo_x(), self.widget.winfo_y()
         self.widget.event_generate('<ButtonPress-1>', x=x+5, y=y+5)
@@ -157,7 +157,7 @@ class TestTreeview(unittest.TestCase):
                 success.append(1)
 
         cbobj = AnObject()
-        self.builder.connect_commands(cbobj)
+        self.builder.connect_callbacks(cbobj)
 
         x, y = self.widget.winfo_x(), self.widget.winfo_y()
         self.widget.event_generate('<ButtonPress-1>', x=x+5, y=y+5)

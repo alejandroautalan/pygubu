@@ -84,7 +84,7 @@ class TestButton(unittest.TestCase):
             success.append(1)
 
         cbdic = { 'on_button_click': on_button_click }
-        self.builder.connect_commands(cbdic)
+        self.builder.connect_callbacks(cbdic)
 
         self.widget.invoke()
         self.assertTrue(success)
@@ -98,7 +98,7 @@ class TestButton(unittest.TestCase):
                 success.append(1)
 
         cbobj = AnObject()
-        self.builder.connect_commands(cbobj)
+        self.builder.connect_callbacks(cbobj)
 
         self.widget.invoke()
         self.assertTrue(success)

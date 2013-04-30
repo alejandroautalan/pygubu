@@ -17,13 +17,13 @@ class Myapp:
 
         mainwindow = builder.get_object('mainwindow', master)
 
-        builder.connect_commands(self)
+        builder.connect_callbacks(self)
 
         callbacks = {
             'on_button2_clicked': self.on_button2_clicked
             }
 
-        builder.connect_commands(callbacks)
+        builder.connect_callbacks(callbacks)
 
     def on_my_button_clicked(self):
         messagebox.showinfo('From callback', 'My button was clicked !!')

@@ -29,6 +29,8 @@ class TestFrame(unittest.TestCase):
         <property name="style">MyFrameStyle.TFrame</property>
         <property name="takefocus">1</property>
         <property name="cursor">cross</property>
+        <bind add="" handler="on_button_click" sequence="&lt;Button-1&gt;"/>
+        <bind add="True" handler="on_button_click2" sequence="&lt;Button-1&gt;"/>
         <layout>
             <property name="row">0</property>
             <property name="column">0</property>
@@ -54,7 +56,7 @@ class TestFrame(unittest.TestCase):
     </object>
 </interface>
 """
-        builder = pygubu.Builder()
+        self.builder = builder = pygubu.Builder()
         builder.add_from_string(xmldata)
         self.widget = builder.get_object('mainwindow')
 
@@ -127,6 +129,65 @@ class TestFrame(unittest.TestCase):
     def test_child_count(self):
         count = len(self.widget.children)
         self.assertEqual(1, count)
+        self.widget.destroy()
+
+    def test_binding_dict(self):
+        success = []
+
+        def on_button_click(event):
+            success.append(1)
+
+        def on_button_click2(event):
+            success.append(1)
+
+        cbdic = {
+            'on_button_click': on_button_click,
+            'on_button_click2': on_button_click2
+            }
+        self.builder.connect_callbacks(cbdic)
+
+        support.simulate_mouse_click(self.widget, 5, 5)
+        self.widget.update_idletasks()
+
+        self.assertTrue(success)
+        self.widget.destroy()
+
+    def test_binding_object(self):
+        success = []
+
+        class AnObject:
+            def on_button_click(self, event):
+                success.append(1)
+            def on_button_click2(self, event):
+                success.append(1)
+
+        cbobj = AnObject()
+        self.builder.connect_callbacks(cbobj)
+
+        support.simulate_mouse_click(self.widget, 5, 5)
+        self.widget.update_idletasks()
+
+        self.assertTrue(success)
+        self.widget.destroy()
+
+    def test_binding_add(self):
+        success = []
+
+        def on_button_click(event):
+            success.append(1)
+        def on_button_click2(event):
+            success.append(1)
+
+        cbdic = {
+            'on_button_click': on_button_click,
+            'on_button_click2': on_button_click2
+            }
+        self.builder.connect_callbacks(cbdic)
+
+        support.simulate_mouse_click(self.widget, 5, 5)
+        self.widget.update_idletasks()
+
+        self.assertTrue(len(success) == 2)
         self.widget.destroy()
 
 

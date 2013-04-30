@@ -115,7 +115,7 @@ class TestEntry(unittest.TestCase):
         callback = {'entry_validate': entry_validate,
             'entry_invalid': entry_invalid}
 
-        self.builder.connect_commands(callback)
+        self.builder.connect_callbacks(callback)
 
         self.widget.delete('0', tk.END)
         self.assertEqual('', self.widget.get())
@@ -149,7 +149,7 @@ class TestEntry(unittest.TestCase):
 
         self.widget.delete('0', tk.END)
 
-        self.builder.connect_commands(callback)
+        self.builder.connect_callbacks(callback)
 
         self.widget.insert('0', 'Not Allowed')
         self.assertEqual(invalid_text[0], 'Not Allowed')

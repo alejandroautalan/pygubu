@@ -18,7 +18,7 @@ class Myapp:
 
         mainwindow = builder.get_object('mainwindow', master)
 
-        builder.connect_commands(self)
+        builder.connect_callbacks(self)
         self.set_scrollbars()
 
     def on_button_clicked(self):

@@ -47,6 +47,9 @@ class UITester(util.Application):
         except:
             pass
 
+        #show callbacks defined
+        self.builder.connect_callbacks({})
+
         self.grid(row=0, column=0, sticky='nswe')
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)

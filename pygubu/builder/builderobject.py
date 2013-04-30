@@ -41,6 +41,7 @@ class BuilderObject:
     ro_properties = tuple()
     layout_required = True
     command_properties = tuple()
+    allow_bindings = True
     tkvar_properties = ('listvariable', 'textvariable', 'variable')
     tkimage_properties = ('image', 'selectimage')
 
@@ -57,6 +58,7 @@ class BuilderObject:
         self.descr = wdescr
         self.properties = wdescr.get('properties', {})
         self.layout_properties = wdescr.get('layout', {})
+        self.bindings = wdescr.get('bindings', [])
 
 
     def realize(self, parent):
@@ -165,6 +167,37 @@ class BuilderObject:
             return None
 
 
+    def connect_bindings(self, cb_bag):
+        notconnected = []
+
+        if isinstance(cb_bag, dict):
+            for bind in self.bindings:
+                cb_name = bind.get('handler', None)
+                if cb_name is not None:
+                    if cb_name in cb_bag:
+                        callback = cb_bag[cb_name]
+                        cb_seq = bind.get('sequence')
+                        cb_add = bind.get('add', None)
+                        self.widget.bind(cb_seq, callback, add=cb_add)
+                    else:
+                        notconnected.append(cb_name)
+        else:
+            for bind in self.bindings:
+                cb_name = bind.get('handler', None)
+                if cb_name is not None:
+                    if hasattr(cb_bag, cb_name):
+                        callback = getattr(cb_bag, cb_name)
+                        cb_seq = bind.get('sequence')
+                        cb_add = bind.get('add', None)
+                        self.widget.bind(cb_seq, callback, add=cb_add)
+                    else:
+                        notconnected.append(cb_name)
+        if notconnected:
+            return notconnected
+        else:
+            return None
+
+
 #
 # Base clases for some widgets
 #
@@ -215,6 +248,7 @@ class PanedWindowPane(BuilderObject):
     container = True
     properties = []
     layout_required = False
+    allow_bindings = False
 
     def realize(self, parent):
         self.widget = parent.widget

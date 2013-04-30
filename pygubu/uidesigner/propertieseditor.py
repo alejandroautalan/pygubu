@@ -24,6 +24,7 @@ from pygubu import builder
 from . import util
 from . import properties
 from .util.textentry import Textentry
+from .bindingseditor import BindingsEditor
 
 
 CLASS_MAP = builder.CLASS_MAP
@@ -55,6 +56,7 @@ class WidgetPropertiesEditor:
         #self.treeview = app.treeview
         self.propsframe = app.widget_props_frame
         self.layoutframe = app.layout_props_frame
+        self.bindingsframe = app.bindings_frame
         self.arrayvar = PropertiesArray()
         self.prop_widget = {
             properties.GROUP_WIDGET: {},
@@ -81,6 +83,9 @@ class WidgetPropertiesEditor:
         }
         self.create_properties()
         self.create_grid_layout_editor()
+
+        self.bindings_editor = BindingsEditor(app.bindings_tree)
+
         self.hide_all()
 
 
@@ -430,6 +435,9 @@ class WidgetPropertiesEditor:
         self.propsframe.reposition()
         self.layoutframe.reposition()
 
+        self.bindingsframe.grid_remove()
+        self.bindings_editor.clear()
+
 
     def update_property_widget(self, group, widget, variable,
         propertyname, classname, data, roc=None, rc_id=None):
@@ -580,6 +588,14 @@ class WidgetPropertiesEditor:
         self.propsframe.reposition()
         self.layoutframe.reposition()
         #
+        allow_edit = CLASS_MAP[wclass].classobj.allow_bindings
+        if allow_edit:
+            self.bindingsframe.grid()
+        else:
+            self.bindingsframe.grid_remove()
+        self.bindings_editor.allow_edit(allow_edit)
+        self.bindings_editor.edit(data)
+
         self._editor_ready = True
 
 

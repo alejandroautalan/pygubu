@@ -110,7 +110,7 @@ class AboutDialog(DialogBase):
         self.builder.add_from_file(uifile)
 
         self.builder.get_object('aboutdialog', master)
-        self.builder.connect_commands(self)
+        self.builder.connect_callbacks(self)
         return self.builder.get_object('close_btn')
 
     def _create_btnbox(self, master):
@@ -149,6 +149,8 @@ class PygubuUI(util.Application):
 
         #widget tree
         self.treeview = tree = self.builder.get_object('treeview1')
+        self.bindings_frame = self.builder.get_object('bindingsframe')
+        self.bindings_tree = self.builder.get_object('bindingstree')
 
         #Preview
         previewc = self.builder.get_object('preview_canvas')
@@ -160,7 +162,7 @@ class PygubuUI(util.Application):
         self.layout_props_frame = builder.get_object('layoutframe')
         self.properties_editor = WidgetPropertiesEditor(self)
 
-        self.builder.connect_commands(self)
+        self.builder.connect_callbacks(self)
 
         #Status bar
         self.statusbar = self.builder.get_object('statusbar')

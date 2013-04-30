@@ -320,6 +320,10 @@ __widget = (
             'values': ('', 'tree', 'headings'),
             'default': '',
             'readonly': True},
+        'pygubu.builder.widgets.editabletreeview': {
+            'values': ('', 'tree', 'headings'),
+            'default': '',
+            'readonly': True},
         }),
     ('showhandle', _default_true_false_prop),
     ('showvalue', _default_true_false_prop),

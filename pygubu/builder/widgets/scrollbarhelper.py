@@ -14,6 +14,7 @@ class TTKSBHelperBO(BuilderObject):
     properties = ['scrolltype', 'cursor', 'height', 'padding',
             'relief', 'style', 'takefocus', 'width']
     ro_properties = ('scrolltype', )
+    allow_bindings = False
 
 
     def add_child(self, bobject):

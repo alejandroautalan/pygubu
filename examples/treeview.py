@@ -17,7 +17,7 @@ class Myapp:
 
         mainwindow = builder.get_object('mainwindow', master)
 
-        builder.connect_commands(self)
+        builder.connect_callbacks(self)
 
 
     def on_treecolumn_click(self):

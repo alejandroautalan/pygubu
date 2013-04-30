@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<interface>
+  <object class="ttk.Frame" id="mainwindow">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <bind add="" handler="on_button1_click" sequence="&lt;Button-1&gt;"/>
+    <bind add="" handler="double_click" sequence="&lt;Double-Button-1&gt;"/>
+    <layout>
+      <property name="sticky">nesw</property>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+    </layout>
+  </object>
+</interface>

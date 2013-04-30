@@ -32,6 +32,7 @@ class WidgetDescr(dict, Observable):
         self['layout'] = {}
         self['layout']['rows'] = defaultdict(dict)
         self['layout']['columns'] = defaultdict(dict)
+        self['bindings'] = []
 
 
     def get_class(self):
@@ -93,6 +94,22 @@ class WidgetDescr(dict, Observable):
     def from_xml_node(self, node):
         data = pygubu.builder.data_xmlnode_to_dict(node)
         self.update(data)
+
+    def get_bindings(self):
+        blist = []
+        for v in self['bindings']:
+            blist.append((v['sequence'], v['handler'], v['add']))
+        return blist
+
+    def clear_bindings(self):
+        self['bindings'] = []
+
+    def add_binding(self, seq, handler, add):
+        self['bindings'].append({
+            'sequence': seq,
+            'handler': handler,
+            'add': add
+            })
 
 
 

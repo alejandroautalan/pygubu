@@ -265,6 +265,7 @@ class TKMenu(BuilderObject):
         'font', 'foreground', 'postcommand', 'relief', 'selectcolor',
         'tearoff', 'tearoffcommand', 'title']
     command_properties = ('postcommand', 'tearoffcommand')
+    allow_bindings = False
 
     def layout(self):
         pass
@@ -303,6 +304,7 @@ class TKMenuitem(BuilderObject):
         'command_id_arg', #<< custom property !!
         ]
     command_properties = ('command',)
+    allow_bindings = False
 
     def realize(self, parent):
         self.widget = master = parent.widget

@@ -14,6 +14,7 @@ class TKSBHelperBO(BuilderObject):
         'highlightbackground', 'highlightcolor', 'highlightthickness',
         'padx', 'pady', 'relief', 'takefocus', 'width']
     ro_properties = ('scrolltype', )
+    allow_bindings = False
 
     def add_child(self, bobject):
         cwidget = bobject.widget

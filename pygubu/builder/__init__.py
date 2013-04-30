@@ -47,6 +47,17 @@ def data_xmlnode_to_dict(element):
 
     data['properties'] = pdict
 
+    #Bindings
+    bindings = []
+    bind_elements = element.findall('./bind')
+    for e in bind_elements:
+        bindings.append({
+            'sequence': e.get('sequence'),
+            'handler': e.get('handler'),
+            'add': e.get('add')
+            })
+    data['bindings'] = bindings
+
     #get layout properties
     #use grid layout for all
     layout_properties = {}
@@ -82,8 +93,8 @@ def data_xmlnode_to_dict(element):
                     column_properties[p.get('name')] = p.text
                 columns_dict[column_id] = column_properties
         layout_properties['columns'] = columns_dict
-
     data['layout'] = layout_properties
+
     return data
 
 
@@ -102,6 +113,14 @@ def data_dict_to_xmlnode(data):
             pnode.text = pv
             node.append(pnode)
 
+    #bindings:
+    for v in data['bindings']:
+        bind = ET.Element('bind')
+        for attr, value in v.items():
+            bind.set(attr, value)
+        node.append(bind)
+
+    #layout:
     layout_required = CLASS_MAP[data['class']].classobj.layout_required
     if layout_required:
         #create layout node
@@ -321,10 +340,13 @@ class Builder:
                 cname, uniqueid)
 
 
-    def connect_commands(self, commands_bag):
+    def connect_callbacks(self, callbacks_bag):
         notconnected = []
         for wname, builderobj in self.objects.items():
-            missing = builderobj.connect_commands(commands_bag)
+            missing = builderobj.connect_commands(callbacks_bag)
+            if missing is not None:
+                notconnected.extend(missing)
+            missing = builderobj.connect_bindings(callbacks_bag)
             if missing is not None:
                 notconnected.extend(missing)
         if notconnected:
