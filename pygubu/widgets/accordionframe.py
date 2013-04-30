@@ -13,12 +13,10 @@
 # You should have received a copy of the GNU General Public License along
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# For further info, check  http://pygubu.web.here
+# For further info, check  https://github.com/alejandroautalan/pygubu
 
 import tkinter as tk
 from tkinter import ttk
-
-from ..builderobject import *
 
 
 class AccordionFrame(ttk.Frame):
@@ -72,16 +70,6 @@ class AccordionFrame(ttk.Frame):
         else:
             btn.dd_show = True
             frame.grid()
-
-
-
-class AccordionFrameBO(BuilderObject):
-    class_ = AccordionFrame
-    container = False
-
-
-register_widget('pygubu.widgets.accordionframe', AccordionFrameBO,
-    'AccordionFrame', ('container',))
 
 
 if __name__ == '__main__':

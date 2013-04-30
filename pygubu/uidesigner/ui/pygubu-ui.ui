@@ -252,7 +252,7 @@
                       </rows>
                     </layout>
                     <child>
-                      <object class="pygubu.widgets.scrollbarhelper" id="p1f1sbh1">
+                      <object class="pygubu.builder.widgets.scrollbarhelper" id="p1f1sbh1">
                         <property name="scrolltype">both</property>
                         <property name="padding">0 0 5 0</property>
                         <layout>
@@ -320,7 +320,7 @@
                                   </rows>
                                 </layout>
                                 <child>
-                                  <object class="pygubu.widgets.scrollbarhelper" id="sbh1">
+                                  <object class="pygubu.builder.widgets.scrollbarhelper" id="sbh1">
                                     <property name="scrolltype">both</property>
                                     <layout>
                                       <property name="column">0</property>
@@ -426,7 +426,7 @@
                                     <property name="sticky">nsew</property>
                                     <property name="text">General</property>
                                     <child>
-                                      <object class="pygubu.widgets.scrolledframe" id="propertiesframe">
+                                      <object class="pygubu.builder.widgets.scrolledframe" id="propertiesframe">
                                         <property name="padding">5</property>
                                         <layout>
                                           <property name="column">0</property>
@@ -442,7 +442,7 @@
                                     <property name="sticky">nsew</property>
                                     <property name="text">Layout</property>
                                     <child>
-                                      <object class="pygubu.widgets.scrolledframe" id="layoutframe">
+                                      <object class="pygubu.builder.widgets.scrolledframe" id="layoutframe">
                                         <property name="padding">5</property>
                                         <layout>
                                           <property name="column">0</property>
@@ -490,7 +490,7 @@
                       </rows>
                     </layout>
                     <child>
-                      <object class="pygubu.widgets.scrollbarhelper" id="scrollbarhelper_1">
+                      <object class="pygubu.builder.widgets.scrollbarhelper" id="scrollbarhelper_1">
                         <property name="scrolltype">both</property>
                         <layout>
                           <property name="column">0</property>

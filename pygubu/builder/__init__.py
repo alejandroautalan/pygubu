@@ -23,9 +23,9 @@ import tkinter
 from tkinter import ttk
 from collections import defaultdict
 
-from pygubu.builderobject import *
+from pygubu.builder.builderobject import *
 from pygubu.stockimage import *
-import pygubu.tkstdwidgets
+import pygubu.builder.tkstdwidgets
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('pygubu.builder')
@@ -275,7 +275,7 @@ class Builder:
 
     def _import_class(self, modulename):
         if modulename.startswith('ttk.'):
-            importlib.import_module('pygubu.ttkstdwidgets')
+            importlib.import_module('pygubu.builder.ttkstdwidgets')
         else:
             importlib.import_module(modulename)
 

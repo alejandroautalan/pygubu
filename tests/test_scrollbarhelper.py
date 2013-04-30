@@ -23,7 +23,7 @@ class TestScrollbarHelper(unittest.TestCase):
         support.root_deiconify()
         xmldata = """<?xml version="1.0" ?>
 <interface>
-  <object class="pygubu.widgets.scrollbarhelper" id="scrollbarhelper">
+  <object class="pygubu.builder.widgets.scrollbarhelper" id="scrollbarhelper">
     <property name="scrolltype">both</property>
     <property name="padding">5 5 5 5</property>
     <property name="relief">raised</property>
@@ -75,7 +75,7 @@ class TestTkScrollbarHelper(unittest.TestCase):
         support.root_deiconify()
         xmldata = """<?xml version="1.0" ?>
 <interface>
-  <object class="pygubu.widgets.tkscrollbarhelper" id="scrollbarhelper">
+  <object class="pygubu.builder.widgets.tkscrollbarhelper" id="scrollbarhelper">
     <property name="scrolltype">both</property>
     <property name="padx">5</property>
     <property name="pady">10</property>

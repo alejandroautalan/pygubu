@@ -26,7 +26,7 @@
       </object>
     </child>
     <child>
-      <object class="pygubu.widgets.scrollbarhelper" id="sbh1">
+      <object class="pygubu.builder.widgets.scrollbarhelper" id="sbh1">
         <property name="scrolltype">both</property>
         <layout>
           <property name="column">0</property>

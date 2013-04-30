@@ -1,7 +1,22 @@
+#
+# Copyright 2012-2013 Alejandro Autalán
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3, as published
+# by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranties of
+# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# For further info, check  https://github.com/alejandroautalan/pygubu
+
 import types
 import tkinter as tk
-
-from ..builderobject import *
 
 
 def _autoscroll(sbar, first, last):
@@ -89,21 +104,4 @@ class TkScrolledFrame(tk.Frame):
         self.innerframe.update()
         self.after_idle(self._on_iframe_configure, None)
         self.after_idle(self._on_canvas_configure, None)
-
-
-class TKScrolledFrameBO(BuilderObject):
-    class_ = TkScrolledFrame
-    container = True
-    maxchildren = 1
-    allowed_children = ('tk.Frame', 'ttk.Frame' )
-    properties = ['background', 'borderwidth', 'cursor', 'height',
-        'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'padx', 'pady', 'relief', 'takefocus', 'width']
-    ro_properties = ro_properties = ('class_',)
-
-    def get_child_master(self):
-        return self.widget.innerframe
-
-register_widget('pygubu.widgets.tkscrolledframe', TKScrolledFrameBO,
-    'ScrolledFrame', ('Pygubu Widgets', 'tk'))
 

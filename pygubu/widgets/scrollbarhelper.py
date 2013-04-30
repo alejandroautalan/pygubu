@@ -1,7 +1,22 @@
+#
+# Copyright 2012-2013 Alejandro Autalán
+#
+# This program is free software: you can redistribute it and/or modify it
+# under the terms of the GNU General Public License version 3, as published
+# by the Free Software Foundation.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranties of
+# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
+# PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along
+# with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# For further info, check  https://github.com/alejandroautalan/pygubu
+
 import tkinter as tk
 from tkinter import ttk
-
-from ..builderobject import *
 
 
 def _autoscroll(sbar, first, last):
@@ -59,35 +74,4 @@ class ScrollbarHelper(ttk.Frame):
             else:
                 msg = "widget {} has no attribute 'xview'".format(str(cwidget))
                 logger.warning(msg)
-
-
-
-
-class TTKSBHelperBO(BuilderObject):
-    class_ = ScrollbarHelper
-    container = True
-    maxchildren = 1
-    allowed_children = ('tk.Entry', 'ttk.Entry', 'tk.Text', 'tk.Canvas',
-        'tk.Listbox', 'ttk.Treeview' )
-    properties = ['scrolltype', 'cursor', 'height', 'padding',
-            'relief', 'style', 'takefocus', 'width']
-    ro_properties = ('scrolltype', )
-
-
-    def add_child(self, bobject):
-        cwidget = bobject.widget
-        self.widget.add_child(cwidget)
-
-
-__scrolltype_property = {
-    'input_method': 'choice',
-    'values': (ScrollbarHelper.BOTH, ScrollbarHelper.VERTICAL,
-        ScrollbarHelper.HORIZONTAL),
-    'default': ScrollbarHelper.HORIZONTAL }
-
-register_property('scrolltype', __scrolltype_property)
-
-
-register_widget('pygubu.widgets.scrollbarhelper', TTKSBHelperBO,
-    'ScrollbarHelper', ('Pygubu Helpers', 'ttk'))
 

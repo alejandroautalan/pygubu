@@ -42,11 +42,11 @@ from .previewer import PreviewHelper
 from .util.dialog import DialogBase
 
 #initialize standard ttk widgets
-import pygubu.ttkstdwidgets
+import pygubu.builder.ttkstdwidgets
 
 #initialize extra widgets
-widgets_pkg = 'pygubu.widgets'
-mwidgets = importlib.import_module('pygubu.widgets')
+widgets_pkg = 'pygubu.builder.widgets'
+mwidgets = importlib.import_module(widgets_pkg)
 mwpath = os.path.dirname(mwidgets.__file__)
 for mfile in os.listdir(mwpath):
     if mfile.endswith('.py') and not mfile.startswith('__'):
