@@ -2,3 +2,4 @@ include COPYING
 include LEEME.txt
 include version.txt
 recursive-include examples *
+global-exclude *~

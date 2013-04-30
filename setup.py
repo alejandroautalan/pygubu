@@ -53,11 +53,13 @@ setup(
     long_description='A tkinter GUI builder.',
     url='https://github.com/alejandroautalan/pygubu',
 
-    packages=["pygubu", "pygubu.uidesigner", "pygubu.uidesigner.util",
-        'pygubu.widgets'],
+    packages=['pygubu', 'pygubu.builder', 'pygubu.builder.widgets',
+        'pygubu.uidesigner', 'pygubu.uidesigner.util', 'pygubu.widgets'],
     package_data={
         'pugubu': ['../version.txt'],
-        'pygubu.uidesigner': ['images/*.gif', 'ui/*.ui'],
+        'pygubu.uidesigner': [
+            'images/*.gif', 'images/widgets/16x16/*.gif',
+            'images/widgets/22x22/*.gif', 'ui/*.ui'],
         '' : ['version.txt'],
     },
     scripts=["bin/pygubu"],
