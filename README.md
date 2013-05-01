@@ -12,8 +12,13 @@ Installation
 ============
 
 Pygubu requires python >= 3.2
-Download the tarball from (url here)
-    python3 setup.py install
+
+Download and extract the tarball. Open a console in the extraction path
+ and execute:
+
+```
+python3 setup.py install
+```
 
 
 Usage
