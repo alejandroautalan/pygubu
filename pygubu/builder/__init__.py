@@ -104,7 +104,7 @@ def data_dict_to_xmlnode(data):
     for prop in ('id', 'class'):
         node.set(prop, data[prop])
 
-    wclass_props = CLASS_MAP[data['class']].classobj.properties
+    wclass_props = sorted(CLASS_MAP[data['class']].classobj.properties)
     for prop in wclass_props:
         pv = data['properties'].get(prop, None)
         if pv:
@@ -114,7 +114,8 @@ def data_dict_to_xmlnode(data):
             node.append(pnode)
 
     #bindings:
-    for v in data['bindings']:
+    bindings = sorted(data['bindings'], key=lambda b: b['sequence'])
+    for v in bindings:
         bind = ET.Element('bind')
         for attr, value in v.items():
             bind.set(attr, value)
@@ -127,7 +128,8 @@ def data_dict_to_xmlnode(data):
         layout = data['layout']
         layout_node = ET.Element('layout')
         has_layout = False
-        for prop in layout:
+        sorted_keys = sorted(layout)
+        for prop in sorted_keys:
             pv = layout[prop]
             if pv and prop != 'rows' and prop != 'columns':
                 has_layout = True
@@ -140,11 +142,13 @@ def data_dict_to_xmlnode(data):
             if key in layout:
                 erows = ET.Element(key)
                 include_key = False
-                for rowid in layout[key]:
+                sorted_keys = sorted(layout[key])
+                for rowid in sorted_keys:
                     erow = ET.Element(keys[key])
                     erow.set('id', rowid)
                     inlcude_rc = False
-                    for pname in layout[key][rowid]:
+                    sorted_props = sorted(layout[key][rowid])
+                    for pname in sorted_props:
                         include_key = True
                         inlcude_rc = True
                         eprop = ET.Element('property')
