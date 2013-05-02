@@ -33,8 +33,8 @@ class CustomInstall(install):
             with open(script_path) as fh:
                 content = fh.read()
 
-            content = content.replace('@ INSTALLED_BASE_DIR @',
-                                      self.install_lib)
+            ipath = os.path.abspath(self.install_lib)
+            content = content.replace('@ INSTALLED_BASE_DIR @', ipath)
 
             with open(script_path, 'w') as fh:
                 fh.write(content)
