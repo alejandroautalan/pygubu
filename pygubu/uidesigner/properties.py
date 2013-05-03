@@ -61,13 +61,13 @@ _default_dimension_prop = {
 _default_relief_prop = {
     'input_method': 'choice',
     'values': ('', tk.FLAT, tk.RAISED, tk.SUNKEN,
-        tk.GROOVE, tk.RIDGE)
+        tk.GROOVE, tk.RIDGE), 'readonly': True
 }
 
 _empty_choice = {'input_method': 'choice', 'readonly': True }
 
 _default_true_false_prop = { 'input_method': 'choice',
-    'values': ('', tk.TRUE, tk.FALSE)}
+    'values': ('', tk.TRUE, tk.FALSE), 'readonly': True}
 
 _default_cursor_prop = {
     'input_method': 'choice',
@@ -87,7 +87,8 @@ _default_cursor_prop = {
         'spraycan', 'star', 'target', 'tcross', 'top_left_arrow',
         'top_left_corner', 'top_right_corner', 'top_side', 'top_tee',
         'trek', 'ul_angle', 'umbrella', 'ur_angle', 'watch', 'xterm',
-        'X_cursor')
+        'X_cursor'),
+    'readonly': True
 }
 
 _sticky_prop = {
@@ -110,7 +111,7 @@ _sticky_prop = {
         'ttk.ScrollbarHelper': {'default': tk.NE + tk.SW},
         'tk.ScrolledFrame': {'default': tk.NE + tk.SW},
         'ttk.ScrolledFrame': {'default': tk.NE + tk.SW},
-        'ttk.Notebook': {'default': tk.NE + tk.SW},
+        'ttk.Notebook': {'default': tk.NE + tk.SW}
         }
 
 GROUP_WIDGET = 'widget__'
@@ -316,6 +317,10 @@ __widget = (
             'values': ('', '•'),
             'readonly': False,
             'default': ''},
+        'ttk.Entry': {
+            'values': ('', '•'),
+            'readonly': False,
+            'default': ''},
         'ttk.Treeview': {
             'values': ('', 'tree', 'headings'),
             'default': '',
@@ -346,7 +351,8 @@ __widget = (
     ('stretch', {
         'input_method': 'choice',
         'values': ('True', 'False'),
-        'default': 'True'}),
+        'default': 'True',
+        'readonly': True}),
     ('style', {
         'input_method': 'entry'
         }), #FIXME Howto manage this property?
@@ -445,20 +451,24 @@ __custom = (
         'input_method': 'choice',
         'values': ('True', 'False'),
         'default': 'False',
+        'readonly': True
         }),
     ('visible', {
         'input_method': 'choice',
         'values': ('True', 'False'),
-        'default': 'True'}),
+        'default': 'True',
+        'readonly': True}),
     ('heading_anchor', {
         'input_method': 'choice',
         'values': ('', tk.W, tk.CENTER, tk.E),
         'default': tk.W,
+        'readonly': True
         }),
     ('column_anchor', {
         'input_method': 'choice',
         'values': ('', tk.W, tk.CENTER, tk.E),
         'default': tk.W,
+        'readonly': True
         }),
 )
 
