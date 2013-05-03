@@ -301,6 +301,7 @@ class TTKNotebookTab(BuilderObject):
     class_ = None
     container = True
     layout_required = False
+    allow_bindings = False
     allowed_parents = ('ttk.Notebook',)
     maxchildren = 1
     properties = ['compound', 'padding', 'sticky',
@@ -327,6 +328,7 @@ class TTKTreeviewColBO(BuilderObject):
     class_ = None
     container = False
     layout_required = False
+    allow_bindings = False
     allowed_parents = ('ttk.Treeview',)
     properties = [
         'tree_column', 'visible', 'text', 'image', 'command', 'heading_anchor',
