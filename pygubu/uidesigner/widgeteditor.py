@@ -615,9 +615,8 @@ class WidgetsTreeEditor:
         """Filters treeview"""
 
         self._reatach()
-        self.filter_on = True
         if string == '':
-            self.filter_on = False
+            self.filter_remove()
             return
 
         self._expand_all()
@@ -631,14 +630,18 @@ class WidgetsTreeEditor:
         for i, p, idx in self._detached:
             txt = self.treeview.item(i, 'text')
             self.treeview.detach(i)
+        self.filter_on = True
 
     def filter_remove(self, remember=False):
         if self.filter_on:
+            sitem = None
+            selection = self.treeview.selection()
+            if selection:
+                sitem = selection[0]
+                self.treeview.after_idle(lambda:self._see(sitem))
             if remember:
                 self.filter_prev_value = self.filtervar.get()
-                selection = self.treeview.selection()
-                if selection:
-                    self.filter_prev_sitem = selection[0]
+                self.filter_prev_sitem = sitem
             self._reatach()
             self.filtervar.set('')
         self.filter_on = False
