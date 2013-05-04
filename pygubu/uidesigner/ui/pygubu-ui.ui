@@ -255,10 +255,12 @@
                       <object class="pygubu.builder.widgets.scrollbarhelper" id="p1f1sbh1">
                         <property name="padding">0 0 5 0</property>
                         <property name="scrolltype">both</property>
+                        <property name="width">210</property>
                         <layout>
                           <property name="column">0</property>
+                          <property name="propagate">False</property>
                           <property name="row">0</property>
-                          <property name="sticky">nsew</property>
+                          <property name="sticky">nsw</property>
                           <rows>
                             <row id="0">
                               <property name="weight">1</property>
@@ -275,7 +277,7 @@
                             <layout>
                               <property name="column">0</property>
                               <property name="row">0</property>
-                              <property name="sticky">nsew</property>
+                              <property name="sticky">nsw</property>
                             </layout>
                             <child>
                               <object class="ttk.Treeview.Column" id="wlist_tree_col">
