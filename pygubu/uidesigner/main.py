@@ -229,6 +229,10 @@ class PygubuUI(util.Application):
         s.configure('ColorSelectorButton.TButton', width='2')
         s.configure('ImageSelectorButton.TButton', width='2')
         s.configure('FilterClearButton.TButton', width='2', relief=tk.FLAT)
+        if sys.platform == 'linux':
+            #change background of comboboxes 
+            color = s.lookup('TEntry', 'fieldbackground')
+            s.map('TCombobox', fieldbackground=[('readonly', color)])
 
 
     def configure_widget_list(self):
