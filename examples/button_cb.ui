@@ -19,7 +19,7 @@
     <child>
       <object class="ttk.Label" id="ttk.Label_1">
         <property name="anchor">e</property>
-        <property name="text">Button command test</property>
+        <property name="text">Button command test ṕ ouch!!</property>
         <layout>
           <property name="column">0</property>
           <property name="sticky">ew</property>

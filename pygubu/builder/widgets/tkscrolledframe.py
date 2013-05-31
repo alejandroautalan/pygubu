@@ -1,5 +1,4 @@
-import types
-import tkinter as tk
+from __future__ import unicode_literals
 
 from pygubu.builder.builderobject import *
 from pygubu.widgets.tkscrolledframe import TkScrolledFrame

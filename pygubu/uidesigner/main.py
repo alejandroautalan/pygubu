@@ -1,3 +1,4 @@
+# encoding: utf8
 # This file is part of pygubu.
 
 #
@@ -17,8 +18,10 @@
 #
 # For further info, check  http://pygubu.web.here
 
+from __future__ import unicode_literals
 import os
 import sys
+import codecs
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 import logging
@@ -26,10 +29,17 @@ import webbrowser
 import importlib
 from collections import defaultdict
 
-import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog
-from tkinter import messagebox
+try:
+    import tkinter as tk
+    from tkinter import ttk
+    from tkinter import filedialog
+    from tkinter import messagebox
+except:
+    import Tkinter as tk
+    import ttk
+    import tkMessageBox as messagebox
+    import tkFileDialog as filedialog
+
 
 import pygubu
 from pygubu import builder
@@ -356,6 +366,9 @@ class PygubuUI(util.Application):
         if self.is_changed:
             quit = messagebox.askokcancel('File changed',
                 'Changes not saved. Quit anyway?')
+        if quit:
+            #prevent tk image errors on python2 ?
+            StockImage.clear_cache()
         return quit
 
 
@@ -380,7 +393,8 @@ class PygubuUI(util.Application):
         xmlvar = xml.dom.minidom.parseString(
             ET.tostring(xml_tree.getroot()))
         pretty_xml_as_string = xmlvar.toprettyxml(indent=' '*2)
-        with open(filename, 'w') as f:
+
+        with codecs.open(filename, 'w', 'UTF-8') as f:
             f.write(pretty_xml_as_string)
 
 

@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -15,12 +16,18 @@
 #
 # For further info, check  http://pygubu.web.here
 
+from __future__ import unicode_literals
+
 import os
 import importlib
 import logging
 import xml.etree.ElementTree as ET
-import tkinter
-from tkinter import ttk
+try:
+    import tkinter
+    from tkinter import ttk
+except:
+    import Tkinter as tkinter
+    import ttk
 from collections import defaultdict
 
 from pygubu.builder.builderobject import *

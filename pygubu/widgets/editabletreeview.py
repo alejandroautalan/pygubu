@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -15,9 +16,15 @@
 #
 # For further info, check  https://github.com/alejandroautalan/pygubu
 
+from __future__ import unicode_literals
 import functools
-import tkinter as tk
-import tkinter.ttk as ttk
+
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+except:
+    import Tkinter as tk
+    import ttk
 
 
 class EditableTreeview(ttk.Treeview):
@@ -51,33 +58,33 @@ class EditableTreeview(ttk.Treeview):
 
     def delete(self, *items):
         self.after_idle(self.__updateWnds)
-        super(EditableTreeview, self).delete(*items)
+        ttk.Treeview.delete(self, *items)
 
     def yview(self, *args):
         """Update inplace widgets position when doing vertical scroll"""
         self.after_idle(self.__updateWnds)
-        super(EditableTreeview, self).yview(*args)
+        ttk.Treeview.yview(self, *args)
 
     def yview_scroll(self, number, what):
         self.after_idle(self.__updateWnds)
-        super(EditableTreeview, self).yview_scroll(number, what)
+        ttk.Treeview.yview_scroll(self, number, what)
 
     def yview_moveto(self, fraction):
         self.after_idle(self.__updateWnds)
-        super(EditableTreeview, self).yview_moveto(fraction)
+        ttk.Treeview.yview_moveto(self, fraction)
 
     def xview(self, *args):
         """Update inplace widgets position when doing horizontal scroll"""
         self.after_idle(self.__updateWnds)
-        super(EditableTreeview, self).xview(*args)
+        ttk.Treeview.xview(self, *args)
 
     def xview_scroll(self, number, what):
         self.after_idle(self.__updateWnds)
-        super(EditableTreeview, self).xview_scroll(number, what)
+        ttk.Treeview.xview_scroll(self, number, what)
 
     def xview_moveto(self, fraction):
         self.after_idle(self.__updateWnds)
-        super(EditableTreeview, self).xview_moveto(fraction)
+        ttk.Treeview.xview_moveto(self, fraction)
 
     def __check_focus(self, event):
         """Checks if the focus has changed"""

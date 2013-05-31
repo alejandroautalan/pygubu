@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -15,14 +16,19 @@
 #
 # For further info, check  http://pygubu.web.here
 
-import tkinter
-import tkinter.ttk as ttk
+from __future__ import unicode_literals
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+except:
+    import Tkinter as tk
+    import ttk
 
 class DialogBase():
     def __init__(self, parent, **kw):
         self.parent = parent
         self.running_modal = True
-        self.master = tkinter.Toplevel(parent)
+        self.master = tk.Toplevel(parent)
 
         self.body_frame = body = ttk.Frame(self.master)
         self.initial_focus = self._create_body(body)
@@ -120,7 +126,7 @@ if __name__ == '__main__':
             label.pack()
             return label
 
-    app = tkinter.Tk()
+    app = tk.Tk()
     dialog = None
 
     def show_dialog():
@@ -136,9 +142,9 @@ if __name__ == '__main__':
         dialog.set_title('Modal dialog')
         dialog.run_modal()
 
-    btn = tkinter.Button(app, text='show dialog', command=show_dialog)
+    btn = tk.Button(app, text='show dialog', command=show_dialog)
     btn.pack()
-    btn = tkinter.Button(app, text='show modal dialog', command=show_modal_dialog)
+    btn = tk.Button(app, text='show modal dialog', command=show_modal_dialog)
     btn.pack()
 
     app.mainloop()

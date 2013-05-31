@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -14,7 +15,13 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # For further info, check  https://github.com/alejandroautalan/pygubu
-import tkinter as tk
+
+from __future__ import unicode_literals
+
+try:
+    import tkinter as tk
+except:
+    import Tkinter as tk
 
 def _autoscroll(sbar, first, last):
     """Hide and show scrollbar as needed.
@@ -34,7 +41,7 @@ class TkScrollbarHelper(tk.Frame):
 
     def __init__(self, master=None, **kw):
         self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
-        super(TkScrollbarHelper, self).__init__(master, **kw)
+        tk.Frame.__init__(self, master, **kw)
         self._create_scrollbars()
 
 

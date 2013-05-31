@@ -1,6 +1,5 @@
-import tkinter as tk
-from tkinter import ttk
-
+# encoding: utf8
+from __future__ import unicode_literals
 from pygubu.builder.builderobject import *
 from pygubu.widgets.scrollbarhelper import ScrollbarHelper
 

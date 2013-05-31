@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -14,10 +15,15 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # For further info, check  http://pygubu.web.here
-
+from __future__ import unicode_literals
 from collections import OrderedDict
-import tkinter as tk
-from tkinter import ttk
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+except:
+    import Tkinter as tk
+    import ttk
+
 
 
 _default_entry_prop = {
@@ -71,8 +77,8 @@ _default_true_false_prop = { 'input_method': 'choice',
 
 _default_cursor_prop = {
     'input_method': 'choice',
-    'values': ('', 'arrow', 'based_arrow_down', 'based_arrow_up', 'boat',
-        'bogosity', 'bottom_left_corner', 'bottom_right_corner',
+    'values': ('', 'arrow', 'based_arrow_down','based_arrow_up','boat',
+       'bogosity','bottom_left_corner','bottom_right_corner',
         'bottom_side', 'bottom_tee', 'box_spiral', 'center_ptr', 'circle',
         'clock', 'coffee_mug', 'cross', 'cross_reverse', 'crosshair',
         'diamond_cross', 'dot', 'dotbox', 'double_arrow',  'draft_large',
@@ -360,8 +366,8 @@ __widget = (
     ('takefocus', _default_true_false_prop),
     ('tearoff', { 'input_method': 'choice',
         'values': ('', tk.TRUE, tk.FALSE),
-        'tk.Menu': {'default': tk.FALSE},
-        'tk.Menuitem.Submenu': {'default': tk.FALSE}
+        'tk.Men': {'default': tk.FALSE},
+        'tk.Menuitem.Submen': {'default': tk.FALSE}
         }),
     ('tearoffcommand', _default_entry_prop),
     ('text', _default_textentry_prop),

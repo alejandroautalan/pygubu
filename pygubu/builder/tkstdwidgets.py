@@ -1,6 +1,11 @@
+from __future__ import unicode_literals
 import types
 
-import tkinter as ttk
+try:
+    import tkinter as tk
+except:
+    import Tkinter as tk
+
 from .builderobject import *
 
 #
@@ -361,7 +366,7 @@ class TKMenuitemSubmenu(TKMenu):
 
         self.widget = submenu = TKMenu.class_(master, **menu_properties)
         item_properties['menu'] = submenu
-        master.add(tk.constants.CASCADE, **item_properties)
+        master.add(tk.CASCADE, **item_properties)
         return self.widget
 
 
@@ -377,7 +382,7 @@ register_widget('tk.Menuitem.Submenu', TKMenuitemSubmenu,
 
 class TKMenuitemCommand(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
-    itemtype = tk.constants.COMMAND
+    itemtype = tk.COMMAND
 
 register_widget('tk.Menuitem.Command', TKMenuitemCommand,
     'Menuitem.Command', ('Pygubu Helpers', 'tk', 'ttk'))
@@ -385,7 +390,7 @@ register_widget('tk.Menuitem.Command', TKMenuitemCommand,
 
 class TKMenuitemCheckbutton(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
-    itemtype = tk.constants.CHECKBUTTON
+    itemtype = tk.CHECKBUTTON
     properties = TKMenuitem.properties + \
             ['indicatoron', 'selectcolor', 'selectimage', 'variable']
 
@@ -395,7 +400,7 @@ register_widget('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton,
 
 class TKMenuitemRadiobutton(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
-    itemtype = tk.constants.RADIOBUTTON
+    itemtype = tk.RADIOBUTTON
     properties = TKMenuitemCheckbutton.properties + \
             ['onvalue', 'offvalue', 'value']
 
@@ -405,7 +410,7 @@ register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
 
 class TKMenuitemSeparator(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
-    itemtype = tk.constants.SEPARATOR
+    itemtype = tk.SEPARATOR
     properties = []
     command_properties = tuple()
 

@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -14,7 +15,7 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # For further info, check  http://pygubu.web.here
-
+from __future__ import unicode_literals
 from collections import defaultdict
 
 import pygubu.builder

@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -14,11 +15,15 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # For further info, check  http://pygubu.web.here
-
+from __future__ import unicode_literals
 import re
 from collections import defaultdict
-import tkinter
-from tkinter import ttk
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+except:
+    import Tkinter as tk
+    import ttk
 
 from pygubu import builder
 from . import util
@@ -238,22 +243,22 @@ class WidgetPropertiesEditor:
         group = properties.GROUP_CUSTOM
         for name in properties.PropertiesMap[group]:
             labeltext = label_tpl.format(name)
-            label = ttk.Label(editor_frame, text=labeltext, anchor=tkinter.W)
+            label = ttk.Label(editor_frame, text=labeltext, anchor=tk.W)
             togrid, widget = self.create_property_widget(editor_frame,
                 group, name)
-            label.grid(row=row, column=col, sticky=tkinter.EW, pady=2)
-            togrid.grid(row=row, column=col+1, sticky=tkinter.EW, pady=2)
+            label.grid(row=row, column=col, sticky=tk.EW, pady=2)
+            togrid.grid(row=row, column=col+1, sticky=tk.EW, pady=2)
             row += 1
             prop_widget[group][name] = (label, togrid)
 
         group = properties.GROUP_WIDGET
         for name in properties.PropertiesMap[group]:
             labeltext = label_tpl.format(name)
-            label = ttk.Label(editor_frame, text=labeltext, anchor=tkinter.W)
+            label = ttk.Label(editor_frame, text=labeltext, anchor=tk.W)
             togrid, widget = self.create_property_widget(editor_frame,
                 group, name)
-            label.grid(row=row, column=col, sticky=tkinter.EW, pady=2)
-            togrid.grid(row=row, column=col+1, sticky=tkinter.EW, pady=2)
+            label.grid(row=row, column=col, sticky=tk.EW, pady=2)
+            togrid.grid(row=row, column=col+1, sticky=tk.EW, pady=2)
             row += 1
             prop_widget[group][name] = (label, togrid)
 
@@ -267,10 +272,10 @@ class WidgetPropertiesEditor:
         group = properties.GROUP_LAYOUT_GRID
         for name in properties.PropertiesMap[group]:
             labeltext = label_tpl.format(name)
-            label = ttk.Label(frame, text=labeltext, anchor=tkinter.W)
+            label = ttk.Label(frame, text=labeltext, anchor=tk.W)
             togrid, widget = self.create_property_widget(frame, group, name)
-            label.grid(row=row, column=col, sticky=tkinter.EW, pady=2)
-            togrid.grid(row=row, column=col+1, sticky=tkinter.EW, pady=2)
+            label.grid(row=row, column=col, sticky=tk.EW, pady=2)
+            togrid.grid(row=row, column=col+1, sticky=tk.EW, pady=2)
             row += 1
             prop_widget[group][name] = (label, togrid)
 
@@ -301,7 +306,7 @@ class WidgetPropertiesEditor:
 
             labeltext = 'Column {}:'.format(index)
             labelc = ttk.Label(frame, text=labeltext)
-            labelc.grid(row=row+max_rc, column=0, sticky=tkinter.E, pady=2)
+            labelc.grid(row=row+max_rc, column=0, sticky=tk.E, pady=2)
 
             icol = 1
             for pname in properties.PropertiesMap[group]:
@@ -318,7 +323,7 @@ class WidgetPropertiesEditor:
                 icol += 1
             row +=1
 
-        frame.grid(row=1, column=0, sticky=tkinter.NSEW)
+        frame.grid(row=1, column=0, sticky=tk.NSEW)
 
 
     def create_grid_rc_widget(self, master, name, alias):
@@ -361,7 +366,7 @@ class WidgetPropertiesEditor:
         #so setup class specific values on update_property_widget
         if wtype == 'entry':
             readonly = wdata.get('readonly', False)
-            state = tkinter.DISABLED if readonly else tkinter.NORMAL
+            state = tk.DISABLED if readonly else tk.NORMAL
             widget = ttk.Entry(master, textvariable=widgetvar, state=state)
             togrid = widget
             #validator
@@ -386,7 +391,7 @@ class WidgetPropertiesEditor:
             self.connect_variable_cb(widgetvar, propalias)
         elif wtype == 'choice':
             readonly = wdata.get('readonly', False)
-            status = 'readonly' if readonly else tkinter.NORMAL
+            status = 'readonly' if readonly else tk.NORMAL
             widget = ttk.Combobox(master, textvariable=widgetvar,
                 state=status)
             togrid = widget
@@ -395,11 +400,11 @@ class WidgetPropertiesEditor:
                 widget.configure(values=values)
             self.connect_variable_cb(widgetvar, propalias)
         elif wtype == 'spinbox':
-            status= tkinter.NORMAL
+            status= tk.NORMAL
             readonly = wdata.get('readonly', False)
             if readonly:
                 status = 'readonly'
-            widget = tkinter.Spinbox(master, textvariable=widgetvar,
+            widget = tk.Spinbox(master, textvariable=widgetvar,
                         state=status, readonlybackground='white')
             togrid = widget
             vmin = wdata.get('min', 0)
@@ -466,7 +471,7 @@ class WidgetPropertiesEditor:
             default = vmin if (int(vmin) > 0 and default == '') else default
         if wtype == 'choice':
             readonly = wdata.get('readonly', False)
-            status = 'readonly' if readonly else tkinter.NORMAL
+            status = 'readonly' if readonly else tk.NORMAL
             values = wdata.get('values', None)
             if values is not None:
                 widget.configure(values=values, state=status)

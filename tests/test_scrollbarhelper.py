@@ -1,8 +1,13 @@
+# encoding: utf8
 import os
 import sys
 import unittest
-import tkinter as tk
-import tkinter.ttk as ttk
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+except:
+    import Tkinter as tk
+    import ttk
 
 
 pygubu_basedir = os.path.abspath(os.path.dirname(

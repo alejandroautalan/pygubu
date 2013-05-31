@@ -1,8 +1,13 @@
+from __future__ import unicode_literals
 import sys
 import os
 
-import tkinter
-from tkinter import messagebox
+try:
+    import tkinter as tk
+    from tkinter import messagebox
+except:
+    import Tkinter as tk
+    import tkMessageBox as messagebox
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 
@@ -26,7 +31,8 @@ class Myapp:
 
     def validate_number(self, P):
         print('On validate number')
-        return P == '' or str(P).isnumeric()
+        value = unicode(P)
+        return value == '' or value.isnumeric()
 
     def entry_invalid(self):
         messagebox.showinfo('Title', 'Invalid entry input')
@@ -67,7 +73,8 @@ class Myapp:
         self.master.after_idle(showmessage)
 
     def on_combobox_validate(self, P):
-        return P == '' or str(P).isnumeric()
+        value = unicode(P)
+        return value == '' or value.isnumeric()
 
     def on_combobox_invalid(self, P):
         messagebox.showinfo('Title', 'Invalid combobox input')
@@ -83,7 +90,7 @@ class Myapp:
         messagebox.showinfo('Title', 'Callback on_menuitem2_clicked')
 
 if __name__ == '__main__':
-    tk = tkinter.Tk()
-    app = Myapp(tk)
-    tk.mainloop()
+    root = tk.Tk()
+    app = Myapp(root)
+    root.mainloop()
 

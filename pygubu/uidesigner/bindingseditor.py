@@ -1,5 +1,10 @@
-import tkinter as tk
-import tkinter.ttk as ttk
+from __future__ import unicode_literals
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+except:
+    import Tkinter as tk
+    import ttk
 
 class BindingsEditor:
     def __init__(self, etreeview):

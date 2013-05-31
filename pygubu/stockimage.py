@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -15,11 +16,16 @@
 #
 # For further info, check  http://pygubu.web.here
 
+from __future__ import unicode_literals
+
 __all__ = ['StockImage', 'StockImageException']
 
 import os
 import logging
-import tkinter
+try:
+    import tkinter as tk
+except:
+    import Tkinter as tk
 
 stock_data = {}
 
@@ -37,6 +43,14 @@ When image is used, the class maintains it on memory for tkinter"""
     _stock = stock_data
     _cached = {}
     _formats = ('.gif',)
+    
+    @classmethod
+    def clear_cache(cls):
+        """Call this before closing tk root"""
+        #Prevent tkinter errors on python 2 ??
+        for key in cls._cached:
+            cls._cached[key] = None
+        cls._cached = {}
 
 
     @classmethod
@@ -76,9 +90,9 @@ When image is used, the class maintains it on memory for tkinter"""
         v = cls._stock[rkey]
         img = None
         if v['type'] == 'stock':
-            img = tkinter.PhotoImage(format=v['format'],data=v['data'])
+            img = tk.PhotoImage(format=v['format'],data=v['data'])
         else:
-            img = tkinter.PhotoImage(file=v['filename'])
+            img = tk.PhotoImage(file=v['filename'])
         cls._cached[rkey] = img
         logger.info('Loaded resource %s.' % rkey)
         return img

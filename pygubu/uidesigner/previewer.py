@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -15,9 +16,14 @@
 #
 # For further info, check  http://pygubu.web.here
 
+from __future__ import unicode_literals
 from collections import OrderedDict
-import tkinter as tk
-from tkinter import ttk
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+except:
+    import Tkinter as tk
+    import ttk
 
 import pygubu
 from pygubu.stockimage import StockImage, StockImageException

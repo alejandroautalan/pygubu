@@ -1,8 +1,12 @@
 import sys
 import os
 
-import tkinter
-from tkinter import messagebox
+try:
+    import tkinter as tk
+    from tkinter import messagebox
+except:
+    import Tkinter as tk
+    import tkMessageBox as messagebox
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../'))
 
@@ -24,7 +28,7 @@ class Myapp:
         messagebox.showinfo('From callback', 'My button was clicked !!')
 
 if __name__ == '__main__':
-    tk = tkinter.Tk()
-    app = Myapp(tk)
-    tk.mainloop()
+    root = tk.Tk()
+    app = Myapp(root)
+    root.mainloop()
 

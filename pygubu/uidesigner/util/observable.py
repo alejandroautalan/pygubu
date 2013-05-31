@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -16,7 +17,7 @@
 # For further info, check  http://pygubu.web.here
 
 
-class Observable:
+class Observable(object):
 
     def __init__(self):
         self._observers = []

@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -15,11 +16,16 @@
 #
 # For further info, check  http://pygubu.web.here
 
-import tkinter
-import tkinter.ttk as ttk
+from __future__ import unicode_literals
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+except:
+    import Tkinter as tk
+    import ttk
 
 
-class Textentry(tkinter.Text):
+class Textentry(tk.Text):
     def __init__(self, master=None, cnf={}, **kw):
         self.__variable = None
         self.__cbhandler = None
@@ -27,25 +33,25 @@ class Textentry(tkinter.Text):
         if 'textvariable' in kw:
             self.__configure_variable(kw.pop('textvariable'))
 
-        super(Textentry, self).__init__(master, *cnf, **kw)
+        tk.Text.__init__(self, master, *cnf, **kw)
         self.bind('<FocusOut>', self._on_focus_out)
 
     def configure(self, cnf=None, **kw):
         if 'textvariable' in kw:
             self.__configure_variable(kw.pop('textvariable'))
-        super(Textentry, self).configure(cnf, **kw)
+        tk.Text.configure(self, cnf, **kw)
 
     config = configure
 
     def _on_focus_out(self, event):
-        value = (self.get('0.0', tkinter.END))[:-1]
+        value = (self.get('0.0', tk.END))[:-1]
         if self.__variable is not None:
             self.__disable_cb()
             self.__variable.set(value)
             self.__enable_cb()
 
     def _on_variable_changed(self, varname, elementname, mode):
-        self.delete('0.0', tkinter.END)
+        self.delete('0.0', tk.END)
         self.insert('0.0', self.__variable.get())
 
     def __configure_variable(self, variable):

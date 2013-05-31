@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -14,12 +15,23 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # For further info, check  http://pygubu.web.here
-import os
 
-import tkinter as tk
-from tkinter import ttk
-import tkinter.colorchooser
-import tkinter.filedialog
+from __future__ import unicode_literals
+import os
+import sys
+
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+    import tkinter.filedialog
+    import tkinter.colorchooser
+except:
+    import Tkinter as tk
+    import ttk
+    import tkFileDialog
+    import tkColorChooser
+    tk.filedialog = tkFileDialog
+    tk.colorchooser = tkColorChooser
 
 from pygubu.stockimage import *
 
@@ -234,6 +246,7 @@ class ArrayVar(tk.Variable):
         for (k, v) in dictvalue.items():
             self._tk.call("array", "set", self._name, k, v)
 
+    #python 3.3 hack
     initialize = set
 
 
@@ -247,15 +260,13 @@ class ArrayVar(tk.Variable):
 
 class ArrayElementVar(tk.StringVar):
     '''A StringVar that represents an element of an array'''
-    _default = ""
 
     def __init__(self, varname, elementname, master):
-        self._master = master
-        self._tk = master.tk
-        self._name = "%s(%s)" % (varname, elementname)
-        self.set(self._default)
+        name = "%s(%s)" % (varname, elementname)
+        #python2 hack
+        if sys.version_info[0] < 3:
+            if isinstance(name, unicode):
+                name = name.encode('UTF-8')
+        tk.StringVar.__init__(self, master, None, name)
 
-    def __del__(self):
-        """Unset the variable in Tcl."""
-        self._tk.globalunsetvar(self._name)
 

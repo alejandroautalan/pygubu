@@ -15,8 +15,14 @@
 #
 # For further info, check  https://github.com/alejandroautalan/pygubu
 
-import tkinter as tk
-from tkinter import ttk
+from __future__ import unicode_literals
+
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+except:
+    import Tkinter as tk
+    import ttk
 
 
 class AccordionFrame(ttk.Frame):
@@ -30,7 +36,7 @@ class AccordionFrame(ttk.Frame):
     """
 
     def __init__(self, master=None, **kw):
-        super(AccordionFrame, self).__init__(master, **kw)
+        tk.Frame.__init__(self, master, **kw)
         self.__groups = {}
         self.columnconfigure(0, weight=1)
 

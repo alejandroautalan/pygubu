@@ -1,8 +1,13 @@
+from __future__ import unicode_literals
 import types
 from collections import OrderedDict
 
-import tkinter as ttk
-from tkinter import ttk
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+except:
+    import Tkinter as tk
+    import ttk
 
 from .builderobject import *
 

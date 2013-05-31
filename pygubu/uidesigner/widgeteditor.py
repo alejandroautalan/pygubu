@@ -1,3 +1,4 @@
+# encoding: UTF-8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -14,12 +15,15 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 # For further info, check  http://pygubu.web.here
-
+from __future__ import unicode_literals
 import xml.dom.minidom
 import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 import logging
-import tkinter as tk
+try:
+    import tkinter as tk
+except:
+    import Tkinter as tk
 
 from pygubu import builder
 from pygubu.stockimage import StockImage, StockImageException
@@ -31,7 +35,7 @@ from .widgetdescr import WidgetDescr
 logger = logging.getLogger('pygubu.designer')
 
 
-class WidgetsTreeEditor:
+class WidgetsTreeEditor(object):
     def __init__(self, app):
         self.app = app
         self.treeview = app.treeview
@@ -233,7 +237,11 @@ class WidgetsTreeEditor:
             for item in selection:
                 node = self.tree_node_to_xml('', item)
                 root.append(node)
-            text = ET.tostring(root, encoding='unicode')
+            #python2 issue
+            try:
+                text = ET.tostring(root, encoding='unicode')
+            except LookupError:
+                text = ET.tostring(root, encoding='UTF-8')
             tree.clipboard_clear()
             tree.clipboard_append(text)
             self.filter_restore()
@@ -362,7 +370,7 @@ class WidgetsTreeEditor:
 
 
     def paste_from_clipboard(self):
-        self.remove_filter(remember=True)
+        self.filter_remove(remember=True)
         tree = self.treeview
         selected_item = ''
         selection = tree.selection()
@@ -370,7 +378,12 @@ class WidgetsTreeEditor:
             selected_item = selection[0]
         try:
             text = tree.selection_get(selection='CLIPBOARD')
-            root = ET.fromstring(text)
+            #python 2 issues
+            try:
+                root = ET.fromstring(text)
+            except UnicodeEncodeError:
+                parser = ET.XMLParser(encoding='UTF-8')
+                root = ET.XML(text.encode('UTF-8'), parser)
             for element in root:
                 data = WidgetDescr(None, None)
                 data.from_xml_node(element)
@@ -378,10 +391,11 @@ class WidgetsTreeEditor:
                     self.populate_tree(selected_item, root, element)
             self.draw_widget(selected_item)
         except ET.ParseError as e:
+            #TODO: show warning here.
             pass
         except tk.TclError as e:
             pass
-        self.restore_filter()
+        self.filter_restore()
 
 
     def add_widget(self, wclass):
@@ -470,7 +484,12 @@ class WidgetsTreeEditor:
         """Load file into treeview"""
 
         self.counter.clear()
-        etree = ET.parse(filename)
+        #python2 issues
+        try:
+            etree = ET.parse(filename)
+        except ET.ParseError:
+            parser = ET.XMLParser(encoding='UTF-8')
+            etree = ET.parse(filename, parser)
         eroot = etree.getroot()
 
         self.remove_all()

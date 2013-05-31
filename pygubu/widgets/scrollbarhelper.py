@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -15,8 +16,14 @@
 #
 # For further info, check  https://github.com/alejandroautalan/pygubu
 
-import tkinter as tk
-from tkinter import ttk
+from __future__ import unicode_literals
+
+try:
+    import tkinter as tk
+    import tkinter.ttk as ttk
+except:
+    import Tkinter as tk
+    import ttk
 
 
 def _autoscroll(sbar, first, last):
@@ -37,7 +44,7 @@ class ScrollbarHelper(ttk.Frame):
 
     def __init__(self, master=None, **kw):
         self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
-        super(ScrollbarHelper, self).__init__(master, **kw)
+        ttk.Frame.__init__(self, master, **kw)
         self._create_scrollbars()
 
 

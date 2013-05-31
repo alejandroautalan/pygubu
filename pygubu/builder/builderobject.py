@@ -1,6 +1,10 @@
+from __future__ import unicode_literals
 import logging
-import tkinter as tk
 from collections import namedtuple
+try:
+    import tkinter as tk
+except:
+    import Tkinter as tk
 
 
 logging.basicConfig(level=logging.WARNING)
@@ -29,7 +33,7 @@ def register_property(name, description):
 #
 # Base class
 #
-class BuilderObject:
+class BuilderObject(object):
     """Base class for Widgets created with Builder"""
 
     class_ = None

@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -17,11 +17,14 @@
 #
 # For further info, check  http://pygubu.web.here
 
+from __future__ import unicode_literals
+
 import sys
 import os
-import tkinter
-from tkinter import ttk
-
+try:
+    import tkinter as tk
+except:
+    import Tkinter as tk
 
 pygubu_basedir = os.path.abspath(os.path.dirname(
                     os.path.dirname(os.path.realpath(sys.argv[0]))))
@@ -29,33 +32,25 @@ if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
 
-import builder
-import uidesigner.util as util
+from pygubu import Builder, TkApplication
 
 
-class UITester(util.Application):
+class UITester(TkApplication):
     def _create_ui(self):
-        self.builder = builder.Builder()
+        self.builder = Builder()
         self.builder.add_from_file(sys.argv[1])
-        self.builder.get_object('mainwindow', self)
-
-        top = self.winfo_toplevel()
+        self.builder.get_object('mainwindow', self.master)
 
         try:
             menu = self.builder.get_object('mainmenu', top)
-            top['menu'] = menu
+            self.set_menu(menu)
         except:
             pass
 
         #show callbacks defined
         self.builder.connect_callbacks({})
 
-        self.grid(row=0, column=0, sticky='nswe')
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
-
         self.set_title('Pygubu UI tester')
-
         self.set_resizable()
 
 if len(sys.argv) == 1:
@@ -64,5 +59,5 @@ if len(sys.argv) == 1:
     sys.argv = [sys.argv[0], filename]
 
 if __name__ == '__main__':
-    app = UITester(tkinter.Tk())
+    app = UITester(tk.Tk())
     app.run()

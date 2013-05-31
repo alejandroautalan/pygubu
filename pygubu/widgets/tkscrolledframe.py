@@ -1,3 +1,4 @@
+# encoding: utf8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -15,8 +16,13 @@
 #
 # For further info, check  https://github.com/alejandroautalan/pygubu
 
+from __future__ import unicode_literals
 import types
-import tkinter as tk
+
+try:
+    import tkinter as tk
+except:
+    import Tkinter as tk
 
 
 def _autoscroll(sbar, first, last):
@@ -33,7 +39,7 @@ def _autoscroll(sbar, first, last):
 
 class TkScrolledFrame(tk.Frame):
     def __init__(self, master=None, **kw):
-        super(TkScrolledFrame, self).__init__(master, **kw)
+        tk.Frame.__init__(self, master, **kw)
 
         self._canvas = canvas = tk.Canvas(self, bd=0, highlightthickness=0,
             width=200, height=200)

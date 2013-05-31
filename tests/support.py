@@ -1,7 +1,11 @@
+# encoding: utf8
 #Copyright © 2001-2013 Python Software Foundation; All Rights Reserved
 
 import sys
-import tkinter
+try:
+    import tkinter
+except:
+    import Tkinter as tkinter
 import unittest
 
 _tk_unavailable = None
@@ -36,7 +40,10 @@ def check_tk_availability():
                       (app_services.SetFrontProcess(psn_p) < 0) ):
                     _tk_unavailable = "cannot run without OS X gui process"
         else:   # not OS X
-            import tkinter
+            try:
+                import tkinter
+            except:
+                import Tkinter as tkinter
             try:
                 tkinter.Button()
             except tkinter.TclError as msg:
