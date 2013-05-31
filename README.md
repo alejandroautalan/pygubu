@@ -11,13 +11,13 @@ Pygubu is inspired by Glade.
 Installation
 ============
 
-Pygubu requires python >= 3.2
+Pygubu requires python >= 2.7 (I tested only in python 2.7.3 and 3.2.3 with tk8.5)
 
 Download and extract the tarball. Open a console in the extraction path
  and execute:
 
 ```
-python3 setup.py install
+python setup.py install
 ```
 
 
@@ -52,3 +52,14 @@ if __name__ == '__main__':
 
 See the examples directory or watch this hello world example on video http://youtu.be/wuzV9P8geDg
 
+
+History
+=======
+
+Changes for version 0.7
+
+  * Added python 2.7 support
+  * Added initial TkApplication class
+  * Fixed some bugs.
+    
+First public version 0.6
