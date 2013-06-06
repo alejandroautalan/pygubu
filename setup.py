@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+# encoding: UTF-8
 
 """Build tar.gz for pygubu
 
@@ -39,9 +39,6 @@ class CustomInstall(install):
             with open(script_path, 'w') as fh:
                 fh.write(content)
 
-        # version file
-        shutil.copy("version.txt", self.install_lib)
-
 
 setup(
     name='pygubu',
@@ -56,11 +53,10 @@ setup(
     packages=['pygubu', 'pygubu.builder', 'pygubu.builder.widgets',
         'pygubu.uidesigner', 'pygubu.uidesigner.util', 'pygubu.widgets'],
     package_data={
-        'pugubu': ['../version.txt'],
         'pygubu.uidesigner': [
             'images/*.gif', 'images/widgets/16x16/*.gif',
-            'images/widgets/22x22/*.gif', 'ui/*.ui'],
-        '' : ['version.txt'],
+            'images/widgets/22x22/*.gif', 'ui/*.ui',
+            'locale/*/*/*.mo'],
     },
     scripts=["bin/pygubu"],
     cmdclass={

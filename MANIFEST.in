@@ -1,5 +1,7 @@
 include COPYING
 include LEEME.txt
 include version.txt
+recursive-include po *
+recursive-include pygubu/uidesigner/locale *
 recursive-include examples *
 global-exclude *~

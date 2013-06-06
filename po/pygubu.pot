@@ -1,0 +1,285 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-06-06 05:16-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:7
+msgid "File"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:15
+msgid "New"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:22
+msgid "Open …"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:29
+msgid "Save"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:36
+msgid "Save as …"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:46
+msgid "Quit …"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:54
+msgid "Edit"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:62
+msgid "Copy"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:70
+msgid "Paste"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:78
+msgid "Cut"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:87
+msgid "Widget tree"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:94
+msgid "Item up"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:102
+msgid "Item down"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:113
+msgid "Item delete"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:121
+msgid "Widget grid"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:127
+msgid "Move up"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:134
+msgid "Move down"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:141
+msgid "Move left"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:148
+msgid "Move right"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:158
+msgid "Preview"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:165
+msgid "Preview in Toplevel"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:173
+msgid "Help"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:180
+msgid "Help (Online)"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:187
+msgid "About …"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:231
+msgid "Project:"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:240 pygubu/uidesigner/main.py:348
+msgid "<None>"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:333
+msgid "Widget List"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:400
+msgid "✖"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:441
+msgid "Widget Id"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:453
+msgid "Class"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:465
+msgid "R"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:477
+msgid "C"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:515
+msgid "General"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:531
+msgid "Layout"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:547
+msgid "Bindings"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:593
+msgid "Sequence descriptor"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:605
+msgid "Event Handler"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:617
+msgid "Add"
+msgstr ""
+
+#: pygubu/uidesigner/ui/pygubu-ui.ui:729
+msgid "Status Bar"
+msgstr ""
+
+#: pygubu/uidesigner/ui/about_dialog.ui:16
+msgid "pygubu"
+msgstr ""
+
+#: pygubu/uidesigner/ui/about_dialog.ui:28
+msgid "version %version%"
+msgstr ""
+
+#: pygubu/uidesigner/ui/about_dialog.ui:40
+msgid "pygubu is a graphical user interface designer for tkinter"
+msgstr ""
+
+#: pygubu/uidesigner/ui/about_dialog.ui:52
+msgid "Copyright © 2012-2013 Alejandro Autalán"
+msgstr ""
+
+#: pygubu/uidesigner/ui/about_dialog.ui:65
+msgid ""
+"This program comes with ABSOLUTELY NO WARRANTY\n"
+"for details, visit http://www.gnu.org/licenses/gpl-3.0.html"
+msgstr ""
+
+#: pygubu/uidesigner/ui/about_dialog.ui:92
+msgid "Close"
+msgstr ""
+
+#: pygubu/uidesigner/main.py:252
+msgid "Pygubu a GUI builder for tkinter"
+msgstr ""
+
+#: pygubu/uidesigner/main.py:341 pygubu/uidesigner/main.py:355
+#: pygubu/uidesigner/main.py:386
+msgid "File changed"
+msgstr ""
+
+#: pygubu/uidesigner/main.py:342
+msgid "Changes not saved. Discard Changes?"
+msgstr ""
+
+#: pygubu/uidesigner/main.py:356
+msgid "Changes not saved. Open new file anyway?"
+msgstr ""
+
+#: pygubu/uidesigner/main.py:359 pygubu/uidesigner/main.py:403
+msgid "pygubu ui"
+msgstr ""
+
+#: pygubu/uidesigner/main.py:359 pygubu/uidesigner/main.py:403
+msgid "All"
+msgstr ""
+
+#: pygubu/uidesigner/main.py:387
+msgid "Changes not saved. Quit anyway?"
+msgstr ""
+
+#: pygubu/uidesigner/main.py:398
+msgid "Project saved to {0}"
+msgstr ""
+
+#: pygubu/uidesigner/main.py:441
+msgid "Delete items"
+msgstr ""
+
+#: pygubu/uidesigner/main.py:442
+msgid "Delete selected items?"
+msgstr ""
+
+#: pygubu/uidesigner/widgeteditor.py:121
+msgid "No item selected."
+msgstr ""
+
+#: pygubu/uidesigner/widgeteditor.py:278
+msgid "Allowed children: {0}."
+msgstr ""
+
+#: pygubu/uidesigner/widgeteditor.py:289
+msgid "Only {0} children allowed for {1}"
+msgstr ""
+
+#: pygubu/uidesigner/widgeteditor.py:299
+msgid "{0} not allowed as parent of {1}"
+msgstr ""
+
+#: pygubu/uidesigner/widgeteditor.py:308
+msgid "Not allowed, {0} is not a container."
+msgstr ""
+
+#: pygubu/uidesigner/widgeteditor.py:321
+msgid "{0} not allowed at root level"
+msgstr ""
+
+#: pygubu/uidesigner/widgeteditor.py:331
+msgid "Not allowed at root level, {0} is not a container."
+msgstr ""
+
+#: pygubu/uidesigner/propertieseditor.py:270
+msgid "Grid options:"
+msgstr ""
+
+#: pygubu/uidesigner/propertieseditor.py:287
+msgid "Grid row/column options:"
+msgstr ""
+
+#: pygubu/uidesigner/propertieseditor.py:303
+msgid "Row {0}:"
+msgstr ""
+
+#: pygubu/uidesigner/propertieseditor.py:304
+msgid "Column {0}:"
+msgstr ""
