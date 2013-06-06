@@ -30,6 +30,7 @@ from pygubu.stockimage import StockImage, StockImageException
 from . import util
 from . import properties
 from .widgetdescr import WidgetDescr
+from .i18n import translator as _
 
 
 logger = logging.getLogger('pygubu.designer')
@@ -117,7 +118,7 @@ class WidgetsTreeEditor(object):
             self.previewer.preview_in_toplevel(widget_id, xmlnode, is_menu)
             self.filter_restore()
         else:
-            logger.warning('No item selected.')
+            logger.warning(_('No item selected.'))
 
 
     def on_treeview_double_click(self, event):
@@ -274,8 +275,8 @@ class WidgetsTreeEditor(object):
             if allowed_children:
                 if classname not in allowed_children:
                     str_children = ', '.join(allowed_children)
-                    msg = 'Allowed children: {0}.'.format(
-                            str_children)
+                    msg = _('Allowed children: {0}.')
+                    msg = msg.format(str_children)
                     if show_warnings:
                         logger.warning(msg)
                     is_valid = False
@@ -285,8 +286,8 @@ class WidgetsTreeEditor(object):
             maxchildren = root_boclass.maxchildren
 #            print('root children:', children_count)
             if maxchildren is not None and children_count >= maxchildren:
-                msg = 'Only {0} children allowed for {1}'.format(
-                        maxchildren, root_classname)
+                msg = _('Only {0} children allowed for {1}')
+                msg = msg.format(maxchildren, root_classname)
                 if show_warnings:
                     logger.warning(msg)
                 is_valid = False
@@ -295,7 +296,8 @@ class WidgetsTreeEditor(object):
             allowed_parents = new_boclass.allowed_parents
             if allowed_parents is not None and \
                         root_classname not in allowed_parents:
-                msg = '{0} not allowed as parent of {1}'.format(
+                msg = _('{0} not allowed as parent of {1}')
+                msg = msg.format(
                         root_classname, classname)
                 if show_warnings:
                     logger.warning(msg)
@@ -303,8 +305,8 @@ class WidgetsTreeEditor(object):
                 return is_valid
 
             if allowed_children is None and root_boclass.container == False:
-                msg = 'Not allowed, {0} is not a container.'\
-                    .format(root_classname)
+                msg = _('Not allowed, {0} is not a container.')
+                msg = msg.format(root_classname)
                 if show_warnings:
                     logger.warning(msg)
                 is_valid = False
@@ -316,7 +318,8 @@ class WidgetsTreeEditor(object):
             ##Validate if it can be added at root level
             allowed_parents = new_boclass.allowed_parents
             if allowed_parents is not None and 'root' not in allowed_parents:
-                msg = '{0} not allowed at root level'.format(classname)
+                msg = _('{0} not allowed at root level')
+                msg = msg.format(classname)
                 logger.warning(msg)
                 is_valid = False
                 return is_valid
@@ -325,8 +328,8 @@ class WidgetsTreeEditor(object):
             #check that item to insert is a container.
             #only containers are allowed at root level
             if new_boclass.container == False:
-                msg = 'Not allowed at root level, {0} is not a container.'\
-                    .format(classname)
+                msg = _('Not allowed at root level, {0} is not a container.')
+                msg = msg.format(classname)
                 logger.warning(msg)
                 is_valid = False
                 return is_valid

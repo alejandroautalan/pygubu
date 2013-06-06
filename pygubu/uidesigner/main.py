@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: UTF-8
 # This file is part of pygubu.
 
 #
@@ -50,6 +50,10 @@ from .propertieseditor import WidgetPropertiesEditor
 from .widgeteditor import WidgetsTreeEditor
 from .previewer import PreviewHelper
 from .util.dialog import DialogBase
+from .i18n import translator
+
+#translator function
+_ = translator
 
 #initialize standard ttk widgets
 import pygubu.builder.ttkstdwidgets
@@ -114,7 +118,7 @@ class StatusBarHandler(logging.Handler):
 
 class AboutDialog(DialogBase):
     def _create_body(self, master):
-        self.builder = pygubu.Builder()
+        self.builder = pygubu.Builder(translator)
         uifile = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),"ui/about_dialog.ui")
         self.builder.add_from_file(uifile)
@@ -142,7 +146,7 @@ class PygubuUI(util.Application):
 
         self.preview = None
         self.about_dialog = None
-        self.builder = builder = pygubu.Builder()
+        self.builder = builder = pygubu.Builder(translator)
         self.currentfile = None
         self.is_changed = False
 
@@ -245,7 +249,7 @@ class PygubuUI(util.Application):
         except StockImageException as e:
             pass
 
-        self.set_title('Pygubu a GUI builder for tkinter')
+        self.set_title( _('Pygubu a GUI builder for tkinter') )
         self.set_size('640x480')
 
 
@@ -334,25 +338,25 @@ class PygubuUI(util.Application):
     def on_menuitem_new_clicked(self):
         new = True
         if self.is_changed:
-            new = openfile = messagebox.askokcancel('File changed',
-                'Changes not saved. Discard Changes?')
+            new = openfile = messagebox.askokcancel( _('File changed'),
+                _('Changes not saved. Discard Changes?') )
         if new:
             self.previewer.remove_all()
             self.tree_editor.remove_all()
             self.properties_editor.hide_all()
             self.is_changed = False
-            self.project_name.configure(text='<None>')
+            self.project_name.configure(text=_('<None>'))
 
 
     def on_menuitem_open_clicked(self):
         """Opens xml file and load to treeview"""
         openfile = True
         if self.is_changed:
-            openfile = messagebox.askokcancel('File changed',
-                'Changes not saved. Open new file anyway?')
+            openfile = messagebox.askokcancel(_('File changed'),
+                _('Changes not saved. Open new file anyway?'))
         if openfile:
             options = { 'defaultextension': '.ui',
-                'filetypes':(('pygubu ui', '*.ui'), ('All', '*.*')) }
+                'filetypes':((_('pygubu ui'), '*.ui'), (_('All'), '*.*')) }
             fname = filedialog.askopenfilename(**options)
             if fname:
                 self.load_file(fname)
@@ -379,8 +383,8 @@ class PygubuUI(util.Application):
     def on_close_execute(self):
         quit = True
         if self.is_changed:
-            quit = messagebox.askokcancel('File changed',
-                'Changes not saved. Quit anyway?')
+            quit = messagebox.askokcancel(_('File changed'),
+                _('Changes not saved. Quit anyway?'))
         if quit:
             #prevent tk image errors on python2 ?
             StockImage.clear_cache()
@@ -391,12 +395,12 @@ class PygubuUI(util.Application):
         self.save_file(fname)
         self.currentfile = fname
         self.is_changed = False
-        logger.info('Project saved to {0}'.format(fname))
+        logger.info(_('Project saved to {0}').format(fname))
 
 
     def do_save_as(self):
         options = { 'defaultextension': '.ui',
-            'filetypes':(('pygubu ui', '*.ui'), ('All', '*.*')) }
+            'filetypes':((_('pygubu ui'), '*.ui'), (_('All'), '*.*')) }
         fname = filedialog.asksaveasfilename(**options)
         if fname:
             self.do_save(fname)
@@ -434,8 +438,8 @@ class PygubuUI(util.Application):
         elif itemid == 'edit_item_down':
             self.tree_editor.on_item_move_down(None)
         elif itemid == 'edit_item_delete':
-            do_delete = messagebox.askokcancel('Delete items',
-                'Delete selected items?')
+            do_delete = messagebox.askokcancel(_('Delete items'),
+                _('Delete selected items?'))
             if do_delete:
                 self.tree_editor.on_treeview_delete_selection(None)
         elif itemid == 'edit_copy':

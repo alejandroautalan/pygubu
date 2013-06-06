@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: UTF-8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -30,6 +30,7 @@ from . import util
 from . import properties
 from .util.textentry import Textentry
 from .bindingseditor import BindingsEditor
+from .i18n import translator as _
 
 
 CLASS_MAP = builder.CLASS_MAP
@@ -266,7 +267,7 @@ class WidgetPropertiesEditor:
     def create_grid_layout_editor(self):
         master = self.layoutframe.innerframe
         prop_widget = self.prop_widget
-        frame = ttk.LabelFrame(master, text='Grid options:')
+        frame = ttk.LabelFrame(master, text=_('Grid options:'))
         label_tpl = "{0}:"
         row= col=0
         group = properties.GROUP_LAYOUT_GRID
@@ -283,7 +284,7 @@ class WidgetPropertiesEditor:
 
         #labels
         group = properties.GROUP_LAYOUT_GRID_RC
-        frame = ttk.LabelFrame(master, text='Grid row/column options:')
+        frame = ttk.LabelFrame(master, text=_('Grid row/column options:'))
         row = col = 0
         icol = 1
         headers=[]
@@ -299,12 +300,14 @@ class WidgetPropertiesEditor:
         max_rc = 50
         #rowconfig
         row += 1
+        trow_label = _('Row {0}:')
+        tcol_label = _('Column {0}:')
         for index in range(0, max_rc):
-            labeltext = 'Row {}:'.format(index)
+            labeltext = trow_label.format(index)
             label = ttk.Label(frame, text=labeltext)
             label.grid(row=row, column=0)
 
-            labeltext = 'Column {}:'.format(index)
+            labeltext = tcol_label.format(index)
             labelc = ttk.Label(frame, text=labeltext)
             labelc.grid(row=row+max_rc, column=0, sticky=tk.E, pady=2)
 
