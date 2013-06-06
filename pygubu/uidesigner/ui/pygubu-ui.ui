@@ -4,7 +4,7 @@
     <property name="tearoff">0</property>
     <child>
       <object class="tk.Menuitem.Submenu" id="filemenu">
-        <property name="label">File</property>
+        <property name="label" translatable="yes">File</property>
         <property name="tearoff">0</property>
         <property name="underline">0</property>
         <child>
@@ -12,28 +12,28 @@
             <property name="accelerator">Ctrl+N</property>
             <property name="command">on_menuitem_new_clicked</property>
             <property name="command_id_arg">False</property>
-            <property name="label">New</property>
+            <property name="label" translatable="yes">New</property>
           </object>
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="fileopen">
             <property name="accelerator">Ctrl+O</property>
             <property name="command">on_menuitem_open_clicked</property>
-            <property name="label">Open …</property>
+            <property name="label" translatable="yes">Open …</property>
           </object>
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="filesave">
             <property name="accelerator">Ctrl+S</property>
             <property name="command">on_menuitem_save_clicked</property>
-            <property name="label">Save</property>
+            <property name="label" translatable="yes">Save</property>
           </object>
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="filesaveas">
             <property name="command">on_menuitem_saveas_clicked</property>
             <property name="command_id_arg">False</property>
-            <property name="label">Save as …</property>
+            <property name="label" translatable="yes">Save as …</property>
           </object>
         </child>
         <child>
@@ -43,7 +43,7 @@
           <object class="tk.Menuitem.Command" id="filequit">
             <property name="accelerator">Ctrl+Q</property>
             <property name="command">on_menuitem_quit_clicked</property>
-            <property name="label">Quit …</property>
+            <property name="label" translatable="yes">Quit …</property>
           </object>
         </child>
       </object>
@@ -51,7 +51,7 @@
     <child>
       <object class="tk.Menuitem.Submenu" id="editmenu">
         <property name="command_id_arg">False</property>
-        <property name="label">Edit</property>
+        <property name="label" translatable="yes">Edit</property>
         <property name="tearoff">0</property>
         <property name="underline">0</property>
         <child>
@@ -59,7 +59,7 @@
             <property name="accelerator">Ctrl+C</property>
             <property name="command">on_edit_menuitem_clicked</property>
             <property name="command_id_arg">True</property>
-            <property name="label">Copy</property>
+            <property name="label" translatable="yes">Copy</property>
           </object>
         </child>
         <child>
@@ -67,7 +67,7 @@
             <property name="accelerator">Ctrl+V</property>
             <property name="command">on_edit_menuitem_clicked</property>
             <property name="command_id_arg">True</property>
-            <property name="label">Paste</property>
+            <property name="label" translatable="yes">Paste</property>
           </object>
         </child>
         <child>
@@ -75,7 +75,7 @@
             <property name="accelerator">Ctrl+X</property>
             <property name="command">on_edit_menuitem_clicked</property>
             <property name="command_id_arg">True</property>
-            <property name="label">Cut</property>
+            <property name="label" translatable="yes">Cut</property>
           </object>
         </child>
         <child>
@@ -84,14 +84,14 @@
         <child>
           <object class="tk.Menuitem.Submenu" id="edit_widget">
             <property name="command_id_arg">False</property>
-            <property name="label">Widget tree</property>
+            <property name="label" translatable="yes">Widget tree</property>
             <property name="tearoff">0</property>
             <child>
               <object class="tk.Menuitem.Command" id="edit_item_up">
                 <property name="accelerator">Ctrl+I</property>
                 <property name="command">on_edit_menuitem_clicked</property>
                 <property name="command_id_arg">True</property>
-                <property name="label">Item up</property>
+                <property name="label" translatable="yes">Item up</property>
               </object>
             </child>
             <child>
@@ -99,7 +99,7 @@
                 <property name="accelerator">Ctrl+K</property>
                 <property name="command">on_edit_menuitem_clicked</property>
                 <property name="command_id_arg">True</property>
-                <property name="label">Item down</property>
+                <property name="label" translatable="yes">Item down</property>
               </object>
             </child>
             <child>
@@ -110,7 +110,7 @@
                 <property name="accelerator">Del</property>
                 <property name="command">on_edit_menuitem_clicked</property>
                 <property name="command_id_arg">True</property>
-                <property name="label">Item delete</property>
+                <property name="label" translatable="yes">Item delete</property>
               </object>
             </child>
           </object>
@@ -118,34 +118,34 @@
         <child>
           <object class="tk.Menuitem.Submenu" id="edit_widget_grid">
             <property name="command_id_arg">False</property>
-            <property name="label">Widget grid</property>
+            <property name="label" translatable="yes">Widget grid</property>
             <property name="tearoff">0</property>
             <child>
               <object class="tk.Menuitem.Command" id="grid_up">
                 <property name="accelerator">Alt+I</property>
                 <property name="command_id_arg">False</property>
-                <property name="label">Move up</property>
+                <property name="label" translatable="yes">Move up</property>
               </object>
             </child>
             <child>
               <object class="tk.Menuitem.Command" id="grid_down">
                 <property name="accelerator">Alt+K</property>
                 <property name="command_id_arg">False</property>
-                <property name="label">Move down</property>
+                <property name="label" translatable="yes">Move down</property>
               </object>
             </child>
             <child>
               <object class="tk.Menuitem.Command" id="grid_left">
                 <property name="accelerator">Alt+J</property>
                 <property name="command_id_arg">False</property>
-                <property name="label">Move left</property>
+                <property name="label" translatable="yes">Move left</property>
               </object>
             </child>
             <child>
               <object class="tk.Menuitem.Command" id="grid_right">
                 <property name="accelerator">Alt+L</property>
                 <property name="command_id_arg">False</property>
-                <property name="label">Move right</property>
+                <property name="label" translatable="yes">Move right</property>
               </object>
             </child>
           </object>
@@ -155,14 +155,14 @@
     <child>
       <object class="tk.Menuitem.Submenu" id="previewmenu">
         <property name="command_id_arg">False</property>
-        <property name="label">Preview</property>
+        <property name="label" translatable="yes">Preview</property>
         <property name="tearoff">0</property>
         <property name="underline">0</property>
         <child>
           <object class="tk.Menuitem.Command" id="preview_toplevel">
             <property name="command">on_previewmenu_action</property>
             <property name="command_id_arg">True</property>
-            <property name="label">Preview in Toplevel</property>
+            <property name="label" translatable="yes">Preview in Toplevel</property>
           </object>
         </child>
       </object>
@@ -170,21 +170,21 @@
     <child>
       <object class="tk.Menuitem.Submenu" id="helpmenu">
         <property name="command_id_arg">False</property>
-        <property name="label">Help</property>
+        <property name="label" translatable="yes">Help</property>
         <property name="tearoff">0</property>
         <property name="underline">0</property>
         <child>
           <object class="tk.Menuitem.Command" id="help_online">
             <property name="command">on_help_menuitem_clicked</property>
             <property name="command_id_arg">True</property>
-            <property name="label">Help (Online)</property>
+            <property name="label" translatable="yes">Help (Online)</property>
           </object>
         </child>
         <child>
           <object class="tk.Menuitem.Command" id="help_about">
             <property name="command">on_help_menuitem_clicked</property>
             <property name="command_id_arg">True</property>
-            <property name="label">About …</property>
+            <property name="label" translatable="yes">About …</property>
           </object>
         </child>
       </object>
@@ -228,7 +228,7 @@
         <child>
           <object class="ttk.Label" id="label_project">
             <property name="padding">0 0 10 0</property>
-            <property name="text">Project:</property>
+            <property name="text" translatable="yes">Project:</property>
             <layout>
               <property name="column">0</property>
               <property name="row">0</property>
@@ -237,7 +237,7 @@
         </child>
         <child>
           <object class="ttk.Label" id="projectname_lbl">
-            <property name="text">&lt;None&gt;</property>
+            <property name="text" translatable="yes">&lt;None&gt;</property>
             <layout>
               <property name="column">1</property>
               <property name="row">0</property>
@@ -330,7 +330,7 @@
                                 <property name="heading_anchor">w</property>
                                 <property name="minwidth">200</property>
                                 <property name="stretch">True</property>
-                                <property name="text">Widget List</property>
+                                <property name="text" translatable="yes">Widget List</property>
                                 <property name="tree_column">True</property>
                                 <property name="visible">True</property>
                                 <property name="width">200</property>
@@ -397,7 +397,7 @@
                                     <child>
                                       <object class="ttk.Button" id="filterclear_btn">
                                         <property name="style">FilterClearButton.TButton</property>
-                                        <property name="text">✖</property>
+                                        <property name="text" translatable="yes">✖</property>
                                         <layout>
                                           <property name="column">1</property>
                                           <property name="propagate">True</property>
@@ -438,7 +438,7 @@
                                             <property name="heading_anchor">w</property>
                                             <property name="minwidth">200</property>
                                             <property name="stretch">True</property>
-                                            <property name="text">Widget Id</property>
+                                            <property name="text" translatable="yes">Widget Id</property>
                                             <property name="tree_column">True</property>
                                             <property name="visible">True</property>
                                             <property name="width">200</property>
@@ -450,7 +450,7 @@
                                             <property name="heading_anchor">w</property>
                                             <property name="minwidth">100</property>
                                             <property name="stretch">True</property>
-                                            <property name="text">Class</property>
+                                            <property name="text" translatable="yes">Class</property>
                                             <property name="tree_column">False</property>
                                             <property name="visible">True</property>
                                             <property name="width">120</property>
@@ -462,7 +462,7 @@
                                             <property name="heading_anchor">w</property>
                                             <property name="minwidth">20</property>
                                             <property name="stretch">False</property>
-                                            <property name="text">R</property>
+                                            <property name="text" translatable="yes">R</property>
                                             <property name="tree_column">False</property>
                                             <property name="visible">True</property>
                                             <property name="width">20</property>
@@ -474,7 +474,7 @@
                                             <property name="heading_anchor">w</property>
                                             <property name="minwidth">20</property>
                                             <property name="stretch">False</property>
-                                            <property name="text">C</property>
+                                            <property name="text" translatable="yes">C</property>
                                             <property name="tree_column">False</property>
                                             <property name="visible">True</property>
                                             <property name="width">20</property>
@@ -512,7 +512,7 @@
                                 <child>
                                   <object class="ttk.Notebook.Tab" id="generaltab">
                                     <property name="sticky">nsew</property>
-                                    <property name="text">General</property>
+                                    <property name="text" translatable="yes">General</property>
                                     <child>
                                       <object class="pygubu.builder.widgets.scrolledframe" id="propertiesframe">
                                         <property name="padding">5</property>
@@ -528,7 +528,7 @@
                                 <child>
                                   <object class="ttk.Notebook.Tab" id="layouttab">
                                     <property name="sticky">nsew</property>
-                                    <property name="text">Layout</property>
+                                    <property name="text" translatable="yes">Layout</property>
                                     <child>
                                       <object class="pygubu.builder.widgets.scrolledframe" id="layoutframe">
                                         <property name="padding">5</property>
@@ -544,7 +544,7 @@
                                 <child>
                                   <object class="ttk.Notebook.Tab" id="bindingtab">
                                     <property name="padding">2</property>
-                                    <property name="text">Bindings</property>
+                                    <property name="text" translatable="yes">Bindings</property>
                                     <child>
                                       <object class="ttk.Frame" id="bindingscontainer">
                                         <property name="height">200</property>
@@ -590,7 +590,7 @@
                                                     <property name="heading_anchor">w</property>
                                                     <property name="minwidth">20</property>
                                                     <property name="stretch">True</property>
-                                                    <property name="text">Sequence descriptor</property>
+                                                    <property name="text" translatable="yes">Sequence descriptor</property>
                                                     <property name="tree_column">False</property>
                                                     <property name="visible">True</property>
                                                     <property name="width">200</property>
@@ -602,7 +602,7 @@
                                                     <property name="heading_anchor">w</property>
                                                     <property name="minwidth">20</property>
                                                     <property name="stretch">True</property>
-                                                    <property name="text">Event Handler</property>
+                                                    <property name="text" translatable="yes">Event Handler</property>
                                                     <property name="tree_column">False</property>
                                                     <property name="visible">True</property>
                                                     <property name="width">200</property>
@@ -614,7 +614,7 @@
                                                     <property name="heading_anchor">w</property>
                                                     <property name="minwidth">50</property>
                                                     <property name="stretch">True</property>
-                                                    <property name="text">Add</property>
+                                                    <property name="text" translatable="yes">Add</property>
                                                     <property name="tree_column">False</property>
                                                     <property name="visible">True</property>
                                                     <property name="width">50</property>
@@ -726,7 +726,7 @@
           <object class="ttk.Label" id="statusbar">
             <property name="anchor">w</property>
             <property name="padding">2</property>
-            <property name="text">Status Bar</property>
+            <property name="text" translatable="yes">Status Bar</property>
             <layout>
               <property name="column">0</property>
               <property name="row">0</property>
