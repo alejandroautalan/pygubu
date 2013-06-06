@@ -1,3 +1,5 @@
+[Leer en español] (LEEME.md)
+
 Welcome to pygubu a GUI designer for tkinter
 ============================================
 
