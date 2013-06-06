@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Pygubu 0.7\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-06-06 05:16-0300\n"
-"PO-Revision-Date: 2013-06-06 06:51-0300\n"
+"PO-Revision-Date: 2013-06-06 11:01-0300\n"
 "Last-Translator: Alejandro Autalán <alejandroautalan@gmail.com>\n"
 "Language-Team: \n"
 "Language: \n"
@@ -94,11 +94,11 @@ msgstr "Mover derecha"
 
 #: pygubu/uidesigner/ui/pygubu-ui.ui:158
 msgid "Preview"
-msgstr "Previsualizacón"
+msgstr "Previsualización"
 
 #: pygubu/uidesigner/ui/pygubu-ui.ui:165
 msgid "Preview in Toplevel"
-msgstr "Previsualisar en ventana"
+msgstr "Previsualizar en ventana"
 
 #: pygubu/uidesigner/ui/pygubu-ui.ui:173
 msgid "Help"
