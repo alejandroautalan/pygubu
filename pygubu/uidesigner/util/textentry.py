@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: UTF-8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -68,5 +68,3 @@ class Textentry(tk.Text):
         if self.__cbhandler is not None:
             self.__variable.trace_vdelete("w", self.__cbhandler)
             self.__cbhandler = None
-
-

@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: UTF-8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -382,7 +382,3 @@ class PreviewHelper:
             top['menu'] = menu
         else:
             builder.get_object(widget_id, top)
-
-
-
-

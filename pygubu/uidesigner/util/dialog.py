@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: UTF-8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -148,4 +148,3 @@ if __name__ == '__main__':
     btn.pack()
 
     app.mainloop()
-

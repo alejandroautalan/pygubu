@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: UTF-8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -268,5 +268,3 @@ class ArrayElementVar(tk.StringVar):
             if isinstance(name, unicode):
                 name = name.encode('UTF-8')
         tk.StringVar.__init__(self, master, None, name)
-
-
