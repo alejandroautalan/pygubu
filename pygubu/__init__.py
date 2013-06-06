@@ -4,6 +4,9 @@ __all__ = ['Builder', 'TkApplication']
 from pygubu.builder import Builder
 
 
+__version__ = 0.7
+
+
 class TkApplication:
     def __init__(self, master=None, **kw):
         self.master = master
@@ -57,4 +60,3 @@ class TkApplication:
 
     def set_size(self, geom):
         self.toplevel.geometry(geom)
-

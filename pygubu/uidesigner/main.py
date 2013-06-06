@@ -120,8 +120,14 @@ class AboutDialog(DialogBase):
         self.builder.add_from_file(uifile)
 
         self.builder.get_object('aboutdialog', master)
+        self.set_version(self.builder.get_object('version'))
         self.builder.connect_callbacks(self)
         return self.builder.get_object('close_btn')
+
+    def set_version(self, widget):
+        txt = widget.cget('text')
+        txt = txt.replace('%version%', str(pygubu.__version__))
+        widget.configure(text=txt)
 
     def _create_btnbox(self, master):
         #No button box needed
@@ -215,6 +221,15 @@ class PygubuUI(util.Application):
                 lambda e: self.tree_editor.cut_to_clipboard())
         self.tree_editor.treeview.bind('<KeyPress-Delete>',
                 lambda e: self.on_edit_menuitem_clicked('edit_item_delete'))
+        #grid move bindings
+        self.tree_editor.treeview.bind('<Alt-KeyPress-i>',
+                lambda e: self.on_edit_menuitem_clicked('grid_up'))
+        self.tree_editor.treeview.bind('<Alt-KeyPress-k>',
+                lambda e: self.on_edit_menuitem_clicked('grid_down'))
+        self.tree_editor.treeview.bind('<Alt-KeyPress-j>',
+                lambda e: self.on_edit_menuitem_clicked('grid_left'))
+        self.tree_editor.treeview.bind('<Alt-KeyPress-l>',
+                lambda e: self.on_edit_menuitem_clicked('grid_right'))
 
 
         #
@@ -240,7 +255,7 @@ class PygubuUI(util.Application):
         s.configure('ImageSelectorButton.TButton', width='2')
         s.configure('FilterClearButton.TButton', width='2', relief=tk.FLAT)
         if sys.platform == 'linux':
-            #change background of comboboxes 
+            #change background of comboboxes
             color = s.lookup('TEntry', 'fieldbackground')
             s.map('TCombobox', fieldbackground=[('readonly', color)])
 
@@ -429,6 +444,14 @@ class PygubuUI(util.Application):
             self.tree_editor.paste_from_clipboard()
         elif itemid == 'edit_cut':
             self.tree_editor.cut_to_clipboard()
+        elif itemid == 'grid_up':
+            self.tree_editor.on_item_grid_move(WidgetsTreeEditor.GRID_UP)
+        elif itemid == 'grid_down':
+            self.tree_editor.on_item_grid_move(WidgetsTreeEditor.GRID_DOWN)
+        elif itemid == 'grid_left':
+            self.tree_editor.on_item_grid_move(WidgetsTreeEditor.GRID_LEFT)
+        elif itemid == 'grid_right':
+            self.tree_editor.on_item_grid_move(WidgetsTreeEditor.GRID_RIGHT)
 
     #preview menu
     def on_previewmenu_action(self, itemid):
@@ -473,4 +496,3 @@ def start_pygubu():
 
 if __name__ == '__main__':
     start_pygubu()
-

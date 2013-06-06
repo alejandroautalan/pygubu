@@ -61,11 +61,11 @@ class WidgetDescr(dict, Observable):
             return self['properties'].get(name, '')
 
 
-    def set_layout_propery(self, name, value):
+    def set_layout_property(self, name, value):
         self['layout'][name] = value
 
 
-    def get_layout_propery(self, name):
+    def get_layout_property(self, name):
         default = ''
         if name in ('row', 'column'):
             default = '0'
@@ -111,6 +111,3 @@ class WidgetDescr(dict, Observable):
             'handler': handler,
             'add': add
             })
-
-
-

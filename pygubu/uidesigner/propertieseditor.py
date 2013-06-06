@@ -100,7 +100,7 @@ class WidgetPropertiesEditor:
             nums = newvalue.split()
             if len(nums) <= 4:
                 for num in nums:
-                    if not num.isnumeric():
+                    if not num.isdigit():
                         valid = False
                         break;
             else:
@@ -122,7 +122,7 @@ class WidgetPropertiesEditor:
     def validator_integer(self, action, newvalue):
         valid = False
         if action == '1': #1: insert 0: delete
-            valid = str(newvalue).isnumeric()
+            valid = str(newvalue).isalnum()
         else:
             valid = True
         return valid
@@ -211,9 +211,9 @@ class WidgetPropertiesEditor:
                     properties.PropertiesMap[properties.GROUP_LAYOUT_GRID]):
 
                 if new_value:
-                    data.set_layout_propery(pname, new_value)
+                    data.set_layout_property(pname, new_value)
                 else:
-                    data.set_layout_propery(pname, '')
+                    data.set_layout_property(pname, '')
 
             elif (pgroup == properties.GROUP_LAYOUT_GRID_RC):
                 row_col, number, name = self.identify_gridrc_property(pname)
@@ -480,7 +480,7 @@ class WidgetPropertiesEditor:
         if group in (properties.GROUP_CUSTOM, properties.GROUP_WIDGET):
             value = data.get_property(propertyname)
         elif group == properties.GROUP_LAYOUT_GRID:
-            value = data.get_layout_propery(propertyname)
+            value = data.get_layout_property(propertyname)
         elif group == properties.GROUP_LAYOUT_GRID_RC:
             if roc == 'row':
                 value = data.get_grid_row_property(rc_id, propertyname)
@@ -606,4 +606,3 @@ class WidgetPropertiesEditor:
 
     def identify_gridrc_property(self, alias):
         return alias.split('_')
-

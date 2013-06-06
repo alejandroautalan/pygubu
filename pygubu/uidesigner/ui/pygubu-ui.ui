@@ -82,27 +82,72 @@
           <object class="tk.Menuitem.Separator" id="edit_Separator1"/>
         </child>
         <child>
-          <object class="tk.Menuitem.Command" id="edit_item_up">
-            <property name="accelerator">Ctrl+I</property>
-            <property name="command">on_edit_menuitem_clicked</property>
-            <property name="command_id_arg">True</property>
-            <property name="label">Item up</property>
+          <object class="tk.Menuitem.Submenu" id="edit_widget">
+            <property name="command_id_arg">False</property>
+            <property name="label">Widget tree</property>
+            <property name="tearoff">0</property>
+            <child>
+              <object class="tk.Menuitem.Command" id="edit_item_up">
+                <property name="accelerator">Ctrl+I</property>
+                <property name="command">on_edit_menuitem_clicked</property>
+                <property name="command_id_arg">True</property>
+                <property name="label">Item up</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Command" id="edit_item_down">
+                <property name="accelerator">Ctrl+K</property>
+                <property name="command">on_edit_menuitem_clicked</property>
+                <property name="command_id_arg">True</property>
+                <property name="label">Item down</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Separator" id="edit_sep2"/>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Command" id="edit_item_delete">
+                <property name="accelerator">Del</property>
+                <property name="command">on_edit_menuitem_clicked</property>
+                <property name="command_id_arg">True</property>
+                <property name="label">Item delete</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
-          <object class="tk.Menuitem.Command" id="edit_item_down">
-            <property name="accelerator">Ctrl+K</property>
-            <property name="command">on_edit_menuitem_clicked</property>
-            <property name="command_id_arg">True</property>
-            <property name="label">Item down</property>
-          </object>
-        </child>
-        <child>
-          <object class="tk.Menuitem.Command" id="edit_item_delete">
-            <property name="accelerator">Del</property>
-            <property name="command">on_edit_menuitem_clicked</property>
-            <property name="command_id_arg">True</property>
-            <property name="label">Item delete</property>
+          <object class="tk.Menuitem.Submenu" id="edit_widget_grid">
+            <property name="command_id_arg">False</property>
+            <property name="label">Widget grid</property>
+            <property name="tearoff">0</property>
+            <child>
+              <object class="tk.Menuitem.Command" id="grid_up">
+                <property name="accelerator">Alt+I</property>
+                <property name="command_id_arg">False</property>
+                <property name="label">Move up</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Command" id="grid_down">
+                <property name="accelerator">Alt+K</property>
+                <property name="command_id_arg">False</property>
+                <property name="label">Move down</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Command" id="grid_left">
+                <property name="accelerator">Alt+J</property>
+                <property name="command_id_arg">False</property>
+                <property name="label">Move left</property>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Command" id="grid_right">
+                <property name="accelerator">Alt+L</property>
+                <property name="command_id_arg">False</property>
+                <property name="label">Move right</property>
+              </object>
+            </child>
           </object>
         </child>
       </object>

@@ -36,6 +36,11 @@ logger = logging.getLogger('pygubu.designer')
 
 
 class WidgetsTreeEditor(object):
+    GRID_UP=0
+    GRID_DOWN=1
+    GRID_LEFT=2
+    GRID_RIGHT=3
+
     def __init__(self, app):
         self.app = app
         self.treeview = app.treeview
@@ -193,15 +198,15 @@ class WidgetsTreeEditor(object):
         treelabel = data.get_id()
         row = col = ''
         if root != '' and 'layout' in data:
-            row = data.get_layout_propery('row')
-            col = data.get_layout_propery('column')
+            row = data.get_layout_property('row')
+            col = data.get_layout_property('column')
 
             #fix row position when using copy and paste
             #If collision, increase by 1
             row_count = self.get_max_row(root)
             if row_count > int(row):
                 row = str(row_count + 1)
-                data.set_layout_propery('row', row)
+                data.set_layout_property('row', row)
 
         image = ''
         try:
@@ -455,13 +460,13 @@ class WidgetsTreeEditor(object):
             if wclass in pdescription:
                 pdescription = dict(pdescription, **pdescription[wclass])
             default_value = str(pdescription.get('default', ''))
-            data.set_layout_propery(prop_name, default_value)
+            data.set_layout_property(prop_name, default_value)
 
         rownum = '0'
         if root:
             rownum = str(self.get_max_row(root)+1)
-        data.set_layout_propery('row', rownum)
-        data.set_layout_propery('column', '0')
+        data.set_layout_property('row', rownum)
+        data.set_layout_property('column', '0')
 
         item = self._insert_item(root, data)
         self.treedata[item] = data
@@ -561,8 +566,8 @@ class WidgetsTreeEditor(object):
         children = tree.get_children(item)
         for child in children:
             data = self.treedata[child]
-            row = int(data.get_layout_propery('row'))
-            col = int(data.get_layout_propery('column'))
+            row = int(data.get_layout_property('row'))
+            col = int(data.get_layout_property('column'))
             if row > max_row:
                 max_row = row
             if col > max_col:
@@ -581,8 +586,8 @@ class WidgetsTreeEditor(object):
                 tree.item(item, text=data.get_id())
             #if tree.parent(item) != '' and 'layout' in data:
             if tree.parent(item) != '':
-                row = data.get_layout_propery('row')
-                col = data.get_layout_propery('column')
+                row = data.get_layout_property('row')
+                col = data.get_layout_property('column')
                 values = tree.item(item, 'values')
                 if (row != values[1] or col != values[2]):
                     values = (data.get_class(), row, col)
@@ -626,6 +631,43 @@ class WidgetsTreeEditor(object):
                 next_idx = tree.index(next)
                 tree.move(item, parent, next_idx)
             self.filter_restore()
+
+    #
+    # Item grid move functions
+    #
+    def on_item_grid_move(self, direction):
+        tree = self.treeview
+        selection = tree.selection()
+        if selection:
+            self.filter_remove(remember=True)
+
+            for item in selection:
+                data = self.treedata[item]
+
+                if direction == self.GRID_UP:
+                    row = int(data.get_layout_property('row'))
+                    if row > 0:
+                        row = row - 1
+                        data.set_layout_property('row', str(row))
+                        data.notify()
+                elif direction == self.GRID_DOWN:
+                    row = int(data.get_layout_property('row'))
+                    row = row + 1
+                    data.set_layout_property('row', str(row))
+                    data.notify()
+                elif direction == self.GRID_LEFT:
+                    column = int(data.get_layout_property('column'))
+                    if column > 0:
+                        column = column - 1
+                        data.set_layout_property('column', str(column))
+                        data.notify()
+                elif direction == self.GRID_RIGHT:
+                    column = int(data.get_layout_property('column'))
+                    column = column + 1
+                    data.set_layout_property('column', str(column))
+                    data.notify()
+            self.filter_restore()
+
 
     #
     # Filter functions
