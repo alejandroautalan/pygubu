@@ -56,10 +56,15 @@ See the examples directory or watch this hello world example on video http://you
 History
 =======
 
+Changes for version 0.8
+
+  * Added translation support
+  * Translated pygubu designer to Spanish
+
 Changes for version 0.7
 
   * Added python 2.7 support
   * Added initial TkApplication class
   * Fixed some bugs.
-    
+
 First public version 0.6
