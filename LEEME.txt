@@ -1,1 +1,0 @@
-Bienvenido a pygubu un diseñador de interfaces para tkinter.
