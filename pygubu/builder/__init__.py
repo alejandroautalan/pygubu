@@ -195,10 +195,12 @@ class Builder:
 
 
     def add_resource_path(self, path):
+        """Add additional path to the resources paths."""
         self._resource_paths.append(path)
 
 
     def get_image(self, name):
+        """Return tk image corresponding to name."""
         image = ''
         if not StockImage.is_registered(name):
             ipath = self.__find_image(name)
@@ -222,16 +224,12 @@ class Builder:
 
 
     def get_variable(self, varname):
-        """
-        Returns a tk variable created previously.
-        """
+        """Return a tk variable created with 'create_variable' method."""
         return self.tkvariables[varname]
 
 
     def create_variable(self, varname, vtype=None):
-        """
-        Create a tk variable
-
+        """Create a tk variable.
         If the variable was created previously return that instance.
         """
 
@@ -258,6 +256,7 @@ class Builder:
 
 
     def add_from_file(self, fpath):
+        """Load ui definition from file."""
         if self.tree is None:
             base, name = os.path.split(fpath)
             self.add_resource_path(base)
@@ -270,6 +269,7 @@ class Builder:
 
 
     def add_from_string(self, strdata):
+        """Load ui definition from string."""
         if self.tree is None:
             self.tree = tree = ET.ElementTree(ET.fromstring(strdata))
             self.root = tree.getroot()
@@ -280,6 +280,7 @@ class Builder:
 
 
     def add_from_xmlnode(self, element):
+        """Load ui definition from xml.etree.Element node."""
         if self.tree is None:
             root = ET.Element('interface')
             root.append(element)
@@ -293,6 +294,9 @@ class Builder:
 
 
     def get_object(self, name, master=None):
+        """Find and create the widget named name.
+        Use master as parent. If widget was already created, return
+        that instance."""
         widget = None
         if name in self.objects:
             widget = self.objects[name].widget
@@ -302,7 +306,7 @@ class Builder:
             if node is not None:
                 root = BuilderObject(self, dict())
                 root.widget = master
-                bobject = self.realize(root, node)
+                bobject = self._realize(root, node)
                 widget = bobject.widget
         if widget is None:
             raise Exception('Widget not defined.')
@@ -316,8 +320,8 @@ class Builder:
             importlib.import_module(modulename)
 
 
-    def realize(self, master, element):
-        """Builds a widget from xml element using master as parent"""
+    def _realize(self, master, element):
+        """Builds a widget from xml element using master as parent."""
 
         data = data_xmlnode_to_dict(element, self.translator)
         cname = data['class']
@@ -337,7 +341,7 @@ class Builder:
             children = element.findall(xpath)
             for child in children:
                 child_xml = child.find('./object')
-                child = self.realize(parent, child_xml)
+                child = self._realize(parent, child_xml)
                 parent.add_child(child)
 
             parent.configure()
@@ -358,6 +362,10 @@ class Builder:
 
 
     def connect_callbacks(self, callbacks_bag):
+        """Connect callbacks specified in callbacks_bag with callbacks
+        defined in the ui definition.
+        Return a list with the name of the callbacks not connected.
+        """
         notconnected = []
         for wname, builderobj in self.objects.items():
             missing = builderobj.connect_commands(callbacks_bag)

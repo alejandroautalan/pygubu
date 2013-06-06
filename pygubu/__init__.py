@@ -8,7 +8,7 @@ __version__ = 0.8
 
 
 class TkApplication:
-    def __init__(self, master=None, **kw):
+    def __init__(self, master=None):
         self.master = master
         self.toplevel = master.winfo_toplevel()
 
@@ -28,7 +28,7 @@ class TkApplication:
         pass
 
     def run(self):
-        """Ejecutes the main loop"""
+        """Ejecute the main loop."""
 
         self.toplevel.protocol("WM_DELETE_WINDOW", self.__on_window_close)
         self.toplevel.mainloop()
@@ -38,24 +38,24 @@ class TkApplication:
         self.toplevel.columnconfigure(0, weight=1)
 
     def set_title(self, title):
-        """Sets the window title"""
+        """Set the window title."""
         self.toplevel.title(title)
 
     def set_menu(self, menu):
-        """Sets the main menu"""
+        """Set the main menu."""
         self.toplevel.config(menu=menu)
 
     def __on_window_close(self):
-        """Manage WM_DELETE_WINDOW protocol"""
+        """Manage WM_DELETE_WINDOW protocol."""
         if self.on_close_execute():
             self.toplevel.destroy()
 
     def on_close_execute(self):
-        """Returns True if the app is ready for quit"""
+        """Determine if if the application is ready for quit, return boolean."""
         return True
 
     def quit(self):
-        """Exits the app if it is ready for quit"""
+        """Exit the app if it is ready for quit."""
         self.__on_window_close()
 
     def set_size(self, geom):
