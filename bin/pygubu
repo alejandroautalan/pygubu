@@ -32,20 +32,16 @@ else:
     project_basedir = os.path.abspath(os.path.dirname(os.path.dirname(
                                             os.path.realpath(sys.argv[0]))))
 
+if project_basedir not in sys.path:
+    sys.path.insert(0, project_basedir)
+
 # first of all, show the versions
 print("Running Python %s on %r" % (sys.version_info, sys.platform))
 version_file = os.path.join(project_basedir, 'version.txt')
-if os.path.exists(version_file):
-    version = open(version_file).read().strip()
-    print("Pygubu: v. %s" % (version,))
-else:
-    version = None
-    print("Pygubu: sin revno info")
 
-if project_basedir not in sys.path:
-    sys.path.insert(0, project_basedir)
+import pygubu
+print("Pygubu: v. %s" % (pygubu.__version__,))
 
 from pygubu.uidesigner import main
 
 main.start_pygubu()
-
