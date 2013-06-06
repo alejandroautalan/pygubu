@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: UTF-8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -489,4 +489,6 @@ def register_custom(name, descr):
 
 OBJECT_DEFAULT_ATTRS = ('class', 'id')
 
-
+TRANSLATABLE_PROPERTIES = [
+    'label', 'text', 'title',
+]

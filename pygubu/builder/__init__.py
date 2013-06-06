@@ -40,7 +40,7 @@ logger = logging.getLogger('pygubu.builder')
 #
 #
 #
-def data_xmlnode_to_dict(element):
+def data_xmlnode_to_dict(element, translator=None):
     data = {}
 
     data['class'] = element.get('class')
@@ -50,7 +50,10 @@ def data_xmlnode_to_dict(element):
     properties = element.findall('./property')
     pdict= {}
     for p in properties:
-        pdict[p.get('name')] = p.text
+        pvalue = p.text
+        if translator is not None and p.get('translatable'):
+            pvalue = translator(pvalue)
+        pdict[p.get('name')] = pvalue
 
     data['properties'] = pdict
 
@@ -105,7 +108,7 @@ def data_xmlnode_to_dict(element):
     return data
 
 
-def data_dict_to_xmlnode(data):
+def data_dict_to_xmlnode(data, translatable_props=None):
     node = ET.Element('object')
 
     for prop in ('id', 'class'):
@@ -118,6 +121,8 @@ def data_dict_to_xmlnode(data):
             pnode = ET.Element('property')
             pnode.set('name', prop)
             pnode.text = pv
+            if translatable_props is not None and prop in translatable_props:
+                pnode.set('translatable', 'yes')
             node.append(pnode)
 
     #bindings:
@@ -180,12 +185,13 @@ def data_dict_to_xmlnode(data):
 class Builder:
     """Allows to build a tk interface from xml definition."""
 
-    def __init__(self):
+    def __init__(self, translator=None):
         self.tree = None
         self.root = None
         self.objects = {}
         self.tkvariables = {}
         self._resource_paths = []
+        self.translator = translator
 
 
     def add_resource_path(self, path):
@@ -313,7 +319,7 @@ class Builder:
     def realize(self, master, element):
         """Builds a widget from xml element using master as parent"""
 
-        data = data_xmlnode_to_dict(element)
+        data = data_xmlnode_to_dict(element, self.translator)
         cname = data['class']
         uniqueid = data['id']
 
@@ -367,4 +373,3 @@ class Builder:
             return notconnected
         else:
             return None
-

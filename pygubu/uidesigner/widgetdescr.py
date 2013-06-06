@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: UTF-8
 #
 # Copyright 2012-2013 Alejandro Autalán
 #
@@ -18,8 +18,9 @@
 from __future__ import unicode_literals
 from collections import defaultdict
 
-import pygubu.builder
+from pygubu.builder import data_dict_to_xmlnode, data_xmlnode_to_dict
 from .util.observable import Observable
+from .properties import TRANSLATABLE_PROPERTIES
 
 
 class WidgetDescr(dict, Observable):
@@ -89,11 +90,11 @@ class WidgetDescr(dict, Observable):
 
 
     def to_xml_node(self):
-        return pygubu.builder.data_dict_to_xmlnode(self)
+        return data_dict_to_xmlnode(self, TRANSLATABLE_PROPERTIES)
 
 
     def from_xml_node(self, node):
-        data = pygubu.builder.data_xmlnode_to_dict(node)
+        data = data_xmlnode_to_dict(node)
         self.update(data)
 
     def get_bindings(self):
