@@ -422,8 +422,8 @@ __grid = (
     ('columnspan', {
         'input_method': 'spinbox',
         'min': 1, 'max': 50, 'validator': 'number_integer', 'readonly': True}),
-    ('padx', _default_spinbox_prop),
-    ('pady', _default_spinbox_prop),
+    ('padx', {'input_method':'entry', 'validator': 'tkpadding2'}),
+    ('pady', {'input_method':'entry', 'validator': 'tkpadding2'}),
     ('ipadx', _default_spinbox_prop),
     ('ipady', _default_spinbox_prop),
     ('propagate', {'input_method': 'choice',

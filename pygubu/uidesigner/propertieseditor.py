@@ -82,7 +82,9 @@ class WidgetPropertiesEditor:
                 '%d', '%P'),
             'alphanumeric': (tkwidget.register(self.validator_alphanumeric),
                 '%d', '%P'),
-            'tkpadding': (tkwidget.register(self.validator_tkpadding),
+            'tkpadding': (tkwidget.register(self.validator_tkpadding4),
+                '%d', '%P'),
+            'tkpadding2': (tkwidget.register(self.validator_tkpadding2),
                 '%d', '%P'),
             'entry_validate_args': (tkwidget.register(
                 self.validator_entry_validate_args), '%d', '%P'),
@@ -95,11 +97,18 @@ class WidgetPropertiesEditor:
         self.hide_all()
 
 
-    def validator_tkpadding(self, action, newvalue):
+    def validator_tkpadding4(self, action, newvalue):
+        return self.validator_tkpadding(action, newvalue, 4)
+
+    def validator_tkpadding2(self, action, newvalue):
+        return self.validator_tkpadding(action, newvalue, 2)
+
+
+    def validator_tkpadding(self, action, newvalue, maxitems):
         valid = True
         if action == '1': #1: insert 0: delete
             nums = newvalue.split()
-            if len(nums) <= 4:
+            if len(nums) <= maxitems:
                 for num in nums:
                     if not num.isdigit():
                         valid = False
