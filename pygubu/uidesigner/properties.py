@@ -479,7 +479,9 @@ __custom = (
     ('scrolltype', {
         'input_method': 'choice',
         'values': ('both', 'vertical', 'horizontal'),
-        'default': 'horizontal' }),
+        'default': 'both',
+        'readonly': True
+        }),
 )
 
 PropertiesMap[GROUP_CUSTOM] = OrderedDict(__custom)
