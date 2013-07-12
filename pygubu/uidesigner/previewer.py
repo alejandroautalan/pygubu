@@ -193,7 +193,7 @@ class PreviewHelper:
             if self._over_resizer(x, y):
                 c.configure(cursor='fleur')
             else:
-                c.configure(cursor='arrow')
+                c.configure(cursor='')
         else:
             dx = event.x - self._last_event.x
             dy = event.y - self._last_event.y
