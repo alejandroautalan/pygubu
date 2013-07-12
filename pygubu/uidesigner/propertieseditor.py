@@ -60,7 +60,9 @@ class WidgetPropertiesEditor:
         self.current = None #data to edit
         #self.app = app
         #self.treeview = app.treeview
+        self.properties_sf = app.builder.get_object('properties_sf')
         self.propsframe = app.widget_props_frame
+        self.layoutframe_sf = app.builder.get_object('layoutframe_sf')
         self.layoutframe = app.layout_props_frame
         self.bindingsframe = app.bindings_frame
         self.arrayvar = PropertiesArray()
@@ -245,7 +247,7 @@ class WidgetPropertiesEditor:
     def create_properties(self):
         """Populate a frame with a list of all editable properties"""
 
-        editor_frame = self.propsframe.innerframe
+        editor_frame = self.propsframe
         prop_widget = self.prop_widget
         row=0
         col=0
@@ -274,7 +276,7 @@ class WidgetPropertiesEditor:
 
 
     def create_grid_layout_editor(self):
-        master = self.layoutframe.innerframe
+        master = self.layoutframe
         prop_widget = self.prop_widget
         frame = ttk.LabelFrame(master, text=_('Grid options:'))
         label_tpl = "{0}:"
@@ -449,8 +451,8 @@ class WidgetPropertiesEditor:
             for pname in self.prop_widget[group]:
                 for widget in self.prop_widget[group][pname]:
                     widget.grid_remove()
-        self.propsframe.reposition()
-        self.layoutframe.reposition()
+        self.properties_sf.reposition()
+        self.layoutframe_sf.reposition()
 
         self.bindingsframe.grid_remove()
         self.bindings_editor.clear()
@@ -602,8 +604,8 @@ class WidgetPropertiesEditor:
             else:
                 widget.grid_remove()
         #
-        self.propsframe.reposition()
-        self.layoutframe.reposition()
+        self.properties_sf.reposition()
+        self.layoutframe_sf.reposition()
         #
         allow_edit = CLASS_MAP[wclass].classobj.allow_bindings
         if allow_edit:

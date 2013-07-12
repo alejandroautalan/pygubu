@@ -514,13 +514,25 @@
                                     <property name="sticky">nsew</property>
                                     <property name="text" translatable="yes">General</property>
                                     <child>
-                                      <object class="pygubu.builder.widgets.scrolledframe" id="propertiesframe">
+                                      <object class="pygubu.builder.widgets.scrolledframe" id="properties_sf">
                                         <property name="padding">5</property>
                                         <layout>
                                           <property name="column">0</property>
                                           <property name="row">0</property>
                                           <property name="sticky">nsew</property>
                                         </layout>
+                                        <child>
+                                          <object class="ttk.Frame" id="propertiesframe">
+                                            <property name="height">200</property>
+                                            <property name="width">200</property>
+                                            <layout>
+                                              <property name="column">0</property>
+                                              <property name="propagate">True</property>
+                                              <property name="row">0</property>
+                                              <property name="sticky">nesw</property>
+                                            </layout>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
@@ -530,13 +542,25 @@
                                     <property name="sticky">nsew</property>
                                     <property name="text" translatable="yes">Layout</property>
                                     <child>
-                                      <object class="pygubu.builder.widgets.scrolledframe" id="layoutframe">
+                                      <object class="pygubu.builder.widgets.scrolledframe" id="layoutframe_sf">
                                         <property name="padding">5</property>
                                         <layout>
                                           <property name="column">0</property>
                                           <property name="row">0</property>
                                           <property name="sticky">nsew</property>
                                         </layout>
+                                        <child>
+                                          <object class="ttk.Frame" id="layoutframe">
+                                            <property name="height">200</property>
+                                            <property name="width">200</property>
+                                            <layout>
+                                              <property name="column">0</property>
+                                              <property name="propagate">True</property>
+                                              <property name="row">0</property>
+                                              <property name="sticky">nesw</property>
+                                            </layout>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
