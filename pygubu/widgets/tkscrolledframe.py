@@ -38,7 +38,13 @@ def _autoscroll(sbar, first, last):
 
 
 class TkScrolledFrame(tk.Frame):
+    VERTICAL = 'vertical'
+    HORIZONTAL = 'horizontal'
+    BOTH = 'both'
+
     def __init__(self, master=None, **kw):
+        self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
+
         tk.Frame.__init__(self, master, **kw)
 
         self._canvas = canvas = tk.Canvas(self, bd=0, highlightthickness=0,
@@ -75,34 +81,63 @@ class TkScrolledFrame(tk.Frame):
 
     # track changes to the canvas and frame width and sync them,
     # also updating the scrollbar
-
     def _on_iframe_configure(self, event=None):
-        new_region = (self.innerframe.winfo_reqwidth(),
-            self.innerframe.winfo_reqheight())
-        curr_region = tuple(
+        new_region = [self.innerframe.winfo_reqwidth(),
+            self.innerframe.winfo_reqheight()]
+        curr_region = list(
             map(int, (self._canvas.cget('scrollregion')).split()[2:]))
+        if not curr_region:
+            curr_region = [0, 0]
+
+        if new_region[0] > curr_region[0] and \
+            self.scrolltype not in (TkScrolledFrame.BOTH, TkScrolledFrame.HORIZONTAL):
+            new_region[0] = curr_region[0]
+        if new_region[1] > curr_region[1] and \
+            self.scrolltype not in (TkScrolledFrame.BOTH, TkScrolledFrame.VERTICAL):
+            new_region[1] = curr_region[1]
         if new_region != curr_region:
-            newscroll = (0, 0) + new_region
+            newscroll = [0, 0] + new_region
             self._canvas.config(scrollregion=newscroll)
+
 
     def _on_canvas_configure(self, event=None):
         innerframe = self.innerframe
         canvas = self._canvas
         innerframe_id = self._innerframe_id
-        size = (innerframe.winfo_reqwidth(), innerframe.winfo_reqheight())
+        inner_w, inner_h = (innerframe.winfo_reqwidth(), innerframe.winfo_reqheight())
 
-        if innerframe.winfo_reqwidth() < canvas.winfo_width():
+        #check and resize innerframe
+        canvas_w = canvas.winfo_width()
+        canvas_h = canvas.winfo_height()
+        if inner_w < canvas_w:
             # update the inner frame's width to fill the canvas
-            canvas.itemconfigure(innerframe_id, width=canvas.winfo_width())
-        if innerframe.winfo_reqheight() < canvas.winfo_height():
-            canvas.itemconfigure(
-                innerframe_id, height= canvas.winfo_height())
+            canvas.itemconfigure(innerframe_id, width=canvas_w)
+        if inner_w > canvas_w and \
+            self.scrolltype not in (TkScrolledFrame.BOTH, TkScrolledFrame.HORIZONTAL):
+            canvas.itemconfigure(innerframe_id, width=canvas_w)
 
-        itemsize = (int(canvas.itemcget(innerframe_id, 'width')),
+        if inner_h < canvas_h:
+            canvas.itemconfigure(
+                innerframe_id, height= canvas_h)
+        if inner_h > canvas_h and \
+            self.scrolltype not in (TkScrolledFrame.BOTH, TkScrolledFrame.VERTICAL):
+            canvas.itemconfigure(innerframe_id, height=canvas_h)
+
+        item_w, item_h = (int(canvas.itemcget(innerframe_id, 'width')),
                 int(canvas.itemcget(innerframe_id, 'height')))
-        if itemsize[0] < size[0] or itemsize[1] < size[1]:
-            canvas.itemconfigure( innerframe_id,
-                    width= size[0], height= size[1])
+
+        #check and resize canvas window item
+        if item_w < inner_w:
+            nw = canvas_w
+            if self.scrolltype in (TkScrolledFrame.BOTH, TkScrolledFrame.HORIZONTAL):
+                nw = inner_w
+            canvas.itemconfigure(innerframe_id, width=nw)
+        if item_h < inner_h:
+            nh = canvas_h
+            if self.scrolltype in (TkScrolledFrame.BOTH, TkScrolledFrame.VERTICAL):
+                nh = inner_h
+            canvas.itemconfigure(innerframe_id, height=nh)
+
 
     def reposition(self):
         """This method should be called when children are added,
@@ -110,4 +145,3 @@ class TkScrolledFrame(tk.Frame):
         self.innerframe.update()
         self.after_idle(self._on_iframe_configure, None)
         self.after_idle(self._on_canvas_configure, None)
-

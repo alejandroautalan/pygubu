@@ -83,6 +83,7 @@ class ScrolledFrame(ttk.Frame):
         canvas.xview_moveto(0)
         canvas.yview_moveto(0)
 
+
     # track changes to the canvas and frame width and sync them,
     # also updating the scrollbar
     def _on_iframe_configure(self, event=None):
@@ -103,24 +104,45 @@ class ScrolledFrame(ttk.Frame):
             newscroll = [0, 0] + new_region
             self._canvas.config(scrollregion=newscroll)
 
+
     def _on_canvas_configure(self, event=None):
         innerframe = self.innerframe
         canvas = self._canvas
         innerframe_id = self._innerframe_id
-        size = (innerframe.winfo_reqwidth(), innerframe.winfo_reqheight())
+        inner_w, inner_h = (innerframe.winfo_reqwidth(), innerframe.winfo_reqheight())
 
-        if innerframe.winfo_reqwidth() < canvas.winfo_width():
+        #check and resize innerframe
+        canvas_w = canvas.winfo_width()
+        canvas_h = canvas.winfo_height()
+        if inner_w < canvas_w:
             # update the inner frame's width to fill the canvas
-            canvas.itemconfigure(innerframe_id, width=canvas.winfo_width())
-        if innerframe.winfo_reqheight() < canvas.winfo_height():
-            canvas.itemconfigure(
-                innerframe_id, height= canvas.winfo_height())
+            canvas.itemconfigure(innerframe_id, width=canvas_w)
+        if inner_w > canvas_w and \
+            self.scrolltype not in (ScrolledFrame.BOTH, ScrolledFrame.HORIZONTAL):
+            canvas.itemconfigure(innerframe_id, width=canvas_w)
 
-        itemsize = (int(canvas.itemcget(innerframe_id, 'width')),
+        if inner_h < canvas_h:
+            canvas.itemconfigure(
+                innerframe_id, height= canvas_h)
+        if inner_h > canvas_h and \
+            self.scrolltype not in (ScrolledFrame.BOTH, ScrolledFrame.VERTICAL):
+            canvas.itemconfigure(innerframe_id, height=canvas_h)
+
+        item_w, item_h = (int(canvas.itemcget(innerframe_id, 'width')),
                 int(canvas.itemcget(innerframe_id, 'height')))
-        if itemsize[0] < size[0] or itemsize[1] < size[1]:
-            canvas.itemconfigure( innerframe_id,
-                    width= size[0], height= size[1])
+
+        #check and resize canvas window item
+        if item_w < inner_w:
+            nw = canvas_w
+            if self.scrolltype in (ScrolledFrame.BOTH, ScrolledFrame.HORIZONTAL):
+                nw = inner_w
+            canvas.itemconfigure(innerframe_id, width=nw)
+        if item_h < inner_h:
+            nh = canvas_h
+            if self.scrolltype in (ScrolledFrame.BOTH, ScrolledFrame.VERTICAL):
+                nh = inner_h
+            canvas.itemconfigure(innerframe_id, height=nh)
+
 
     def reposition(self):
         """This method should be called when children are added,

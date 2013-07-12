@@ -21,7 +21,7 @@
     </layout>
     <child>
       <object class="pygubu.builder.widgets.scrolledframe" id="scrolledframe_1">
-        <property name="scrolltype">both</property>
+        <property name="scrolltype">vertical</property>
         <layout>
           <property name="column">0</property>
           <property name="propagate">True</property>
