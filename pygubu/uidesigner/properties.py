@@ -476,6 +476,10 @@ __custom = (
         'default': tk.W,
         'readonly': True
         }),
+    ('scrolltype', {
+        'input_method': 'choice',
+        'values': ('both', 'vertical', 'horizontal'),
+        'default': 'horizontal' }),
 )
 
 PropertiesMap[GROUP_CUSTOM] = OrderedDict(__custom)

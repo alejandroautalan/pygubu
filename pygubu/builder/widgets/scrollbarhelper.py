@@ -21,15 +21,5 @@ class TTKSBHelperBO(BuilderObject):
         self.widget.add_child(cwidget)
 
 
-__scrolltype_property = {
-    'input_method': 'choice',
-    'values': (ScrollbarHelper.BOTH, ScrollbarHelper.VERTICAL,
-        ScrollbarHelper.HORIZONTAL),
-    'default': ScrollbarHelper.HORIZONTAL }
-
-register_property('scrolltype', __scrolltype_property)
-
-
 register_widget('pygubu.builder.widgets.scrollbarhelper', TTKSBHelperBO,
     'ScrollbarHelper', ('Pygubu Helpers', 'ttk'))
-

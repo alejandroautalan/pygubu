@@ -1,0 +1,239 @@
+<?xml version="1.0" ?>
+<interface>
+  <object class="ttk.Frame" id="mainwindow">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+      <property name="sticky">nesw</property>
+      <rows>
+        <row id="0">
+          <property name="weight">1</property>
+        </row>
+      </rows>
+      <columns>
+        <column id="0">
+          <property name="weight">1</property>
+        </column>
+      </columns>
+    </layout>
+    <child>
+      <object class="pygubu.builder.widgets.scrolledframe" id="scrolledframe_1">
+        <property name="scrolltype">both</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="sticky">nesw</property>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="Frame_2">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">nesw</property>
+              <rows>
+                <row id="0">
+                  <property name="weight">1</property>
+                </row>
+                <row id="1">
+                  <property name="weight">0</property>
+                </row>
+              </rows>
+              <columns>
+                <column id="0">
+                  <property name="weight">1</property>
+                </column>
+              </columns>
+            </layout>
+            <child>
+              <object class="ttk.Label" id="Label_1">
+                <property name="text" translatable="yes">Label_1</property>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_2">
+                <property name="text" translatable="yes">Label_2</property>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="propagate">True</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_3">
+                <property name="text" translatable="yes">Label_3</property>
+                <layout>
+                  <property name="column">3</property>
+                  <property name="propagate">True</property>
+                  <property name="row">2</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_4">
+                <property name="text" translatable="yes">Label_4</property>
+                <layout>
+                  <property name="column">4</property>
+                  <property name="propagate">True</property>
+                  <property name="row">3</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_5">
+                <property name="text" translatable="yes">Label_5</property>
+                <layout>
+                  <property name="column">5</property>
+                  <property name="propagate">True</property>
+                  <property name="row">4</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_6">
+                <property name="text" translatable="yes">Label_6</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">5</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_7">
+                <property name="text" translatable="yes">Label_7</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">6</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_8">
+                <property name="text" translatable="yes">Label_8</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">7</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_9">
+                <property name="text" translatable="yes">Label_9</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">8</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_10">
+                <property name="text" translatable="yes">Label_10</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">9</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_11">
+                <property name="text" translatable="yes">Label_11</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">10</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_12">
+                <property name="text" translatable="yes">Label_12</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">11</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_13">
+                <property name="text" translatable="yes">Label_13</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">12</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_14">
+                <property name="text" translatable="yes">Label_14</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">13</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_15">
+                <property name="text" translatable="yes">Label_15</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">14</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_16">
+                <property name="text" translatable="yes">Label_16</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">15</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_17">
+                <property name="text" translatable="yes">Label_17</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">16</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_18">
+                <property name="text" translatable="yes">Label_18</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">17</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

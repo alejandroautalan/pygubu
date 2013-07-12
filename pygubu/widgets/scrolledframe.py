@@ -40,7 +40,13 @@ def _autoscroll(sbar, first, last):
 
 
 class ScrolledFrame(ttk.Frame):
+    VERTICAL = 'vertical'
+    HORIZONTAL = 'horizontal'
+    BOTH = 'both'
+
     def __init__(self, master=None, **kw):
+        self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
+
         ttk.Frame.__init__(self, master, **kw)
 
         self._canvas = canvas = tk.Canvas(self, bd=0, highlightthickness=0,
@@ -80,12 +86,21 @@ class ScrolledFrame(ttk.Frame):
     # track changes to the canvas and frame width and sync them,
     # also updating the scrollbar
     def _on_iframe_configure(self, event=None):
-        new_region = (self.innerframe.winfo_reqwidth(),
-            self.innerframe.winfo_reqheight())
-        curr_region = tuple(
+        new_region = [self.innerframe.winfo_reqwidth(),
+            self.innerframe.winfo_reqheight()]
+        curr_region = list(
             map(int, (self._canvas.cget('scrollregion')).split()[2:]))
+        if not curr_region:
+            curr_region = [0, 0]
+
+        if new_region[0] > curr_region[0] and \
+            self.scrolltype not in (ScrolledFrame.BOTH, ScrolledFrame.HORIZONTAL):
+            new_region[0] = curr_region[0]
+        if new_region[1] > curr_region[1] and \
+            self.scrolltype not in (ScrolledFrame.BOTH, ScrolledFrame.VERTICAL):
+            new_region[1] = curr_region[1]
         if new_region != curr_region:
-            newscroll = (0, 0) + new_region
+            newscroll = [0, 0] + new_region
             self._canvas.config(scrollregion=newscroll)
 
     def _on_canvas_configure(self, event=None):
