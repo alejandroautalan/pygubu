@@ -46,6 +46,8 @@ class ScrolledFrame(ttk.Frame):
         self._canvas = canvas = tk.Canvas(self, bd=0, highlightthickness=0,
             width=200, height=200)
         self.innerframe = innerframe = ttk.Frame(self._canvas)
+        self.innerframe.rowconfigure(0, weight=1)
+        self.innerframe.columnconfigure(0, weight=1)
         self.vsb = vsb = ttk.Scrollbar(self)
         self.hsb = hsb = ttk.Scrollbar(self, orient="horizontal")
 
@@ -111,4 +113,3 @@ class ScrolledFrame(ttk.Frame):
         self.innerframe.update()
         self.after_idle(self._on_iframe_configure, None)
         self.after_idle(self._on_canvas_configure, None)
-
