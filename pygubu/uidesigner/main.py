@@ -51,6 +51,9 @@ from .widgeteditor import WidgetsTreeEditor
 from .previewer import PreviewHelper
 from .util.dialog import DialogBase
 from .i18n import translator
+from pygubu.widgets.accordionframe import AccordionFrame
+from pygubu.widgets.autoarrangeframe import AutoArrangeFrame
+import pygubu.widgets.simpletooltip as tooltip
 
 #translator function
 _ = translator
@@ -164,6 +167,7 @@ class PygubuUI(util.Application):
         self.project_name = self.builder.get_object('projectname_lbl')
 
         #Class selector values
+        self.widgetlist_sf = self.builder.get_object("widgetlist_sf")
         self.widgetlist = self.builder.get_object("widgetlist")
         self.configure_widget_list()
 
@@ -265,8 +269,9 @@ class PygubuUI(util.Application):
 
 
     def configure_widget_list(self):
-        tv = self.widgetlist
-        tv.bind('<Double-1>', lambda e: self.on_add_widget_event())
+        acf = AccordionFrame(self.widgetlist)
+        acf.grid(sticky=tk.NSEW)
+        acf.bind('<<AccordionGroupToggle>>', self.on_widgetlist_group_toogle)
 
         root_tagset = set(('tk', 'ttk'))
 
@@ -303,15 +308,20 @@ class PygubuUI(util.Application):
         #Start building widget tree selector
         roots = {}
         sections = {}
-        tv.itemdata = {}
         for key, wc in treelist:
             root, section = key.split('>')
             #insert root
             if root not in roots:
-                roots[root] = tv.insert('', tk.END, text=root, open=True)
+                roots[root] = acf.add_group(root, root)
             #insert section
             if key not in sections:
-                sections[key] = tv.insert(roots[root], tk.END, text=section)
+                sectionacf = AccordionFrame(roots[root])
+                sectionacf.grid(sticky=tk.NSEW, padx='5 0')
+                sectionacf.bind('<<AccordionGroupToggle>>',
+                    self.on_widgetlist_group_toogle)
+                sectiongrp = sectionacf.add_group(key, section)
+                sections[key] = AutoArrangeFrame(sectiongrp)
+                sections[key].grid(sticky=tk.NSEW)
 
             #insert widget
             w_image = default_image
@@ -319,20 +329,31 @@ class PygubuUI(util.Application):
                 w_image = StockImage.get('22x22-{0}'.format(wc.classname))
             except StockImageException as e:
                 pass
-            i = tv.insert(sections[key], tk.END, text=wc.label, image=w_image)
-            tv.itemdata[i] = wc.classname
+
+            #define callback for button
+            def create_cb(cname):
+                return lambda: self.on_add_widget_event(cname)
+
+            b = ttk.Button(sections[key], text=wc.label, image=w_image,
+                style='Toolbutton', command=create_cb(wc.classname))
+            tooltip.create(b, wc.classname)
+            b.grid()
+
+        #hide tk widget by default
+        acf.group_toogle('tk')
+        self.widgetlist_sf.reposition()
 
 
+    def on_widgetlist_group_toogle(self, event=None):
+        "Refresh widget list to reposition scrolledframe"
 
-    def on_add_widget_event(self):
-        wlist = self.widgetlist
-        #get widget class name to insert
-        selection = wlist.selection()
-        if selection:
-            item = selection[0]
-            if item in wlist.itemdata:
-                wclass = wlist.itemdata[item]
-                self.tree_editor.add_widget(wclass)
+        self.widgetlist_sf.reposition()
+
+
+    def on_add_widget_event(self, classname):
+        "Adds a widget to the widget tree."""
+
+        self.tree_editor.add_widget(classname)
 
 
     def on_menuitem_new_clicked(self):
@@ -350,6 +371,7 @@ class PygubuUI(util.Application):
 
     def on_menuitem_open_clicked(self):
         """Opens xml file and load to treeview"""
+
         openfile = True
         if self.is_changed:
             openfile = messagebox.askokcancel(_('File changed'),
