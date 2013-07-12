@@ -249,6 +249,11 @@ class WidgetPropertiesEditor:
 
         editor_frame = self.propsframe
         prop_widget = self.prop_widget
+
+        #hack to resize correctly when properties are hidden
+        label = ttk.Label(editor_frame)
+        label.grid()
+
         row=0
         col=0
         label_tpl = "{0}:"
@@ -279,6 +284,11 @@ class WidgetPropertiesEditor:
         master = self.layoutframe
         prop_widget = self.prop_widget
         frame = ttk.LabelFrame(master, text=_('Grid options:'))
+
+        #hack to resize correctly when properties are hidden
+        label = ttk.Label(frame)
+        label.grid()
+
         label_tpl = "{0}:"
         row= col=0
         group = properties.GROUP_LAYOUT_GRID
@@ -291,11 +301,16 @@ class WidgetPropertiesEditor:
             row += 1
             prop_widget[group][name] = (label, togrid)
 
-        frame.grid(row=0, column=0)
+        frame.grid(row=0, column=0, sticky=tk.NSEW)
 
         #labels
         group = properties.GROUP_LAYOUT_GRID_RC
         frame = ttk.LabelFrame(master, text=_('Grid row/column options:'))
+
+        #hack to resize correctly when properties are hidden
+        label = ttk.Label(frame)
+        label.grid()
+
         row = col = 0
         icol = 1
         headers=[]
