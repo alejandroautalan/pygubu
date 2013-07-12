@@ -93,6 +93,10 @@ class AccordionFrame(ttk.Frame):
         return self.__groups[gid][1]
 
 
+    def group_toogle(self, gid):
+        self.__button_clicked(gid)
+
+
     def __button_clicked(self, gid):
         btn, frame = self.__groups[gid]
         if btn.dd_show == True:
@@ -103,6 +107,8 @@ class AccordionFrame(ttk.Frame):
             btn.dd_show = True
             btn.configure(image=self.__images[0])
             frame.grid()
+        self.event_generate('<<AccordionGroupToggle>>')
+
 
     def set_images(self, img_open, img_close):
         if self.__images == AccordionFrame.IMAGES:
