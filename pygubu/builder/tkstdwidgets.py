@@ -180,7 +180,7 @@ class TKMessage(BuilderObject):
         'takefocus', 'text', 'textvariable', 'width']
 
 register_widget('tk.Message', TKMessage,
-        'Message', ('Control & Display', 'tk'))
+        'Message', ('Control & Display', 'tk', 'ttk'))
 
 
 class TKRadiobutton(BuilderObject):
@@ -427,4 +427,3 @@ class TKPanedWindowPane(PanedWindowPane):
 
 register_widget('tk.PanedWindow.Pane', TKPanedWindowPane,
     'PanedWindow.Pane', ('Pygubu Helpers', 'tk'))
-
