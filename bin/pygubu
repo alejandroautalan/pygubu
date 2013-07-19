@@ -42,6 +42,6 @@ version_file = os.path.join(project_basedir, 'version.txt')
 import pygubu
 print("Pygubu: v. %s" % (pygubu.__version__,))
 
-from pygubu.uidesigner import main
+from pygubudesigner import main
 
 main.start_pygubu()
