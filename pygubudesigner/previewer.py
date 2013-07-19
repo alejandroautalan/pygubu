@@ -157,8 +157,8 @@ class Preview:
         self.canvas.itemconfigure(self.shapes['window'], window=canvas_window)
         canvas_window.update_idletasks()
         canvas_window.grid_propagate(0)
-        self.w = self.min_w = preview_widget.winfo_width()
-        self.h = self.min_h = preview_widget.winfo_height()
+        self.w = self.min_w = preview_widget.winfo_reqwidth()
+        self.h = self.min_h = preview_widget.winfo_reqheight()
         self.resize_to(self.w, self.h)
 
 
