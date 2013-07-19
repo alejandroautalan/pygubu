@@ -245,6 +245,11 @@ class PygubuUI(util.Application):
         #
         self._setup_styles()
 
+        #
+        # Setup dynamic theme submenu
+        #
+        self._setup_theme_menu()
+
         #app config
         top = self.winfo_toplevel()
         try:
@@ -259,13 +264,28 @@ class PygubuUI(util.Application):
 
     def _setup_styles(self):
         s = ttk.Style()
-        s.configure('ColorSelectorButton.TButton', width='2')
-        s.configure('ImageSelectorButton.TButton', width='2')
-        s.configure('FilterClearButton.TButton', width='2', relief=tk.FLAT)
+        s.configure('ColorSelectorButton.Toolbutton', image=StockImage.get('mglass'))
+        s.configure('ImageSelectorButton.Toolbutton', image=StockImage.get('mglass'))
         if sys.platform == 'linux':
             #change background of comboboxes
             color = s.lookup('TEntry', 'fieldbackground')
             s.map('TCombobox', fieldbackground=[('readonly', color)])
+
+
+    def _setup_theme_menu(self):
+        menu = self.builder.get_object('preview_themes_submenu')
+        s = ttk.Style()
+        styles = s.theme_names()
+        self.__theme_var = var = tk.StringVar()
+        var.set(s.theme_use())
+
+        for name in styles:
+
+            def handler(style=s, theme=name):
+                style.theme_use(theme)
+
+            menu.add_radiobutton(label=name, value=name,
+                variable=self.__theme_var, command=handler)
 
 
     def configure_widget_list(self):
