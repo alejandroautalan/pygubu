@@ -4,7 +4,7 @@ Welcome to pygubu a GUI designer for tkinter
 ============================================
 
 Pygubu is a RAD tool to enable quick & easy development of user interfaces
-for the python tkinter.
+for the python tkinter module.
 
 The user interfaces designed are saved as XML, and by using the pygubu builder
 these can be loaded by applications dynamically as needed.
@@ -13,7 +13,7 @@ Pygubu is inspired by Glade.
 Installation
 ============
 
-Pygubu requires python >= 2.7 (I tested only in python 2.7.3 and 3.2.3 with tk8.5)
+Pygubu requires python >= 2.7 (Tested only in python 2.7.3 and 3.2.3 with tk8.5)
 
 Download and extract the tarball. Open a console in the extraction path
  and execute:
@@ -38,7 +38,7 @@ class Application:
     def __init__(self, master):
 
         #1: Create a builder
-        self.builder = builder = pugubu.Builder()
+        self.builder = builder = pygubu.Builder()
 
         #2: Load an ui file
         builder.add_from_file('test.ui')

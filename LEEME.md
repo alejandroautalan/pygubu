@@ -36,7 +36,7 @@ class Application:
     def __init__(self, master):
 
         #1: Crea un constructor
-        self.builder = builder = pugubu.Builder()
+        self.builder = builder = pygubu.Builder()
 
         #2: Carga un archivo con el diseño de la interfaz
         builder.add_from_file('prueba.ui')
