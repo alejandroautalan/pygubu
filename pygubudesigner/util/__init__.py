@@ -148,17 +148,18 @@ def make_color_selector(master, textvariable):
     frame = ttk.Frame(master)
     entry = ttk.Entry(frame, textvariable=textvariable)
     _selector_id += 1
-    stylename = 'ID{0}.ColorSelectorButton.TButton'.format(_selector_id)
+    stylename = 'ID{0}.ColorSelectorButton.Toolbutton'.format(_selector_id)
     button = ttk.Button(frame, text='…', style=stylename)
-    btn_bgcolor = _ttk_style.lookup('TButton', 'background')
+    btn_bgcolor = _ttk_style.lookup('Toolbutton', 'background')
 
     def on_entry_changed(varname, element, mode):
         color = textvariable.get()
         stylename = button.cget('style')
         if color:
             try:
+                rgb = entry.winfo_rgb(color)
                 _ttk_style.configure(stylename, background=color)
-            except Exception as e:
+            except tk.TclError as e:
                 pass
         else:
             #set button to the default color
@@ -166,14 +167,19 @@ def make_color_selector(master, textvariable):
 
     def on_button_click():
         current = entry.get()
-        _, txtcolor = tk.colorchooser.askcolor(color=current)
+        txtcolor = None
+        try:
+            _, txtcolor = tk.colorchooser.askcolor(color=current)
+        except tk.TclError:
+            pass
         if txtcolor is not None:
             textvariable.set(txtcolor)
+            entry.event_generate('<<ColorChanged>>')
 
     button.configure(command=on_button_click)
     textvariable.trace('w', on_entry_changed)
     entry.grid()
-    button.grid(row=0, column=1)
+    button.grid(row=0, column=1, padx="5 0")
 
     return (frame, entry, button)
 

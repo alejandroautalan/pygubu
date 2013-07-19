@@ -184,6 +184,12 @@ class WidgetPropertiesEditor:
         widget.configure(command=command_handler)
 
 
+    def connect_colorchanged_cb(self, widget, pname):
+        def colorchanged_handler(event, self=self, pname=pname):
+            self.on_property_changed(pname)
+        widget.bind('<<ColorChanged>>', colorchanged_handler, add='+')
+
+
     def connect_variable_cb(self, variable, pname):
         def var_handler(varname, elementname, mode, self=self, pname=pname):
             self.on_property_changed(pname)
@@ -283,7 +289,7 @@ class WidgetPropertiesEditor:
     def create_grid_layout_editor(self):
         master = self.layoutframe
         prop_widget = self.prop_widget
-        frame = ttk.LabelFrame(master, text=_('Grid options:'))
+        frame = ttk.LabelFrame(master, text=_('Grid options:'), padding=5)
 
         #hack to resize correctly when properties are hidden
         label = ttk.Label(frame)
@@ -305,7 +311,8 @@ class WidgetPropertiesEditor:
 
         #labels
         group = properties.GROUP_LAYOUT_GRID_RC
-        frame = ttk.LabelFrame(master, text=_('Grid row/column options:'))
+        frame = ttk.LabelFrame(master, text=_('Grid row/column options:'),
+            padding=5)
 
         #hack to resize correctly when properties are hidden
         label = ttk.Label(frame)
@@ -352,7 +359,7 @@ class WidgetPropertiesEditor:
                 icol += 1
             row +=1
 
-        frame.grid(row=1, column=0, sticky=tk.NSEW)
+        frame.grid(row=1, column=0, sticky=tk.NSEW, pady='10 0')
 
 
     def create_grid_rc_widget(self, master, name, alias):
@@ -413,7 +420,9 @@ class WidgetPropertiesEditor:
         elif wtype == 'colorentry':
             frame, widget, _ = util.make_color_selector(master, widgetvar)
             togrid = frame
-            self.connect_variable_cb(widgetvar, propalias)
+            self.connect_focusout_cb(widget, propalias)
+            self.connect_on_enterkey_cb(widget, propalias)
+            self.connect_colorchanged_cb(widget, propalias)
         elif wtype == 'imageentry':
             frame, widget, _ = util.make_image_selector(master, widgetvar)
             togrid = frame
