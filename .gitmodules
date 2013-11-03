@@ -1,0 +1,3 @@
+[submodule "pygubu-wiki"]
+	path = pygubu-wiki
+	url = git@github.com:alejandroautalan/pygubu.wiki.git
