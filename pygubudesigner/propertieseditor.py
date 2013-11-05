@@ -578,6 +578,7 @@ class WidgetPropertiesEditor:
         max_children = 0 if max_children is None else max_children
         is_container = CLASS_MAP[wclass].classobj.container
         layout_required = CLASS_MAP[wclass].classobj.layout_required
+        allow_container_layout = CLASS_MAP[wclass].classobj.allow_container_layout
         show_layout = layout_required
         #grid layout properties
         group = properties.GROUP_LAYOUT_GRID
@@ -596,7 +597,10 @@ class WidgetPropertiesEditor:
 
         group = properties.GROUP_LAYOUT_GRID_RC
         #max_row, max_col = self.get_max_row_col(item)
-        show_layout = (is_container and layout_required and max_children != 1)
+        show_layout = (is_container
+                        and layout_required
+                        and allow_container_layout
+                        and max_children != 1)
         show_headers = False
         for key in self.prop_widget[group]:
             rowcol, number, name = self.identify_gridrc_property(key)

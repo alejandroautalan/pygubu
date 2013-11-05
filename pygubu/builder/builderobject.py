@@ -38,6 +38,7 @@ class BuilderObject(object):
 
     class_ = None
     container = False
+    allow_container_layout = True #True if widget can setup grid row/col options
     allowed_parents = None
     allowed_children = None
     maxchildren = None
@@ -232,6 +233,7 @@ class PanedWindow(BuilderObject):
     """Base class for tk.PanedWindow and ttk.Panedwindow builder objects"""
     class_ = None
     container = True
+    allow_container_layout = False
     properties = []
     ro_properties = ('orient', )
 
@@ -250,6 +252,7 @@ class PanedWindow(BuilderObject):
 class PanedWindowPane(BuilderObject):
     class_ = None
     container = True
+    allow_container_layout = False
     properties = []
     layout_required = False
     allow_bindings = False
@@ -266,7 +269,3 @@ class PanedWindowPane(BuilderObject):
 
     def add_child(self, bobject):
         self.widget.add(bobject.widget, **self.properties)
-
-
-
-

@@ -211,6 +211,7 @@ register_widget('ttk.Panedwindow', TTKPanedwindow,
 class TTKNotebook(BuilderObject):
     class_ = ttk.Notebook
     container = True
+    allow_container_layout = False
     allowed_children = ('ttk.Notebook.Tab',)
     properties = ['class_', 'cursor', 'height',
             'padding', 'style', 'takefocus', 'width']
@@ -386,5 +387,3 @@ class TTKTreeviewColBO(BuilderObject):
 
 register_widget('ttk.Treeview.Column', TTKTreeviewColBO,
         'Treeview.Column', ('Pygubu Helpers', 'ttk'))
-
-

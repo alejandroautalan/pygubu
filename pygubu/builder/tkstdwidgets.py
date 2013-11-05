@@ -265,6 +265,7 @@ class TKMenu(BuilderObject):
         'tk.Menuitem.Separator')
     class_ = tk.Menu
     container = True
+    allow_container_layout = False
     properties = ['activebackground', 'activeborderwidth', 'activeforeground',
         'background', 'borderwidth', 'cursor', 'disabledforeground',
         'font', 'foreground', 'postcommand', 'relief', 'selectcolor',
