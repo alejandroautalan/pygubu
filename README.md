@@ -52,11 +52,36 @@ if __name__ == '__main__':
     root.mainloop()
 ```
 
-See the examples directory or watch this hello world example on video http://youtu.be/wuzV9P8geDg
+Documentation
+=============
+
+Visit the pygubu [wiki](https://github.com/alejandroautalan/pygubu/wiki) for more documentation.
+
+An excellent tkinter reference is available [here](http://www.nmt.edu/tcc/help/pubs/tkinter/web/index.html).
+
+See the examples directory or watch this hello world example on [video](http://youtu.be/wuzV9P8geDg)
 
 
 History
 =======
+
+Changes for version 0.9.2
+
+  * Added more wiki pages.
+  * Fixed issues #3, #4
+
+Changes for version 0.9.1
+
+  * Separate designer module from main package
+  * Added menu to select current ttk theme
+  * Fix color selector issues.
+
+Changes for version 0.9
+
+  * Add validator for pax and pady properties.
+  * Improved ScrolledFrame widget.
+  * Added more wiget icons.
+  * Fix cursor type on preview panel.
 
 Changes for version 0.8
 

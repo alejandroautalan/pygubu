@@ -15,7 +15,8 @@ import platform
 from distutils.command.install import install
 from distutils.core import setup
 
-VERSION = open('version.txt').read().strip()
+import pygubu
+VERSION = pygubu.__version__
 
 
 class CustomInstall(install):

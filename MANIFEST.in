@@ -1,6 +1,5 @@
 include COPYING
 include LEEME.txt
-include version.txt
 recursive-include po *
 recursive-include pygubudesigner/locale *
 recursive-include examples *
