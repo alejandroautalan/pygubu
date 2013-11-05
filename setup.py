@@ -10,6 +10,7 @@ Needed packages to run (using Debian/Ubuntu package names):
 
 import os
 import shutil
+import platform
 
 from distutils.command.install import install
 from distutils.core import setup
@@ -38,6 +39,10 @@ class CustomInstall(install):
 
             with open(script_path, 'w') as fh:
                 fh.write(content)
+
+            if platform.system() == 'Windows':
+                dest = script_path + '.pyw'
+                shutil.move(script_path, dest)
 
 
 long_description = \
