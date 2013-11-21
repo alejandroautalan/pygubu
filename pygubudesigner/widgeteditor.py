@@ -205,7 +205,7 @@ class WidgetsTreeEditor(object):
             #fix row position when using copy and paste
             #If collision, increase by 1
             row_count = self.get_max_row(root)
-            if row_count > int(row):
+            if row_count > int(row) and int(col) == 0:
                 row = str(row_count + 1)
                 data.set_layout_property('row', row)
 
