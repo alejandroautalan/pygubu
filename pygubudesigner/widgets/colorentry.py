@@ -74,17 +74,18 @@ class ColorEntry(CompoundPropertyEditor):
             try:
                 rgb = self.winfo_rgb(newcolor)
                 ColorEntry.ttk_style.configure(self.stylename, background=newcolor)
-                self._disable_cb()
-                self._variable.set(newcolor)
-                self._entryvar.set(newcolor)
-                self._enable_cb()
-                if gen_event:
-                    self.event_generate('<<ColorEntryChanged>>')
             except tk.TclError as e:
                 pass
         else:
             ColorEntry.ttk_style.configure(self.stylename,
                 background=ColorEntry.btn_bgcolor)
+            newcolor = ''
+        self._disable_cb()
+        self._variable.set(newcolor)
+        self._entryvar.set(newcolor)
+        self._enable_cb()
+        if gen_event:
+            self.event_generate('<<ColorEntryChanged>>')
 
     def _on_entry_changed(self, event=None):
         color = self._entryvar.get()

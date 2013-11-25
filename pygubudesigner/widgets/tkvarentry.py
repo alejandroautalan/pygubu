@@ -61,10 +61,12 @@ class TkVarEntry(CompoundPropertyEditor):
         value = self._entryvar.get()
         if value:
             value = self._cboxvar.get() + ':' + value
-            self._disable_cb()
-            self._variable.set(value)
-            self._enable_cb()
-            self.event_generate('<<TkVarEntryChanged>>')
+        else:
+            value = ''
+        self._disable_cb()
+        self._variable.set(value)
+        self._enable_cb()
+        self.event_generate('<<TkVarEntryChanged>>')
         
     def _on_variable_changed(self, varname, elementname, mode):
         vtype = self.default_vtype

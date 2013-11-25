@@ -70,11 +70,10 @@ class ImageEntry(CompoundPropertyEditor):
 
     def _on_entry_changed(self, event=None):
         imagename = self._entryvar.get()
-        if imagename:
-            self._disable_cb()
-            self._variable.set(imagename)
-            self._enable_cb()
-            self.event_generate('<<ImageEntryChanged>>')
+        self._disable_cb()
+        self._variable.set(imagename)
+        self._enable_cb()
+        self.event_generate('<<ImageEntryChanged>>')
 
     def _on_variable_changed(self, varname, elementname, mode):
         imagename = self._variable.get()

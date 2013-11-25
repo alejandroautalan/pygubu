@@ -207,9 +207,10 @@ class WidgetPropertiesEditor:
         old_value = self._var_prev_value.get(pname, '')
 
         #Do not redraw if same values
+        #print('new ', new_value, ' old ', old_value)
         if new_value == old_value:
             return
-        #self._var_prev_value[pname] = new_value
+        self._var_prev_value[pname] = new_value
 
         pgroup, pname = self.arrayvar.identify_property(pname)
         if self.current is not None:
