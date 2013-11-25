@@ -65,6 +65,11 @@ See the examples directory or watch this hello world example on [video](http://y
 History
 =======
 
+Changes for version 0.9.3
+    
+    * Allow to select control variable type
+    * Fixed some bugs.
+
 Changes for version 0.9.2
 
   * Added more wiki pages.

@@ -65,6 +65,11 @@ Busca en el directorio de ejemplos o mira este ejemplo de 'Hola mundo' en
 Historia
 ========
 
+Cambios de la versión 0.9.3
+    
+    * Allow to select control variable type
+    * Fixed some bugs.
+
 Cambios de la versión 0.9.2
 
   * Added more wiki pages.

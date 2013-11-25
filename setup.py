@@ -114,7 +114,8 @@ setup(
     url='https://github.com/alejandroautalan/pygubu',
 
     packages=['pygubu', 'pygubu.builder', 'pygubu.builder.widgets',
-        'pygubu.widgets', 'pygubudesigner', 'pygubudesigner.util'],
+        'pygubu.widgets', 'pygubudesigner', 'pygubudesigner.util',
+        'pygubudesigner.widgets'],
     package_data={
         'pygubudesigner': [
             'images/*.gif', 'images/widgets/16x16/*.gif',
