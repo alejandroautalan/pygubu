@@ -28,7 +28,7 @@ except:
 from pygubu import builder
 from . import util
 from . import properties
-from .util.textentry import Textentry
+from .widgets import ColorEntry, Textentry, TkVarEntry, ImageEntry
 from .bindingseditor import BindingsEditor
 from .i18n import translator as _
 
@@ -184,10 +184,10 @@ class WidgetPropertiesEditor:
         widget.configure(command=command_handler)
 
 
-    def connect_colorchanged_cb(self, widget, pname):
-        def colorchanged_handler(event, self=self, pname=pname):
+    def connect_virtualevent_cb(self, eventname, widget, pname):
+        def virtualevent_handler(event, self=self, pname=pname):
             self.on_property_changed(pname)
-        widget.bind('<<ColorChanged>>', colorchanged_handler, add='+')
+        widget.bind(eventname, virtualevent_handler, add='+')
 
 
     def connect_variable_cb(self, variable, pname):
@@ -209,8 +209,7 @@ class WidgetPropertiesEditor:
         #Do not redraw if same values
         if new_value == old_value:
             return
-
-        self._var_prev_value[pname] = new_value
+        #self._var_prev_value[pname] = new_value
 
         pgroup, pname = self.arrayvar.identify_property(pname)
         if self.current is not None:
@@ -413,20 +412,18 @@ class WidgetPropertiesEditor:
             self.connect_focusout_cb(widget, propalias)
             self.connect_on_enterkey_cb(widget, propalias)
         elif wtype == 'textentry':
-            widget = Textentry(master, textvariable=widgetvar,
-                width=20, height=3)
+            widget = Textentry(master, textvariable=widgetvar)
+            widget.text.configure(width=20, height=3)
             togrid = widget
-            self.connect_focusout_cb(widget, propalias)
+            self.connect_virtualevent_cb('<<TextentryChanged>>', widget, propalias)
         elif wtype == 'colorentry':
-            frame, widget, _ = util.make_color_selector(master, widgetvar)
-            togrid = frame
-            self.connect_focusout_cb(widget, propalias)
-            self.connect_on_enterkey_cb(widget, propalias)
-            self.connect_colorchanged_cb(widget, propalias)
+            widget = ColorEntry(master, textvariable=widgetvar)
+            togrid = widget
+            self.connect_virtualevent_cb('<<ColorEntryChanged>>', widget, propalias)
         elif wtype == 'imageentry':
-            frame, widget, _ = util.make_image_selector(master, widgetvar)
-            togrid = frame
-            self.connect_variable_cb(widgetvar, propalias)
+            widget= ImageEntry(master, textvariable=widgetvar)
+            togrid = widget
+            self.connect_virtualevent_cb('<<ImageEntryChanged>>', widget, propalias)
         elif wtype == 'choice':
             readonly = wdata.get('readonly', False)
             status = 'readonly' if readonly else tk.NORMAL
@@ -437,6 +434,11 @@ class WidgetPropertiesEditor:
             if values is not None:
                 widget.configure(values=values)
             self.connect_variable_cb(widgetvar, propalias)
+        elif wtype == 'tkvarentry':
+            widget = TkVarEntry(master, textvariable=widgetvar,
+                        width=20, height=3)
+            togrid = widget
+            self.connect_virtualevent_cb('<<TkVarEntryChanged>>', widget, propalias)
         elif wtype == 'spinbox':
             status= tk.NORMAL
             readonly = wdata.get('readonly', False)
@@ -529,12 +531,14 @@ class WidgetPropertiesEditor:
             value = default
 
         variable.set(value)
+        self._var_prev_value[group+propertyname] = value
 
 
     def edit(self, data, max_row=1, max_col=1):
         """Copies properties values from data to the
            properties editor so they can be edited."""
 
+        self._var_prev_value.clear()
         #
         self._editor_ready = False
         self.current = data
@@ -551,7 +555,6 @@ class WidgetPropertiesEditor:
                     key, wclass, data)
                 label.grid()
                 widget.grid()
-                self._var_prev_value[group+key] = variable.get()
             else:
                 #hide property widget
                 label, widget = self.prop_widget[group][key]
@@ -567,7 +570,6 @@ class WidgetPropertiesEditor:
                     key, wclass, data)
                 label.grid()
                 widget.grid()
-                self._var_prev_value[group+key] = variable.get()
             else:
                 #hide property widget
                 label, widget = self.prop_widget[group][key]
@@ -590,7 +592,6 @@ class WidgetPropertiesEditor:
                         wclass, data)
                 label.grid()
                 widget.grid()
-                self._var_prev_value[group+gkey] = variable.get()
             else:
                 label.grid_remove()
                 widget.grid_remove()
@@ -613,7 +614,6 @@ class WidgetPropertiesEditor:
                     wclass, data, rowcol, number_str)
                 label.grid(); widget.grid()
                 show_headers = True
-                self._var_prev_value[group+key] = variable.get()
             elif show_layout and rowcol == 'column' and number <= max_col:
                 label, widget = self.prop_widget[group][key]
                 variable = self.arrayvar.get_property_variable(group, key)
@@ -621,7 +621,6 @@ class WidgetPropertiesEditor:
                     wclass, data, rowcol, number_str)
                 label.grid(); widget.grid()
                 show_headers = True
-                self._var_prev_value[group+key] = variable.get()
             else:
                 label, widget = self.prop_widget[group][key]
                 label.grid_remove(); widget.grid_remove()

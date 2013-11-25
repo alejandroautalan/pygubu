@@ -57,6 +57,10 @@ _default_spinbox_float_prop = {
     'increment': 0.1
 }
 
+_default_tkvariable_prop = {
+    'input_method': 'tkvarentry',
+}
+
 _default_dimension_prop = {
     'input_method': 'spinbox',
     'min': 0,
@@ -371,7 +375,7 @@ __widget = (
         }),
     ('tearoffcommand', _default_entry_prop),
     ('text', _default_textentry_prop),
-    ('textvariable', _default_entry_prop),
+    ('textvariable', _default_tkvariable_prop),
     ('tickinterval', _default_spinbox_float_prop),
     ('title', _default_entry_prop),
     ('troughcolor', _default_color_prop),
@@ -391,7 +395,7 @@ __widget = (
         'ttk.Scale': { 'validator': 'number_float'}
         }),
     ('values', _default_entry_prop), #FIXME This should be treated as a list?
-    ('variable', _default_entry_prop),
+    ('variable',_default_tkvariable_prop),
     ('weight', _default_spinbox_prop),
     ('wrap', { 'input_method': 'choice',
         'values': ('', tk.TRUE, tk.FALSE),

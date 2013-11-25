@@ -24,47 +24,26 @@ except:
     import Tkinter as tk
     import ttk
 
+from pygubudesigner.widgets.compoundpropertyeditor import CompoundPropertyEditor
 
-class Textentry(tk.Text):
+class Textentry(CompoundPropertyEditor):
     def __init__(self, master=None, cnf={}, **kw):
-        self.__variable = None
-        self.__cbhandler = None
+        CompoundPropertyEditor.__init__(self, master, **kw)
+        self.text = w = tk.Text(self)
+        w.grid(sticky='nsew')
+        w.bind('<FocusOut>', self._on_focus_out)
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
 
-        if 'textvariable' in kw:
-            self.__configure_variable(kw.pop('textvariable'))
-
-        tk.Text.__init__(self, master, *cnf, **kw)
-        self.bind('<FocusOut>', self._on_focus_out)
-
-    def configure(self, cnf=None, **kw):
-        if 'textvariable' in kw:
-            self.__configure_variable(kw.pop('textvariable'))
-        tk.Text.configure(self, cnf, **kw)
-
-    config = configure
-
-    def _on_focus_out(self, event):
-        value = (self.get('0.0', tk.END))[:-1]
-        if self.__variable is not None:
-            self.__disable_cb()
-            self.__variable.set(value)
-            self.__enable_cb()
+    def _on_focus_out(self, event=None):
+        value = (self.text.get('0.0', tk.END))[:-1]
+        if self._variable is not None:
+            self._disable_cb()
+            self._variable.set(value)
+            self._enable_cb()
+            self.event_generate('<<TextentryChanged>>')
 
     def _on_variable_changed(self, varname, elementname, mode):
-        self.delete('0.0', tk.END)
-        self.insert('0.0', self.__variable.get())
+        self.text.delete('0.0', tk.END)
+        self.text.insert('0.0', self._variable.get())
 
-    def __configure_variable(self, variable):
-        self.__disable_cb()
-        self.__variable = variable
-        self.__enable_cb()
-
-    def __enable_cb(self):
-        if self.__variable is not None:
-            self.__cbhandler = self.__variable.trace(
-                mode="w", callback=self._on_variable_changed)
-
-    def __disable_cb(self):
-        if self.__cbhandler is not None:
-            self.__variable.trace_vdelete("w", self.__cbhandler)
-            self.__cbhandler = None

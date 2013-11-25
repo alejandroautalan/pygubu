@@ -234,17 +234,21 @@ class Builder:
         """
 
         var = None
+        type_from_name = 'string' #default type
+        if ':' in varname:
+            type_from_name, varname = varname.split(':')
+
         if varname in self.tkvariables:
             var = self.tkvariables[varname]
         else:
             if vtype is None:
                 #get type from name
                 lvname = varname.lower()
-                if lvname.startswith('int'):
+                if type_from_name == 'int':
                     var = tkinter.IntVar()
-                elif lvname.startswith('bool'):
+                elif type_from_name == 'boolean':
                     var = tkinter.BooleanVar()
-                elif lvname.startswith('double'):
+                elif type_from_name == 'double':
                     var = tkinter.DoubleVar()
                 else:
                     var = tkinter.StringVar()

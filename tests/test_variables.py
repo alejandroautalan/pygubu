@@ -36,7 +36,7 @@ class TestVariables(unittest.TestCase):
     </layout>
     <child>
       <object class="ttk.Entry" id="string_entry">
-        <property name="textvariable">string_var</property>
+        <property name="textvariable">string:strvar</property>
         <property name="validate">none</property>
         <property name="text">string</property>
         <layout>
@@ -48,7 +48,7 @@ class TestVariables(unittest.TestCase):
     </child>
     <child>
       <object class="ttk.Entry" id="int_entry">
-        <property name="textvariable">int_var</property>
+        <property name="textvariable">int:intvar</property>
         <property name="validate">none</property>
         <property name="text">22</property>
         <layout>
@@ -60,7 +60,7 @@ class TestVariables(unittest.TestCase):
     </child>
     <child>
       <object class="ttk.Entry" id="double_entry">
-        <property name="textvariable">double_var</property>
+        <property name="textvariable">double:doublevar</property>
         <property name="validate">none</property>
         <property name="text">22.22</property>
         <layout>
@@ -72,7 +72,7 @@ class TestVariables(unittest.TestCase):
     </child>
     <child>
       <object class="ttk.Entry" id="boolean_entry">
-        <property name="textvariable">boolean_var</property>
+        <property name="textvariable">boolean:booleanvar</property>
         <property name="validate">none</property>
         <property name="text">False</property>
         <layout>
@@ -94,22 +94,22 @@ class TestVariables(unittest.TestCase):
         support.root_withdraw()
 
     def test_string_var(self):
-        var = self.builder.get_variable('string_var')
+        var = self.builder.get_variable('strvar')
         self.assertIsInstance(var, tk.StringVar)
         self.widget.destroy()
 
     def test_int_var(self):
-        var = self.builder.get_variable('int_var')
+        var = self.builder.get_variable('intvar')
         self.assertIsInstance(var, tk.IntVar)
         self.widget.destroy()
 
     def test_double_var(self):
-        var = self.builder.get_variable('double_var')
+        var = self.builder.get_variable('doublevar')
         self.assertIsInstance(var, tk.DoubleVar)
         self.widget.destroy()
 
     def test_boolean_var(self):
-        var = self.builder.get_variable('boolean_var')
+        var = self.builder.get_variable('booleanvar')
         self.assertIsInstance(var, tk.BooleanVar)
         self.assertEqual(False, var.get())
         self.widget.destroy()

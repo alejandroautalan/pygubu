@@ -141,7 +141,7 @@ class AboutDialog(DialogBase):
         pass
 
 
-class PygubuUI(util.Application):
+class PygubuUI(pygubu.TkApplication):
     """Main gui class"""
 
     def _create_ui(self):
@@ -158,8 +158,8 @@ class PygubuUI(util.Application):
         self.builder.add_from_file(uifile)
 
         #build main ui
-        self.builder.get_object('mainwindow', self)
-        toplevel = self.winfo_toplevel()
+        self.builder.get_object('mainwindow', self.master)
+        toplevel = self.master.winfo_toplevel()
         menu = self.builder.get_object('mainmenu', toplevel)
         toplevel['menu'] = menu
 
@@ -196,26 +196,23 @@ class PygubuUI(util.Application):
         pygubu.builder.logger.addHandler(handler)
 
         #app grid
-        self.grid(row=0, column=0, sticky='nswe')
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
-
         self.set_resizable()
 
         #
         #Application bindings
         #
-        self.bind_all('<Control-KeyPress-n>',
+        master = self.master
+        master.bind_all('<Control-KeyPress-n>',
                 lambda e: self.on_menuitem_new_clicked())
-        self.bind_all('<Control-KeyPress-o>',
+        master.bind_all('<Control-KeyPress-o>',
                 lambda e: self.on_menuitem_open_clicked())
-        self.bind_all('<Control-KeyPress-s>',
+        master.bind_all('<Control-KeyPress-s>',
                 lambda e: self.on_menuitem_save_clicked())
-        self.bind_all('<Control-KeyPress-q>',
+        master.bind_all('<Control-KeyPress-q>',
                 lambda e: self.on_menuitem_quit_clicked())
-        self.bind_all('<Control-KeyPress-i>',
+        master.bind_all('<Control-KeyPress-i>',
                 lambda e: self.on_edit_menuitem_clicked('edit_item_up'))
-        self.bind_all('<Control-KeyPress-k>',
+        master.bind_all('<Control-KeyPress-k>',
                 lambda e: self.on_edit_menuitem_clicked('edit_item_down'))
 
         #
@@ -251,7 +248,7 @@ class PygubuUI(util.Application):
         self._setup_theme_menu()
 
         #app config
-        top = self.winfo_toplevel()
+        top = self.master.winfo_toplevel()
         try:
             top.wm_iconname('pygubu')
             top.tk.call('wm', 'iconphoto', '.', StockImage.get('pygubu'))
@@ -516,7 +513,7 @@ class PygubuUI(util.Application):
 
     def show_about_dialog(self):
         if self.about_dialog is None:
-            self.about_dialog = AboutDialog(self)
+            self.about_dialog = AboutDialog(self.master)
             self.about_dialog.run()
         else:
             self.about_dialog.show()
