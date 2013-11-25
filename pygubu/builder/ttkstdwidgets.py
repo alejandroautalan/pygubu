@@ -137,7 +137,7 @@ class TTKEntry(EntryBaseBO):
     class_ = ttk.Entry
     container = False
     properties = ['class_', 'cursor', 'exportselection', 'font',
-            'invalidcommand', 'justify', 'show', 'style', 'takefocus',
+            'invalidcommand', 'justify', 'show', 'state', 'style', 'takefocus',
             'textvariable', 'validate', 'validatecommand',
             #'values',  << Commented, only useful on Combobox widget ?
             'width', 'xscrollcommand',

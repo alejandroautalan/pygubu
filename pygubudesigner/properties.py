@@ -354,7 +354,7 @@ __widget = (
             'values': ('', tk.NORMAL, tk.DISABLED, 'readonly')},
         'tk.Combobox': {'values': ('', 'readonly')},
         'ttk.Entry': {
-            'values': ('', tk.NORMAL, tk.DISABLED, 'disabled')},
+            'values': ('', tk.NORMAL, tk.DISABLED, 'readonly')},
         'ttk.Combobox': { 'values': ('', 'readonly')},
         }),
     ('sticky', _sticky_prop),
