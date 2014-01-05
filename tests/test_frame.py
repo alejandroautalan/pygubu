@@ -1,4 +1,5 @@
 # encoding: utf8
+from __future__ import print_function
 import os
 import sys
 import unittest
@@ -118,15 +119,21 @@ class TestFrame(unittest.TestCase):
 
     def test_layout(self):
         ginfo = self.widget.grid_info()
-        self.assertEqual('0', ginfo['row'])
-        self.assertEqual('0', ginfo['column'])
-        self.assertEqual('nesw', ginfo['sticky'])
-        self.assertEqual('10', ginfo['pady'])
-        self.assertEqual('5', ginfo['padx'])
-        self.assertEqual('2', ginfo['ipadx'])
-        self.assertEqual('4', ginfo['ipady'])
-        self.assertEqual('1', ginfo['rowspan'])
-        self.assertEqual('2', ginfo['columnspan'])
+        expected = [
+            ('row', '0'),
+            ('column', '0'),
+            ('sticky', 'nesw'),
+            ('pady', '10'),
+            ('padx', '5'),
+            ('ipadx', '2'),
+            ('ipady', '4'),
+            ('rowspan', '1'),
+            ('columnspan', '2'),
+        ]
+        for k, ev in expected:
+            value = str(ginfo[k])
+            self.assertEqual(value, ev)
+
         propagate = self.widget.grid_propagate()
         self.assertEqual(None, propagate)
         self.widget.destroy()
