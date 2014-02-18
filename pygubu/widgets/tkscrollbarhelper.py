@@ -34,48 +34,50 @@ def _autoscroll(sbar, first, last):
     sbar.set(first, last)
 
 
-class TkScrollbarHelper(tk.Frame):
-    VERTICAL = 'vertical'
-    HORIZONTAL = 'horizontal'
-    BOTH = 'both'
+def ScrollbarHelperFactory(frame_class, scrollbar_class):
 
-    def __init__(self, master=None, **kw):
-        self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
-        tk.Frame.__init__(self, master, **kw)
-        self._create_scrollbars()
+    class ScrollbarHelper(frame_class, object):
+        VERTICAL = 'vertical'
+        HORIZONTAL = 'horizontal'
+        BOTH = 'both'
 
+        def __init__(self, master=None, **kw):
+            self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
+            super(ScrollbarHelper, self).__init__(master, **kw)
+            self._create_scrollbars()
 
-    def _create_scrollbars(self):
-        scrollbar_class = tk.Scrollbar
+        def _create_scrollbars(self):
+            if self.scrolltype in (self.BOTH, self.VERTICAL):
+                self.vsb = scrollbar_class(self, orient="vertical")
+                #layout
+                self.vsb.grid(column=1, row=0, sticky=tk.NS)
 
-        if self.scrolltype in (self.BOTH, self.VERTICAL):
-            self.vsb = scrollbar_class(self, orient="vertical")
-            #layout
-            self.vsb.grid(column=1, row=0, sticky=tk.NS)
+            if self.scrolltype in (self.BOTH, self.HORIZONTAL):
+                self.hsb = scrollbar_class(self, orient="horizontal")
+                self.hsb.grid(column=0, row=1, sticky=tk.EW)
 
-        if self.scrolltype in (self.BOTH, self.HORIZONTAL):
-            self.hsb = scrollbar_class(self, orient="horizontal")
-            self.hsb.grid(column=0, row=1, sticky=tk.EW)
+            self.grid_columnconfigure(0, weight=1)
+            self.grid_rowconfigure(0, weight=1)
 
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure(0, weight=1)
+        def add_child(self, cwidget):
+            cwidget.grid(column=0, row=0, sticky=tk.NSEW, in_=self)
 
-    def add_child(self, cwidget):
-        cwidget.grid(column=0, row=0, sticky=tk.NSEW, in_=self)
+            if self.scrolltype in (self.BOTH, self.VERTICAL):
+                if hasattr(cwidget, 'yview'):
+                    self.vsb.configure(command=cwidget.yview)
+                    cwidget.configure(yscrollcommand=lambda f, l: _autoscroll(self.vsb, f, l))
+                else:
+                    msg = "widget {} has no attribute 'yview'".format(str(cwidget))
+                    logger.warning(msg)
 
-        if self.scrolltype in (self.BOTH, self.VERTICAL):
-            if hasattr(cwidget, 'yview'):
-                self.vsb.configure(command=cwidget.yview)
-                cwidget.configure(yscrollcommand=lambda f, l: _autoscroll(self.vsb, f, l))
-            else:
-                msg = "widget {} has no attribute 'yview'".format(str(cwidget))
-                logger.warning(msg)
+            if self.scrolltype in (self.BOTH, self.HORIZONTAL):
+                if hasattr(cwidget, 'xview'):
+                    self.hsb.configure(command=cwidget.xview)
+                    cwidget.configure(xscrollcommand=lambda f, l: _autoscroll(self.hsb, f, l))
+                else:
+                    msg = "widget {} has no attribute 'xview'".format(str(cwidget))
+                    logger.warning(msg)
 
-        if self.scrolltype in (self.BOTH, self.HORIZONTAL):
-            if hasattr(cwidget, 'xview'):
-                self.hsb.configure(command=cwidget.xview)
-                cwidget.configure(xscrollcommand=lambda f, l: _autoscroll(self.hsb, f, l))
-            else:
-                msg = "widget {} has no attribute 'xview'".format(str(cwidget))
-                logger.warning(msg)
+    return ScrollbarHelper
 
+TkScrollbarHelper = ScrollbarHelperFactory(tk.Frame, tk.Scrollbar)
