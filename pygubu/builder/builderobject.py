@@ -83,14 +83,16 @@ class BuilderObject(object):
         return args
 
 
-    def configure(self):
+    def configure(self, target=None):
+        if target is None:
+            target = self.widget
         for pname, value in self.properties.items():
             if (pname not in self.ro_properties and
                 pname not in self.command_properties):
-                self.set_property(pname, value)
+                self._set_property(target, pname, value)
 
 
-    def set_property(self, pname, value):
+    def _set_property(self, target_widget, pname, value):
         propvalue = value
         if pname in self.tkvar_properties:
             propvalue = self.builder.create_variable(value)
@@ -101,30 +103,44 @@ class BuilderObject(object):
         elif pname in self.tkimage_properties:
             propvalue = self.builder.get_image(value)
         try:
-            self.widget[pname] = propvalue
+            target_widget[pname] = propvalue
         except tk.TclError as e:
             msg = "Failed to set property '{0}'. TclError: {1}"
             msg = msg.format(pname, str(e))
             logger.error(msg)
 
 
-    def layout(self):
+    def layout(self, target=None):
+        if target is None:
+            target = self.widget
+
         #use grid layout for all
+        self._grid_layout(target)
+
+
+    def _grid_layout(self, target, configure_rc=True):
         properties = dict(self.layout_properties)
         grid_propagate = properties.pop('propagate', 'True')
-        grid_rows = properties.pop('rows', {})
-        grid_cols = properties.pop('columns', {})
+        rowsprop = properties.pop('rows', None)
+        colsprop = properties.pop('columns', None)
 
-        self.widget.grid(**properties)
-
+        target.grid(**properties)
         if grid_propagate != 'True':
-            self.widget.grid_propagate(0)
+            target.grid_propagate(0)
+        if configure_rc:
+            self._grid_rc_layout(target, rowsprop, colsprop)
 
-        #get grid row and col properties:
-        for row in grid_rows:
-            self.widget.rowconfigure(row, **grid_rows[row])
-        for col in grid_cols:
-            self.widget.columnconfigure(col, **grid_cols[col])
+
+    def _grid_rc_layout(self, target, rowsprop=None, colsprop=None):
+        if rowsprop is None:
+            properties = dict(self.layout_properties)
+            rowsprop = properties.pop('rows', {})
+            colsprop = properties.pop('columns', {})
+        # configure grid row/col properties:
+        for row in rowsprop:
+            target.rowconfigure(row, **rowsprop[row])
+        for col in colsprop:
+            target.columnconfigure(col, **colsprop[col])
 
 
     def get_child_master(self):
@@ -208,14 +224,14 @@ class BuilderObject(object):
 #
 class EntryBaseBO(BuilderObject):
     """Base class for tk.Entry and ttk.Entry builder objects"""
-    def set_property(self, pname, value):
+    def _set_property(self, target_widget, pname, value):
         if pname == 'text':
-            self.widget.delete('0', tk.END)
-            self.widget.insert('0', value)
+            target_widget.delete('0', tk.END)
+            target_widget.insert('0', value)
         elif pname in ('validatecommand_args', 'invalidcommand_args'):
             pass
         else:
-            super(EntryBaseBO, self).set_property(pname, value)
+            super(EntryBaseBO, self)._set_property(target_widget, pname, value)
 
     def _create_callback(self, cpname, command):
         callback = command

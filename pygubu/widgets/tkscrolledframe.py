@@ -17,7 +17,6 @@
 # For further info, check  https://github.com/alejandroautalan/pygubu
 
 from __future__ import unicode_literals
-import types
 
 try:
     import tkinter as tk
@@ -25,123 +24,228 @@ except:
     import Tkinter as tk
 
 
-def _autoscroll(sbar, first, last):
-    """Hide and show scrollbar as needed.
-    Code from Joe English (JE) at http://wiki.tcl.tk/950"""
-    first, last = float(first), float(last)
-    if first <= 0 and last >= 1:
-        sbar.grid_remove()
-    else:
-        sbar.grid()
-    sbar.set(first, last)
+def ScrolledFrameFactory(frame_class, scrollbar_class):
+    class ScrolledFrame(frame_class, object):
+        VERTICAL = 'vertical'
+        HORIZONTAL = 'horizontal'
+        BOTH = 'both'
 
+        def __init__(self, master=None, **kw):
+            self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
 
+            super(ScrolledFrame, self).__init__(master, **kw)
 
-class TkScrolledFrame(tk.Frame):
-    VERTICAL = 'vertical'
-    HORIZONTAL = 'horizontal'
-    BOTH = 'both'
+            self._clipper = frame_class(self, width=200, height=200)
+            self.innerframe = innerframe = frame_class(self._clipper)
+            self.vsb = vsb = scrollbar_class(self)
+            self.hsb = hsb = scrollbar_class(self, orient="horizontal")
 
-    def __init__(self, master=None, **kw):
-        self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
+            # variables
+            self.hsbOn = 0
+            self.vsbOn = 0
+            self.hsbNeeded = 0
+            self.vsbNeeded = 0
+            self._jfraction=0.05
+            self._scrollTimer = None
+            self._scrollRecurse = 0
+            self._startX = 0
+            self._startY = 0
 
-        tk.Frame.__init__(self, master, **kw)
+            #configure scroll
+            self.hsb.set(0.0, 1.0)
+            self.vsb.set(0.0, 1.0)
+            self.vsb.config(command=self.yview)
+            self.hsb.config(command=self.xview)
 
-        self._canvas = canvas = tk.Canvas(self, bd=0, highlightthickness=0,
-            width=200, height=200)
-        self.innerframe = innerframe = tk.Frame(self._canvas)
-        self.vsb = vsb = tk.Scrollbar(self)
-        self.hsb = hsb = tk.Scrollbar(self, orient="horizontal")
+            #grid
+            self._clipper.grid(row=0, column=0, sticky=tk.NSEW)
+            #self.vsb.grid(row=0, column=1, sticky=tk.NS)
+            #self.hsb.grid(row=1, column=0, sticky=tk.EW)
+            self.rowconfigure(0, weight=1)
+            self.columnconfigure(0, weight=1)
 
-        #configure scroll
-        self._canvas.configure(
-            yscrollcommand=lambda f, l: _autoscroll(vsb, f, l))
-        self._canvas.configure(
-            xscrollcommand=lambda f, l: _autoscroll(hsb, f, l))
-        self.vsb.config(command=canvas.yview)
-        self.hsb.config(command=canvas.xview)
+            # Whenever the clipping window or scrolled frame change size,
+            # update the scrollbars.
+            self.innerframe.bind('<Configure>', self._reposition)
+            self._clipper.bind('<Configure>', self._reposition)
 
-        #grid
-        self._canvas.grid(row=0, column=0, sticky=tk.NSEW)
-        self.vsb.grid(row=0, column=1, sticky=tk.NS)
-        self.hsb.grid(row=1, column=0, sticky=tk.EW)
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
+        # Set timer to call real reposition method, so that it is not
+        # called multiple times when many things are reconfigured at the
+        # same time.
+        def reposition(self):
+            if self._scrollTimer is None:
+                self._scrollTimer = self.after_idle(self._scrollBothNow)
 
-        # create a window inside the canvas which will be scrolled with it
-        self._innerframe_id = innerframe_id = canvas.create_window(0, 0,
-            window=innerframe, anchor=tk.NW)
+        # Called when the user clicks in the horizontal scrollbar.
+        # Calculates new position of frame then calls reposition() to
+        # update the frame and the scrollbar.
+        def xview(self, mode = None, value = None, units = None):
+            if type(value) == str:
+                value = float(value)
+            if mode is None:
+                return self.hbar.get()
+            elif mode == 'moveto':
+                frameWidth = self.innerframe.winfo_reqwidth()
+                self._startX = value * float(frameWidth)
+            else: # mode == 'scroll'
+                clipperWidth = self._clipper.winfo_width()
+                if units == 'units':
+                    jump = int(clipperWidth * self.jfraction)
+                else:
+                    jump = clipperWidth
+                self._startX = self._startX + value * jump
 
-        innerframe.bind('<Configure>', self._on_iframe_configure)
-        canvas.bind('<Configure>', self._on_canvas_configure)
+            self.reposition()
 
-        # reset the view
-        canvas.xview_moveto(0)
-        canvas.yview_moveto(0)
+        # Called when the user clicks in the vertical scrollbar.
+        # Calculates new position of frame then calls reposition() to
+        # update the frame and the scrollbar.
+        def yview(self, mode = None, value = None, units = None):
 
-    # track changes to the canvas and frame width and sync them,
-    # also updating the scrollbar
-    def _on_iframe_configure(self, event=None):
-        new_region = [self.innerframe.winfo_reqwidth(),
-            self.innerframe.winfo_reqheight()]
-        curr_region = list(
-            map(int, (self._canvas.cget('scrollregion')).split()[2:]))
-        if not curr_region:
-            curr_region = [0, 0]
+            if type(value) == str:
+                value = float(value)
+            if mode is None:
+                return self.vbar.get()
+            elif mode == 'moveto':
+                frameHeight = self.innerframe.winfo_reqheight()
+                self._startY = value * float(frameHeight)
+            else: # mode == 'scroll'
+                clipperHeight = self._clipper.winfo_height()
+                if units == 'units':
+                    jump = int(clipperHeight * self.jfraction)
+                else:
+                    jump = clipperHeight
+                self._startY = self._startY + value * jump
 
-        if new_region[0] > curr_region[0] and \
-            self.scrolltype not in (TkScrolledFrame.BOTH, TkScrolledFrame.HORIZONTAL):
-            new_region[0] = curr_region[0]
-        if new_region[1] > curr_region[1] and \
-            self.scrolltype not in (TkScrolledFrame.BOTH, TkScrolledFrame.VERTICAL):
-            new_region[1] = curr_region[1]
-        if new_region != curr_region:
-            newscroll = [0, 0] + new_region
-            self._canvas.config(scrollregion=newscroll)
+            self.reposition()
 
+        def _reposition(self, event):
+            self.reposition()
 
-    def _on_canvas_configure(self, event=None):
-        innerframe = self.innerframe
-        canvas = self._canvas
-        innerframe_id = self._innerframe_id
-        inner_w, inner_h = (innerframe.winfo_reqwidth(), innerframe.winfo_reqheight())
+        def _getxview(self):
 
-        #check and resize innerframe
-        canvas_w = canvas.winfo_width()
-        canvas_h = canvas.winfo_height()
-        if inner_w < canvas_w:
-            # update the inner frame's width to fill the canvas
-            canvas.itemconfigure(innerframe_id, width=canvas_w)
-        if inner_w > canvas_w and \
-            self.scrolltype not in (TkScrolledFrame.BOTH, TkScrolledFrame.HORIZONTAL):
-            canvas.itemconfigure(innerframe_id, width=canvas_w)
+            # Horizontal dimension.
+            clipperWidth = self._clipper.winfo_width()
+            frameWidth = self.innerframe.winfo_reqwidth()
+            if frameWidth <= clipperWidth:
+                # The scrolled frame is smaller than the clipping window.
 
-        if inner_h < canvas_h:
-            canvas.itemconfigure(
-                innerframe_id, height= canvas_h)
-        if inner_h > canvas_h and \
-            self.scrolltype not in (TkScrolledFrame.BOTH, TkScrolledFrame.VERTICAL):
-            canvas.itemconfigure(innerframe_id, height=canvas_h)
+                self._startX = 0
+                endScrollX = 1.0
+                #use expand by default
+                relwidth = 1
+            else:
+                # The scrolled frame is larger than the clipping window.
+                #use expand by default
+                if self._startX + clipperWidth > frameWidth:
+                    self._startX = frameWidth - clipperWidth
+                    endScrollX = 1.0
+                else:
+                    if self._startX < 0:
+                        self._startX = 0
+                    endScrollX = (self._startX + clipperWidth) / float(frameWidth)
+                relwidth = ''
 
-        item_w, item_h = (int(canvas.itemcget(innerframe_id, 'width')),
-                int(canvas.itemcget(innerframe_id, 'height')))
+            # Position frame relative to clipper.
+            self.innerframe.place(x = -self._startX, relwidth = relwidth)
+            return (self._startX / float(frameWidth), endScrollX)
 
-        #check and resize canvas window item
-        if item_w < inner_w:
-            nw = canvas_w
-            if self.scrolltype in (TkScrolledFrame.BOTH, TkScrolledFrame.HORIZONTAL):
-                nw = inner_w
-            canvas.itemconfigure(innerframe_id, width=nw)
-        if item_h < inner_h:
-            nh = canvas_h
-            if self.scrolltype in (TkScrolledFrame.BOTH, TkScrolledFrame.VERTICAL):
-                nh = inner_h
-            canvas.itemconfigure(innerframe_id, height=nh)
+        def _getyview(self):
 
+            # Vertical dimension.
+            clipperHeight = self._clipper.winfo_height()
+            frameHeight = self.innerframe.winfo_reqheight()
+            if frameHeight <= clipperHeight:
+                # The scrolled frame is smaller than the clipping window.
 
-    def reposition(self):
-        """This method should be called when children are added,
-        removed, grid_remove, and grided in the scrolled frame."""
-        self.innerframe.update()
-        self.after_idle(self._on_iframe_configure, None)
-        self.after_idle(self._on_canvas_configure, None)
+                self._startY = 0
+                endScrollY = 1.0
+                # use expand by default
+                relheight = 1
+            else:
+                # The scrolled frame is larger than the clipping window.
+                # use expand by default 
+                if self._startY + clipperHeight > frameHeight:
+                    self._startY = frameHeight - clipperHeight
+                    endScrollY = 1.0
+                else:
+                    if self._startY < 0:
+                        self._startY = 0
+                    endScrollY = (self._startY + clipperHeight) / float(frameHeight)
+                relheight = ''
+
+            # Position frame relative to clipper.
+            self.innerframe.place(y = -self._startY, relheight = relheight)
+            return (self._startY / float(frameHeight), endScrollY)
+
+        # According to the relative geometries of the frame and the
+        # clipper, reposition the frame within the clipper and reset the
+        # scrollbars.
+        def _scrollBothNow(self):
+            self._scrollTimer = None
+
+            # Call update_idletasks to make sure that the containing frame
+            # has been resized before we attempt to set the scrollbars.
+            # Otherwise the scrollbars may be mapped/unmapped continuously.
+            self._scrollRecurse = self._scrollRecurse + 1
+            self.update_idletasks()
+            self._scrollRecurse = self._scrollRecurse - 1
+            if self._scrollRecurse != 0:
+                return
+
+            xview = self._getxview()
+            yview = self._getyview()
+            self.hsb.set(xview[0], xview[1])
+            self.vsb.set(yview[0], yview[1])
+
+            require_hsb = self.scrolltype in (self.BOTH, self.HORIZONTAL)
+            self.hsbNeeded = (xview != (0.0, 1.0)) and require_hsb
+            require_vsb = self.scrolltype in (self.BOTH, self.VERTICAL)
+            self.vsbNeeded = (yview != (0.0, 1.0)) and require_vsb
+
+            # If both horizontal and vertical scrollmodes are dynamic and
+            # currently only one scrollbar is mapped and both should be
+            # toggled, then unmap the mapped scrollbar.  This prevents a
+            # continuous mapping and unmapping of the scrollbars.
+            if (self.hsbNeeded != self.hsbOn and
+                self.vsbNeeded != self.vsbOn and
+                self.vsbOn != self.hsbOn):
+                if self.hsbOn:
+                    self._toggleHorizScrollbar()
+                else:
+                    self._toggleVertScrollbar()
+                return
+
+            if self.hsbNeeded != self.hsbOn:
+                self._toggleHorizScrollbar()
+
+            if self.vsbNeeded != self.vsbOn:
+                self._toggleVertScrollbar()
+
+        def _toggleHorizScrollbar(self):
+
+            self.hsbOn = not self.hsbOn
+
+            interior = self #.origInterior
+            if self.hsbOn:
+                self.hsb.grid(row=1, column=0, sticky=tk.EW)
+                #interior.grid_rowconfigure(3, minsize = self['scrollmargin'])
+            else:
+                self.hsb.grid_forget()
+                #interior.grid_rowconfigure(3, minsize = 0)
+
+        def _toggleVertScrollbar(self):
+
+            self.vsbOn = not self.vsbOn
+
+            interior = self#.origInterior
+            if self.vsbOn:
+                self.vsb.grid(row=0, column=1, sticky=tk.NS)
+                #interior.grid_columnconfigure(3, minsize = self['scrollmargin'])
+            else:
+                self.vsb.grid_forget()
+                #interior.grid_columnconfigure(3, minsize = 0)
+
+    return ScrolledFrame
+
+TkScrolledFrame = ScrolledFrameFactory(tk.Frame, tk.Scrollbar)
