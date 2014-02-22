@@ -24,59 +24,79 @@ except:
     import Tkinter as tk
     import ttk
 
-class DialogBase():
-    def __init__(self, parent, **kw):
+
+class Dialog(object):
+    """
+    Virtual events:
+        <<DialogClose>>
+    """
+
+    def __init__(self, parent, modal=False):
         self.parent = parent
-        self.running_modal = True
+        self.is_modal = modal
+        self.running_modal = False
         self.master = tk.Toplevel(parent)
+        self.master.protocol("WM_DELETE_WINDOW", self._on_wm_delete_window)
+        self.bind('<<DialogClose>>', self._default_close_action)
 
-        self.body_frame = body = ttk.Frame(self.master)
-        self.initial_focus = self._create_body(body)
-        if not self.initial_focus:
-            self.initial_focus = body
-        body.pack(fill='both', expand=True)
-        self.btnbox_frame = f = ttk.Frame(self.master)
-        self._create_btnbox(f)
-        f.pack(fill='x')
+        self.frame = ttk.Frame(self.master)
+        
+        self._init_before()
+        self._create_ui()
+        self._init_after()
 
-        if not self.initial_focus:
-            self.initial_focus = self
+        self.frame.pack(fill='both', expand=True)
 
 
-    def _create_body(self, parent):
-        #implement me on sublcass
-        return parent
+    def _init_before(self):
+        pass
+
+    def _create_ui(self):
+        pass
+
+    def _init_after(self):
+        pass
+
+
+    def set_modal(self, modal):
+        self.is_modal = modal
 
 
     def run(self):
-        self.rundialog(False)
-
-
-    def run_modal(self):
-        self.rundialog(True)
-
-
-    def rundialog(self, modal=True):
-        self.running_modal = modal
         self.master.transient(self.parent)
         self.master.wait_visibility()
-        self.master.protocol("WM_DELETE_WINDOW", self.close)
-        self.initial_focus.focus_set()
-        if modal:
+        initial_focus = self.frame.focus_lastfor()
+        if initial_focus:
+            initial_focus.focus_set()
+        if self.is_modal:
+            self.running_modal =True
             self.master.grab_set()
-            self.master.wait_window(self.master)
+            
+
+    def destroy(self):
+        if self.master:
+            self.master.destroy()
+        self.master = None
+
+
+    def _on_wm_delete_window(self):
+        self.master.event_generate('<<DialogClose>>')
+        
+    
+    def _default_close_action(self, dialog):
+        self.close()
 
 
     def close(self):
-        self.parent.focus_set()
         if self.running_modal:
-            self.master.destroy()
-        else:
-            self.master.withdraw()
+            self.master.grab_release()
+            self.running_modal = False
+        self.master.withdraw()
+        self.parent.focus_set()
 
 
     def show(self):
-        if not self.running_modal:
+        if self.master:
             self.master.deiconify()
 
 
@@ -84,47 +104,27 @@ class DialogBase():
         """Sets the dialog title"""
         if self.master:
             self.master.title(title)
+        
 
-
-    def _create_btnbox(self, parent):
-        self.cancel_btn = o = ttk.Button(parent, text='Cancel',
-            command=self.close)
-        o.pack(side='right')
-        self.ok_btn = o = ttk.Button(parent, text='Ok',
-            command=self.on_ok_execute)
-        o.pack(side='right')
-        o.bind("<Return>", self.on_ok_execute)
-
-
-    def on_ok_execute(self, event=None):
-
-        if not self.validate():
-            self.initial_focus.focus_set() # put focus back
-            return
-
-        self.master.withdraw()
-        self.master.update_idletasks()
-
-        try:
-            self.apply()
-        finally:
-            self.close()
-
-
-    def validate(self):
-        return True
-
-
-    def apply(self):
-        pass
+    def bind(self, sequence=None, func=None, add=None):
+        def dialog_cb(event, dialog=self):
+            func(dialog)
+        return self.master.bind(sequence, dialog_cb, add)
+        
+#    def unbind(self, sequence, funcid=None):
+#        pass
 
 
 if __name__ == '__main__':
-    class TestDialog(DialogBase):
-        def _create_body(self, master):
-            label = ttk.Label(master, text='TestDialog Class')
+    class TestDialog(Dialog):
+        def _create_ui(self):
+            label = ttk.Label(self.frame, text='TestDialog Class')
             label.pack()
-            return label
+            entry = ttk.Entry(self.frame)
+            entry.pack()
+#            f = ttk.Frame(self.master)
+#            self.default_buttonbox(f)
+#            f.pack(fill='x')
 
     app = tk.Tk()
     dialog = None
@@ -136,11 +136,19 @@ if __name__ == '__main__':
             dialog.run()
         else:
             dialog.show()
+            
+    def custom_callback(dialog):
+        print('Custom callback')
+        dialog.close()
 
     def show_modal_dialog():
         dialog = TestDialog(app)
         dialog.set_title('Modal dialog')
-        dialog.run_modal()
+        dialog.set_modal(True)
+        dialog.bind('<<DialogClose>>', custom_callback)
+        print('before run')
+        dialog.run()
+        print('after run')
 
     btn = tk.Button(app, text='show dialog', command=show_dialog)
     btn.pack()

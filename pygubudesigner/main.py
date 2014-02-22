@@ -49,7 +49,7 @@ from . import properties
 from .propertieseditor import WidgetPropertiesEditor
 from .widgeteditor import WidgetsTreeEditor
 from .previewer import PreviewHelper
-from .util.dialog import DialogBase
+from .util.dialog import Dialog
 from .i18n import translator
 from pygubu.widgets.accordionframe import AccordionFrame
 from pygubu.widgets.autoarrangeframe import AutoArrangeFrame
@@ -119,26 +119,24 @@ class StatusBarHandler(logging.Handler):
 
 
 
-class AboutDialog(DialogBase):
-    def _create_body(self, master):
+class AboutDialog(Dialog):
+    def _create_ui(self):
         self.builder = pygubu.Builder(translator)
         uifile = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),"ui/about_dialog.ui")
         self.builder.add_from_file(uifile)
 
-        self.builder.get_object('aboutdialog', master)
+        self.builder.get_object('aboutdialog', self.frame)
         self.set_version(self.builder.get_object('version'))
         self.builder.connect_callbacks(self)
-        return self.builder.get_object('close_btn')
 
     def set_version(self, widget):
         txt = widget.cget('text')
         txt = txt.replace('%version%', str(pygubu.__version__))
         widget.configure(text=txt)
-
-    def _create_btnbox(self, master):
-        #No button box needed
-        pass
+        
+    def on_ok_execute(self):
+        self.close()
 
 
 class PygubuUI(pygubu.TkApplication):
