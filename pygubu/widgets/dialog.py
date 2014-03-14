@@ -39,13 +39,11 @@ class Dialog(object):
         self.master.protocol("WM_DELETE_WINDOW", self._on_wm_delete_window)
         self.bind('<<DialogClose>>', self._default_close_action)
 
-        self.frame = ttk.Frame(self.master)
-        
         self._init_before()
         self._create_ui()
         self._init_after()
 
-        self.frame.pack(fill='both', expand=True)
+        #self.frame.pack(fill='both', expand=True)
 
 
     def _init_before(self):
@@ -60,12 +58,12 @@ class Dialog(object):
 
     def set_modal(self, modal):
         self.is_modal = modal
-
-
+        
+    
     def run(self):
         self.master.transient(self.parent)
         self.master.wait_visibility()
-        initial_focus = self.frame.focus_lastfor()
+        initial_focus = self.master.focus_lastfor()
         if initial_focus:
             initial_focus.focus_set()
         if self.is_modal:
@@ -104,7 +102,22 @@ class Dialog(object):
         """Sets the dialog title"""
         if self.master:
             self.master.title(title)
-        
+
+    #
+    # interface to toplevel methods used by gui builder
+    #
+    def configure(self, cnf=None, **kw):
+        self.master.configure(cnf, **kw)
+    
+    config = configure
+
+    def cget(self, key):
+        return self.master.cget(key)
+
+    __getitem__ = cget
+
+    def __setitem__(self, key, value):
+        self.configure({key: value})
 
     def bind(self, sequence=None, func=None, add=None):
         def dialog_cb(event, dialog=self):

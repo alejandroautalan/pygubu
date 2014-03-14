@@ -6,6 +6,10 @@ try:
 except:
     import Tkinter as tk
 
+__all__ = [
+    'BuilderObject', 'EntryBaseBO', 'PanedWindow', 'PanedWindowPane',
+    'WidgetClassDescr', 'CLASS_MAP', 'CUSTOM_PROPERTIES',
+    'register_widget', 'register_property']
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('pygubu.builderobject')
@@ -102,15 +106,22 @@ class BuilderObject(object):
                 propvalue.set(self.properties['value'])
         elif pname in self.tkimage_properties:
             propvalue = self.builder.get_image(value)
-        try:
-            target_widget[pname] = propvalue
-        except tk.TclError as e:
-            msg = "Failed to set property '{0}'. TclError: {1}"
-            msg = msg.format(pname, str(e))
-            logger.error(msg)
+        elif pname not in self.__class__.properties:
+            msg = "Attempt to set an unknown property '{0}' on class '{1}'"
+            msg = msg.format(pname, repr(self.class_))
+            logger.warning(msg)
+        else:
+            try:
+                target_widget[pname] = propvalue
+            except tk.TclError as e:
+                msg = "Failed to set property '{0}' on class '{1}'. TclError: {2}"
+                msg = msg.format(pname, repr(self.class_), str(e))
+                logger.error(msg)
 
 
     def layout(self, target=None):
+        if not self.layout_required:
+            return
         if target is None:
             target = self.widget
 

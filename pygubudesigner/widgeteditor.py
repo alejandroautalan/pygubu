@@ -98,8 +98,7 @@ class WidgetsTreeEditor(object):
             widget_id = self.treedata[item]['id']
             wclass = self.treedata[item]['class']
             xmlnode = self.tree_node_to_xml('', item)
-            is_menu = True if wclass == 'tk.Menu' else False
-            self.previewer.draw(item, widget_id, xmlnode, is_menu)
+            self.previewer.draw(item, widget_id, xmlnode, wclass)
             self.previewer.show_selected(item, selected_id)
             self.filter_restore()
 
@@ -114,8 +113,7 @@ class WidgetsTreeEditor(object):
             widget_id = self.treedata[item]['id']
             wclass = self.treedata[item]['class']
             xmlnode = self.tree_node_to_xml('', item)
-            is_menu = True if wclass == 'tk.Menu' else False
-            self.previewer.preview_in_toplevel(widget_id, xmlnode, is_menu)
+            self.previewer.preview_in_toplevel(item, widget_id, xmlnode)
             self.filter_restore()
         else:
             logger.warning(_('No item selected.'))

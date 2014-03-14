@@ -11,6 +11,61 @@ from .builderobject import *
 #
 # tkinter widgets
 #
+class TKToplevel(BuilderObject):
+    class_ = tk.Toplevel
+    container = True
+    allow_container_layout = False
+    layout_required = False
+    allowed_parents = ('root',)
+#    allowed_children = ('tk.Frame', 'ttk.Frame')
+#    maxchildren = 1
+    properties = ('background', 'borderwidth', 'class_', 'cursor', 'height',
+        'highlightbackground', 'highlightcolor', 'highlightthickness', 'padx',
+        'pady', 'relief', 'takefocus', 'width',
+        #Extra properties as methods
+        'title', 'geometry', 'overrideredirect', 'minsize', 'maxsize',
+        'resizable')
+    RESIZABLE = {
+        'both': (True, True),
+        'horizontally': (True, False),
+        'vertically': (False, True),
+        'none': (False, False)
+        }
+        
+    def realize(self, parent):
+        args = self._get_init_args()
+        master = parent.get_child_master()
+        if master is None and tk._default_root is None:
+            self.widget = tk.Tk()
+        else:
+            self.widget = self.class_(master, **args)
+        return self.widget
+        
+    def _set_property(self, target_widget, pname, value):
+        method_props = ('geometry', 'overrideredirect', 'title')
+        if pname in method_props:
+            method = getattr(target_widget, pname)
+            method(value)
+        elif pname == 'resizable' and value:
+            target_widget.resizable(*self.RESIZABLE[value])
+            if value in ('both', 'horizontally'):
+                target_widget.columnconfigure(0, weight=1)
+            if value in ('both', 'vertically'):
+                target_widget.rowconfigure(0, weight=1)
+        elif pname == 'maxsize':
+            if '|' in value:
+                w, h = value.split('|')
+                target_widget.maxsize(w, h)
+        elif pname == 'minsize':
+            if '|' in value:
+                w, h = value.split('|')
+                target_widget.minsize(w, h)
+        else:
+            super(TKToplevel, self)._set_property(target_widget, pname, value)
+
+register_widget('tk.Toplevel', TKToplevel, 'Toplevel', ('Containers', 'tk', 'ttk'))
+
+
 class TKFrame(BuilderObject):
     class_ = tk.Frame
     container = True

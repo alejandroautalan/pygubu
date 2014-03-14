@@ -49,8 +49,8 @@ from . import properties
 from .propertieseditor import WidgetPropertiesEditor
 from .widgeteditor import WidgetsTreeEditor
 from .previewer import PreviewHelper
-from .util.dialog import Dialog
 from .i18n import translator
+from pygubu.widgets.dialog import Dialog
 from pygubu.widgets.accordionframe import AccordionFrame
 from pygubu.widgets.autoarrangeframe import AutoArrangeFrame
 import pygubu.widgets.simpletooltip as tooltip
@@ -126,7 +126,7 @@ class AboutDialog(Dialog):
             os.path.dirname(os.path.abspath(__file__)),"ui/about_dialog.ui")
         self.builder.add_from_file(uifile)
 
-        self.builder.get_object('aboutdialog', self.frame)
+        self.builder.get_object('aboutdialog', self.master)
         self.set_version(self.builder.get_object('version'))
         self.builder.connect_callbacks(self)
 
@@ -498,6 +498,8 @@ class PygubuUI(pygubu.TkApplication):
     def on_previewmenu_action(self, itemid):
         if itemid == 'preview_toplevel':
             self.tree_editor.preview_in_toplevel()
+        if itemid == 'preview_toplevel_closeall':
+            self.previewer.close_toplevel_previews()
 
 
     #Help menu

@@ -29,6 +29,7 @@ from pygubu import builder
 from . import util
 from . import properties
 from .widgets import ColorEntry, Textentry, TkVarEntry, ImageEntry
+from .widgets import SizeEntry
 from .bindingseditor import BindingsEditor
 from .i18n import translator as _
 
@@ -461,6 +462,10 @@ class WidgetPropertiesEditor:
             self.connect_focusout_cb(widget, propalias)
             self.connect_command_cb(widget, propalias)
             self.connect_on_enterkey_cb(widget, propalias)
+        elif wtype == 'sizeentry':
+            widget = togrid = SizeEntry(master, textvariable=widgetvar)
+            self.connect_virtualevent_cb('<<SizeEntryChanged>>',
+                widget, propalias)
         else:
             widget = ttk.Entry(master, textvariable=widgetvar)
             togrid = widget
@@ -516,6 +521,9 @@ class WidgetPropertiesEditor:
             values = wdata.get('values', None)
             if values is not None:
                 widget.configure(values=values, state=status)
+        if wtype == 'sizeentry':
+            mode = wdata.get('mode', '')
+            widget.set_mode(mode)
 
         value = ''
         if group in (properties.GROUP_CUSTOM, properties.GROUP_WIDGET):

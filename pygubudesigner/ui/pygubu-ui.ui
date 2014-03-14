@@ -166,6 +166,13 @@
           </object>
         </child>
         <child>
+          <object class="tk.Menuitem.Command" id="preview_toplevel_closeall">
+            <property name="command">on_previewmenu_action</property>
+            <property name="command_id_arg">True</property>
+            <property name="label" translatable="yes">Close Toplevel previews</property>
+          </object>
+        </child>
+        <child>
           <object class="tk.Menuitem.Submenu" id="preview_themes_submenu">
             <property name="command_id_arg">False</property>
             <property name="label" translatable="yes">ttk theme</property>

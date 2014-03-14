@@ -62,10 +62,7 @@ _default_tkvariable_prop = {
 }
 
 _default_dimension_prop = {
-    'input_method': 'spinbox',
-    'min': 0,
-    'max': 999,
-    'validator': 'number_integer'
+    'input_method': 'sizeentry',
 }
 
 _default_relief_prop = {
@@ -227,6 +224,7 @@ __widget = (
     ('height', {
         'input_method': 'spinbox', 'min': 0, 'max': 999,
         'validator': 'number_integer',
+        'tk.Toplevel': { 'default': 200 },
         'tk.Frame': { 'default': 200 },
         'ttk.Frame': { 'default': 200 },
         'tk.LabelFrame': { 'default': 200 },
@@ -235,10 +233,12 @@ __widget = (
         'ttk.Panedwindow': { 'default': 200 },
         'ttk.Notebook': { 'default': 200 },
         'tk.Text': { 'default': 10 },
+        'pygubu.builder.widgets.dialog': { 'default': 100 },
         }), #FIXME this prop has diferent interpretations
     ('width', {
         'input_method': 'spinbox', 'min': 0, 'max': 999,
         'validator': 'number_integer',
+        'tk.Toplevel': { 'default': 200 },
         'tk.Frame': { 'default': 200 },
         'ttk.Frame': { 'default': 200 },
         'tk.LabelFrame': { 'default': 200 },
@@ -248,6 +248,7 @@ __widget = (
         'ttk.Notebook': { 'default': 200 },
         'tk.Text': { 'default': 50 },
         'ttk.Treeview.Column': {'min':5, 'default': 200 },
+        'pygubu.builder.widgets.dialog': { 'default': 200 },
         }), #FIXME width is not a dimension for Entry
     ('highlightbackground', _default_color_prop),
     ('highlightcolor', _default_color_prop),
@@ -279,7 +280,12 @@ __widget = (
     ('maximum', _default_spinbox_prop),
     ('maxundo', {
         'input_method': 'spinbox', 'min':-1, 'max':999, 'default': ''}),
-    ('minsize', _default_dimension_prop),
+    # maxize: method from Toplevel as property
+    ('maxsize', {'input_method': 'sizeentry', 'mode':'whsize'}),
+    ('minsize', {'input_method': 'sizeentry',
+        'tk.Toplevel': {'mode':'whsize'},
+        'pygubu.builder.widgets.dialog': {'mode':'whsize'}
+        }),
     ('minwidth', {
         'input_method': 'spinbox', 'min':5, 'max':999, 'default': '20'}),
     ('mode', { 'input_method': 'choice',
@@ -408,6 +414,14 @@ __widget = (
     ('xscrollincrement', _default_dimension_prop),
     ('yscrollcommand', _default_entry_prop),
     ('yscrollincrement', _default_dimension_prop),
+    #toplevel methods as properties
+    ('title', _default_entry_prop),
+    ('geometry', _default_entry_prop),
+    ('overrideredirect', _default_true_false_prop),
+    ('resizable', { 'input_method': 'choice',
+        'values': ('', 'both', 'horizontally', 'vertically', 'none'),
+        'readonly': True,
+        }),
 )
 PropertiesMap[GROUP_WIDGET] = OrderedDict(__widget)
 
