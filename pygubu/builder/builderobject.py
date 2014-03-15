@@ -97,20 +97,21 @@ class BuilderObject(object):
 
 
     def _set_property(self, target_widget, pname, value):
-        propvalue = value
-        if pname in self.tkvar_properties:
-            propvalue = self.builder.create_variable(value)
-            if 'text' in self.properties and pname == 'textvariable':
-                propvalue.set(self.properties['text'])
-            elif 'value' in self.properties and pname == 'variable':
-                propvalue.set(self.properties['value'])
-        elif pname in self.tkimage_properties:
-            propvalue = self.builder.get_image(value)
-        elif pname not in self.__class__.properties:
+        if pname not in self.__class__.properties:
             msg = "Attempt to set an unknown property '{0}' on class '{1}'"
             msg = msg.format(pname, repr(self.class_))
             logger.warning(msg)
         else:
+            propvalue = value
+            if pname in self.tkvar_properties:
+                propvalue = self.builder.create_variable(value)
+                if 'text' in self.properties and pname == 'textvariable':
+                    propvalue.set(self.properties['text'])
+                elif 'value' in self.properties and pname == 'variable':
+                    propvalue.set(self.properties['value'])
+            elif pname in self.tkimage_properties:
+                propvalue = self.builder.get_image(value)
+
             try:
                 target_widget[pname] = propvalue
             except tk.TclError as e:
