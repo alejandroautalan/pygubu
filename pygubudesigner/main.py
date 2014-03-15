@@ -126,7 +126,7 @@ class AboutDialog(Dialog):
             os.path.dirname(os.path.abspath(__file__)),"ui/about_dialog.ui")
         self.builder.add_from_file(uifile)
 
-        self.builder.get_object('aboutdialog', self.master)
+        self.builder.get_object('aboutdialog', self.toplevel)
         self.set_version(self.builder.get_object('version'))
         self.builder.connect_callbacks(self)
 
