@@ -1,4 +1,7 @@
+#!/usr/bin/env python
+from __future__ import print_function
 import os
+import sys
 import subprocess
 import shlex
 
@@ -33,14 +36,15 @@ gtk_imgs = {
     'widget-gtk-separator.png': ('ttk.Separator',),
     'widget-gtk-spinbutton.png': ('tk.Spinbox', 'ttk.Spinbox'),
     'widget-gtk-textview.png': ('tk.Text',),
-    'widget-gtk-treeview.png': ('tk.Listbox', 'ttk.Treeview'),
+    'widget-gtk-treeview.png': ('tk.Listbox', 'ttk.Treeview',
+        'pygubu.builder.widgets.editabletreeview'),
     'widget-gtk-viewport.png': ('pygubu.builder.widgets.scrollbarhelper',
             'pygubu.builder.widgets.tkscrollbarhelper'),
-    'widget-gtk-window.png': ('tk.Toplevel',),
+    'widget-gtk-window.png': ('tk.Toplevel', 'pygubu.builder.widgets.dialog'),
 }
 
 IMG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-        'pygubu', 'uidesigner', 'images', 'widgets')
+        'pygubudesigner', 'images', 'widgets')
 
 def create_images():
     origin = os.path.join(IMG_DIR, 'png', '22x22')
@@ -70,5 +74,46 @@ def create_images():
     print('')
 
 
+def find_source_image_for(widget_name):
+    found = None
+    for k, v in gtk_imgs.iteritems():
+        if widget_name in v:
+            found = k
+            break
+    return found
+
+
+def create_image_for(widget_name):
+    origin = os.path.join(IMG_DIR, 'png', '22x22')
+    dest = os.path.join(IMG_DIR, '22x22')
+
+    source = find_source_image_for(widget_name)
+    if source:
+        iimage = os.path.join(origin, source)
+        oimage = os.path.join(dest, widget_name)
+        cmd = 'convert {0} {1}.gif'.format(iimage, oimage)
+        cmd = shlex.split(cmd)
+        subprocess.call(cmd)
+
+        origin = os.path.join(IMG_DIR, 'png', '22x22')
+        dest = os.path.join(IMG_DIR, '16x16')
+        iimage = os.path.join(origin, source)
+        oimage = os.path.join(dest, widget_name)
+        cmd = 'convert {0} -filter Hermite -format gif ' \
+              '-background transparent -bordercolor white -border 0x0 ' \
+              '-resize 16 {1}.gif'.format(iimage, oimage)
+        cmd = shlex.split(cmd)
+        subprocess.call(cmd)
+    else:
+        print('Widget not defined :(')
+
+
 if __name__ == '__main__':
-    create_images()
+    if len(sys.argv) > 1:
+        arg = sys.argv[1]
+        if arg == 'all':
+            create_images()
+        else:
+            create_image_for(arg)
+    else:
+        print('Usage: create-imgs [all, widget_name]')
