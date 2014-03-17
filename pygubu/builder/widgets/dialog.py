@@ -19,10 +19,10 @@ class DialogBO(TKToplevel):
                 modal = True
             self.widget.set_modal(modal)
         else:
-            super(DialogBO, self)._set_property(self.widget.master, pname, value)
+            super(DialogBO, self)._set_property(self.widget.toplevel, pname, value)
 
     def get_child_master(self):
-        return self.widget.master
+        return self.widget.toplevel
 
 
 register_widget('pygubu.builder.widgets.dialog', DialogBO,
