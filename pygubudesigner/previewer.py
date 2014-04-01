@@ -149,14 +149,14 @@ class Preview:
         self.w = self.min_w = preview_widget.winfo_reqwidth()
         self.h = self.min_h = preview_widget.winfo_reqheight()
         self.resize_to(self.w, self.h)
-        
-        
+
+
     def create_preview_widget(self, parent, widget_id, xmlnode):
         self.builder = pygubu.Builder()
         self.builder.add_from_xmlnode(xmlnode)
         widget = self.builder.get_object(widget_id, parent)
         return widget
-        
+
     def get_widget_by_id(self, widget_id):
         return self.builder.get_object(widget_id)
 
@@ -171,7 +171,7 @@ class Preview:
         builder.get_object(widget_id, top)
         return top
 
-        
+
 class MenuPreview(Preview):
 
     def create_preview_widget(self, parent, widget_id, xmlnode):
@@ -182,7 +182,7 @@ class MenuPreview(Preview):
         widget = self.builder.get_object(widget_id, menubutton)
         menubutton.configure(menu=widget)
         return menubutton
-        
+
     def create_toplevel(self, widget_id, xmlnode):
         #Create preview
         builder = pygubu.Builder()
@@ -194,13 +194,13 @@ class MenuPreview(Preview):
         menu = builder.get_object(widget_id, top)
         top['menu'] = menu
         return top
-        
+
     def resize_by(self, dw, hw):
         return
-        
+
 
 class ToplevelPreview(Preview):
-    
+
     def create_preview_widget(self, parent, widget_id, xmlnode):
         xmlnode.set('class', 'pygubudesigner.ToplevelFramePreview')
         layout = ET.Element('layout')
@@ -215,7 +215,7 @@ class ToplevelPreview(Preview):
         self.builder.add_from_xmlnode(xmlnode)
         widget = self.builder.get_object(widget_id, parent)
         return widget
-        
+
     def create_toplevel(self, widget_id, xmlnode):
         #Create preview
         builder = pygubu.Builder()
@@ -225,9 +225,12 @@ class ToplevelPreview(Preview):
 
 
 class DialogPreview(ToplevelPreview):
-    pass
+    def create_toplevel(self, widget_id, xmlnode):
+        top = super(DialogPreview, self).create_toplevel(widget_id, xmlnode)
+        top.run()
+        return top
 
-        
+
 #    def get_widget_by_id(self, widget_id):
 #        return self.canvas_window
 
@@ -354,7 +357,7 @@ class PreviewHelper:
         for k, p in self.previews.items():
             y += p.height() + self.padding
         return x, y
-        
+
     def draw(self, identifier, widget_id, xmlnode, wclass):
         preview_class = Preview
         if wclass == 'tk.Menu':
@@ -451,7 +454,7 @@ class PreviewHelper:
         preview = self.previews[identifier]
         top = preview.create_toplevel(widget_id, xmlnode)
         self.toplevel_previews.append(top)
-        
+
     def close_toplevel_previews(self):
         for top in self.toplevel_previews:
             top.destroy()
