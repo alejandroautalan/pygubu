@@ -84,8 +84,9 @@ class ToplevelFramePreview(tk.Frame):
 class ToplevelFramePreviewBO(BuilderObject):
     class_ = ToplevelFramePreview
     container = True
-    properties = TKToplevel.properties
-    
+    #Add fake 'modal' property for Dialog preview
+    properties = TKToplevel.properties + ('modal',)
+
     def _set_property(self, target_widget, pname, value):
         tw = target_widget
         tw.tl_attrs[pname] = value
@@ -117,9 +118,12 @@ class ToplevelFramePreviewBO(BuilderObject):
                     tw.columnconfigure(0, weight=1)
                 if value in ('both', 'vertically'):
                     tw.rowconfigure(0, weight=1)
+        elif pname == 'modal':
+            # Do nothing, fake 'modal' property for dialog preview
+            pass
         else:
             super(ToplevelFramePreviewBO, self)._set_property(tw, pname, value)
-    
-    
+
+
 register_widget('pygubudesigner.ToplevelFramePreview',
     ToplevelFramePreviewBO, 'ToplevelFramePreview', tuple())
