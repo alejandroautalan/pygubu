@@ -14,6 +14,8 @@ Instalación
 
 Pygubu requiere python >= 2.7 (Probado solo en python 2.7.3 y 3.2.3 con tk8.5)
 
+Usando paquete zip:
+
 Descarga y descomprime el paquete fuente. Abre una consola en el directorio de
 extracción y ejecuta:
 
@@ -21,6 +23,11 @@ extracción y ejecuta:
 python setup.py install
 ```
 
+Usando pip:
+
+```
+pip install --egg pygubu
+```
 
 Modo de uso
 ===========
@@ -64,6 +71,14 @@ Busca en el directorio de ejemplos o mira este ejemplo de 'Hola mundo' en
 
 Historia
 ========
+
+Cambios de la versión 0.9.4
+
+  * Added Toplevel widget
+  * Added generic Dialog widget
+  * Rewrited scrolledframe widget internals, ideas and code taken from tkinter wiki.
+  * Added more widget icons.
+  * Fixed bugs.
 
 Cambios de la versión 0.9.3
     
