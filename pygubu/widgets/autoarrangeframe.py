@@ -34,10 +34,19 @@ class AutoArrangeFrame(ttk.Frame):
 
     def __init__(self, master=None, **kw):
         self.__cb = None
+        self.__recurse_check = 0
         ttk.Frame.__init__(self, master, **kw)
         self.bind('<Configure>', self.__on_configure)
 
     def __arrange(self):
+        self.__cb = None
+        
+        self.__recurse_check += 1
+        self.update_idletasks()
+        self.__recurse_check += -1
+        if self.__recurse_check != 0:
+            return
+
         order = []
         sum_width = 0
         count = 0
@@ -75,7 +84,6 @@ class AutoArrangeFrame(ttk.Frame):
             if oldr != r or oldc != c:
                 child.grid_remove()
                 child.grid(row=r, column=c)
-        self.__cb = None
 
 
     def __on_configure(self, event):
