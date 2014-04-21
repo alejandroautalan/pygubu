@@ -90,11 +90,11 @@ class TTKCombobox(BuilderObject):
     command_properties = ('postcommand', 'validatecommand',
         'invalidcommand', 'xscrollcommand')
 
-    def set_property(self, pname, value):
+    def _set_property(self, target_widget, pname, value):
         if pname in ('validatecommand_args', 'invalidcommand_args'):
             pass
         else:
-            super(TTKCombobox, self).set_property(pname, value)
+            super(TTKCombobox, self)._set_property(target_widget, pname, value)
 
     def _create_callback(self, cpname, command):
         callback = command
@@ -232,7 +232,7 @@ class TTKMenubuttonBO(BuilderObject):
     ro_properties = ('class_',)
 
     def add_child(self, bobject):
-        self.set_property('menu', bobject.widget)
+        self.widget.configure(menu=bobject.widget)
 
 register_widget('ttk.Menubutton', TTKMenubuttonBO,
         'Menubutton', ('Control & Display', 'ttk',))

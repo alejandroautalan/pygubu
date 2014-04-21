@@ -185,11 +185,11 @@ class TKText(BuilderObject):
             'text'] #<- text is a custom property.
     command_properties = ('xscrollcommand', 'yscrollcommand')
 
-    def set_property(self, pname, value):
+    def _set_property(self, target_widget, pname, value):
         if pname == 'text':
-            self.widget.insert('0.0', value)
+            target_widget.insert('0.0', value)
         else:
-            super(TKText, self).set_property(pname, value)
+            super(TKText, self)._set_property(target_widget,pname, value)
 
 
 register_widget('tk.Text', TKText, 'Text', ('Control & Display', 'tk', 'ttk'))
@@ -221,7 +221,7 @@ class TKMenubutton(BuilderObject):
     maxchildren = 1
 
     def add_child(self, bobject):
-        self.set_property('menu', bobject.widget)
+        self.widget.configure(menu=bobject.widget)
 
 register_widget('tk.Menubutton', TKMenubutton, 'Menubutton', ('Control & Display', 'tk',))
 
