@@ -21,8 +21,6 @@
 from __future__ import unicode_literals
 import os
 import sys
-import codecs
-import xml.dom.minidom
 import xml.etree.ElementTree as ET
 import logging
 import webbrowser
@@ -446,12 +444,8 @@ class PygubuUI(pygubu.TkApplication):
     def save_file(self, filename):
         self.project_name.configure(text=filename)
         xml_tree = self.tree_editor.tree_to_xml()
-        xmlvar = xml.dom.minidom.parseString(
-            ET.tostring(xml_tree.getroot()))
-        pretty_xml_as_string = xmlvar.toprettyxml(indent=' '*2)
-
-        with codecs.open(filename, 'w', 'UTF-8') as f:
-            f.write(pretty_xml_as_string)
+        util.indent(xml_tree.getroot())
+        xml_tree.write(filename, xml_declaration=True, encoding='utf-8')
 
 
     def set_changed(self):
