@@ -32,7 +32,7 @@ from . import util
 import pygubudesigner.widgets.toplevelframe
 
 
-class Preview:
+class Preview(object):
 
     def __init__(self, id_, canvas, x=0, y=0):
         self.id = 'preview_{0}'.format(id_)

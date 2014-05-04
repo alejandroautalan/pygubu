@@ -4,7 +4,7 @@ __all__ = ['Builder', 'TkApplication']
 from pygubu.builder import Builder
 
 
-__version__ = '0.9.4.1'
+__version__ = '0.9.4.2'
 
 
 class TkApplication:
