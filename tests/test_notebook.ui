@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="ttk.Notebook" id="Notebook">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+      <property name="sticky">nesw</property>
+    </layout>
+    <child>
+      <object class="ttk.Notebook.Tab" id="Tab_1">
+        <property name="text" translatable="yes">Tab_1</property>
+        <child>
+          <object class="tk.Message" id="Message_1">
+            <property name="background">#d9c6d9</property>
+            <property name="justify">center</property>
+            <property name="text" translatable="yes">Notebook test
+
+Tab 1</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Notebook.Tab" id="Tab_2">
+        <property name="text" translatable="yes">Tab_2</property>
+        <child>
+          <object class="tk.Message" id="Message_2">
+            <property name="background">#80d4d9</property>
+            <property name="justify">center</property>
+            <property name="text" translatable="yes">Notebook test
+
+Tab 2</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

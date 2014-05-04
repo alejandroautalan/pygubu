@@ -1,0 +1,118 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="ttk.Frame" id="mainframe">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+      <property name="sticky">nesw</property>
+      <rows>
+        <row id="0">
+          <property name="weight">1</property>
+        </row>
+        <row id="1">
+          <property name="weight">1</property>
+        </row>
+      </rows>
+      <columns>
+        <column id="0">
+          <property name="weight">1</property>
+        </column>
+      </columns>
+    </layout>
+    <child>
+      <object class="ttk.Panedwindow" id="Panedwindow_1">
+        <property name="height">200</property>
+        <property name="orient">horizontal</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="sticky">nesw</property>
+        </layout>
+        <child>
+          <object class="ttk.Panedwindow.Pane" id="Pane_1">
+            <property name="weight">1</property>
+            <child>
+              <object class="ttk.Label" id="Label_1">
+                <property name="background">#d9c8d9</property>
+                <property name="text" translatable="yes">Pane 1</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">nesw</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Panedwindow.Pane" id="Pane_2">
+            <property name="weight">1</property>
+            <child>
+              <object class="ttk.Label" id="Label_2">
+                <property name="background">#d99bd9</property>
+                <property name="text" translatable="yes">Pane 2</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">nesw</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Panedwindow" id="Panedwindow_2">
+        <property name="height">200</property>
+        <property name="orient">vertical</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">1</property>
+          <property name="sticky">nesw</property>
+        </layout>
+        <child>
+          <object class="ttk.Panedwindow.Pane" id="Pane_3">
+            <property name="weight">2</property>
+            <child>
+              <object class="ttk.Label" id="Label_3">
+                <property name="background">#d9d9b3</property>
+                <property name="text" translatable="yes">Pane 3</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Panedwindow.Pane" id="Pane_4">
+            <property name="weight">1</property>
+            <child>
+              <object class="ttk.Label" id="Label_4">
+                <property name="background">#d9d984</property>
+                <property name="text" translatable="yes">Pane 4</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
