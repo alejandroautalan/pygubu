@@ -52,10 +52,11 @@ class ImageEntry(CompoundPropertyEditor):
         self.columnconfigure(0, weight=1)
 
     def _on_button_click(self):
-        options = {
-            'filetypes':[('GIF', '*.gif'), ('PGM', '*.pgm'), ('PPM', '*.ppm')] }
+        ext = ['*.gif', '*.pgm', '*.ppm']
         if tk.TkVersion >= 8.6:
-            options['filetypes'].append(('PNG', '*.png'))
+            ext.append('*.png')
+        options = {
+            'filetypes':[('All Images', ' '.join(ext))] }
 
         fname = tk.filedialog.askopenfilename(**options)
         if fname:
