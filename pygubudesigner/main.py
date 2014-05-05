@@ -116,25 +116,7 @@ class StatusBarHandler(logging.Handler):
         self._clear = True
 
 
-
-class AboutDialog(Dialog):
-    def _create_ui(self):
-        self.builder = pygubu.Builder(translator)
-        uifile = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),"ui/about_dialog.ui")
-        self.builder.add_from_file(uifile)
-
-        self.builder.get_object('aboutdialog', self.toplevel)
-        self.set_version(self.builder.get_object('version'))
-        self.builder.connect_callbacks(self)
-
-    def set_version(self, widget):
-        txt = widget.cget('text')
-        txt = txt.replace('%version%', str(pygubu.__version__))
-        widget.configure(text=txt)
-        
-    def on_ok_execute(self):
-        self.close()
+FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 
 class PygubuUI(pygubu.TkApplication):
@@ -149,9 +131,9 @@ class PygubuUI(pygubu.TkApplication):
         self.currentfile = None
         self.is_changed = False
 
-        uifile = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)),"ui/pygubu-ui.ui")
+        uifile = os.path.join(FILE_PATH,"ui/pygubu-ui.ui")
         self.builder.add_from_file(uifile)
+        self.builder.add_resource_path(os.path.join(FILE_PATH, "images"))
 
         #build main ui
         self.builder.get_object('mainwindow', self.master)
@@ -505,9 +487,28 @@ class PygubuUI(pygubu.TkApplication):
             self.show_about_dialog()
 
 
+    def _create_about_dialog(self):
+        builder = pygubu.Builder(translator)
+        uifile = os.path.join(FILE_PATH,"ui/about_dialog.ui")
+        builder.add_from_file(uifile)
+
+        dialog = builder.get_object('aboutdialog', self.master.winfo_toplevel())
+        entry = builder.get_object('version')
+        txt = entry.cget('text')
+        txt = txt.replace('%version%', str(pygubu.__version__))
+        entry.configure(text=txt)
+
+        def on_ok_execute():
+            dialog.close()
+
+        builder.connect_callbacks({'on_ok_execute':on_ok_execute})
+
+        return dialog
+
+
     def show_about_dialog(self):
         if self.about_dialog is None:
-            self.about_dialog = AboutDialog(self.master)
+            self.about_dialog = self._create_about_dialog()
             self.about_dialog.run()
         else:
             self.about_dialog.show()
