@@ -199,11 +199,12 @@ class Builder:
         self._resource_paths.append(path)
 
 
-    def get_image(self, name):
-        """Return tk image corresponding to name."""
+    def get_image(self, path):
+        """Return tk image corresponding to name which is taken form path."""
         image = ''
+        name = os.path.basename(path)
         if not StockImage.is_registered(name):
-            ipath = self.__find_image(name)
+            ipath = self.__find_image(path)
             if ipath is not None:
                 StockImage.register(name, ipath)
         try:
@@ -213,10 +214,10 @@ class Builder:
         return image
 
 
-    def __find_image(self, name):
+    def __find_image(self, relpath):
         image_path = None
         for rp in self._resource_paths:
-            path = os.path.join(rp, name)
+            path = os.path.join(rp, relpath)
             if os.path.exists(path):
                 image_path = path
                 break
