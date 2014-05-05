@@ -8,41 +8,44 @@
         <property name="tearoff">0</property>
         <property name="underline">0</property>
         <child>
-          <object class="tk.Menuitem.Command" id="filenew">
+          <object class="tk.Menuitem.Command" id="file_new">
             <property name="accelerator">Ctrl+N</property>
-            <property name="command">on_menuitem_new_clicked</property>
-            <property name="command_id_arg">False</property>
+            <property name="command">on_file_menuitem_clicked</property>
+            <property name="command_id_arg">True</property>
             <property name="label" translatable="yes">New</property>
           </object>
         </child>
         <child>
-          <object class="tk.Menuitem.Command" id="fileopen">
+          <object class="tk.Menuitem.Command" id="file_open">
             <property name="accelerator">Ctrl+O</property>
-            <property name="command">on_menuitem_open_clicked</property>
+            <property name="command">on_file_menuitem_clicked</property>
+            <property name="command_id_arg">True</property>
             <property name="label" translatable="yes">Open …</property>
           </object>
         </child>
         <child>
-          <object class="tk.Menuitem.Command" id="filesave">
+          <object class="tk.Menuitem.Command" id="file_save">
             <property name="accelerator">Ctrl+S</property>
-            <property name="command">on_menuitem_save_clicked</property>
+            <property name="command">on_file_menuitem_clicked</property>
+            <property name="command_id_arg">True</property>
             <property name="label" translatable="yes">Save</property>
           </object>
         </child>
         <child>
-          <object class="tk.Menuitem.Command" id="filesaveas">
-            <property name="command">on_menuitem_saveas_clicked</property>
-            <property name="command_id_arg">False</property>
+          <object class="tk.Menuitem.Command" id="file_saveas">
+            <property name="command">on_file_menuitem_clicked</property>
+            <property name="command_id_arg">True</property>
             <property name="label" translatable="yes">Save as …</property>
           </object>
         </child>
         <child>
-          <object class="tk.Menuitem.Separator" id="separator1" />
+          <object class="tk.Menuitem.Separator" id="file_sep1" />
         </child>
         <child>
-          <object class="tk.Menuitem.Command" id="filequit">
+          <object class="tk.Menuitem.Command" id="file_quit">
             <property name="accelerator">Ctrl+Q</property>
-            <property name="command">on_menuitem_quit_clicked</property>
+            <property name="command">on_file_menuitem_clicked</property>
+            <property name="command_id_arg">True</property>
             <property name="label" translatable="yes">Quit …</property>
           </object>
         </child>

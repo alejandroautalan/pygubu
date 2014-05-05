@@ -351,52 +351,6 @@ class PygubuUI(pygubu.TkApplication):
         self.tree_editor.add_widget(classname)
 
 
-    def on_menuitem_new_clicked(self):
-        new = True
-        if self.is_changed:
-            new = openfile = messagebox.askokcancel( _('File changed'),
-                _('Changes not saved. Discard Changes?') )
-        if new:
-            self.previewer.remove_all()
-            self.tree_editor.remove_all()
-            self.properties_editor.hide_all()
-            self.is_changed = False
-            self.project_name.configure(text=_('<None>'))
-
-
-    def on_menuitem_open_clicked(self):
-        """Opens xml file and load to treeview"""
-
-        openfile = True
-        if self.is_changed:
-            openfile = messagebox.askokcancel(_('File changed'),
-                _('Changes not saved. Open new file anyway?'))
-        if openfile:
-            options = { 'defaultextension': '.ui',
-                'filetypes':((_('pygubu ui'), '*.ui'), (_('All'), '*.*')) }
-            fname = filedialog.askopenfilename(**options)
-            if fname:
-                self.load_file(fname)
-
-
-    def on_menuitem_save_clicked(self):
-        """Save treeview to xml file"""
-
-        if self.currentfile:
-            if self.is_changed:
-                self.do_save(self.currentfile)
-        else:
-            self.do_save_as()
-
-
-    def on_menuitem_saveas_clicked(self):
-        self.do_save_as()
-
-
-    def on_menuitem_quit_clicked(self):
-        self.quit()
-
-
     def on_close_execute(self):
         quit = True
         if self.is_changed:
@@ -442,6 +396,43 @@ class PygubuUI(pygubu.TkApplication):
         self.properties_editor.hide_all()
         self.currentfile = filename
         self.is_changed = False
+        
+    
+    #File Menu
+    def on_file_menuitem_clicked(self, itemid):
+        if itemid == 'file_new':
+            new = True
+            if self.is_changed:
+                new = openfile = messagebox.askokcancel( _('File changed'),
+                    _('Changes not saved. Discard Changes?') )
+            if new:
+                self.previewer.remove_all()
+                self.tree_editor.remove_all()
+                self.properties_editor.hide_all()
+                self.currentfile = None
+                self.is_changed = False
+                self.project_name.configure(text=_('<None>'))
+        elif  itemid == 'file_open':
+            openfile = True
+            if self.is_changed:
+                openfile = messagebox.askokcancel(_('File changed'),
+                    _('Changes not saved. Open new file anyway?'))
+            if openfile:
+                options = { 'defaultextension': '.ui',
+                    'filetypes':((_('pygubu ui'), '*.ui'), (_('All'), '*.*')) }
+                fname = filedialog.askopenfilename(**options)
+                if fname:
+                    self.load_file(fname)
+        elif  itemid == 'file_save':
+            if self.currentfile:
+                if self.is_changed:
+                    self.do_save(self.currentfile)
+            else:
+                self.do_save_as()
+        elif  itemid == 'file_saveas':
+            self.do_save_as()
+        elif  itemid == 'file_quit':
+            self.quit()
 
 
     #Edit menu
