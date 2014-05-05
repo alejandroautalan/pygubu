@@ -387,3 +387,31 @@ class TTKTreeviewColBO(BuilderObject):
 
 register_widget('ttk.Treeview.Column', TTKTreeviewColBO,
         'Treeview.Column', ('Pygubu Helpers', 'ttk'))
+
+
+class TTKSpinboxBO(EntryBaseBO):
+    class_ = None
+    container = False
+    properties = ['class_', 'cursor',
+            'from_', 'to', 'increment',
+            'values',  #<< Commented, only useful on Combobox widget ?
+            'wrap', 'format', 'command',
+            'exportselection', 'font',
+            'invalidcommand', 'justify', 'show', 'state', 'style', 'takefocus',
+            'textvariable', 'validate', 'validatecommand',
+            'width', 'xscrollcommand',
+            'text', # < text is a custom property
+            'validatecommand_args', 'invalidcommand_args']
+    ro_properties = ('class_',)
+    command_properties = ('validatecommand', 'invalidcommand',
+        'xscrollcommand', 'command')
+
+
+if tk.TkVersion >= 8.6:
+    if not hasattr(ttk, 'Spinbox'):
+        from pygubu.widgets.ttkspinbox import Spinbox
+        ttk.Spinbox = Spinbox
+
+    TTKSpinboxBO.class_ = ttk.Spinbox
+    
+    register_widget('ttk.Spinbox', TTKSpinboxBO, 'Spinbox', ('Control & Display', 'ttk'))
