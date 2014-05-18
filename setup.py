@@ -11,13 +11,23 @@ Needed packages to run (using Debian/Ubuntu package names):
 import os
 import shutil
 import platform
-
-from distutils.command.install import install
-from distutils.core import setup
-
 import pygubu
+
 VERSION = pygubu.__version__
 
+with_setuptools = False
+if 'USE_SETUPTOOLS' in os.environ or 'pip' in __file__:
+    try:
+        from setuptools.command.install import install
+        from setuptools import setup
+        with_setuptools = True
+    except:
+        with_setuptools = False
+        
+if with_setuptools is False:
+    from distutils.command.install import install
+    from distutils.core import setup
+        
 
 class CustomInstall(install):
     """Custom installation class on package files.
