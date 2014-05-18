@@ -27,7 +27,7 @@ python setup.py install
 Using pip:
 
 ```
-pip install --egg pygubu
+pip install pygubu
 ```
 
 
