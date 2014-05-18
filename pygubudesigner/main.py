@@ -181,13 +181,13 @@ class PygubuUI(pygubu.TkApplication):
         #
         master = self.master
         master.bind_all('<Control-KeyPress-n>',
-                lambda e: self.on_menuitem_new_clicked())
+                lambda e: self.on_file_menuitem_clicked('file_new'))
         master.bind_all('<Control-KeyPress-o>',
-                lambda e: self.on_menuitem_open_clicked())
+                lambda e: self.on_file_menuitem_clicked('file_open'))
         master.bind_all('<Control-KeyPress-s>',
-                lambda e: self.on_menuitem_save_clicked())
+                lambda e: self.on_file_menuitem_clicked('file_save'))
         master.bind_all('<Control-KeyPress-q>',
-                lambda e: self.on_menuitem_quit_clicked())
+                lambda e: self.on_file_menuitem_clicked('file_quit'))
         master.bind_all('<Control-KeyPress-i>',
                 lambda e: self.on_edit_menuitem_clicked('edit_item_up'))
         master.bind_all('<Control-KeyPress-k>',
