@@ -42,7 +42,7 @@ class CustomInstall(install):
                 fh.write(content)
 
             if platform.system() == 'Windows':
-                dest = script_path + '.pyw'
+                dest = script_path + '.py'
                 shutil.move(script_path, dest)
 
 
