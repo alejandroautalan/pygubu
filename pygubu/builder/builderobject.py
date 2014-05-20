@@ -7,7 +7,7 @@ except:
     import Tkinter as tk
 
 __all__ = [
-    'BuilderObject', 'EntryBaseBO', 'PanedWindow', 'PanedWindowPane',
+    'BuilderObject', 'EntryBaseBO', 'PanedWindowBO', 'PanedWindowPaneBO',
     'WidgetClassDescr', 'CLASS_MAP', 'CUSTOM_PROPERTIES',
     'register_widget', 'register_property']
 
@@ -15,9 +15,11 @@ logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('pygubu.builderobject')
 
 
-WidgetClassDescr = namedtuple('WidgetClassDescr', ['classname', 'classobj', 'label', 'tags'])
+WidgetClassDescr = namedtuple('WidgetClassDescr',
+                              ['classname', 'classobj', 'label', 'tags'])
 
 CLASS_MAP = {}
+
 
 def register_widget(classname, classobj, label=None, tags=None):
     if label is None:
@@ -29,6 +31,7 @@ def register_widget(classname, classobj, label=None, tags=None):
 
 
 CUSTOM_PROPERTIES = {}
+
 
 def register_property(name, description):
     CUSTOM_PROPERTIES[name] = description
@@ -42,7 +45,8 @@ class BuilderObject(object):
 
     class_ = None
     container = False
-    allow_container_layout = True #True if widget can setup grid row/col options
+    # allow_container_layout, True if widget can setup grid row/col options
+    allow_container_layout = True
     allowed_parents = None
     allowed_children = None
     maxchildren = None
@@ -59,7 +63,6 @@ class BuilderObject(object):
         clsobj = cls(builder, wdata)
         return clsobj
 
-
     def __init__(self, builder, wdescr):
         self.widget = None
         self.builder = builder
@@ -69,13 +72,11 @@ class BuilderObject(object):
         self.layout_properties = wdescr.get('layout', {})
         self.bindings = wdescr.get('bindings', [])
 
-
     def realize(self, parent):
         args = self._get_init_args()
         master = parent.get_child_master()
         self.widget = self.class_(master, **args)
         return self.widget
-
 
     def _get_init_args(self):
         """Creates dict with properties marked as readonly"""
@@ -86,7 +87,6 @@ class BuilderObject(object):
                 args[rop] = self.properties[rop]
         return args
 
-
     def configure(self, target=None):
         if target is None:
             target = self.widget
@@ -94,7 +94,6 @@ class BuilderObject(object):
             if (pname not in self.ro_properties and
                 pname not in self.command_properties):
                 self._set_property(target, pname, value)
-
 
     def _set_property(self, target_widget, pname, value):
         if pname not in self.__class__.properties:
@@ -119,7 +118,6 @@ class BuilderObject(object):
                 msg = msg.format(pname, repr(self.class_), str(e))
                 logger.error(msg)
 
-
     def layout(self, target=None):
         if not self.layout_required:
             return
@@ -128,7 +126,6 @@ class BuilderObject(object):
 
         #use grid layout for all
         self._grid_layout(target)
-
 
     def _grid_layout(self, target, configure_rc=True):
         properties = dict(self.layout_properties)
@@ -142,7 +139,6 @@ class BuilderObject(object):
         if configure_rc:
             self._grid_rc_layout(target, rowsprop, colsprop)
 
-
     def _grid_rc_layout(self, target, rowsprop=None, colsprop=None):
         if rowsprop is None:
             properties = dict(self.layout_properties)
@@ -154,23 +150,18 @@ class BuilderObject(object):
         for col in colsprop:
             target.columnconfigure(col, **colsprop[col])
 
-
     def get_child_master(self):
         return self.widget
-
 
     def add_child(self, bobject):
         pass
 
-
     def _create_callback(self, cpname, command):
         return command
-
 
     def _connect_command(self, cpname, callback):
         prop = {cpname: callback}
         self.widget.configure(**prop)
-
 
     def connect_commands(self, cmd_bag):
         notconnected = []
@@ -180,7 +171,8 @@ class BuilderObject(object):
                 cmd_name = self.properties.get(cmd, None)
                 if cmd_name is not None:
                     if cmd_name in cmd_bag:
-                        callback = self._create_callback(cmd, cmd_bag[cmd_name])
+                        callback = self._create_callback(cmd,
+                                                         cmd_bag[cmd_name])
                         self._connect_command(cmd, callback)
                     else:
                         notconnected.append(cmd_name)
@@ -198,7 +190,6 @@ class BuilderObject(object):
             return notconnected
         else:
             return None
-
 
     def connect_bindings(self, cb_bag):
         notconnected = []
@@ -257,7 +248,7 @@ class EntryBaseBO(BuilderObject):
         return callback
 
 
-class PanedWindow(BuilderObject):
+class PanedWindowBO(BuilderObject):
     """Base class for tk.PanedWindow and ttk.Panedwindow builder objects"""
     class_ = None
     container = True
@@ -277,7 +268,7 @@ class PanedWindow(BuilderObject):
 #
 # Base clases for some widget Helpers
 #
-class PanedWindowPane(BuilderObject):
+class PanedWindowPaneBO(BuilderObject):
     class_ = None
     container = True
     allow_container_layout = False

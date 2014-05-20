@@ -200,7 +200,7 @@ class TKText(BuilderObject):
 register_widget('tk.Text', TKText, 'Text', ('Control & Display', 'tk', 'ttk'))
 
 
-class TKPanedWindow(PanedWindow):
+class TKPanedWindow(PanedWindowBO):
     class_ = tk.PanedWindow
     allowed_children = ('tk.PanedWindow.Pane',)
     properties = ['background', 'borderwidth', 'cursor', 'handlepad',
@@ -478,7 +478,7 @@ register_widget('tk.Menuitem.Separator', TKMenuitemSeparator,
                 'Menuitem.Separator', ('Pygubu Helpers', 'tk', 'ttk'))
 
 
-class TKPanedWindowPane(PanedWindowPane):
+class TKPanedWindowPane(PanedWindowPaneBO):
     class_ = None
     container = True
     allowed_parents = ('tk.PanedWindow',)
