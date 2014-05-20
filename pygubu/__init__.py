@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 __all__ = ['Builder', 'TkApplication']
 
 from pygubu.builder import Builder
@@ -51,7 +52,8 @@ class TkApplication:
             self.toplevel.destroy()
 
     def on_close_execute(self):
-        """Determine if if the application is ready for quit, return boolean."""
+        """Determine if if the application is ready for quit,
+           return boolean."""
         return True
 
     def quit(self):

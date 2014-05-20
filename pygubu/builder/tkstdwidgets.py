@@ -1,5 +1,4 @@
 from __future__ import unicode_literals
-import types
 
 try:
     import tkinter as tk
@@ -8,9 +7,12 @@ except:
 
 from .builderobject import *
 
+
 #
 # tkinter widgets
 #
+
+
 class TKToplevel(BuilderObject):
     class_ = tk.Toplevel
     container = True
@@ -31,7 +33,7 @@ class TKToplevel(BuilderObject):
         'vertically': (False, True),
         'none': (False, False)
         }
-        
+
     def realize(self, parent):
         args = self._get_init_args()
         master = parent.get_child_master()
@@ -40,7 +42,7 @@ class TKToplevel(BuilderObject):
         else:
             self.widget = self.class_(master, **args)
         return self.widget
-        
+
     def _set_property(self, target_widget, pname, value):
         method_props = ('geometry', 'overrideredirect', 'title')
         if pname in method_props:
@@ -63,7 +65,8 @@ class TKToplevel(BuilderObject):
         else:
             super(TKToplevel, self)._set_property(target_widget, pname, value)
 
-register_widget('tk.Toplevel', TKToplevel, 'Toplevel', ('Containers', 'tk', 'ttk'))
+register_widget('tk.Toplevel', TKToplevel,
+                'Toplevel', ('Containers', 'tk', 'ttk'))
 
 
 class TKFrame(BuilderObject):
@@ -99,7 +102,8 @@ class TKLabelFrame(BuilderObject):
         'text', 'takefocus', 'width']
 #TODO: Add helper so the labelwidget can be configured on GUI
 
-register_widget('tk.LabelFrame', TKLabelFrame, 'LabelFrame', ('Containers', 'tk'))
+register_widget('tk.LabelFrame', TKLabelFrame,
+                'LabelFrame', ('Containers', 'tk'))
 
 
 class TKEntry(EntryBaseBO):
@@ -114,7 +118,7 @@ class TKEntry(EntryBaseBO):
         'selectborderwidth', 'selectforeground', 'show', 'state',
         'takefocus', 'textvariable', 'validate', 'validatecommand',
         'invalidcommand', 'width', 'wraplength', 'xscrollcommand',
-        'text', # < text is a custom property
+        'text',  # < text is a custom property
         'validatecommand_args',
         'invalidcommand_args']
     command_properties = ('validatecommand', 'invalidcommand',
@@ -156,7 +160,7 @@ register_widget('tk.Checkbutton', TKCheckbutton,
 
 
 class TKListbox(BuilderObject):
-    class_ =  tk.Listbox
+    class_ = tk.Listbox
     container = False
     properties = ['activestyle', 'background', 'borderwidth', 'cursor',
             'disabledforeground', 'exportselection', 'font',
@@ -167,7 +171,8 @@ class TKListbox(BuilderObject):
             'yscrollcommand']
     command_properties = ('xscrollcommand', 'yscrollcommand')
 
-register_widget('tk.Listbox', TKListbox, 'Listbox', ('Control & Display', 'tk'))
+register_widget('tk.Listbox', TKListbox,
+                'Listbox', ('Control & Display', 'tk'))
 
 
 class TKText(BuilderObject):
@@ -182,18 +187,17 @@ class TKText(BuilderObject):
             'selectborderwidth', 'selectforeground', 'spacing1',
             'spacing2', 'spacing3', 'state', 'tabs', 'takefocus',
             'undo', 'width', 'wrap', 'xscrollcommand', 'yscrollcommand',
-            'text'] #<- text is a custom property.
+            'text']  # <- text is a custom property.
     command_properties = ('xscrollcommand', 'yscrollcommand')
 
     def _set_property(self, target_widget, pname, value):
         if pname == 'text':
             target_widget.insert('0.0', value)
         else:
-            super(TKText, self)._set_property(target_widget,pname, value)
+            super(TKText, self)._set_property(target_widget, pname, value)
 
 
 register_widget('tk.Text', TKText, 'Text', ('Control & Display', 'tk', 'ttk'))
-
 
 
 class TKPanedWindow(PanedWindow):
@@ -223,7 +227,8 @@ class TKMenubutton(BuilderObject):
     def add_child(self, bobject):
         self.widget.configure(menu=bobject.widget)
 
-register_widget('tk.Menubutton', TKMenubutton, 'Menubutton', ('Control & Display', 'tk',))
+register_widget('tk.Menubutton', TKMenubutton,
+                'Menubutton', ('Control & Display', 'tk',))
 
 
 class TKMessage(BuilderObject):
@@ -309,7 +314,8 @@ class TKSpinbox(BuilderObject):
                 self.properties['to'] = str(to)
         super(TKSpinbox, self).configure()
 
-register_widget('tk.Spinbox', TKSpinbox, 'Spinbox', ('Control & Display', 'tk'))
+register_widget('tk.Spinbox', TKSpinbox,
+                'Spinbox', ('Control & Display', 'tk'))
 
 
 class TKMenu(BuilderObject):
@@ -362,7 +368,7 @@ class TKMenuitem(BuilderObject):
         'background', 'bitmap', 'columnbreak', 'command', 'compound',
         'font', 'foreground', 'hidemargin', 'image', 'label', 'state',
         'underline',
-        'command_id_arg', #<< custom property !!
+        'command_id_arg',  # << custom property !!
         ]
     command_properties = ('command',)
     allow_bindings = False
@@ -390,7 +396,6 @@ class TKMenuitem(BuilderObject):
 
     def layout(self):
         pass
-
 
     def _create_callback(self, cpname, callback):
         command = callback
@@ -424,7 +429,6 @@ class TKMenuitemSubmenu(TKMenu):
         item_properties['menu'] = submenu
         master.add(tk.CASCADE, **item_properties)
         return self.widget
-
 
     def configure(self):
         pass
@@ -471,7 +475,7 @@ class TKMenuitemSeparator(TKMenuitem):
     command_properties = tuple()
 
 register_widget('tk.Menuitem.Separator', TKMenuitemSeparator,
-        'Menuitem.Separator', ('Pygubu Helpers','tk', 'ttk'))
+                'Menuitem.Separator', ('Pygubu Helpers', 'tk', 'ttk'))
 
 
 class TKPanedWindowPane(PanedWindowPane):

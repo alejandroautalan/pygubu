@@ -43,7 +43,7 @@ When image is used, the class maintains it on memory for tkinter"""
     _stock = stock_data
     _cached = {}
     _formats = ('.gif',)
-    
+
     @classmethod
     def clear_cache(cls):
         """Call this before closing tk root"""
@@ -51,7 +51,6 @@ When image is used, the class maintains it on memory for tkinter"""
         for key in cls._cached:
             cls._cached[key] = None
         cls._cached = {}
-
 
     @classmethod
     def register(cls, key, filename):
@@ -62,11 +61,9 @@ When image is used, the class maintains it on memory for tkinter"""
         cls._stock[key] = {'type': 'custom', 'filename': filename}
         logger.info('%s registered as %s' % (filename, key))
 
-
     @classmethod
     def is_registered(cls, key):
         return key in cls._stock
-
 
     @classmethod
     def register_from_dir(cls, dir_path, prefix=''):
@@ -82,7 +79,6 @@ When image is used, the class maintains it on memory for tkinter"""
                 fkey = '{0}{1}'.format(prefix, name)
                 cls.register(fkey, os.path.join(dir_path, filename))
 
-
     @classmethod
     def _load_image(cls, rkey):
         """Load image from file or return the cached instance."""
@@ -90,13 +86,12 @@ When image is used, the class maintains it on memory for tkinter"""
         v = cls._stock[rkey]
         img = None
         if v['type'] == 'stock':
-            img = tk.PhotoImage(format=v['format'],data=v['data'])
+            img = tk.PhotoImage(format=v['format'], data=v['data'])
         else:
             img = tk.PhotoImage(file=v['filename'])
         cls._cached[rkey] = img
         logger.info('Loaded resource %s.' % rkey)
         return img
-
 
     @classmethod
     def get(cls, rkey):
@@ -112,4 +107,3 @@ When image is used, the class maintains it on memory for tkinter"""
             return img
         else:
             raise StockImageException('StockImage: %s not registered.' % rkey)
-
