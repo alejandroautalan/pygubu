@@ -24,6 +24,8 @@ except:
     import Tkinter as tk
     import ttk
 
+from pygubu.widgets.scrollbarhelper import ScrollbarHelper
+
 
 class PropertyEditor(ttk.Frame):
     def __init__(self, master=None, **kw):
@@ -71,6 +73,9 @@ class EntryPropertyEditor(PropertyEditor):
         entry.bind('<KeyPress-Return>', self._on_variable_changed)
         entry.bind('<KeyPress-KP_Enter>', self._on_variable_changed)
 
+    def parameters(self, **kw):
+        self._entry.configure(**kw)
+
 
 SpinboxClass = tk.Spinbox
 if tk.TkVersion >= 8.6 and not hasattr(ttk, 'Spinbox'):
@@ -96,8 +101,10 @@ class SpinboxPropertyEditor(PropertyEditor):
 
 class TextPropertyEditor(PropertyEditor):
     def _create_ui(self):
-        self._text = text = tk.Text(self)
-        text.grid(sticky='we')
+        self._sbh = ScrollbarHelper(self)
+        self._sbh.grid(row=0, column=0, sticky='we')
+        self._text = text = tk.Text(self._sbh, width=20, height=3)
+        self._sbh.add_child(self._text)
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         text.bind('<FocusOut>', self._on_variable_changed)

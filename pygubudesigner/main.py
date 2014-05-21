@@ -44,8 +44,7 @@ from pygubu import builder
 from pygubu.stockimage import StockImage, StockImageException
 from . import util
 from . import properties
-from .propertieseditor import WidgetPropertiesEditor
-from .widgeteditor import WidgetsTreeEditor
+from .uitreeeditor import WidgetsTreeEditor
 from .previewer import PreviewHelper
 from .i18n import translator
 from pygubu.widgets.dialog import Dialog
@@ -159,10 +158,6 @@ class PygubuUI(pygubu.TkApplication):
         self.previewer = PreviewHelper(previewc)
         #tree editor
         self.tree_editor = WidgetsTreeEditor(self)
-        #properties frame
-        self.widget_props_frame = builder.get_object('propertiesframe')
-        self.layout_props_frame = builder.get_object('layoutframe')
-        self.properties_editor = WidgetPropertiesEditor(self)
 
         self.builder.connect_callbacks(self)
 

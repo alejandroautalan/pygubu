@@ -23,10 +23,10 @@ from .util.observable import Observable
 from .properties import TRANSLATABLE_PROPERTIES
 
 
-class WidgetDescr(dict, Observable):
+class WidgetDescr(Observable, dict):
 
     def __init__(self, _class, _id):
-        super(dict, self).__init__()
+        super(WidgetDescr, self).__init__()
         #properties
         self['class'] = _class
         self['id'] = _id

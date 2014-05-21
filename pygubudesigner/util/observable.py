@@ -20,6 +20,7 @@
 class Observable(object):
 
     def __init__(self):
+        super(Observable, self).__init__()
         self._observers = []
 
 
