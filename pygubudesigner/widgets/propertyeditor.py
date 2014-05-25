@@ -42,9 +42,11 @@ class PropertyEditor(ttk.Frame):
         return True
 
     def _get_value(self):
+        """Get value from storage"""
         return self._variable.get()
 
     def _set_value(self, value):
+        """Save value on storage"""
         self._variable.set(value)
 
     def _on_variable_changed(self, event=None):
@@ -52,7 +54,7 @@ class PropertyEditor(ttk.Frame):
             self.value = self._get_value()
             if self.value != self._initvalue:
                 self.event_generate('<<PropertyChanged>>')
-            self._initvalue = self.value
+                self._initvalue = self.value
 
     def parameters(self, **kw):
         pass

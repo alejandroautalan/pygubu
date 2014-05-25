@@ -24,75 +24,52 @@ except:
     import Tkinter as tk
     import ttk
 
-from pygubudesigner.widgets.compoundpropertyeditor import CompoundPropertyEditor
-#from compoundpropertyeditor import CompoundPropertyEditor
+from pygubudesigner.widgets.propertyeditor import (PropertyEditor,
+                                                   EntryPropertyEditor,
+                                                   ChoicePropertyEditor)
 
 
-class TkVarEntry(CompoundPropertyEditor):
-    
-    def __init__(self, master=None, **kw):
-        CompoundPropertyEditor.__init__(self, master, **kw)
-        
-        self._entryvar = tk.StringVar()
-        self._cboxvar = var2 = tk.StringVar()
-        var2.trace(mode="w", callback=self.__on_cbox_changed)
-        self.entry = entry = ttk.Entry(self, textvariable=self._entryvar)
-        entry.bind('<FocusOut>', self.__on_entry_changed)
-        entry.bind('<KeyPress-Return>', self.__on_entry_changed)
-        entry.bind('<KeyPress-KP_Enter>', self.__on_entry_changed)
-        self.entry.grid(sticky='ew')
-        
-        self.default_vtype = 'string'
-        cbox_values = ('string', 'int', 'double', 'boolean')
-        self._cboxvar.set(cbox_values[0])
-        self.cbox = ttk.Combobox(self, textvariable=self._cboxvar,
-            state='readonly', values=cbox_values, width=6)
-        self.cbox.grid(row=0, column=1)
-        
+class TkVarPropertyEditor(PropertyEditor):
+
+    def _create_ui(self):
+        self._entry = w = EntryPropertyEditor(self)
+        w.grid(sticky='we')
+        self._cbox = w = ChoicePropertyEditor(self)
+        w.grid(row=0, column=1, sticky='we')
+        self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
-        
-    def __on_cbox_changed(self, varname, elementname, mode):
-        self._on_value_changed_by_user()
 
-    def __on_entry_changed(self, event=None):
-        self._on_value_changed_by_user()
+        self._entry.bind('<<PropertyChanged>>', self._on_variable_changed)
+        self._cbox.bind('<<PropertyChanged>>', self._on_variable_changed)
+        cbvalues = ('string', 'int', 'double', 'boolean')
+        self._cbox.parameters(width=10, values=cbvalues, state='readonly')
 
-    def _on_value_changed_by_user(self):
-        value = self._entryvar.get()
-        if value:
-            value = self._cboxvar.get() + ':' + value
-        else:
-            value = ''
-        self._disable_cb()
-        self._variable.set(value)
-        self._enable_cb()
-        self.event_generate('<<TkVarEntryChanged>>')
-        
-    def _on_variable_changed(self, varname, elementname, mode):
-        vtype = self.default_vtype
-        value = self._variable.get()
+    def _get_value(self):
+        value = ''
+        if self._entry.value != '':
+            value = '{0}:{1}'.format(self._entry.value, self._cbox.value)
+        return value
+
+    def _set_value(self, value):
         if ':' in value:
-            vtype, value = value.split(':')
-        self._cboxvar.set(vtype)
-        self._entryvar.set(value)
+            type_, name = value.split(':')
+            self._entry.edit(name)
+            self._cbox.edit(type_)
+        else:
+            self._entry.edit('')
+            self._cbox.edit('string')
 
-    
-    
+
 if __name__ == '__main__':
     root = tk.Tk()
-    var = tk.StringVar()
-    
-    def see_var():
-        print(var.get())
+    editor = TkVarPropertyEditor(root)
+    editor.grid()
+    editor.edit('double:mydouble')
 
-    entry = TkVarEntry(root, textvariable=var)
-    entry.grid()
-    entry.configure(textvariable=var)
-    var.set('Double:mydouble')
-    
+    def see_var():
+        print(editor.value)
+
     btn = ttk.Button(root, text='Value', command=see_var)
     btn.grid(row=0, column=1)
 
     root.mainloop()
-
-    

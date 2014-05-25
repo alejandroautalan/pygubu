@@ -155,7 +155,7 @@ class WidgetsTreeEditor(object):
                 self.app.set_changed()
                 if parent:
                     self.draw_widget(parent)
-                self.app.properties_editor.hide_all()
+                self.properties_editor.hide_all()
             except tk.TclError as e:
                 #Selection of parent and child items ??
                 pass

@@ -24,6 +24,12 @@ except:
     import Tkinter as tk
 #    import ttk
 
+
+# translator marker
+def _(x):
+    return x
+
+
 TK_CURSORS = ('arrow', 'based_arrow_down', 'based_arrow_up', 'boat',
               'bogosity', 'bottom_left_corner', 'bottom_right_corner',
               'bottom_side', 'bottom_tee', 'box_spiral', 'center_ptr',
@@ -73,7 +79,9 @@ WIDGET_STANDARD_OPTIONS = [
         {'editor': 'entry'}),
     ('after',
         {'editor': 'entry'}),
+    #
     # ttk
+    #
     ('class_',
         {'editor': 'entry'}),
     ('cursor',
@@ -95,13 +103,15 @@ WIDGET_STANDARD_OPTIONS = [
         'ttk.Entry':
             {'params': {'values': ('', tk.NORMAL, tk.DISABLED, 'readonly')}},
         'ttk.Combobox':
-            {'params': {'values': ('', 'readonly')}}}),
+            {'params': {'values': ('', 'readonly')}},
+        'ttk.Button':
+            {'params': {'values': ('', 'normal', 'disabled')}}}),
     # ttk.Label
     ('text',
         {'editor': 'text'}),
     # ttk.Label
     ('textvariable',
-        {'editor': 'entry'}),
+        {'editor': 'tkvarentry'}),
     # ttk.Label
     ('underline',
         {'editor': 'spinbox'}),
@@ -118,16 +128,16 @@ WIDGET_STANDARD_OPTIONS = [
         {'editor': 'spinbox',
          'params': {'from_': 0, 'to': 999},
          'validator': 'number_integer',
-         'tk.Toplevel': { 'default': 200 },
-         'tk.Frame': { 'default': 200 },
-         'ttk.Frame': { 'default': 200 },
-         'tk.LabelFrame': { 'default': 200 },
-         'ttk.Labelframe': { 'default': 200 },
-         'tk.PanedWindow': { 'default': 200 },
-         'ttk.Panedwindow': { 'default': 200 },
-         'ttk.Notebook': { 'default': 200 },
-         'tk.Text': { 'default': 10 },
-         'pygubu.builder.widgets.dialog': { 'default': 100 }}),
+         'tk.Toplevel': {'default': 200},
+         'tk.Frame': {'default': 200},
+         'ttk.Frame': {'default': 200},
+         'tk.LabelFrame': {'default': 200},
+         'ttk.Labelframe': {'default': 200},
+         'tk.PanedWindow': {'default': 200},
+         'ttk.Panedwindow': {'default': 200},
+         'ttk.Notebook': {'default': 200},
+         'tk.Text': {'default': 10},
+         'pygubu.builder.widgets.dialog': {'default': 100}}),
     # ttk.Frame, ttk.Label
     ('width',
         {'editor': 'spinbox',
@@ -176,10 +186,21 @@ WIDGET_SPECIFIC_OPTIONS = [
         {'editor': 'entry'}),
     # ttk.Button
     ('default',
-        {'editor': 'entry'}),
+        {'editor': 'choice',
+         'params':{'values':('', 'normal', 'active', 'disabled')}}),
     # ttk.Label
     ('wraplength',
         {'editor': 'entry'}),
+    # ttk.Checkbutton
+    ('offvalue',
+        {'editor': 'entry',
+         'help': _('offvalue_help')}),
+    # ttk.Checkbutton
+    ('onvalue',
+        {'editor': 'entry'}),
+    # ttk.Checkbutton
+    ('variable',
+        {'editor': 'tkvarentry'}),
 ]
 
 WIDGET_CUSTOM_OPTIONS = []

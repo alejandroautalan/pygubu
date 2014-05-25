@@ -32,7 +32,7 @@ sys.path.insert(0, tpath)
 import itertools
 
 from pygubu import builder
-from pygubudesigner.widgets import propertyeditor as pe
+from pygubudesigner.widgets import *
 from pygubudesigner import properties
 from pygubudesigner.i18n import translator as _
 
@@ -83,15 +83,17 @@ class PropertiesEditor(object):
         #I don't have class name at this moment
         #so setup class specific values on update_property_widget
         if wtype == 'entry':
-            editor = pe.EntryPropertyEditor(master)
+            editor = EntryPropertyEditor(master)
         elif wtype == 'text':
-            editor = pe.TextPropertyEditor(master)
+            editor = TextPropertyEditor(master)
         elif wtype == 'choice':
-            editor = pe.ChoicePropertyEditor(master)
+            editor = ChoicePropertyEditor(master)
         elif wtype == 'spinbox':
-            editor = pe.SpinboxPropertyEditor(master)
+            editor = SpinboxPropertyEditor(master)
+        elif wtype == 'tkvarentry':
+            editor = TkVarPropertyEditor(master)
         else:
-            editor = pe.EntryPropertyEditor(master)
+            editor = EntryPropertyEditor(master)
 
         def make_on_change_cb(pname, editor):
             def on_change_cb(event):
