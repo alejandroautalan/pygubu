@@ -16,7 +16,6 @@
 #
 # For further info, check  http://pygubu.web.here
 from __future__ import unicode_literals, print_function
-from collections import defaultdict
 
 try:
     import tkinter as tk
@@ -25,14 +24,10 @@ except:
     import Tkinter as tk
     import ttk
 
-import os, sys
-tpath = os.path.dirname(os.path.abspath(os.path.join(__file__, '..')))
-sys.path.insert(0, tpath)
-
 import itertools
 
 from pygubu import builder
-from pygubudesigner.widgets import *
+from pygubudesigner.widgets.propertyeditor import *
 from pygubudesigner import properties
 from pygubudesigner.i18n import translator as _
 
@@ -42,13 +37,18 @@ CLASS_MAP = builder.CLASS_MAP
 class PropertiesEditor(object):
     def __init__(self, frame):
         self._current = None
-        self._frame = frame
+        self._sframe = frame
+        self._frame = None
         self._propbag = {}
         self._create_properties()
         self.hide_all()
 
     def _create_properties(self):
         """Populate a frame with a list of all editable properties"""
+        self._frame = f = ttk.Labelframe(self._sframe.innerframe,
+                                         text=_('Widget properties'))
+        f.grid(sticky='nswe')
+
         label_tpl = "{0}:"
         row = 0
         col = 0
@@ -82,18 +82,7 @@ class PropertiesEditor(object):
 
         #I don't have class name at this moment
         #so setup class specific values on update_property_widget
-        if wtype == 'entry':
-            editor = EntryPropertyEditor(master)
-        elif wtype == 'text':
-            editor = TextPropertyEditor(master)
-        elif wtype == 'choice':
-            editor = ChoicePropertyEditor(master)
-        elif wtype == 'spinbox':
-            editor = SpinboxPropertyEditor(master)
-        elif wtype == 'tkvarentry':
-            editor = TkVarPropertyEditor(master)
-        else:
-            editor = EntryPropertyEditor(master)
+        editor = create_editor(wtype, master)
 
         def make_on_change_cb(pname, editor):
             def on_change_cb(event):
@@ -112,10 +101,8 @@ class PropertiesEditor(object):
 
         if classname in pdescr:
             pdescr = dict(pdescr, **pdescr[classname])
-            
+
         params = pdescr.get('params', {})
-        # print('pname:?', pname, ' Params:?', params)
-        # print('pname:?', pname, ' editor:?', repr(editor))
         editor.parameters(**params)
         default = pdescr.get('default', '')
 
@@ -141,12 +128,13 @@ class PropertiesEditor(object):
                 #hide property widget
                 label.grid_remove()
                 widget.grid_remove()
+        self._sframe.reposition()
 
     def hide_all(self):
         """Hide all properties from property editor."""
         self.current = None
 
-        for _, (label, widget) in self._propbag.items():
+        for _v, (label, widget) in self._propbag.items():
             label.grid_remove()
             widget.grid_remove()
 
