@@ -24,9 +24,7 @@ except:
     import Tkinter as tk
     import ttk
 
-from pygubudesigner.widgets.propertyeditor import (PropertyEditor,
-                                                   EntryPropertyEditor,
-                                                   ChoicePropertyEditor)
+from pygubudesigner.widgets.propertyeditor import *
 
 
 class TkVarPropertyEditor(PropertyEditor):
@@ -42,7 +40,7 @@ class TkVarPropertyEditor(PropertyEditor):
         self._entry.bind('<<PropertyChanged>>', self._on_variable_changed)
         self._cbox.bind('<<PropertyChanged>>', self._on_variable_changed)
         cbvalues = ('string', 'int', 'double', 'boolean')
-        self._cbox.parameters(width=10, values=cbvalues, state='readonly')
+        self._cbox.parameters(width=8, values=cbvalues, state='readonly')
 
     def _get_value(self):
         value = ''
@@ -58,6 +56,9 @@ class TkVarPropertyEditor(PropertyEditor):
         else:
             self._entry.edit('')
             self._cbox.edit('string')
+
+
+register_editor('tkvarentry', TkVarPropertyEditor)
 
 
 if __name__ == '__main__':

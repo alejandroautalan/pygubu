@@ -17,6 +17,11 @@
 # For further info, check  http://pygubu.web.here
 
 from __future__ import unicode_literals
+
+__all__ = ['PropertyEditor', 'EntryPropertyEditor', 'SpinboxPropertyEditor',
+           'ChoicePropertyEditor', 'TextPropertyEditor',
+           'register_editor', 'create_editor']
+
 try:
     import tkinter as tk
     import tkinter.ttk as ttk
@@ -146,6 +151,23 @@ class ChoicePropertyEditor(PropertyEditor):
 
     def parameters(self, **kw):
         self._combobox.configure(**kw)
+
+
+EDITORS = {}
+
+
+def register_editor(name, class_):
+    EDITORS[name] = class_
+
+
+def create_editor(name, *args, **kw):
+    editor = EDITORS[name](*args, **kw)
+    return editor
+
+register_editor('entry', EntryPropertyEditor)
+register_editor('choice', ChoicePropertyEditor)
+register_editor('spinbox', SpinboxPropertyEditor)
+register_editor('text', TextPropertyEditor)
 
 
 if __name__ == '__main__':
