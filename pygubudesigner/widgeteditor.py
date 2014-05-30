@@ -116,7 +116,8 @@ class PropertiesEditor(object):
         class_props = CLASS_MAP[wclass].classobj.properties
         allprops = itertools.chain(properties.WIDGET_REQUIRED_OPTIONS,
                                    properties.WIDGET_STANDARD_OPTIONS,
-                                   properties.WIDGET_SPECIFIC_OPTIONS)
+                                   properties.WIDGET_SPECIFIC_OPTIONS,
+                                   properties.WIDGET_CUSTOM_OPTIONS)
         for name, propdescr in allprops:
             label, widget = self._propbag[name]
             if name in properties.WIDGET_REQUIRED_PROPERTIES \
