@@ -364,7 +364,8 @@ class TTKTreeviewColBO(TTKWidgetBO):
         tree_column = col_props.pop('tree_column', 'False')
         tree_column = True if tree_column == 'True' else False
         column_id = '#0' if tree_column else self.objectid
-        is_visible = True if col_props.pop('visible') == 'True' else False
+        visible = col_props.pop('visible', 'False')
+        is_visible = True if visible == 'True' else False
 
         #configure heading properties
         col_props.pop('command', '')
