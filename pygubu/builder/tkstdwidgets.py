@@ -319,6 +319,13 @@ register_widget('tk.Spinbox', TKSpinbox,
 
 
 class TKMenu(BuilderObject):
+    OPTIONS_STANDARD = ('activebackground', 'activeborderwidth',
+                        'activeforeground',  'cursor')
+    OPTIONS_WIDGET_SPECIFIC = ('background', 'borderwidth',
+                               'disabledforeground', 'font', 'foreground',
+                               'postcommand', 'relief', 'selectcolor',
+                               'tearoff', 'tearoffcommand', 'title')
+    OPTIONS_CUSTOM = tuple()
     layout_required = False
     allowed_parents = ('root', 'tk.Menubutton', 'ttk.Menubutton')
     allowed_children = ('tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
@@ -327,10 +334,7 @@ class TKMenu(BuilderObject):
     class_ = tk.Menu
     container = True
     allow_container_layout = False
-    properties = ['activebackground', 'activeborderwidth', 'activeforeground',
-        'background', 'borderwidth', 'cursor', 'disabledforeground',
-        'font', 'foreground', 'postcommand', 'relief', 'selectcolor',
-        'tearoff', 'tearoffcommand', 'title']
+    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC + OPTIONS_CUSTOM
     command_properties = ('postcommand', 'tearoffcommand')
     allow_bindings = False
 
@@ -352,7 +356,7 @@ class TKCanvas(BuilderObject):
     command_properties = ('xscrollcommand', 'yscrollcommand')
 
 register_widget('tk.Canvas', TKCanvas,
-        'Canvas', ('Control & Display', 'tk', 'ttk'))
+                    'Canvas', ('Control & Display', 'tk', 'ttk'))
 
 
 #
@@ -364,12 +368,13 @@ class TKMenuitem(BuilderObject):
     container = False
     itemtype = None
     layout_required = False
-    properties = ['accelerator', 'activebackground', 'activeforeground',
-        'background', 'bitmap', 'columnbreak', 'command', 'compound',
-        'font', 'foreground', 'hidemargin', 'image', 'label', 'state',
-        'underline',
-        'command_id_arg',  # << custom property !!
-        ]
+    OPTIONS_STANDARD = ('activebackground', 'activeforeground', 'background',
+                        'bitmap', 'compound', 'foreground',  'state')
+    OPTIONS_WIDGET_SPECIFIC = ('accelerator', 'columnbreak', 'command',
+                               'font', 'hidemargin', 'image', 'label',
+                               'underline')
+    OPTIONS_CUSTOM = ('command_id_arg',)
+    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC + OPTIONS_CUSTOM
     command_properties = ('command',)
     allow_bindings = False
 
@@ -415,7 +420,7 @@ class TKMenuitemSubmenu(TKMenu):
     allowed_children = ('tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
         'tk.Menuitem.Command', 'tk.Menuitem.Radiobutton',
         'tk.Menuitem.Separator')
-    properties = list(set(TKMenu.properties + TKMenuitem.properties))
+    properties = tuple(set(TKMenu.properties + TKMenuitem.properties))
 
     def realize(self, parent):
         master = parent.widget
@@ -451,8 +456,12 @@ register_widget('tk.Menuitem.Command', TKMenuitemCommand,
 class TKMenuitemCheckbutton(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.CHECKBUTTON
-    properties = TKMenuitem.properties + \
-            ['indicatoron', 'selectcolor', 'selectimage', 'variable']
+    OPTIONS_STANDARD = TKMenuitem.OPTIONS_STANDARD
+    OPTIONS_WIDGET_SPECIFIC = \
+        TKMenuitem.OPTIONS_WIDGET_SPECIFIC + \
+        ('indicatoron', 'selectcolor', 'selectimage', 'variable')
+    OPTIONS_CUSTOM = TKMenuitem.OPTIONS_CUSTOM
+    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC + OPTIONS_CUSTOM
 
 register_widget('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton,
     'Menuitem.Checkbutton', ('Pygubu Helpers', 'tk', 'ttk'))
@@ -461,8 +470,11 @@ register_widget('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton,
 class TKMenuitemRadiobutton(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.RADIOBUTTON
-    properties = TKMenuitemCheckbutton.properties + \
-            ['onvalue', 'offvalue', 'value']
+    OPTIONS_STANDARD = TKMenuitem.OPTIONS_STANDARD
+    OPTIONS_WIDGET_SPECIFIC = \
+        TKMenuitem.OPTIONS_WIDGET_SPECIFIC + ('onvalue', 'offvalue', 'value')
+    OPTIONS_CUSTOM = TKMenuitem.OPTIONS_CUSTOM
+    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC + OPTIONS_CUSTOM
 
 register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
     'Menuitem.Radiobutton', ('Pygubu Helpers', 'tk', 'ttk'))
@@ -471,7 +483,7 @@ register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
 class TKMenuitemSeparator(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.SEPARATOR
-    properties = []
+    properties = tuple()
     command_properties = tuple()
 
 register_widget('tk.Menuitem.Separator', TKMenuitemSeparator,
