@@ -9,9 +9,11 @@ class TTKScrolledFrameBO(BuilderObject):
     container = True
 #    maxchildren = 1
 #    allowed_children = ('tk.Frame', 'ttk.Frame' )
-    properties = ['class_', 'cursor', 'height', 'padding',
-            'relief', 'style', 'takefocus', 'width', 'scrolltype']
-    ro_properties = ('class_', 'scrolltype')
+    OPTIONS_STANDARD = ('class_', 'cursor', 'takefocus', 'style')
+    OPTIONS_SPECIFIC = ('borderwidth', 'relief', 'padding', 'height', 'width')
+    OPTIONS_CUSTOM = ('scrolltype', )
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
+    ro_properties = ('class_', 'scrolltype', )
 
     def get_child_master(self):
         return self.widget.innerframe

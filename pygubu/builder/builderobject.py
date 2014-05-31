@@ -43,6 +43,9 @@ def register_property(name, description):
 class BuilderObject(object):
     """Base class for Widgets created with Builder"""
 
+    OPTIONS_STANDARD = tuple()
+    OPTIONS_SPECIFIC = tuple()
+    OPTIONS_CUSTOM = tuple()
     class_ = None
     container = False
     # allow_container_layout, True if widget can setup grid row/col options

@@ -19,29 +19,30 @@ class TTKWidgetBO(BuilderObject):
                      'width')
     OPTIONS_COMPATIBILITY = ('state',)
     OPTIONS_STANDARD = ('class_', 'cursor', 'takefocus', 'style')
-    OPTIONS_WIDGET_SPECIFIC = tuple()
+    OPTIONS_SPECIFIC = tuple()
     OPTIONS_CUSTOM = tuple()
     ro_properties = ('class_',)
 
 
 class TTKFrame(TTKWidgetBO):
-    OPTIONS_WIDGET_SPECIFIC = ('borderwidth', 'relief', 'padding',
-                               'height', 'width')
+    OPTIONS_SPECIFIC = ('borderwidth', 'relief', 'padding', 'height', 'width')
     class_ = ttk.Frame
     container = True
-    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 register_widget('ttk.Frame', TTKFrame, 'Frame', ('Containers', 'ttk'))
 
 
 class TTKLabel(TTKWidgetBO):
-    OPTIONS_STANDARD = TTKWidgetBO.OPTIONS_STANDARD + TTKWidgetBO.OPTIONS_LABEL
-    OPTIONS_WIDGET_SPECIFIC = ('anchor', 'background', 'borderwidth',
-                               'font', 'foreground', 'justify', 'padding',
-                               'relief', 'wraplength')
+    OPTIONS_STANDARD = \
+        TTKWidgetBO.OPTIONS_STANDARD + \
+        TTKWidgetBO.OPTIONS_LABEL + ('borderwidth',)
+    OPTIONS_SPECIFIC = (
+        'anchor', 'background', 'font', 'foreground', 'justify',
+        'padding', 'relief', 'wraplength')
     class_ = ttk.Label
     container = False
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 register_widget('ttk.Label', TTKLabel, 'Label', ('Control & Display', 'ttk'))
 
@@ -50,10 +51,10 @@ class TTKButton(TTKWidgetBO):
     OPTIONS_STANDARD = (TTKWidgetBO.OPTIONS_STANDARD +
                         TTKWidgetBO.OPTIONS_LABEL +
                         TTKWidgetBO.OPTIONS_COMPATIBILITY)
-    OPTIONS_WIDGET_SPECIFIC = ('command', 'default')
+    OPTIONS_SPECIFIC = ('command', 'default')
     class_ = ttk.Button
     container = False
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
 
 register_widget('ttk.Button', TTKButton,
@@ -64,10 +65,10 @@ class TTKCheckbutton(TTKWidgetBO):
     OPTIONS_STANDARD = (TTKWidgetBO.OPTIONS_STANDARD +
                         TTKWidgetBO.OPTIONS_LABEL +
                         TTKWidgetBO.OPTIONS_COMPATIBILITY)
-    OPTIONS_WIDGET_SPECIFIC = ('command', 'offvalue', 'onvalue', 'variable')
+    OPTIONS_SPECIFIC = ('command', 'offvalue', 'onvalue', 'variable')
     class_ = ttk.Checkbutton
     container = False
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
 
 register_widget('ttk.Checkbutton', TTKCheckbutton,
@@ -78,10 +79,10 @@ class TTKRadiobutton(TTKWidgetBO):
     OPTIONS_STANDARD = (TTKWidgetBO.OPTIONS_STANDARD +
                         TTKWidgetBO.OPTIONS_LABEL +
                         TTKWidgetBO.OPTIONS_COMPATIBILITY)
-    OPTIONS_WIDGET_SPECIFIC = ('command', 'value', 'variable')
+    OPTIONS_SPECIFIC = ('command', 'value', 'variable')
     class_ = ttk.Radiobutton
     container = False
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     ro_properties = ('class_',)
     command_properties = ('command',)
 
@@ -90,14 +91,14 @@ register_widget('ttk.Radiobutton', TTKRadiobutton,
 
 
 class TTKCombobox(TTKWidgetBO):
-    OPTIONS_WIDGET_SPECIFIC = ('exportselection', 'justify', 'height',
-                               'postcommand', 'textvariable', 'values',
-                               'width', 'validatecommand', 'invalidcommand',
-                               'xscrollcommand')
+    OPTIONS_SPECIFIC = ('exportselection', 'justify', 'height',
+                        'postcommand', 'state', 'textvariable', 'values',
+                        'width', 'validatecommand', 'invalidcommand',
+                        'xscrollcommand')
     OPTIONS_CUSTOM = ('validatecommand_args', 'invalidcommand_args')
     class_ = ttk.Combobox
     container = False
-    properties = (TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC +
+    properties = (TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC +
                   OPTIONS_CUSTOM)
     command_properties = ('postcommand', 'validatecommand',
                           'invalidcommand', 'xscrollcommand')
@@ -124,10 +125,10 @@ register_widget('ttk.Combobox', TTKCombobox, 'Combobox',
 
 
 class TTKScrollbar(TTKWidgetBO):
-    OPTIONS_WIDGET_SPECIFIC = ('command', 'orient')
+    OPTIONS_SPECIFIC = ('command', 'orient')
     class_ = ttk.Scrollbar
     container = False
-    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
 
 register_widget('ttk.Scrollbar', TTKScrollbar,
@@ -138,7 +139,7 @@ class TTKSizegrip(TTKWidgetBO):
     class_ = ttk.Sizegrip
     container = False
     properties = (TTKWidgetBO.OPTIONS_STANDARD +
-                  TTKWidgetBO.OPTIONS_WIDGET_SPECIFIC)
+                  TTKWidgetBO.OPTIONS_SPECIFIC)
 
 register_widget('ttk.Sizegrip', TTKSizegrip,
                 'Sizegrip', ('Control & Display', 'ttk'))
@@ -146,13 +147,13 @@ register_widget('ttk.Sizegrip', TTKSizegrip,
 
 class TTKEntry(TTKWidgetBO, EntryBaseBO):
     OPTIONS_STANDARD = TTKWidgetBO.OPTIONS_STANDARD + ('xscrollcommand',)
-    OPTIONS_WIDGET_SPECIFIC = ('exportselection', 'font', 'invalidcommand',
-                               'justify', 'show', 'state', 'textvariable',
-                               'validate', 'validatecommand', 'width')
+    OPTIONS_SPECIFIC = ('exportselection', 'font', 'invalidcommand',
+                        'justify', 'show', 'state', 'textvariable',
+                        'validate', 'validatecommand', 'width')
     OPTIONS_CUSTOM = ('text', 'validatecommand_args', 'invalidcommand_args')
     class_ = ttk.Entry
     container = False
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC + OPTIONS_CUSTOM
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     command_properties = ('validatecommand', 'invalidcommand',
                           'xscrollcommand')
 
@@ -161,32 +162,32 @@ register_widget('ttk.Entry', TTKEntry, 'Entry', ('Control & Display', 'ttk'))
 
 
 class TTKProgressbar(TTKWidgetBO):
-    OPTIONS_WIDGET_SPECIFIC = ('orient', 'length', 'mode', 'maximum',
-                               'value', 'variable')  # 'phase' is read-only
+    OPTIONS_SPECIFIC = ('orient', 'length', 'mode', 'maximum',
+                        'value', 'variable')  # 'phase' is read-only
     class_ = ttk.Progressbar
     container = False
-    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 register_widget('ttk.Progressbar', TTKProgressbar,
                 'Progressbar', ('Control & Display', 'ttk'))
 
 
 class TTKScale(TTKWidgetBO):
-    OPTIONS_WIDGET_SPECIFIC = ('command', 'from_', 'length', 'orient',
-                               'to', 'value', 'variable')
+    OPTIONS_SPECIFIC = ('command', 'from_', 'length', 'orient',
+                        'to', 'value', 'variable')
     class_ = ttk.Scale
     container = False
-    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
 
 register_widget('ttk.Scale', TTKScale, 'Scale', ('Control & Display', 'ttk'))
 
 
 class TTKSeparator(TTKWidgetBO):
-    OPTIONS_WIDGET_SPECIFIC = ('orient',)
+    OPTIONS_SPECIFIC = ('orient',)
     class_ = ttk.Separator
     container = False
-    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 register_widget('ttk.Separator', TTKSeparator,
                 'Separator', ('Control & Display', 'ttk'))
@@ -194,11 +195,11 @@ register_widget('ttk.Separator', TTKSeparator,
 
 class TTKLabelframe(TTKWidgetBO):
     OPTIONS_STANDARD = TTKFrame.OPTIONS_STANDARD
-    OPTIONS_WIDGET_SPECIFIC = (TTKFrame.OPTIONS_WIDGET_SPECIFIC +
-                               ('labelanchor', 'text', 'underline'))
+    OPTIONS_SPECIFIC = (TTKFrame.OPTIONS_SPECIFIC +
+                        ('labelanchor', 'text', 'underline'))
     class_ = ttk.Labelframe
     container = True
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 #TODO: Add helper so the labelwidget can be configured on GUI
 register_widget('ttk.Labelframe', TTKLabelframe,
@@ -206,10 +207,10 @@ register_widget('ttk.Labelframe', TTKLabelframe,
 
 
 class TTKPanedwindow(TTKWidgetBO, PanedWindowBO):
-    OPTIONS_WIDGET_SPECIFIC = ('orient', 'height', 'width')
+    OPTIONS_SPECIFIC = ('orient', 'height', 'width')
     class_ = ttk.Panedwindow
     allowed_children = ('ttk.Panedwindow.Pane',)
-    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
     ro_properties = ('class_', 'orient')
 
 register_widget('ttk.Panedwindow', TTKPanedwindow,
@@ -217,12 +218,12 @@ register_widget('ttk.Panedwindow', TTKPanedwindow,
 
 
 class TTKNotebook(TTKWidgetBO):
-    OPTIONS_WIDGET_SPECIFIC = ('height', 'padding', 'width')
+    OPTIONS_SPECIFIC = ('height', 'padding', 'width')
     class_ = ttk.Notebook
     container = True
     allow_container_layout = False
     allowed_children = ('ttk.Notebook.Tab',)
-    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 register_widget('ttk.Notebook', TTKNotebook,
                 'Notebook', ('Containers', 'ttk'))
@@ -232,10 +233,10 @@ class TTKMenubuttonBO(TTKWidgetBO):
     OPTIONS_STANDARD = (TTKWidgetBO.OPTIONS_STANDARD +
                         TTKWidgetBO.OPTIONS_LABEL +
                         TTKWidgetBO.OPTIONS_COMPATIBILITY)
-    OPTIONS_WIDGET_SPECIFIC = ('direction',)  # 'menu'
+    OPTIONS_SPECIFIC = ('direction',)  # 'menu'
     class_ = ttk.Menubutton
     container = False
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     allowed_children = ('tk.Menu',)
     maxchildren = 1
 
@@ -249,11 +250,11 @@ register_widget('ttk.Menubutton', TTKMenubuttonBO,
 class TTKTreeviewBO(TTKWidgetBO):
     OPTIONS_STANDARD = (TTKWidgetBO.OPTIONS_STANDARD +
                         ('xscrollcommand', 'yscrollcommand'))
-    OPTIONS_WIDGET_SPECIFIC = ('height', 'padding', 'selectmode', 'show')
+    OPTIONS_SPECIFIC = ('height', 'padding', 'selectmode', 'show')
     class_ = ttk.Treeview
     container = False
     allowed_children = ('ttk.Treeview.Column',)
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
     def __init__(self, builder, wdescr):
         super(TTKTreeviewBO, self).__init__(builder, wdescr)
@@ -303,12 +304,12 @@ register_widget('ttk.Treeview', TTKTreeviewBO,
 
 class TTKPanedwindowPane(TTKWidgetBO, PanedWindowPaneBO):
     OPTIONS_STANDARD = tuple()
-    OPTIONS_WIDGET_SPECIFIC = ('weight',)
+    OPTIONS_SPECIFIC = ('weight',)
     class_ = None
     container = True
     allowed_parents = ('ttk.Panedwindow',)
     maxchildren = 1
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 register_widget('ttk.Panedwindow.Pane', TTKPanedwindowPane,
                 'Panedwindow.Pane', ('Pygubu Helpers', 'ttk'))
@@ -316,15 +317,15 @@ register_widget('ttk.Panedwindow.Pane', TTKPanedwindowPane,
 
 class TTKNotebookTab(TTKWidgetBO):
     OPTIONS_STANDARD = tuple()
-    OPTIONS_WIDGET_SPECIFIC = ('state', 'sticky', 'padding', 'text',
-                               'image', 'compound', 'underline')
+    OPTIONS_SPECIFIC = ('state', 'sticky', 'padding', 'text',
+                        'image', 'compound', 'underline')
     class_ = None
     container = True
     layout_required = False
     allow_bindings = False
     allowed_parents = ('ttk.Notebook',)
     maxchildren = 1
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
     def realize(self, parent):
         self.widget = parent.widget
@@ -345,15 +346,15 @@ register_widget('ttk.Notebook.Tab', TTKNotebookTab,
 
 class TTKTreeviewColBO(TTKWidgetBO):
     OPTIONS_STANDARD = tuple()
-    OPTIONS_WIDGET_SPECIFIC = ('text', 'image', 'command', 'heading_anchor',
-                               'column_anchor', 'minwidth', 'stretch', 'width')
+    OPTIONS_SPECIFIC = ('text', 'image', 'command', 'heading_anchor',
+                        'column_anchor', 'minwidth', 'stretch', 'width')
     OPTIONS_CUSTOM = ('tree_column', 'visible',)
     class_ = None
     container = False
     layout_required = False
     allow_bindings = False
     allowed_parents = ('ttk.Treeview',)
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC + OPTIONS_CUSTOM
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     command_properties = ('command',)
 
     def realize(self, parent):
@@ -361,11 +362,13 @@ class TTKTreeviewColBO(TTKWidgetBO):
 
         col_props = dict(self.properties)  # copy properties
 
-        tree_column = col_props.pop('tree_column', 'False')
-        tree_column = True if tree_column == 'True' else False
+        tree_column = col_props.pop('tree_column', 'false')
+        tree_column = tree_column.lower()
+        tree_column = True if tree_column == 'true' else False
         column_id = '#0' if tree_column else self.objectid
-        visible = col_props.pop('visible', 'False')
-        is_visible = True if visible == 'True' else False
+        visible = col_props.pop('visible', 'false')
+        visible = visible.lower()
+        is_visible = True if visible == 'true' else False
 
         #configure heading properties
         col_props.pop('command', '')
@@ -393,8 +396,9 @@ class TTKTreeviewColBO(TTKWidgetBO):
         pass
 
     def _connect_command(self, cpname, callback):
-        tree_column = self.properties.get('tree_column', 'False')
-        tree_column = True if tree_column == 'True' else False
+        tree_column = self.properties.get('tree_column', 'false')
+        tree_column = tree_column.lower()
+        tree_column = True if tree_column == 'true' else False
         column_id = '#0' if tree_column else self.objectid
         self.widget.heading(column_id, command=callback)
 
@@ -404,13 +408,13 @@ register_widget('ttk.Treeview.Column', TTKTreeviewColBO,
 
 class TTKSpinboxBO(TTKWidgetBO, EntryBaseBO):
     OPTIONS_STANDARD = TTKEntry.OPTIONS_STANDARD
-    OPTIONS_WIDGET_SPECIFIC = (TTKEntry.OPTIONS_WIDGET_SPECIFIC +
-                               ('from_', 'to', 'increment', 'values',
-                                'wrap', 'format', 'command'))
+    OPTIONS_SPECIFIC = (TTKEntry.OPTIONS_SPECIFIC +
+                        ('from_', 'to', 'increment', 'values',
+                         'wrap', 'format', 'command'))
     OPTIONS_CUSTOM = TTKEntry.OPTIONS_CUSTOM
     class_ = None
     container = False
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC + OPTIONS_CUSTOM
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     command_properties = ('validatecommand', 'invalidcommand',
                           'xscrollcommand', 'command')
 

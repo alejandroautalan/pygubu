@@ -54,27 +54,32 @@ class PropertiesEditor(object):
         col = 0
 
         groups = (
-            (_('Required'), properties.WIDGET_REQUIRED_OPTIONS),
-            (_('Standard'), properties.WIDGET_STANDARD_OPTIONS),
-            (_('Specific'), properties.WIDGET_SPECIFIC_OPTIONS),
-            (_('Custom'), properties.WIDGET_CUSTOM_OPTIONS)
+            ('00', _('Required'), properties.WIDGET_REQUIRED_OPTIONS,
+             properties.REQUIRED_OPTIONS),
+            ('01', _('Standard'), properties.WIDGET_STANDARD_OPTIONS,
+             properties.TK_WIDGET_OPTIONS),
+            ('02', _('Specific'), properties.WIDGET_SPECIFIC_OPTIONS,
+             properties.TK_WIDGET_OPTIONS),
+            ('03', _('Custom'), properties.WIDGET_CUSTOM_OPTIONS,
+             properties.CUSTOM_OPTIONS),
         )
 
-        for gname, group in groups:
+        for gcode, gname, plist, propdescr in groups:
             padding = '0 0 0 5' if row == 0 else '0 5 0 5'
             label = ttk.Label(self._frame, text=gname,
                               font='TkDefaultFont 10 bold', padding=padding,
                               foreground='#000059')
             label.grid(row=row, column=0, sticky='we', columnspan=2)
             row += 1
-            for name, kwdata in group:
+            for name in plist:
+                kwdata = propdescr[name]
                 labeltext = label_tpl.format(name)
                 label = ttk.Label(self._frame, text=labeltext, anchor=tk.W)
                 label.grid(row=row, column=col, sticky=tk.EW, pady=2)
                 widget = self._create_editor(self._frame, name, kwdata)
                 widget.grid(row=row, column=col+1, sticky=tk.EW, pady=2)
                 row += 1
-                self._propbag[name] = (label, widget)
+                self._propbag[gcode+name] = (label, widget)
 
     def _create_editor(self, master, pname, wdata):
         editor = None
@@ -113,22 +118,29 @@ class PropertiesEditor(object):
 
     def edit(self, wdescr):
         wclass = wdescr.get_class()
-        class_props = CLASS_MAP[wclass].classobj.properties
-        allprops = itertools.chain(properties.WIDGET_REQUIRED_OPTIONS,
-                                   properties.WIDGET_STANDARD_OPTIONS,
-                                   properties.WIDGET_SPECIFIC_OPTIONS,
-                                   properties.WIDGET_CUSTOM_OPTIONS)
-        for name, propdescr in allprops:
-            label, widget = self._propbag[name]
-            if name in properties.WIDGET_REQUIRED_PROPERTIES \
-               or name in class_props:
-                self.update_editor(widget, wdescr, name, propdescr)
-                label.grid()
-                widget.grid()
-            else:
-                #hide property widget
-                label.grid_remove()
-                widget.grid_remove()
+        class_descr = CLASS_MAP[wclass].classobj
+        groups = (
+            ('00', None, properties.WIDGET_REQUIRED_OPTIONS,
+             properties.REQUIRED_OPTIONS),
+            ('01', 'OPTIONS_STANDARD', properties.WIDGET_STANDARD_OPTIONS,
+             properties.TK_WIDGET_OPTIONS),
+            ('02', 'OPTIONS_SPECIFIC', properties.WIDGET_SPECIFIC_OPTIONS,
+             properties.TK_WIDGET_OPTIONS),
+            ('03', 'OPTIONS_CUSTOM', properties.WIDGET_CUSTOM_OPTIONS,
+             properties.CUSTOM_OPTIONS)
+        )
+        for gcode, attrname, proplist, gproperties in groups:
+            for name in proplist:
+                propdescr = gproperties[name]
+                label, widget = self._propbag[gcode + name]
+                if gcode == '00' or name in getattr(class_descr, attrname):
+                    self.update_editor(widget, wdescr, name, propdescr)
+                    label.grid()
+                    widget.grid()
+                else:
+                    #hide property widget
+                    label.grid_remove()
+                    widget.grid_remove()
         self._sframe.reposition()
 
     def hide_all(self):

@@ -19,11 +19,9 @@ from __future__ import unicode_literals
 from collections import OrderedDict
 try:
     import tkinter as tk
-#    import tkinter.ttk as ttk
 except:
     import Tkinter as tk
-#    import ttk
-
+from pygubu.builder import builderobject
 
 # translator marker
 def _(x):
@@ -57,114 +55,30 @@ TK_CURSORS = (
 
 TK_RELIEFS = (tk.FLAT, tk.RAISED, tk.SUNKEN, tk.GROOVE, tk.RIDGE)
 
-WIDGET_REQUIRED_OPTIONS = (
-    ('class',
-        {'editor': 'entry',
-         'params': {'state': 'readonly'}}),
-    ('id',
-        {'editor': 'entry'}),
-)
-
-WIDGET_STANDARD_OPTIONS = [
-    ('accelerator',
-        {'editor': 'entry'}),
-    ('activerelief',
-        {'editor': 'choice',
-         'params':
-            {'values': ('', tk.FLAT, tk.RAISED, tk.SUNKEN,
-                        tk.GROOVE, tk.RIDGE),
-             'state': 'readonly'}}),
-    ('activestyle',
-        {'editor': 'choice',
-         'params':
-            {'values': ('', 'underline', 'dotbox', 'none')}}),
-    ('activebackground',
-        {'editor': 'colorentry'}),
-    ('activeborderwidth',
-        {'editor': 'entry'}),
-    ('activeforeground',
-        {'editor': 'colorentry'}),
-    ('after',
-        {'editor': 'entry'}),
-    ('bitmap',
-        {'editor': 'choice',
-         'params': {'values': ('',) + TK_BITMAPS, 'state': 'readonly'}}),
-    ('cursor',
-        {'editor': 'choice',
-         'params': {'values': ('',) + TK_CURSORS, 'state': 'readonly'}}),
-    ('highlightbackground',
-        {'editor': 'colorentry'}),
-    ('highlightcolor',
-        {'editor': 'colorentry'}),
-    ('highlightthickness',
-        {'editor': 'colorentry'}),
-    ('indicatoron', {
+TK_WIDGET_OPTIONS = {
+    'accelerator': {
+        'editor': 'entry'},
+    'activerelief': {
         'editor': 'choice',
-        'params': {'values': ('', tk.TRUE, tk.FALSE), 'state': 'readonly'}}),
-    ('insertbackground', {
-        'editor': 'colorentry'}),
-    ('insertborderwidth', {
-        'editor': 'spinbox',
-        'params': {'from_': 0, 'to': 999},
-        }),
-    ('insertofftime', {
-        'editor': 'spinbox',
-        'params': {'from_': 0, 'to': 9999, 'increment': 100},
-        }),
-    ('insertontime', {
-        'editor': 'spinbox',
-        'params': {'from_': 0, 'to': 9999, 'increment': 100},
-        }),
-    ('insertwidth', {
-        'editor': 'spinbox',
-        'params': {'from_': 0, 'to': 999},
-        }),
-    ('padx', {
-        'editor': 'spinbox',
-        'params': {'from_': 0, 'to': 999},
-        }),
-    ('pady', {
-        'editor': 'spinbox',
-        'params': {'from_': 0, 'to': 999},
-        }),
-    ('repeatdelay', {
-        'editor': 'spinbox',
-        'params': {'from_': 0, 'to': 9999, 'increment':100},
-        }),
-    ('repeatinterval', {
-        'editor': 'spinbox',
-        'params': {'from_': 0, 'to': 9999, 'increment':100},
-        }),
-    ('selectbackground', {
-        'editor': 'colorentry'}),
-    ('selectborderwidth', {
-        'editor': 'spinbox',
-        'params': {'from_': 0, 'to': 999},
-        }),
-    ('selectforeground', {
-        'editor': 'colorentry'}),
-    #
-    # ttk
-    #
-
-    ('class_',
-        {'editor': 'entry'}),
-    ('style',
-        {'editor': 'choice'}),
-    ('takefocus', {
+        'params': {
+            'values': ('', tk.FLAT, tk.RAISED, tk.SUNKEN,
+                       tk.GROOVE, tk.RIDGE),
+            'state': 'readonly'}},
+    'activestyle': {
         'editor': 'choice',
-        'params': {'values': ('', tk.TRUE, tk.FALSE), 'state': 'readonly'}}),
-    # ttk.Entry
-    ('xscrollcommand',
-        {'editor': 'entry'}),
-    # ttk.Treeview
-    ('yscrollcommand',
-        {'editor': 'entry'}),
-]
-
-WIDGET_SPECIFIC_OPTIONS = [
+        'params': {
+            'values': ('', 'underline', 'dotbox', 'none'),
+            'state': 'readonly'}},
+    'activebackground': {
+        'editor': 'colorentry'},
+    'activeborderwidth': {
+        'editor': 'entry'},
+    'activeforeground': {
+        'editor': 'colorentry'},
+    'after': {
+        'editor': 'entry'},
     # ttk.Label
-    ('anchor', {
+    'anchor': {
         'editor': 'choice',
         'params': {'values': ('', tk.W, tk.CENTER, tk.E),
                    'state': 'readonly'},
@@ -173,37 +87,74 @@ WIDGET_SPECIFIC_OPTIONS = [
                 'values': (
                     '', 'n', 'ne', 'nw', 'e', 'w', 's', 'se', 'sw', 'center'),
                 'state': 'readonly'}},
-        }),
-    # ttk.Label
-    ('background',
-        {'editor': 'colorentry'}),
-    # ttk.Frame, ttk.Label
-    ('borderwidth', {'editor': 'entry'}),
-    # ttk.Treeview.Column
-    ('column_anchor', {
+        },
+    'aspect': {
+        'editor': 'entry'},
+    'autoseparators': {
         'editor': 'choice',
-        'params': {'values': ('', tk.W, tk.CENTER, tk.E), 'state': 'readonly'},
-        'default': tk.W}),
-    # ttk.Button
-    ('command',
-        {'editor': 'entry'}),
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
     # ttk.Label
-    ('compound',
-        {'editor': 'choice',
-         'params':
-            {'values': ('', tk.TOP, tk.BOTTOM, tk.LEFT, tk.RIGHT)}}),
-    ('closeenough', {
+    'background': {
+        'editor': 'colorentry'},
+    # ttk.Frame, ttk.Label
+    'borderwidth': {
+        'editor': 'entry'},
+    'bigincrement': {
+        'editor': 'entry'},
+    'bitmap': {
+        'editor': 'choice',
+        'params': {'values': ('',) + TK_BITMAPS, 'state': 'readonly'}},
+    'blockcursor': {
+        'editor': 'choice',
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
+    'buttonbackground': {
+        'editor': 'colorentry'},
+    'buttoncursor': {
+        'editor': 'choice',
+        'params': {'values': ('',) + TK_CURSORS, 'state': 'readonly'}},
+    'buttondownrelief': {
+        'editor': 'choice',
+        'params': {'values': ('',) + TK_RELIEFS, 'state': 'readonly'}},
+    'buttonuprelief': {
+        'editor': 'choice',
+        'params': {'values': ('',) + TK_RELIEFS, 'state': 'readonly'}},
+    'class_': {
+        'editor': 'entry'},
+    'closeenough': {
         'editor': 'spinbox',
         'params': {'from_': 0, 'to': 999},
-        }),
-    ('confine', {
+        },
+    # ttk.Treeview.Column
+    'column_anchor': {
         'editor': 'choice',
-        'params': {'values': ('', tk.TRUE, tk.FALSE), 'state': 'readonly'}}),
+        'params': {'values': ('', tk.W, tk.CENTER, tk.E), 'state': 'readonly'},
+        'default': tk.W},
+    'command': {
+        'editor': 'entry'},
+    # ttk.Label
+    'compound': {
+        'editor': 'choice',
+        'params': {
+            'values': ('', tk.TOP, tk.BOTTOM, tk.LEFT, tk.RIGHT),
+            'state': 'readonly'}},
     # ttk.Button
-    ('default',
-        {'editor': 'choice',
-         'params': {'values': ('', 'normal', 'active', 'disabled')}}),
-    ('direction', {
+    'confine': {
+        'editor': 'choice',
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
+    'container': {
+        'editor': 'choice',
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
+    'cursor': {
+        'editor': 'choice',
+        'params': {'values': ('',) + TK_CURSORS, 'state': 'readonly'}},
+    # ttk.Button
+    'default': {
+        'editor': 'choice',
+        'params': {'values': ('', 'normal', 'active', 'disabled')}},
+    'digits': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 999},},
+    'direction': {
         'editor': 'choice',
         'tk.Menubutton': {
             'params': {'values': ('', tk.LEFT, tk.RIGHT, 'above'),
@@ -213,131 +164,228 @@ WIDGET_SPECIFIC_OPTIONS = [
                 'values': ('', 'above', 'below', 'flush',
                            tk.LEFT, tk.RIGHT),
                 'state': 'readonly'}},
-        }),
-    ('disabledbackground',
-        {'editor': 'colorentry'}),
-    ('disabledforeground',
-        {'editor': 'colorentry'}),
+        },
+    'disabledbackground': {
+        'editor': 'colorentry'},
+    'disabledforeground': {
+        'editor': 'colorentry'},
+    'elementborderwidth': {
+        'editor': 'entry'},
+    'endline': {
+        'editor': 'entry'},
     # ttk.Checkbutton, ttk.Entry
-    ('exportselection',
-        {'editor': 'entry'}),
+    'exportselection': {
+        'editor': 'choice',
+        'params': {'values': ('', 'true', 'false'), 'state': 'readonly'}},
     # ttk.Label
-    ('font',
-        {'editor': 'entry'}),
+    'font': {
+        'editor': 'entry'},
     # ttk.Label
-    ('foreground',
-        {'editor': 'colorentry'}),
+    'foreground': {
+        'editor': 'colorentry'},
     # ttk.Spinbox
-    ('format',
-        {'editor': 'entry'}),
+    'format': {
+        'editor': 'entry'},
     # ttk.Scale, ttk.Spinbox
-    ('from_', {
+    'from_': {
         'editor': 'spinbox',
         'params': {'from_': -999, 'to': 999},
-        }),
-    # ttk.Scale, ttk.Spinbox
-    ('to', {
+        },
+    'handlepad': {
+        'editor': 'entry'},
+    'handlesize': {
+        'editor': 'entry'},
+    # ttk.Treeview.Column
+    'heading_anchor': {
+        'editor': 'choice',
+        'params': {
+            'values': ('', tk.W, tk.CENTER, tk.E), 'state': 'readonly'},
+        'default': tk.W},
+    # ttk.Frame,
+    'height': {
         'editor': 'spinbox',
-        'params': {'from_': -999, 'to': 999},
-        }),
+        'params': {'from_': 0, 'to': 999},
+        'validator': 'number_integer',
+        'tk.Toplevel': {'default': 200},
+        'tk.Frame': {'default': 200},
+        'ttk.Frame': {'default': 200},
+        'tk.LabelFrame': {'default': 200},
+        'ttk.Labelframe': {'default': 200},
+        'tk.PanedWindow': {'default': 200},
+        'ttk.Panedwindow': {'default': 200},
+        'ttk.Notebook': {'default': 200},
+        'tk.Text': {'default': 10},
+        'pygubu.builder.widgets.dialog': {'default': 100}},
+    'highlightbackground': {
+        'editor': 'colorentry'},
+    'highlightcolor': {
+        'editor': 'colorentry'},
+    'highlightthickness': {
+        'editor': 'entry'},
+    # ttk.Label
+    'image': {
+        'editor': 'imageentry'},
+    'inactiveselectbackground': {
+        'editor': 'colorentry'},
     # ttk.Spinbox
-    ('increment', {
+    'increment': {
         'editor': 'spinbox',
         'params': {'from_': -999, 'to': 999}
-        }),
-    # ttk.Entry
-    ('invalidcommand',
-        {'editor': 'entry'}),
-    # ttk.Label
-    ('justify',
-        {'editor': 'choice',
-         'params': {'values': ('left', 'center', 'right'),
-                    'state': 'readonly'}}),
-    # ttk.Treeview.Column
-    ('heading_anchor', {
+        },
+    'indicatoron': {
         'editor': 'choice',
-        'params': {'values': ('', tk.W, tk.CENTER, tk.E), 'state': 'readonly'},
-        'default': tk.W}),
-    # ttk.Frame,
-    ('height',
-        {'editor': 'spinbox',
-         'params': {'from_': 0, 'to': 999},
-         'validator': 'number_integer',
-         'tk.Toplevel': {'default': 200},
-         'tk.Frame': {'default': 200},
-         'ttk.Frame': {'default': 200},
-         'tk.LabelFrame': {'default': 200},
-         'ttk.Labelframe': {'default': 200},
-         'tk.PanedWindow': {'default': 200},
-         'ttk.Panedwindow': {'default': 200},
-         'ttk.Notebook': {'default': 200},
-         'tk.Text': {'default': 10},
-         'pygubu.builder.widgets.dialog': {'default': 100}}),
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
+    'insertbackground': {
+        'editor': 'colorentry'},
+    'insertborderwidth': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 999},
+        },
+    'insertofftime': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 9999, 'increment': 100},
+        },
+    'insertontime': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 9999, 'increment': 100},
+        },
+    'insertunfocussed': {
+        'editor': 'choice',
+        'params': {
+            'values': ('', 'none', 'hollow', 'solid'),
+            'state': 'readonly'}},
+    'insertwidth': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 999}},
+    # ttk.Entry
+    'invalidcommand': {
+        'editor': 'entry'},
+    'jump': {
+        'editor': 'choice',
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
     # ttk.Label
-    ('image',
-        {'editor': 'imageentry'}),
+    'justify': {
+        'editor': 'choice',
+        'params': {'values': ('', 'left', 'center', 'right'),
+                   'state': 'readonly'}},
+    'label': {
+        'editor': 'entry'},
     # ttk.Labelframe
-    ('labelanchor',
-        {'editor': 'choice',
-         'params': {'values': ('', tk.W, tk.CENTER, tk.E),
-                    'state': 'readonly'}}),
+    'labelanchor': {
+        'editor': 'choice',
+        'params': {
+            'values': ('', 'nw', 'n', 'ne', 'en', 'e', 'es',
+                       'se', 's', 'sw', 'ws', 'w'),
+            'state': 'readonly'}},
     # ttk.Progressbar
-    ('length', {
-        'editor': 'entry'}),
+    'length': {
+        'editor': 'entry'},
+    'listvariable': {
+        'editor': 'tkvarentry' },
+    # ttk.Progressbar
+    'maximum': {
+        'editor': 'entry'},
+    'maxundo': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 999}},
+    'minsize': {
+        'editor': 'entry'},
     # ttk.Treeview.Column
-    ('minwidth', {
+    'minwidth': {
         'editor': 'spinbox',
         'params': {'from_': 5, 'to': 999},
-        'default': '20'}),
+        'default': '20'},
     # ttk.Progressbar
-    ('mode', {
+    'mode': {
         'editor': 'choice',
         'params': {
             'values': ('', 'determinate', 'indeterminate'),
-            'state': 'readonly'}}),
-    # ttk.Progressbar
-    ('maximum', {
-        'editor': 'entry'}),
-    ('offrelief', {
+            'state': 'readonly'}},
+    'offrelief': {
         'editor': 'choice',
-        'params': {'values': ('',) + TK_RELIEFS, 'state': 'readonly'}}),
+        'params': {'values': ('',) + TK_RELIEFS, 'state': 'readonly'}},
     # ttk.Checkbutton
-    ('offvalue',
-        {'editor': 'entry',
-         'help': _('offvalue_help')}),
+    'offvalue': {
+        'editor': 'entry',
+        'help': _('offvalue_help')},
     # ttk.Checkbutton
-    ('onvalue',
-        {'editor': 'entry'}),
+    'onvalue': {
+        'editor': 'entry'},
+    'opaqueresize': {
+        'editor': 'choice',
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
     # ttk.Panedwindow
-    ('orient', {
+    'orient': {
         'editor': 'choice',
         'params': {'values': (tk.VERTICAL, tk.HORIZONTAL),
                    'state': 'readonly'},
         'default': tk.HORIZONTAL
-        }),
-    ('overrelief', {
+        },
+    'overrelief': {
         'editor': 'choice',
         'params': {'values': ('',) + TK_RELIEFS, 'state': 'readonly'}
-        }),
+        },
     # ttk.Frame, ttk.Label
-    ('padding', {'editor': 'entry'}),
+    'padding': {
+        'editor': 'entry'},
+    'padx': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 999},
+        },
+    'pady': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 999},
+        },
     # ttk.Checkbutton
-    ('postcommand', {
-        'editor': 'entry'}),
-    ('readonlybackground', {
-        'editor': 'colorentry'}),
+    'postcommand': {
+        'editor': 'entry'},
+    'readonlybackground': {
+        'editor': 'colorentry'},
     # ttk.Frame,
-    ('relief', {
+    'relief': {
         'editor': 'choice',
-        'params': {'values': ('',) + TK_RELIEFS, 'state': 'readonly'}}),
-    ('scrollregion', {
-        'editor': 'entry'}),
-    ('selectcolor', {
-        'editor': 'colorentry'}),
-    ('selectimage', {
-        'editor': 'imageentry'}),
+        'params': {'values': ('',) + TK_RELIEFS, 'state': 'readonly'}},
+    'repeatdelay': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 9999, 'increment': 100},
+        },
+    'repeatinterval': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 9999, 'increment': 100}},
+    'resolution': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 999, 'increment': 0.5},
+        },
+    'sliderlength': {
+        'editor': 'entry'},
+    'sliderrelief': {
+        'editor': 'choice',
+        'params': {'values': ('',) + TK_RELIEFS, 'state': 'readonly'}},
+    'sashcursor': {
+        'editor': 'choice',
+        'params': {'values': ('',) + TK_CURSORS, 'state': 'readonly'}},
+    'sashpad': {
+        'editor': 'entry'},
+    'sashrelief': {
+        'editor': 'choice',
+        'params': {'values': ('',) + TK_RELIEFS, 'state': 'readonly'}},
+    'sashwidth': {
+        'editor': 'entry'},
+    'selectbackground': {
+        'editor': 'colorentry'},
+    'selectborderwidth': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 999}},
+    'selectforeground': {
+        'editor': 'colorentry'},
+    'scrollregion': {
+        'editor': 'entry'},
+    'selectcolor': {
+        'editor': 'colorentry'},
+    'selectimage': {
+        'editor': 'imageentry'},
     # ttk.Treeview
-    ('selectmode', {
+    'selectmode': {
         'editor': 'choice',
         'params': {
             'values': ('', tk.BROWSE, tk.SINGLE, tk.MULTIPLE, tk.EXTENDED),
@@ -347,9 +395,12 @@ WIDGET_SPECIFIC_OPTIONS = [
                 'values': (tk.EXTENDED, tk.BROWSE, tk.NONE),
                 'state': 'readonly'},
             'default': tk.EXTENDED}
-        }),
+        },
+    'setgrid': {
+        'editor': 'choice',
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
     # ttk.Entry
-    ('show', {
+    'show': {
         'editor': 'choice',
         'tk.Entry': {
             'params': {'values': ('', '•'), 'state': 'normal'},
@@ -365,11 +416,28 @@ WIDGET_SPECIFIC_OPTIONS = [
             'params': {
                 'values': ('', 'tree', 'headings'), 'state': 'readonly'}
             },
-        }),
-    ('state', {
+        },
+    'showhandle': {
+        'editor': 'choice',
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
+    'showvalue': {
+        'editor': 'choice',
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
+    'spacing1': {
+        'editor': 'entry'},
+    'spacing2': {
+        'editor': 'entry'},
+    'spacing3': {
+        'editor': 'entry'},
+    'startline': {
+        'editor': 'entry'},
+    'state': {
         'editor': 'choice',
         'params': {'values': ('', tk.NORMAL, tk.DISABLED),
                    'state': 'readonly'},
+        'tk.Button': {
+            'params': {'values': ('', tk.NORMAL, tk.ACTIVE, tk.DISABLED),
+            'state': 'readonly'}},
         'tk.Entry': {
             'params': {
                 'values': ('', tk.NORMAL, tk.DISABLED, 'readonly'),
@@ -382,7 +450,9 @@ WIDGET_SPECIFIC_OPTIONS = [
                 'values': ('', tk.NORMAL, tk.DISABLED, 'readonly'),
                 'state': 'readonly'}},
         'ttk.Combobox': {
-            'params': {'values': ('', 'readonly'), 'state': 'readonly'}},
+            'params': {
+                'values': ('', 'normal', 'readonly', 'disabled'),
+                'state': 'readonly'}},
         'ttk.Button': {
             'params': {
                 'values': ('', 'normal', 'disabled'),
@@ -390,112 +460,238 @@ WIDGET_SPECIFIC_OPTIONS = [
         'ttk.Notebook.Tab': {
             'params': {
                 'values': ('', 'normal', 'disabled', 'hidden'),
-                'state': 'readonly'}}}),
+                'state': 'readonly'}}},
     # ttk.Notebook.Tab
-    ('sticky',
-        {'editor': 'choice',
-         'params':
-            {'values':
-                ('', 'n', 's', 'w', 'e',
-                 'nw', 'ne', 'sw', 'se',
-                 'ns', 'we', 'nsw', 'nse', 'nswe'),
-             'state': 'readonly'}}),
-    # ttk.Treeview.Column
-    ('stretch', {
-        'editor': 'choice',
-        'params': {'values': ('True', 'False'), 'state': 'readonly'},
-        'default': 'True'}),
-    # ttk.Label
-    ('text',
-        {'editor': 'text'}),
-    # ttk.Label
-    ('textvariable',
-        {'editor': 'tkvarentry'}),
-    ('tristateimage', {
-        'editor': 'imageentry'}),
-    ('tristatevalue', {
-        'editor': 'entry'}),
-    # ttk.Label
-    ('underline',
-        {'editor': 'spinbox'}),
-    # ttk.Checkbutton
-    ('values',
-        {'editor': 'entry'}),
-    # ttk.Checkbutton
-    ('variable',
-        {'editor': 'tkvarentry'}),
-    # ttk.Panedwindow.Pane
-    ('weight',
-        {'editor': 'spinbox', 'params': {'from_': 0, 'to': 9999}}),
-    # ttk.Frame, ttk.Label
-    ('width',
-        {'editor': 'spinbox',
-         'params': {'from_': 0, 'to': 999},
-         'validator': 'number_integer',
-         'tk.Toplevel': {'default': 200},
-         'tk.Frame': {'default': 200},
-         'ttk.Frame': {'default': 200},
-         'tk.LabelFrame': {'default': 200},
-         'ttk.Labelframe': {'default': 200},
-         'tk.PanedWindow': {'default': 200},
-         'ttk.Panedwindow': {'default': 200},
-         'ttk.Notebook': {'default': 200},
-         'tk.Text': {'default': 50},
-         'ttk.Treeview.Column': {'from_': 5, 'default': 200},
-         'pygubu.builder.widgets.dialog': {'default': 200}}),
-    # ttk.Spinbox
-    ('wrap', {
+    'sticky': {
         'editor': 'choice',
         'params': {
-            'values': ('', tk.TRUE, tk.FALSE),
+            'values': ('', 'n', 's', 'w', 'e', 'nw', 'ne', 'sw', 'se',
+                       'ns', 'we', 'nsw', 'nse', 'nswe'),
+             'state': 'readonly'}},
+    # ttk.Treeview.Column
+    'stretch': {
+        'editor': 'choice',
+        'ttk.Treeview.Column': {
+            'params': {'values': ('true', 'false'), 'state': 'readonly'},
+            'default': 'true'},
+        'tk.PanedWindow.Pane': {
+            'params': {
+                'values': ('', 'always', 'first', 'last', 'middle', 'never'),
+                'state': 'readonly'}}},
+    'style': {
+        'editor': 'choice'},
+    'tabs': {
+        'editor': 'entry'},  # FIXME see tk.Text tab property
+    'tabstyle': {
+        'editor': 'choice',
+        'params': {
+            'values': ('', 'tabular', 'wordprocessor'),
+            'state': 'readonly'}},
+    'takefocus': {
+        'editor': 'choice',
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
+    # ttk.Label
+    'text': {
+        'editor': 'text'},
+    # ttk.Label
+    'textvariable': {
+        'editor': 'tkvarentry'},
+    'tickinterval': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to': 999, 'increment': 0.5},
+        },
+    # ttk.Scale, ttk.Spinbox
+    'to': {
+        'editor': 'spinbox',
+        'params': {'from_': -999, 'to': 999},
+        },
+    'tristateimage': {
+        'editor': 'imageentry'},
+    'tristatevalue': {
+        'editor': 'entry'},
+    'troughcolor': {
+        'editor': 'colorentry'},
+    # ttk.Label
+    'underline': {
+        'editor': 'spinbox'},
+    'undo': {
+        'editor': 'choice',
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
+    'value': {
+        'editor': 'entry'},
+    # ttk.Checkbutton
+    'values': {
+        'editor': 'entry'},
+    'validate': {
+        'editor': 'choice',
+        'params': {
+            'values': ('', 'none', 'focus', 'focusin',
+                       'focusout', 'key', 'all'),
+            'state': 'readonly'}},
+    'validatecommand': {
+        'editor': 'entry'},
+    # ttk.Checkbutton
+    'variable': {
+        'editor': 'tkvarentry'},
+    # ttk.Panedwindow.Pane
+    'weight': {
+        'editor': 'spinbox', 'params': {'from_': 0, 'to': 999}},
+    # ttk.Frame, ttk.Label
+    'width': {
+        'editor': 'dynamic',
+        'params': {'mode': 'spinbox', 'from_': 0, 'to': 999},
+        'tk.Button': {
+            'params': {'mode': 'spinbox', 'from_': -999, 'to': 999},},
+        'ttk.Button': {
+            'params': {'mode': 'spinbox', 'from_': -999, 'to': 999},},
+        'tk.Canvas': {
+            'params': {'mode': 'entry'}
+            },
+        'tk.Toplevel': {
+            'default': 200},
+        'tk.Frame': {
+            'default': 200},
+        'ttk.Frame': {
+            'default': 200},
+        'tk.LabelFrame': {
+            'default': 200},
+        'ttk.Labelframe': {
+            'default': 200},
+        'tk.PanedWindow': {
+            'default': 200},
+        'ttk.Panedwindow': {
+            'default': 200},
+        'ttk.Notebook': {
+            'default': 200},
+        'tk.Text': {
+            'default': 50},
+        'ttk.Treeview.Column': {
+            'params': {'mode': 'spinbox', 'from_': 5},
+            'default': 200},
+        'pygubu.builder.widgets.dialog': {
+            'default': 200}},
+    # ttk.Spinbox
+    'wrap': {
+        'editor': 'choice',
+        'params': {
+            'values': ('', 'false', 'true'),
             'state': 'readonly'},
         'tk.Text': {
             'params': {
-                'values': (tk.CHAR, tk.WORD, tk.NONE),
-                'state': 'readonly'},
-            'default': tk.CHAR}
-        }),
+                'values': ('', tk.CHAR, tk.WORD, tk.NONE),
+                'state': 'readonly'}}
+        },
     # ttk.Label
-    ('wraplength',
-        {'editor': 'entry'}),
-    ('xscrollincrement', {
+    'wraplength': {
+        'editor': 'entry'},
+    # ttk.Entry
+    'xscrollcommand': {
+        'editor': 'entry'},
+    'xscrollincrement': {
         'editor': 'spinbox',
         'params': {'from_': 0, 'to': 999}
-        }),
-    ('yscrollincrement', {
+        },
+    # ttk.Treeview
+    'yscrollcommand': {
+        'editor': 'entry'},
+    'yscrollincrement': {
         'editor': 'spinbox',
         'params': {'from_': 0, 'to': 999}
-        }),
-]
+        },
+    }
 
-WIDGET_CUSTOM_OPTIONS = [
-    ('command_id_arg', {
-        'editor': 'entry'}),
-    ('invalidcommand_args', {
-        'editor': 'entry'}),
-    ('tree_column', {
+REQUIRED_OPTIONS = {
+    'class': {
+        'editor': 'entry',
+        'params': {'state': 'readonly'}},
+    'id': {
+        'editor': 'entry'},
+    }
+
+CUSTOM_OPTIONS = {
+    'command_id_arg': {
         'editor': 'choice',
-        'params': {'values': ('True', 'False'), 'state': 'readonly'},
-        'default': 'False'}),
-    ('validatecommand_args', {
-        'editor': 'entry'}),
-    ('visible', {
+        'params': {
+            'values': ('true', 'false'),
+            'state': 'readonly'},
+        'default': 'false'},
+    'invalidcommand_args': {
+        'editor': 'entry'},
+    'tree_column': {
         'editor': 'choice',
-        'params': {'values': ('True', 'False'), 'state': 'readonly'},
-        'default': 'True'}),
-    ('scrolltype', {
+        'params': {'values': ('true', 'false'), 'state': 'readonly'},
+        'default': 'false'},
+    'validatecommand_args': {
+        'editor': 'entry'},
+    'visible': {
+        'editor': 'choice',
+        'params': {'values': ('true', 'false'), 'state': 'readonly'},
+        'default': 'true'},
+    'text': {
+        'editor': 'text'},
+    'scrolltype': {
         'editor': 'choice',
         'params': {
             'values': ('both', 'vertical', 'horizontal'),
             'state': 'readonly'},
-        'default': 'both'}),
-]
+        'default': 'both'}
+    }
 
+WIDGET_REQUIRED_OPTIONS = ('class', 'id')
+WIDGET_STANDARD_OPTIONS = (
+    'accelerator', 'activerelief', 'activestyle', 'activebackground',
+    'activeborderwidth', 'activeforeground', 'after', 
+    'anchor', 'background', 'bitmap', 'borderwidth',
+    'class_', 'compound', 'cursor', 'disabledforeground',
+    'exportselection',
+    'font', 'foreground', 'jump', 'highlightbackground',
+    'highlightcolor', 'highlightthickness', 'image',
+    'indicatoron', 'insertbackground',
+    'insertborderwidth', 'insertofftime', 'insertontime', 'insertwidth',
+    'justify', 'orient', 'padx', 'pady', 'relief',
+    'repeatdelay', 'repeatinterval', 'selectbackground', 'selectborderwidth',
+    'selectforeground', 'setgrid', 'state', 'style', 'takefocus', 'text',
+    'textvariable', 'troughcolor', 'underline', 'width', 'wraplength',
+    'xscrollcommand', 'yscrollcommand')
 
-WIDGET_REQUIRED_PROPERTIES = OrderedDict(WIDGET_REQUIRED_OPTIONS)
-WIDGET_PROPERTIES = OrderedDict(WIDGET_STANDARD_OPTIONS +
-                                WIDGET_SPECIFIC_OPTIONS +
-                                WIDGET_CUSTOM_OPTIONS)
+WIDGET_SPECIFIC_OPTIONS = (
+    'activestyle', 'activerelief', 'anchor', 'aspect',
+    'autoseparators', 'background', 'bigincrement',
+    'blockcursor', 'borderwidth', 'buttonbackground', 'buttoncursor',
+    'buttondownrelief', 'buttonuprelief',
+    'class_', 'column_anchor', 'command', 'compound', 'container',
+    'closeenough', 'confine', 'default', 'digits', 'direction',
+    'disabledbackground', 'disabledforeground', 'elementborderwidth',
+    'endline', 'exportselection', 'font',
+    'foreground', 'format', 'from_', 'to', 
+    'inactiveselectbackground', 'increment', 'insertunfocussed',
+    'invalidcommand', 'justify', 'handlepad', 'handlesize',
+    'heading_anchor', 'height', 'image', 'indicatoron',
+    'label', 'labelanchor', 'listvariable', 'length',
+    'maximum', 'maxundo',
+    'minsize', 'minwidth', 'mode', 'offrelief', 'offvalue',
+    'onvalue', 'opaqueresize', 'orient', 'overrelief',
+    'padding', 'padx', 'pady',
+    'postcommand', 'readonlybackground', 'relief', 'resolution',
+    'scrollregion', 'sashcursor', 'sashpad', 'sashrelief', 'sashwidth',
+    'selectcolor', 'selectimage', 'selectmode', 'show',
+    'showhandle', 'showvalue', 'sliderlength', 'sliderrelief',
+    'spacing1', 'spacing2', 'spacing3', 'startline',
+    'state', 'sticky', 'stretch', 'tabs', 'tabstyle',
+    'text', 'textvariable', 'tickinterval', 'tristateimage',
+    'tristatevalue', 'underline', 'validate', 'undo', 'validatecommand',
+    'value', 'values', 'variable', 'weight', 'width', 'wrap',
+    'wraplength', 'xscrollincrement', 'yscrollincrement'
+    )
+
+WIDGET_CUSTOM_OPTIONS = [
+    'command_id_arg', 'invalidcommand_args', 'tree_column',
+    'validatecommand_args', 'visible', 'scrolltype', 'text'
+    ]
+
+WIDGET_PROPERTIES = wp = dict(TK_WIDGET_OPTIONS)
+wp.update(REQUIRED_OPTIONS)
+wp.update(CUSTOM_OPTIONS)
 
 GRID_OPTIONS = (
     # grid packing properties
@@ -547,5 +743,19 @@ TRANSLATABLE_PROPERTIES = [
 ]
 
 
-def register_custom(name, descr):
-    pass
+def _register_custom(name, descr):
+    if name not in CUSTOM_OPTIONS:
+        CUSTOM_OPTIONS[name] = descr
+        WIDGET_PROPERTIES.update(CUSTOM_OPTIONS)
+        WIDGET_CUSTOM_OPTIONS.append(name)
+
+def register_property(name, descr):
+    _register_custom(name, descr)
+    builderobject._old_register_property(name, descr)
+
+if not hasattr(builderobject, '_register_fixed_'):
+    for name, descr in builderobject.CUSTOM_PROPERTIES.items():
+        _register_custom(name, descr)
+    builderobject._register_fixed_ = True
+    builderobject._old_register_property = builderobject.register_property
+    builderobject.register_property = register_property

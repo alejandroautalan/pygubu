@@ -19,14 +19,14 @@ class TKToplevel(BuilderObject):
     allow_container_layout = False
     layout_required = False
     allowed_parents = ('root',)
-#    allowed_children = ('tk.Frame', 'ttk.Frame')
-#    maxchildren = 1
-    properties = ('background', 'borderwidth', 'class_', 'cursor', 'height',
-        'highlightbackground', 'highlightcolor', 'highlightthickness', 'padx',
-        'pady', 'relief', 'takefocus', 'width',
-        #Extra properties as methods
-        'title', 'geometry', 'overrideredirect', 'minsize', 'maxsize',
-        'resizable')
+    OPTIONS_STANDARD = ('borderwidth', 'cursor', 'highlightbackground',
+                        'highlightcolor', 'highlightthickness',
+                        'padx', 'pady', 'relief', 'takefocus')
+    OPTIONS_SPECIFIC = ('background',  'class_', 'container',
+                        'height', 'width')
+    OPTIONS_CUSTOM = ('title', 'geometry', 'overrideredirect', 'minsize',
+                      'maxsize', 'resizable')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     RESIZABLE = {
         'both': (True, True),
         'horizontally': (True, False),
@@ -70,25 +70,31 @@ register_widget('tk.Toplevel', TKToplevel,
 
 
 class TKFrame(BuilderObject):
+    OPTIONS_STANDARD = ('borderwidth', 'cursor', 'highlightbackground',
+                        'highlightcolor', 'highlightthickness',
+                        'padx', 'pady', 'relief', 'takefocus')
+    OPTIONS_SPECIFIC = ('background',  'class_', 'container',
+                        'height', 'width')
     class_ = tk.Frame
     container = True
-    properties = ['background', 'borderwidth', 'cursor', 'height',
-        'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'padx', 'pady', 'relief', 'takefocus', 'width']
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 register_widget('tk.Frame', TKFrame, 'Frame', ('Containers', 'tk'))
 
 
 class TKLabel(BuilderObject):
-    class_ = tk.Label
-    container = False
-    properties = ['activebackground', 'activeforeground', 'anchor',
+    OPTIONS_STANDARD = (
+        'activebackground', 'activeforeground', 'anchor',
         'background', 'bitmap', 'borderwidth', 'compound',
         'cursor', 'disabledforeground', 'font', 'foreground', 'height',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'image', 'justify', 'padx', 'pady', 'relief', 'state',
+        'image', 'justify', 'padx', 'pady', 'relief',
         'takefocus', 'text', 'textvariable', 'underline',
-        'width', 'wraplength']
+        'wraplength')
+    OPTIONS_SPECIFIC = ('height', 'state', 'width')
+    class_ = tk.Label
+    container = False
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 register_widget('tk.Label', TKLabel, 'Label', ('Control & Display', 'tk'))
 
@@ -96,10 +102,14 @@ register_widget('tk.Label', TKLabel, 'Label', ('Control & Display', 'tk'))
 class TKLabelFrame(BuilderObject):
     class_ = tk.LabelFrame
     container = True
-    properties = ['background', 'borderwidth', 'cursor', 'height',
+    OPTIONS_STANDARD = (
+        'borderwidth', 'cursor', 'font', 'foreground',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'labelanchor', 'labelwidget', 'padx', 'pady', 'relief',
-        'text', 'takefocus', 'width']
+        'padx', 'pady', 'relief', 'takefocus', 'text')
+    OPTIONS_SPECIFIC = ('background', 'class_', 'height',
+                        'labelanchor', 'width')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+
 #TODO: Add helper so the labelwidget can be configured on GUI
 
 register_widget('tk.LabelFrame', TKLabelFrame,
@@ -107,22 +117,23 @@ register_widget('tk.LabelFrame', TKLabelFrame,
 
 
 class TKEntry(EntryBaseBO):
-    class_ = tk.Entry
-    container = False
-    properties = ['background', 'borderwidth', 'cursor',
-        'disabledbackground', 'disabledforeground', 'exportselection',
-        'foreground', 'font', 'highlightbackground', 'highlightcolor',
+    OPTIONS_STANDARD = (
+        'background', 'borderwidth', 'cursor', 'exportselection',
+        'font', 'foreground', 'highlightbackground', 'highlightcolor',
         'highlightthickness', 'insertbackground', 'insertborderwidth',
         'insertofftime', 'insertontime', 'insertwidth', 'justify',
-        'readonlybackground', 'relief', 'selectbackground',
-        'selectborderwidth', 'selectforeground', 'show', 'state',
-        'takefocus', 'textvariable', 'validate', 'validatecommand',
-        'invalidcommand', 'width', 'wraplength', 'xscrollcommand',
-        'text',  # < text is a custom property
-        'validatecommand_args',
-        'invalidcommand_args']
+        'relief', 'selectbackground', 'selectborderwidth',
+        'selectforeground', 'takefocus', 'textvariable', 'xscrollcommand')
+    OPTIONS_SPECIFIC = (
+        'disabledbackground', 'disabledforeground', 'invalidcommand',
+        'readonlybackground', 'show', 'state',
+        'validate', 'validatecommand', 'width')
+    OPTIONS_CUSTOM = ('text', 'validatecommand_args', 'invalidcommand_args')
+    class_ = tk.Entry
+    container = False
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     command_properties = ('validatecommand', 'invalidcommand',
-         'xscrollcommand')
+                          'xscrollcommand')
 
 register_widget('tk.Entry', TKEntry, 'Entry', ('Control & Display', 'tk'))
 
@@ -130,13 +141,18 @@ register_widget('tk.Entry', TKEntry, 'Entry', ('Control & Display', 'tk'))
 class TKButton(BuilderObject):
     class_ = tk.Button
     container = False
-    properties = ['activebackground', 'activeforeground', 'anchor',
-        'borderwidth', 'background', 'bitmap', 'command', 'cursor',
-        'default', 'disabledforeground', 'foreground', 'font', 'height',
+    OPTIONS_STANDARD = (
+        'activebackground', 'activeforeground', 'anchor',
+        'background', 'bitmap', 'borderwidth', 'compound', 'cursor',
+        'disabledforeground', 'font', 'foreground',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'image', 'justify', 'overrelief', 'padx', 'pady', 'relief',
-        'repeatdelay', 'repeatinterval', 'state', 'takefocus', 'text',
-        'textvariable', 'underline', 'width', 'wraplength']
+        'image', 'justify',  'padx', 'pady', 'relief',
+        'repeatdelay', 'repeatinterval',  'takefocus', 'text',
+        'textvariable', 'underline',  'wraplength')
+    OPTIONS_SPECIFIC = (
+        'command', 'default', 'height', 'overrelief',
+        'state', 'width')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
 
 register_widget('tk.Button', TKButton, 'Button', ('Control & Display', 'tk'))
@@ -145,30 +161,37 @@ register_widget('tk.Button', TKButton, 'Button', ('Control & Display', 'tk'))
 class TKCheckbutton(BuilderObject):
     class_ = tk.Checkbutton
     container = False
-    properties = ['activebackground', 'activeforeground', 'anchor',
-        'background', 'bitmap', 'borderwidth', 'command', 'compound',
-        'cursor', 'disabledforeground', 'font', 'foreground', 'height',
+    OPTIONS_STANDARD = (
+        'activebackground', 'activeforeground', 'anchor',
+        'background', 'bitmap', 'borderwidth', 'compound', 'cursor',
+        'disabledforeground', 'font', 'foreground',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'image', 'indicatoron', 'justify', 'offrelief', 'offvalue',
-        'onvalue', 'overrelief', 'padx', 'pady', 'relief', 'selectcolor',
-        'selectimage', 'state', 'takefocus', 'text', 'textvariable',
-        'underline', 'variable', 'width', 'wraplength']
+        'image', 'justify',  'padx', 'pady', 'relief',
+        'takefocus', 'text', 'textvariable', 'underline',  'wraplength')
+    OPTIONS_SPECIFIC = (
+        'command', 'height', 'indicatoron', 'overrelief', 'offrelief',
+        'offvalue', 'onvalue', 'overrelief', 'selectcolor', 'selectimage',
+        'state', 'tristateimage', 'tristatevalue', 'variable', 'width')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
 
 register_widget('tk.Checkbutton', TKCheckbutton,
-    'Checkbutton', ('Control & Display', 'tk'))
+                'Checkbutton', ('Control & Display', 'tk'))
 
 
 class TKListbox(BuilderObject):
     class_ = tk.Listbox
     container = False
-    properties = ['activestyle', 'background', 'borderwidth', 'cursor',
-            'disabledforeground', 'exportselection', 'font',
-            'foreground', 'height', 'highlightbackground', 'highlightcolor',
-            'highlightthickness', 'listvariable', 'relief',
-            'selectbackground', 'selectborderwidth', 'selectforeground',
-            'selectmode', 'state', 'takefocus', 'width', 'xscrollcommand',
-            'yscrollcommand']
+    OPTIONS_STANDARD = (
+        'background', 'borderwidth', 'cursor',
+        'disabledforeground', 'exportselection', 'font',
+        'foreground',  'highlightbackground', 'highlightcolor',
+        'highlightthickness',  'relief',
+        'selectbackground', 'selectborderwidth', 'selectforeground',
+        'setgrid', 'takefocus',  'xscrollcommand', 'yscrollcommand')
+    OPTIONS_SPECIFIC = ('activestyle', 'height', 'listvariable',
+                        'selectmode', 'state', 'width')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('xscrollcommand', 'yscrollcommand')
 
 register_widget('tk.Listbox', TKListbox,
@@ -178,16 +201,21 @@ register_widget('tk.Listbox', TKListbox,
 class TKText(BuilderObject):
     class_ = tk.Text
     container = False
-    properties = ['autoseparators', 'background', 'borderwidth', 'cursor',
-            'exportselection', 'font',
-            'foreground', 'height', 'highlightbackground', 'highlightcolor',
-            'highlightthickness', 'insertbackground', 'insertborderwidth',
-            'insertofftime', 'insertontime', 'insertwidth',
-            'maxundo', 'padx', 'pady', 'relief', 'selectbackground',
-            'selectborderwidth', 'selectforeground', 'spacing1',
-            'spacing2', 'spacing3', 'state', 'tabs', 'takefocus',
-            'undo', 'width', 'wrap', 'xscrollcommand', 'yscrollcommand',
-            'text']  # <- text is a custom property.
+    OPTIONS_STANDARD = (
+        'background', 'borderwidth', 'cursor', 'exportselection', 'font',
+        'foreground', 'highlightbackground', 'highlightcolor',
+        'highlightthickness', 'insertbackground', 'insertborderwidth',
+        'insertofftime', 'insertontime', 'insertwidth',
+        'padx', 'pady', 'relief', 'selectbackground',
+        'selectborderwidth', 'selectforeground', 'setgrid', 'takefocus',
+        'xscrollcommand', 'yscrollcommand',)
+    OPTIONS_SPECIFIC = (
+        'autoseparators', 'blockcursor', 'endline', 'height',
+        'inactiveselectbackgroud', 'insertunfocussed', 'maxundo',
+        'spacing1', 'spacing2', 'spacing3', 'startline',
+        'state', 'tabs', 'tabstyle', 'undo', 'width', 'wrap')
+    OPTIONS_CUSTOM = ('text',)
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     command_properties = ('xscrollcommand', 'yscrollcommand')
 
     def _set_property(self, target_widget, pname, value):
@@ -203,24 +231,32 @@ register_widget('tk.Text', TKText, 'Text', ('Control & Display', 'tk', 'ttk'))
 class TKPanedWindow(PanedWindowBO):
     class_ = tk.PanedWindow
     allowed_children = ('tk.PanedWindow.Pane',)
-    properties = ['background', 'borderwidth', 'cursor', 'handlepad',
-        'handlesize', 'height', 'opaqueresize', 'orient', 'relief',
-        'sashpad', 'sashrelief', 'sashwidth', 'showhandle', 'width']
+    OPTIONS_STANDARD = (
+        'background', 'borderwidth', 'cursor', 'orient', 'relief',)
+    OPTIONS_SPECIFIC = (
+        'handlepad', 'handlesize', 'height', 'opaqueresize',
+        'sashcursor', 'sashpad', 'sashrelief', 'sashwidth', 'showhandle',
+        'width')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 register_widget('tk.PanedWindow', TKPanedWindow,
-        'PanedWindow', ('Containers', 'tk'))
+                'PanedWindow', ('Containers', 'tk'))
 
 
 class TKMenubutton(BuilderObject):
     class_ = tk.Menubutton
     container = False
-    properties = ['activebackground', 'activeforeground', 'anchor',
+    OPTIONS_STANDARD = (
+        'activebackground', 'activeforeground', 'anchor',
         'background', 'bitmap', 'borderwidth', 'compound', 'cursor',
-        'direction', 'disabledforeground', 'foreground', 'font',
-        'height', 'highlightbackground', 'highlightcolor',
-        'highlightthickness', 'image', 'justify', 'padx',
-        'pady', 'relief', 'state', 'takefocus', 'text', 'textvariable',
-        'underline', 'width', 'wraplength']
+        'disabledforeground', 'font', 'foreground',
+        'highlightbackground', 'highlightcolor',
+        'highlightthickness', 'image', 'justify', 'padx', 'pady',
+        'relief', 'takefocus', 'text', 'textvariable',
+        'underline',  'wraplength')
+    OPTIONS_SPECIFIC = (
+        'direction', 'height', 'indicatoron', 'state', 'width')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     allowed_children = ('tk.Menu',)
     maxchildren = 1
 
@@ -234,41 +270,54 @@ register_widget('tk.Menubutton', TKMenubutton,
 class TKMessage(BuilderObject):
     class_ = tk.Message
     container = False
-    properties = ['aspect', 'background', 'borderwidth', 'cursor',
+    OPTIONS_STANDARD = (
+        'anchor', 'background', 'borderwidth', 'cursor',
         'font', 'foreground', 'highlightbackground', 'highlightcolor',
-        'highlightthickness', 'justify', 'padx', 'pady', 'relief',
-        'takefocus', 'text', 'textvariable', 'width']
+        'highlightthickness',  'padx', 'pady', 'relief',
+        'takefocus', 'text', 'textvariable')
+    OPTIONS_SPECIFIC = ('aspect', 'justify', 'width')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 register_widget('tk.Message', TKMessage,
-        'Message', ('Control & Display', 'tk', 'ttk'))
+                'Message', ('Control & Display', 'tk', 'ttk'))
 
 
 class TKRadiobutton(BuilderObject):
     class_ = tk.Radiobutton
     container = False
-    properties = ['activebackground', 'activeforeground', 'anchor',
-        'background', 'bitmap', 'borderwidth', 'command', 'compound',
-        'cursor', 'disabledforeground', 'font', 'foreground', 'height',
+    OPTIONS_STANDARD = (
+        'activebackground', 'activeforeground', 'anchor',
+        'background', 'bitmap', 'borderwidth', 'compound', 'cursor',
+        'disabledforeground', 'font', 'foreground',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'image', 'indicatoron', 'justify', 'offrelief', 'overrelief',
-        'padx', 'pady', 'relief', 'selectcolor', 'selectimage', 'state',
-        'takefocus', 'text', 'textvariable',
-        'underline', 'variable', 'width', 'wraplength']
+        'image', 'justify',  'padx', 'pady', 'relief',
+        'takefocus', 'text', 'textvariable', 'underline',  'wraplength')
+    OPTIONS_SPECIFIC = (
+        'command', 'height', 'indicatoron', 'overrelief', 'offrelief',
+        'offvalue', 'onvalue', 'overrelief', 'selectcolor', 'selectimage',
+        'state', 'tristateimage', 'tristatevalue', 'value',
+        'variable', 'width')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
 
 register_widget('tk.Radiobutton', TKRadiobutton,
-        'Radiobutton', ('Control & Display', 'tk'))
+                'Radiobutton', ('Control & Display', 'tk'))
 
 
 class TKScale(BuilderObject):
     class_ = tk.Scale
     container = False
-    properties = ['activebackground', 'background', 'borderwidth', 'command',
-        'cursor', 'digits', 'font', 'foreground', 'from_',
+    OPTIONS_STANDARD = (
+        'activebackground', 'background', 'borderwidth',
+        'cursor',  'font', 'foreground',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'label', 'length', 'orient', 'relief', 'repeatdelay', 'repeatinterval',
-        'resolution', 'showvalue', 'sliderlength', 'sliderrelief', 'state',
-        'takefocus', 'tickinterval', 'to', 'troughcolor', 'variable', 'width']
+        'orient', 'relief', 'repeatdelay', 'repeatinterval',
+        'takefocus',  'troughcolor')
+    OPTIONS_SPECIFIC = (
+        'bigincrement', 'command', 'digits', 'from_', 'label', 'length',
+        'resolution', 'showvalue', 'sliderlength', 'sliderrelief',
+        'state', 'tickinterval', 'to', 'variable', 'width')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
 
 register_widget('tk.Scale', TKScale, 'Scale', ('Control & Display', 'tk'))
@@ -277,32 +326,41 @@ register_widget('tk.Scale', TKScale, 'Scale', ('Control & Display', 'tk'))
 class TKScrollbar(BuilderObject):
     class_ = tk.Scrollbar
     container = False
-    properties = ['activebackground', 'activerelief', 'background',
-        'borderwidth', 'command', 'cursor', 'elementborderwidth',
+    OPTIONS_STANDARD = (
+        'activebackground',  'background', 'borderwidth', 'cursor',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
         'jump', 'orient', 'relief', 'repeatdelay', 'repeatinterval',
-        'takefocus', 'troughcolor', 'width']
+        'takefocus', 'troughcolor')
+    OPTIONS_SPECIFIC = (
+        'activerelief', 'command', 'elementborderwidth', 'width')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
 
 register_widget('tk.Scrollbar', TKScrollbar,
-        'Scrollbar', ('Control & Display', 'tk'))
+                'Scrollbar', ('Control & Display', 'tk'))
 
 
 class TKSpinbox(BuilderObject):
     class_ = tk.Spinbox
     container = False
-    properties = ['activebackground', 'background', 'borderwidth',
-        'buttonbackground', 'buttoncursor', 'buttondownrelief', 'buttonup',
-        'command', 'cursor', 'disabledbackground', 'disabledforeground',
-        'exportselection', 'font', 'foreground', 'format', 'from_',
+    OPTIONS_STANDARD = (
+        'activebackground', 'background', 'borderwidth',
+        'cursor', 'exportselection', 'font', 'foreground',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'increment', 'insertbackground', 'insertborderwidth',
+        'insertbackground', 'insertborderwidth',
         'insertofftime', 'insertontime', 'insertwidth', 'justify',
-        'readonlybackground', 'relief', 'repeatdelay', 'repeatinterval',
-        'selectbackground', 'selectborderwidth', 'selectforeground', 'state',
-        'takefocus', 'textvariable', 'to', 'values', 'width', 'wrap',
-        'xscrollcommand']
-    command_properties = ('command', 'xscrollcommand')
+        'relief', 'repeatdelay', 'repeatinterval',
+        'selectbackground', 'selectborderwidth', 'selectforeground',
+        'takefocus', 'textvariable', 'xscrollcommand')
+    OPTIONS_SPECIFIC = (
+        'buttonbackground', 'buttoncursor', 'buttondownrelief',
+        'buttonuprelief', 'command', 'disabledbackground',
+        'disabledforeground', 'format', 'from_', 'invalidcommand',
+        'increment', 'readonlybackground', 'state', 'to',
+        'validate', 'validatecommand', 'values', 'width', 'wrap',)
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+    command_properties = ('command', 'invalidcommand', 'validatecommand',
+                          'xscrollcommand')
 
     def configure(self):
         #hack to configure 'from_' and 'to' and avoid exception
@@ -319,22 +377,22 @@ register_widget('tk.Spinbox', TKSpinbox,
 
 
 class TKMenu(BuilderObject):
-    OPTIONS_STANDARD = ('activebackground', 'activeborderwidth',
-                        'activeforeground',  'cursor')
-    OPTIONS_WIDGET_SPECIFIC = ('background', 'borderwidth',
-                               'disabledforeground', 'font', 'foreground',
-                               'postcommand', 'relief', 'selectcolor',
-                               'tearoff', 'tearoffcommand', 'title')
-    OPTIONS_CUSTOM = tuple()
     layout_required = False
     allowed_parents = ('root', 'tk.Menubutton', 'ttk.Menubutton')
-    allowed_children = ('tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
+    allowed_children = (
+        'tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
         'tk.Menuitem.Command', 'tk.Menuitem.Radiobutton',
         'tk.Menuitem.Separator')
     class_ = tk.Menu
     container = True
     allow_container_layout = False
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC + OPTIONS_CUSTOM
+    OPTIONS_STANDARD = ('activebackground', 'activeborderwidth',
+                        'activeforeground',  'background', 'borderwidth',
+                        'cursor', 'disabledforeground', 'font', 'foreground',
+                        'relief', 'takefocus')
+    OPTIONS_SPECIFIC = ('postcommand',  'selectcolor', 'tearoff',
+                        'tearoffcommand', 'title')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('postcommand', 'tearoffcommand')
     allow_bindings = False
 
@@ -347,16 +405,21 @@ register_widget('tk.Menu', TKMenu, 'Menu', ('Containers', 'tk', 'ttk'))
 class TKCanvas(BuilderObject):
     class_ = tk.Canvas
     container = False
-    properties = ['borderwidth', 'background', 'closeenough', 'confine',
-        'cursor', 'height', 'highlightbackground', 'highlightcolor',
-        'highlightthickness', 'relief', 'scrollregion', 'selectbackground',
-        'selectborderwidth', 'selectforeground', 'takefocus', 'width',
-        'xscrollincrement', 'xscrollcommand', 'yscrollincrement',
-        'yscrollcommand']
+    OPTIONS_STANDARD = (
+        'background', 'borderwidth', 'cursor', 'highlightbackground',
+        'highlightcolor', 'highlightthickness',
+        'insertbackground', 'insertborderwidth', 'insertofftime',
+        'insertontime', 'insertwidth', 'relief',  'selectbackground',
+        'selectborderwidth', 'selectforeground', 'takefocus',
+        'xscrollcommand', 'yscrollcommand')
+    OPTIONS_SPECIFIC = (
+        'closeenough', 'confine', 'height', 'scrollregion', 'state',
+        'width', 'xscrollincrement', 'yscrollincrement')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('xscrollcommand', 'yscrollcommand')
 
 register_widget('tk.Canvas', TKCanvas,
-                    'Canvas', ('Control & Display', 'tk', 'ttk'))
+                'Canvas', ('Control & Display', 'tk', 'ttk'))
 
 
 #
@@ -370,11 +433,10 @@ class TKMenuitem(BuilderObject):
     layout_required = False
     OPTIONS_STANDARD = ('activebackground', 'activeforeground', 'background',
                         'bitmap', 'compound', 'foreground',  'state')
-    OPTIONS_WIDGET_SPECIFIC = ('accelerator', 'columnbreak', 'command',
-                               'font', 'hidemargin', 'image', 'label',
-                               'underline')
+    OPTIONS_SPECIFIC = ('accelerator', 'columnbreak', 'command',
+                        'font', 'hidemargin', 'image', 'label', 'underline')
     OPTIONS_CUSTOM = ('command_id_arg',)
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC + OPTIONS_CUSTOM
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     command_properties = ('command',)
     allow_bindings = False
 
@@ -387,7 +449,7 @@ class TKMenuitem(BuilderObject):
         pname = 'variable'
         if pname in itemproperties:
             varname = itemproperties[pname]
-            itemproperties[pname] = self.builder.create_variable(pname)
+            itemproperties[pname] = self.builder.create_variable(varname)
         for imageprop in ('image', 'selectimage'):
             if imageprop in itemproperties:
                 name = itemproperties[imageprop]
@@ -404,8 +466,9 @@ class TKMenuitem(BuilderObject):
 
     def _create_callback(self, cpname, callback):
         command = callback
-        include_id = self.properties.get('command_id_arg', 'False')
-        if include_id != 'False':
+        include_id = self.properties.get('command_id_arg', 'false')
+        include_id = include_id.lower()
+        if include_id != 'false':
             def item_callback(item_id=self.objectid):
                 callback(item_id)
             command = item_callback
@@ -417,17 +480,20 @@ class TKMenuitem(BuilderObject):
 
 class TKMenuitemSubmenu(TKMenu):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
-    allowed_children = ('tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
+    allowed_children = (
+        'tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
         'tk.Menuitem.Command', 'tk.Menuitem.Radiobutton',
         'tk.Menuitem.Separator')
     properties = tuple(set(TKMenu.properties + TKMenuitem.properties))
 
     def realize(self, parent):
         master = parent.widget
-        menu_properties = dict((k, v) for k, v in self.properties.items()
+        menu_properties = dict(
+            (k, v) for k, v in self.properties.items()
             if k in TKMenu.properties)
 
-        item_properties = dict((k, v) for k, v in self.properties.items()
+        item_properties = dict(
+            (k, v) for k, v in self.properties.items()
             if k in TKMenuitem.properties and k != 'command_id_arg')
 
         self.widget = submenu = TKMenu.class_(master, **menu_properties)
@@ -442,7 +508,7 @@ class TKMenuitemSubmenu(TKMenu):
         pass
 
 register_widget('tk.Menuitem.Submenu', TKMenuitemSubmenu,
-        'Menuitem.Submenu', ('Pygubu Helpers', 'tk', 'ttk'))
+                'Menuitem.Submenu', ('Pygubu Helpers', 'tk', 'ttk'))
 
 
 class TKMenuitemCommand(TKMenuitem):
@@ -450,39 +516,43 @@ class TKMenuitemCommand(TKMenuitem):
     itemtype = tk.COMMAND
 
 register_widget('tk.Menuitem.Command', TKMenuitemCommand,
-    'Menuitem.Command', ('Pygubu Helpers', 'tk', 'ttk'))
+                'Menuitem.Command', ('Pygubu Helpers', 'tk', 'ttk'))
 
 
 class TKMenuitemCheckbutton(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.CHECKBUTTON
     OPTIONS_STANDARD = TKMenuitem.OPTIONS_STANDARD
-    OPTIONS_WIDGET_SPECIFIC = \
-        TKMenuitem.OPTIONS_WIDGET_SPECIFIC + \
+    OPTIONS_SPECIFIC = \
+        TKMenuitem.OPTIONS_SPECIFIC + \
         ('indicatoron', 'selectcolor', 'selectimage', 'variable')
     OPTIONS_CUSTOM = TKMenuitem.OPTIONS_CUSTOM
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC + OPTIONS_CUSTOM
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
 register_widget('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton,
-    'Menuitem.Checkbutton', ('Pygubu Helpers', 'tk', 'ttk'))
+                'Menuitem.Checkbutton', ('Pygubu Helpers', 'tk', 'ttk'))
 
 
 class TKMenuitemRadiobutton(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.RADIOBUTTON
     OPTIONS_STANDARD = TKMenuitem.OPTIONS_STANDARD
-    OPTIONS_WIDGET_SPECIFIC = \
-        TKMenuitem.OPTIONS_WIDGET_SPECIFIC + ('onvalue', 'offvalue', 'value')
+    OPTIONS_SPECIFIC = \
+        TKMenuitem.OPTIONS_SPECIFIC + \
+        ('onvalue', 'offvalue', 'value', 'variable')
     OPTIONS_CUSTOM = TKMenuitem.OPTIONS_CUSTOM
-    properties = OPTIONS_STANDARD + OPTIONS_WIDGET_SPECIFIC + OPTIONS_CUSTOM
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
 register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
-    'Menuitem.Radiobutton', ('Pygubu Helpers', 'tk', 'ttk'))
+                'Menuitem.Radiobutton', ('Pygubu Helpers', 'tk', 'ttk'))
 
 
 class TKMenuitemSeparator(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.SEPARATOR
+    OPTIONS_STANDARD = tuple()
+    OPTIONS_SPECIFIC = tuple()
+    OPTIONS_CUSTOM = tuple()
     properties = tuple()
     command_properties = tuple()
 
@@ -495,7 +565,9 @@ class TKPanedWindowPane(PanedWindowPaneBO):
     container = True
     allowed_parents = ('tk.PanedWindow',)
     maxchildren = 1
-    properties = ['height', 'minsize', 'padx', 'pady', 'sticky']
+    OPTIONS_SPECIFIC = ('height', 'hide', 'minsize',
+                        'padx', 'pady', 'sticky', 'stretch', 'width')
+    properties = OPTIONS_SPECIFIC
 
 register_widget('tk.PanedWindow.Pane', TKPanedWindowPane,
-    'PanedWindow.Pane', ('Pygubu Helpers', 'tk'))
+                'PanedWindow.Pane', ('Pygubu Helpers', 'tk'))
