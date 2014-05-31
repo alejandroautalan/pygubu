@@ -18,7 +18,7 @@ from __future__ import unicode_literals
 from pygubudesigner.widgets.propertyeditor import *
 
 
-class DinamicPropertyEditor(PropertyEditor):
+class DynamicPropertyEditor(PropertyEditor):
 
     def _create_ui(self):
         self._current = None
@@ -29,7 +29,7 @@ class DinamicPropertyEditor(PropertyEditor):
         self.columnconfigure(0, weight=1)
 
     def _create_editor(self, mode):
-        editor = e = create_editor(mode)
+        editor = e = create_editor(mode, self)
         self._last_idx += 1
         e.grid(row=self._last_idx, column=0, sticky='we')
         self._editors[mode] = editor
@@ -58,11 +58,12 @@ class DinamicPropertyEditor(PropertyEditor):
 
     def set_mode(self, mode):
         if mode not in self._editors:
-            raise ValueError()
-        else:
-            for name, widget in self._editors.items():
-                if mode == name:
-                    widget.grid()
-                else:
-                    widget.grid_remove()
-            self._current = self._editors[mode]
+            self._create_editor(mode)
+        for name, widget in self._editors.items():
+            if mode == name:
+                widget.grid()
+            else:
+                widget.grid_remove()
+        self._current = self._editors[mode]
+
+register_editor('dynamic', DynamicPropertyEditor)

@@ -18,12 +18,12 @@ except:
     import Tkinter as tk
     import ttk
 
-from pygubudesigner.widgets import DinamicPropertyEditor
+from pygubudesigner.widgets import DynamicPropertyEditor
 
 if __name__ == '__main__':
     root = tk.Tk()
     modes = ('entry', 'choice')
-    editor = DinamicPropertyEditor(root)
+    editor = DynamicPropertyEditor(root)
     editor.parameters(modes=modes, mode='choice', values='A B C D E F G')
     editor.grid()
     editor.edit('320|240')

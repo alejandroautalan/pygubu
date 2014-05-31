@@ -4,4 +4,4 @@ from .imageentry import ImagePropertyEditor
 from .propertyeditor import EntryPropertyEditor, SpinboxPropertyEditor
 from .propertyeditor import TextPropertyEditor, ChoicePropertyEditor
 from .whentry import WHPropertyEditor
-from .dinamicpropeditor import DinamicPropertyEditor
+from .dynamicpropeditor import DynamicPropertyEditor
