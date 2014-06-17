@@ -34,13 +34,18 @@ pip install pygubu
 Usage
 =====
 
-Create an UI definition using pygubu and save it to a file. Then, create
+Create an UI definition using pygubu-designer and save it to a file.
+
+[helloworld.ui] (examples/helloworld.ui)
+
+Then, create
 your aplication script as shown below:
 
 ```python
 #test.py
 import tkinter as tk
 import pygubu
+
 
 class Application:
     def __init__(self, master):
@@ -49,10 +54,11 @@ class Application:
         self.builder = builder = pygubu.Builder()
 
         #2: Load an ui file
-        builder.add_from_file('test.ui')
+        builder.add_from_file('helloworld.ui')
 
         #3: Create the widget using a master as parent
         self.mainwindow = builder.get_object('mainwindow', master)
+
 
 if __name__ == '__main__':
     root = tk.Tk()
@@ -72,6 +78,11 @@ See the examples directory or watch this hello world example on [video](http://y
 
 History
 =======
+
+Changes for version 0.9.5
+
+  * Renamed designer startup script to pygubu-designer (see [#20](/../../issues/20))
+  * Fixed bugs.
 
 Changes for version 0.9.4
 
