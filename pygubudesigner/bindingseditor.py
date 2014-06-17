@@ -6,6 +6,11 @@ except:
     import Tkinter as tk
     import ttk
 
+from pygubu import builder
+
+CLASS_MAP = builder.CLASS_MAP
+
+
 class BindingsEditor:
     def __init__(self, etreeview):
         self.tv = etreeview
@@ -18,17 +23,17 @@ class BindingsEditor:
         self.tv.bind('<Double-Button-1>', self._on_add_clicked, add=True)
 
         self._del_btn = ttk.Button(self.tv, text='-',
-            command=self._on_del_clicked)
+                                   command=self._on_del_clicked)
 
     def _on_add_clicked(self, event):
-        sel =  self.tv.selection()
+        sel = self.tv.selection()
         if sel:
             item = sel[0]
             if item == self._adder and self._allow_edit:
                 self._add_binding(('<1>', 'callback', ''))
 
     def _on_del_clicked(self):
-        sel =  self.tv.selection()
+        sel = self.tv.selection()
         if sel:
             item = sel[0]
             self.tv.delete(item)
@@ -51,18 +56,18 @@ class BindingsEditor:
 
     def _add_binding(self, bind):
         idx = self.tv.index(self._adder)
-        item = self.tv.insert('', idx, values=bind)
+        self.tv.insert('', idx, values=bind)
         self.tv.selection_set('')
 
-    def edit(self, data):
+    def edit(self, wdescr):
+        wclass = wdescr.get_class()
         self.clear()
-        self._curr_data = data
-        for bind in data.get_bindings():
+        self._curr_data = wdescr
+        for bind in wdescr.get_bindings():
             self._add_binding(bind)
 
     def allow_edit(self, var):
         self._allow_edit = var
-
 
     def _on_inplace_edit(self, event):
         col, item = self.tv.get_event_info()
@@ -74,7 +79,9 @@ class BindingsEditor:
                 self.tv.inplace_checkbutton(col, item, offvalue='')
             elif col in ('actions',):
                 self.tv.inplace_custom(col, item, self._del_btn)
-
+                
+    def hide_all(self):
+        print(self.tv.winfo_parent())
 
     def clear(self):
         children = self.tv.get_children()

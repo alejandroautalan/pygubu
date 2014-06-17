@@ -384,7 +384,6 @@ class PygubuUI(pygubu.TkApplication):
 
         self.tree_editor.load_file(filename)
         self.project_name.configure(text=filename)
-        self.properties_editor.hide_all()
         self.currentfile = filename
         self.is_changed = False
 
@@ -399,7 +398,6 @@ class PygubuUI(pygubu.TkApplication):
             if new:
                 self.previewer.remove_all()
                 self.tree_editor.remove_all()
-                self.properties_editor.hide_all()
                 self.currentfile = None
                 self.is_changed = False
                 self.project_name.configure(text=_('<None>'))

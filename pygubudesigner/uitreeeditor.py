@@ -64,7 +64,7 @@ class WidgetsTreeEditor(object):
         pframe = app.builder.get_object('propertiesframe')
         lframe = app.builder.get_object('layoutframe')
         bindingstree = app.builder.get_object('bindingstree')
-        self.properties_editor = WidgetEditor(pframe, lframe, bindingstree)
+        self.widget_editor = WidgetEditor(pframe, lframe, bindingstree)
 
     def config_filter(self):
         def on_filtervar_changed(varname, element, mode):
@@ -155,7 +155,7 @@ class WidgetsTreeEditor(object):
                 self.app.set_changed()
                 if parent:
                     self.draw_widget(parent)
-                self.properties_editor.hide_all()
+                self.widget_editor.hide_all()
             except tk.TclError as e:
                 #Selection of parent and child items ??
                 pass
@@ -504,6 +504,7 @@ class WidgetsTreeEditor(object):
 
         self.remove_all()
         self.previewer.remove_all()
+        self.widget_editor.hide_all()
 
         for element in eroot:
             self.populate_tree('', eroot, element)
@@ -558,10 +559,10 @@ class WidgetsTreeEditor(object):
             selected_id = self.treedata[item].get_id()
             self.previewer.show_selected(top, selected_id)
             max_rc = self.get_max_row_col(item)
-            self.properties_editor.edit(self.treedata[item])
+            self.widget_editor.edit(self.treedata[item])
         else:
             #No selection hide all
-            self.properties_editor.hide_all()
+            self.widget_editor.hide_all()
 
 
     def get_max_row_col(self, item):

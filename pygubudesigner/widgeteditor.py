@@ -24,132 +24,9 @@ except:
     import Tkinter as tk
     import ttk
 
-import itertools
-
 from pygubu import builder
-from pygubudesigner.widgets.propertyeditor import *
-from pygubudesigner import properties
-from pygubudesigner.i18n import translator as _
-
-CLASS_MAP = builder.CLASS_MAP
-
-
-class PropertiesEditor(object):
-    def __init__(self, frame):
-        self._current = None
-        self._sframe = frame
-        self._frame = None
-        self._propbag = {}
-        self._create_properties()
-        self.hide_all()
-
-    def _create_properties(self):
-        """Populate a frame with a list of all editable properties"""
-        self._frame = f = ttk.Labelframe(self._sframe.innerframe,
-                                         text=_('Widget properties'))
-        f.grid(sticky='nswe')
-
-        label_tpl = "{0}:"
-        row = 0
-        col = 0
-
-        groups = (
-            ('00', _('Required'), properties.WIDGET_REQUIRED_OPTIONS,
-             properties.REQUIRED_OPTIONS),
-            ('01', _('Standard'), properties.WIDGET_STANDARD_OPTIONS,
-             properties.TK_WIDGET_OPTIONS),
-            ('02', _('Specific'), properties.WIDGET_SPECIFIC_OPTIONS,
-             properties.TK_WIDGET_OPTIONS),
-            ('03', _('Custom'), properties.WIDGET_CUSTOM_OPTIONS,
-             properties.CUSTOM_OPTIONS),
-        )
-
-        for gcode, gname, plist, propdescr in groups:
-            padding = '0 0 0 5' if row == 0 else '0 5 0 5'
-            label = ttk.Label(self._frame, text=gname,
-                              font='TkDefaultFont 10 bold', padding=padding,
-                              foreground='#000059')
-            label.grid(row=row, column=0, sticky='we', columnspan=2)
-            row += 1
-            for name in plist:
-                kwdata = propdescr[name]
-                labeltext = label_tpl.format(name)
-                label = ttk.Label(self._frame, text=labeltext, anchor=tk.W)
-                label.grid(row=row, column=col, sticky=tk.EW, pady=2)
-                widget = self._create_editor(self._frame, name, kwdata)
-                widget.grid(row=row, column=col+1, sticky=tk.EW, pady=2)
-                row += 1
-                self._propbag[gcode+name] = (label, widget)
-
-    def _create_editor(self, master, pname, wdata):
-        editor = None
-        wtype = wdata.get('editor', None)
-
-        #I don't have class name at this moment
-        #so setup class specific values on update_property_widget
-        editor = create_editor(wtype, master)
-
-        def make_on_change_cb(pname, editor):
-            def on_change_cb(event):
-                self._on_property_changed(pname, editor)
-            return on_change_cb
-
-        editor.bind('<<PropertyChanged>>', make_on_change_cb(pname, editor))
-        return editor
-
-    def _on_property_changed(self, name, editor):
-        print(editor.value)
-
-    def update_editor(self, editor, wdescr, pname, propdescr):
-        pdescr = propdescr.copy()
-        classname = wdescr.get_class()
-
-        if classname in pdescr:
-            pdescr = dict(pdescr, **pdescr[classname])
-
-        params = pdescr.get('params', {})
-        editor.parameters(**params)
-        default = pdescr.get('default', '')
-
-        value = wdescr.get_property(pname)
-        if not value and default:
-            value = default
-        editor.edit(value)
-
-    def edit(self, wdescr):
-        wclass = wdescr.get_class()
-        class_descr = CLASS_MAP[wclass].classobj
-        groups = (
-            ('00', None, properties.WIDGET_REQUIRED_OPTIONS,
-             properties.REQUIRED_OPTIONS),
-            ('01', 'OPTIONS_STANDARD', properties.WIDGET_STANDARD_OPTIONS,
-             properties.TK_WIDGET_OPTIONS),
-            ('02', 'OPTIONS_SPECIFIC', properties.WIDGET_SPECIFIC_OPTIONS,
-             properties.TK_WIDGET_OPTIONS),
-            ('03', 'OPTIONS_CUSTOM', properties.WIDGET_CUSTOM_OPTIONS,
-             properties.CUSTOM_OPTIONS)
-        )
-        for gcode, attrname, proplist, gproperties in groups:
-            for name in proplist:
-                propdescr = gproperties[name]
-                label, widget = self._propbag[gcode + name]
-                if gcode == '00' or name in getattr(class_descr, attrname):
-                    self.update_editor(widget, wdescr, name, propdescr)
-                    label.grid()
-                    widget.grid()
-                else:
-                    #hide property widget
-                    label.grid_remove()
-                    widget.grid_remove()
-        self._sframe.reposition()
-
-    def hide_all(self):
-        """Hide all properties from property editor."""
-        self.current = None
-
-        for _v, (label, widget) in self._propbag.items():
-            label.grid_remove()
-            widget.grid_remove()
+from pygubudesigner.propertieseditor import PropertiesEditor
+from pygubudesigner.bindingseditor import BindingsEditor
 
 
 class LayoutEditor(object):
@@ -158,36 +35,17 @@ class LayoutEditor(object):
         w.grid()
 
 
-class BindingsEditor(object):
-    def __init__(self, treeview):
-        pass
-
-
 class WidgetEditor(object):
 
     def __init__(self, propsframe, layoutframe, bindingstree):
-        self.properities_editor = PropertiesEditor(propsframe)
+        self.properties_editor = PropertiesEditor(propsframe)
         self.layout_editor = LayoutEditor(layoutframe)
         self.bindings_editor = BindingsEditor(bindingstree)
 
     def edit(self, wdescr):
-        self.properities_editor.edit(wdescr)
+        self.properties_editor.edit(wdescr)
+        self.bindings_editor.edit(wdescr)
 
     def hide_all(self):
-        self.properities_editor.hide_all()
-
-
-if __name__ == '__main__':
-    root = tk.Tk()
-    root.columnconfigure(0, weight=1)
-    root.rowconfigure(0, weight=1)
-
-    pframe = ttk.LabelFrame(root, text='Properties')
-    pframe.grid(row=0, column=0)
-    lframe = ttk.LabelFrame(root, text='Layout')
-    lframe.grid(row=0, column=1)
-    bframe = ttk.LabelFrame(root, text='Bindings')
-    bframe.grid(row=0, column=2)
-    editor = WidgetEditor(pframe, lframe, bframe)
-
-    root.mainloop()
+        self.properties_editor.hide_all()
+        self.bindings_editor.hide_all()
