@@ -135,7 +135,7 @@ setup(
             'images/widgets/22x22/*.gif', 'ui/*.ui',
             'locale/*/*/*.mo'],
     },
-    scripts=["bin/pygubu"],
+    scripts=["bin/pygubu-designer"],
     cmdclass={
         'install': CustomInstall,
     },

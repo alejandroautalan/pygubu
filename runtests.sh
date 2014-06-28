@@ -1,10 +1,10 @@
 #!/bin/sh
 
 echo "============="
-echo " Python 3.3.3 (debian package)"
-echo " tk 8.5 (debian package)"
+echo " Python 3.4.0 (debian package)"
+echo " tk 8.6 (debian package)"
 
-cd tests; python3.3 -m unittest; cd ..;
+cd tests; python3.4 -m unittest; cd ..;
 
 
 echo ""

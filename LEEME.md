@@ -32,12 +32,17 @@ pip install pygubu
 Modo de uso
 ===========
 
-Crea una interfaz de usuario usando pygubu y guárdala en un archivo (ejemplo: prueba.ui). Luego, crea tu aplicación como se muestra a continuación:
+Crea una interfaz de usuario usando pygubu y guárdala en un archivo (ejemplo: holamundo.ui).
+
+[holamundo.ui] (examples/helloworld.ui)
+
+Luego, crea tu aplicación como se muestra a continuación:
 
 ```python
 #prueba.py
 import tkinter as tk
 import pygubu
+
 
 class Application:
     def __init__(self, master):
@@ -46,10 +51,11 @@ class Application:
         self.builder = builder = pygubu.Builder()
 
         #2: Carga un archivo con el diseño de la interfaz
-        builder.add_from_file('prueba.ui')
+        builder.add_from_file('holamundo.ui')
 
         #3: Crea el widget usando 'master' como padre
         self.mainwindow = builder.get_object('mainwindow', master)
+
 
 if __name__ == '__main__':
     root = tk.Tk()
@@ -71,6 +77,11 @@ Busca en el directorio de ejemplos o mira este ejemplo de 'Hola mundo' en
 
 Historia
 ========
+
+Changes for version 0.9.5
+
+  * Renamed designer startup script to pygubu-designer (ver [#20](/../../issues/20))
+  * Fixed bugs.
 
 Cambios de la versión 0.9.4
 
