@@ -488,6 +488,7 @@ class WidgetsTreeEditor(object):
         children = self.treeview.get_children()
         if children:
             self.treeview.delete(*children)
+        self.widget_editor.hide_all()
 
 
     def load_file(self, filename):
