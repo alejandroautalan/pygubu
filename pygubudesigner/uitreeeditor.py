@@ -461,7 +461,7 @@ class WidgetsTreeEditor(object):
         #
         is_container = builder.CLASS_MAP[wclass].classobj.container
         for prop_name in properties.GRID_PROPERTIES:
-            pdescription = properties.GRID_PROPERTIES[prop_name]
+            pdescription = properties.LAYOUT_OPTIONS[prop_name]
             if wclass in pdescription:
                 pdescription = dict(pdescription, **pdescription[wclass])
             default_value = str(pdescription.get('default', ''))

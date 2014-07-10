@@ -27,12 +27,7 @@ except:
 from pygubu import builder
 from pygubudesigner.propertieseditor import PropertiesEditor
 from pygubudesigner.bindingseditor import BindingsEditor
-
-
-class LayoutEditor(object):
-    def __init__(self, frame):
-        w = ttk.Label(frame, text='Layout')
-        w.grid()
+from pygubudesigner.layouteditor import LayoutEditor
 
 
 class WidgetEditor(object):
@@ -44,8 +39,10 @@ class WidgetEditor(object):
 
     def edit(self, wdescr):
         self.properties_editor.edit(wdescr)
+        self.layout_editor.edit(wdescr)
         self.bindings_editor.edit(wdescr)
 
     def hide_all(self):
         self.properties_editor.hide_all()
+        self.layout_editor.hide_all()
         self.bindings_editor.hide_all()

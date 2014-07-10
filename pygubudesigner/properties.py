@@ -693,50 +693,66 @@ WIDGET_PROPERTIES = wp = dict(TK_WIDGET_OPTIONS)
 wp.update(REQUIRED_OPTIONS)
 wp.update(CUSTOM_OPTIONS)
 
-GRID_OPTIONS = (
+LAYOUT_OPTIONS = {
     # grid packing properties
-    ('row',
+    'row':
         {'editor': 'spinbox',
          'params': {'from_': 0, 'to': 50},
-         'validator': 'number_integer'}),
-    ('column',
+         'validator': 'number_integer'},
+    'column':
         {'editor': 'spinbox',
          'params': {'from_': 0, 'to': 50},
-         'validator': 'number_integer'}),
-    ('sticky',
-        {'editor': 'choice',
-         'params':
-            {'values':
-                ('', 'n', 's', 'w', 'e',
-                 'nw', 'ne', 'sw', 'se',
-                 'ns', 'we', 'nsw', 'nse', 'nswe'),
-             'state': 'readonly'}}),
-    ('rowspan',
+         'validator': 'number_integer'},
+    'sticky': {
+        'editor': 'choice',
+        'params':{
+            'values':
+               ('', 'n', 's', 'w', 'e',
+                'nw', 'ne', 'sw', 'se',
+                'ns', 'we', 'nsw', 'nse', 'nswe'),
+            'state': 'readonly'}},
+    'rowspan':
         {'editor': 'spinbox',
          'params':
             {'from_': 1, 'to': 50},
-         'validator': 'number_integer'}),
-    ('columnspan', {
+         'validator': 'number_integer'},
+    'columnspan': {
         'editor': 'spinbox',
         'params': {'from_': 1, 'to': 50},
-        'validator': 'number_integer'}),
-    ('padx', {'editor': 'entry', 'validator': 'tkpadding2'}),
-    ('pady', {'editor': 'entry', 'validator': 'tkpadding2'}),
-    ('ipadx',
+        'validator': 'number_integer'},
+    'padx': {'editor': 'entry', 'validator': 'tkpadding2'},
+    'pady': {'editor': 'entry', 'validator': 'tkpadding2'},
+    'ipadx':
         {'editor': 'spinbox',
          'params': {'from_': 0, 'to': 999},
-         'validator': 'number_integer'}),
-    ('ipady',
+         'validator': 'number_integer'},
+    'ipady':
         {'editor': 'spinbox',
          'params': {'from_': 0, 'to': 999},
-         'validator': 'number_integer'}),
-    ('propagate',
-        {'editor': 'choice',
-         'params': {'values': ('True', 'False')},
-         'default': 'True'})
-)
+         'validator': 'number_integer'},
+    'propagate': {
+        'editor': 'choice',
+        'params': {'values': ('True', 'False'), 'state': 'readonly'},
+        'default': 'True'},
+    #
+    #grid row and column properties (can be applied to each row or column)
+    #
+    'minsize': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'to':999, 'readonly': True}},
+    'pad': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'readonly': True}},
+    'weight': {
+        'editor': 'spinbox',
+        'params': {'from_': 0, 'readonly': True}}
+}
 
-GRID_PROPERTIES = OrderedDict(GRID_OPTIONS)
+GRID_PROPERTIES = [
+    'row', 'column', 'sticky', 'rowspan', 'columnspan', 'padx', 'pady',
+    'ipadx', 'ipady', 'propagate']
+    
+GRID_RC_PROPERTIES = ['minsize', 'pad', 'weight']
 
 TRANSLATABLE_PROPERTIES = [
     'label', 'text', 'title',
