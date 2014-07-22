@@ -204,10 +204,14 @@ class PygubuUI(pygubu.TkApplication):
                 lambda e: self.tree_editor.cut_to_clipboard())
         self.tree_editor.treeview.bind('<KeyPress-Delete>',
                 lambda e: self.on_edit_menuitem_clicked('edit_item_delete'))
-        self.tree_editor.treeview.bind('<KeyPress-i>',
-                lambda e: self.tree_editor.treeview.event_generate('<Up>'))
-        self.tree_editor.treeview.bind('<KeyPress-k>',
-                lambda e: self.tree_editor.treeview.event_generate('<Down>'))
+        def clear_key_pressed(event, newevent):
+            # when KeyPress, not Ctrl-KeyPress, generate event.
+            if event.keysym_num == ord(event.char):
+                self.tree_editor.treeview.event_generate(newevent)
+        self.tree_editor.treeview.bind('<i>',
+                lambda e: clear_key_pressed(e, '<Up>'))
+        self.tree_editor.treeview.bind('<k>',
+                lambda e: clear_key_pressed(e, '<Down>'))
         #grid move bindings
         self.tree_editor.treeview.bind('<Alt-KeyPress-i>',
                 lambda e: self.on_edit_menuitem_clicked('grid_up'))
