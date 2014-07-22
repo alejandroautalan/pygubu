@@ -204,6 +204,10 @@ class PygubuUI(pygubu.TkApplication):
                 lambda e: self.tree_editor.cut_to_clipboard())
         self.tree_editor.treeview.bind('<KeyPress-Delete>',
                 lambda e: self.on_edit_menuitem_clicked('edit_item_delete'))
+        self.tree_editor.treeview.bind('<KeyPress-i>',
+                lambda e: self.tree_editor.treeview.event_generate('<Up>'))
+        self.tree_editor.treeview.bind('<KeyPress-k>',
+                lambda e: self.tree_editor.treeview.event_generate('<Down>'))
         #grid move bindings
         self.tree_editor.treeview.bind('<Alt-KeyPress-i>',
                 lambda e: self.on_edit_menuitem_clicked('grid_up'))
@@ -349,6 +353,7 @@ class PygubuUI(pygubu.TkApplication):
         "Adds a widget to the widget tree."""
 
         self.tree_editor.add_widget(classname)
+        self.tree_editor.treeview.focus_set()
 
 
     def on_close_execute(self):
