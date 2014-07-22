@@ -353,6 +353,7 @@ class PygubuUI(pygubu.TkApplication):
         "Adds a widget to the widget tree."""
 
         self.tree_editor.add_widget(classname)
+        self.tree_editor.treeview.focus_set()
 
 
     def on_close_execute(self):
