@@ -474,6 +474,7 @@ class WidgetsTreeEditor(object):
 
         #select and show the item created
         tree.selection_set(item)
+        tree.focus(item)
         tree.after_idle(lambda: tree.see(item))
         #Do redraw
         self.draw_widget(item)
