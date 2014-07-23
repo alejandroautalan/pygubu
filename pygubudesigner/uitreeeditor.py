@@ -213,6 +213,12 @@ class WidgetsTreeEditor(object):
             if row_count > int(row) and int(col) == 0:
                 row = str(row_count + 1)
                 data.set_layout_property('row', row)
+            
+            # Calculate max row/col of root
+            root_data = self.treedata[root]
+            row, col = self.get_max_row_col(root)
+            root_data.max_col = col
+            root_data.max_row = row
 
         image = ''
         try:

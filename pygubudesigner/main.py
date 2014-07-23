@@ -244,6 +244,7 @@ class PygubuUI(pygubu.TkApplication):
             #change background of comboboxes
             color = s.lookup('TEntry', 'fieldbackground')
             s.map('TCombobox', fieldbackground=[('readonly', color)])
+            s.map('TSpinbox', fieldbackground=[('readonly', color)])
 
     def _setup_theme_menu(self):
         menu = self.builder.get_object('preview_themes_submenu')

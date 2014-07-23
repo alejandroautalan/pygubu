@@ -739,13 +739,13 @@ LAYOUT_OPTIONS = {
     #
     'minsize': {
         'editor': 'spinbox',
-        'params': {'from_': 0, 'to':999, 'readonly': True}},
+        'params': {'from_': 0, 'to':999, 'state': 'readonly', 'width': 3}},
     'pad': {
         'editor': 'spinbox',
-        'params': {'from_': 0, 'readonly': True}},
+        'params': {'from_': 0, 'to':999, 'state': 'readonly', 'width': 3}},
     'weight': {
         'editor': 'spinbox',
-        'params': {'from_': 0, 'readonly': True}}
+        'params': {'from_': 0, 'to':999, 'state': 'readonly', 'width': 3}}
 }
 
 GRID_PROPERTIES = [

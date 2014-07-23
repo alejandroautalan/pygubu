@@ -118,6 +118,8 @@ class LayoutEditor(PropertiesEditor):
     def edit(self, wdescr):
         # TODO: get max_row and max_col from wdescr
         # such data must be calculated by the tree editor or somewhere
+        max_row = wdescr.max_row
+        max_col = wdescr.max_col
         wclass = wdescr.get_class()
         class_descr = CLASS_MAP[wclass].classobj
         max_children = CLASS_MAP[wclass].classobj.maxchildren
@@ -214,9 +216,9 @@ class LayoutEditor(PropertiesEditor):
 
         value = ''
         if type_ == 'row':
-            value = data.get_grid_row_property(index, pname)
+            value = wdescr.get_grid_row_property(index, pname)
         else:
-            value = data.get_grid_col_property(index, pname)
+            value = wdescr.get_grid_col_property(index, pname)
         if not value and default:
             value = default
         editor.edit(value)

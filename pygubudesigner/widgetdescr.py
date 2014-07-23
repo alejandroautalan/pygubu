@@ -35,6 +35,8 @@ class WidgetDescr(Observable, dict):
         self['layout']['rows'] = defaultdict(dict)
         self['layout']['columns'] = defaultdict(dict)
         self['bindings'] = []
+        self.max_row = 0;
+        self.max_col = 0;
 
 
     def get_class(self):
