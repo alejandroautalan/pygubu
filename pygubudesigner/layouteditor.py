@@ -222,3 +222,10 @@ class LayoutEditor(PropertiesEditor):
         if not value and default:
             value = default
         editor.edit(value)
+
+    def hide_all(self):
+        super(LayoutEditor, self).hide_all()
+
+        for _v, (label, widget) in self._rcbag.items():
+            label.grid_remove()
+            widget.grid_remove()

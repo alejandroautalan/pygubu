@@ -213,12 +213,6 @@ class WidgetsTreeEditor(object):
             if row_count > int(row) and int(col) == 0:
                 row = str(row_count + 1)
                 data.set_layout_property('row', row)
-            
-            # Calculate max row/col of root
-            root_data = self.treedata[root]
-            row, col = self.get_max_row_col(root)
-            root_data.max_col = col
-            root_data.max_row = row
 
         image = ''
         try:
@@ -233,12 +227,23 @@ class WidgetsTreeEditor(object):
 
         values = (data.get_class(), row, col)
         item = tree.insert(root, 'end', text=treelabel, values=values,
-                image=image)
+                           image=image)
         data.attach(self)
+        self.treedata[item] = data
+
+        # Update grid r/c data
+        self._update_max_grid_rc(root)
         self.app.set_changed()
 
         return item
 
+    def _update_max_grid_rc(self, item):
+        # Calculate max grid row/col for item
+        if item != '':
+            item_data = self.treedata[item]
+            row, col = self.get_max_row_col(item)
+            item_data.max_col = col
+            item_data.max_row = row
 
     def copy_to_clipboard(self):
         """
@@ -480,7 +485,6 @@ class WidgetsTreeEditor(object):
         data.set_layout_property('column', '0')
 
         item = self._insert_item(root, data)
-        self.treedata[item] = data
 
         #select and show the item created
         tree.selection_set(item)
@@ -532,8 +536,6 @@ class WidgetsTreeEditor(object):
 
         if cname in builder.CLASS_MAP:
             pwidget = self._insert_item(master, data)
-            self.treedata[pwidget] = data
-
             xpath = "./child"
             children = element.findall(xpath)
             for child in children:
@@ -679,6 +681,8 @@ class WidgetsTreeEditor(object):
                     column = column + 1
                     data.set_layout_property('column', str(column))
                     data.notify()
+                root = tree.parent(item)
+                self._update_max_grid_rc(root)
             self.filter_restore()
 
 
