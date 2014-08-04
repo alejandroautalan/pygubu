@@ -103,12 +103,12 @@ class LayoutEditor(PropertiesEditor):
                 kwdata = properties.LAYOUT_OPTIONS[pname]
 
                 alias = name_format.format('row', index, pname)
-                widget = self._create_editor(fgrc, name, kwdata)
+                widget = self._create_editor(fgrc, alias, kwdata)
                 widget.grid(row=row, column=icol, pady=2)
                 self._rcbag[alias] = (label, widget)
 
                 alias = name_format.format('column', index, pname)
-                widget = self._create_editor(fgrc, name, kwdata)
+                widget = self._create_editor(fgrc, alias, kwdata)
                 widget.grid(row=row + MAX_RC, column=icol, pady=2)
                 self._rcbag[alias] = (labelc, widget)
 
@@ -116,8 +116,7 @@ class LayoutEditor(PropertiesEditor):
             row += 1
 
     def edit(self, wdescr):
-        # TODO: get max_row and max_col from wdescr
-        # such data must be calculated by the tree editor or somewhere
+        self._current = wdescr
         max_row = wdescr.max_row
         max_col = wdescr.max_col
         wclass = wdescr.get_class()
@@ -183,6 +182,19 @@ class LayoutEditor(PropertiesEditor):
                 widget.grid_remove()
 
         self._sframe.reposition()
+
+    def _on_property_changed(self, name, editor):
+        value = editor.value
+        if name in properties.GRID_PROPERTIES:
+            self._current.set_layout_property(name, value)
+        else:
+            # asume that is a grid row/col property
+            rowcol, number, pname = self.identify_gridrc_property(name)
+            number = int(number)
+            if rowcol == 'row':
+                self._current.set_grid_row_property(number, pname, value)
+            else:
+                self._current.set_grid_col_property(number, pname, value)
 
     def identify_gridrc_property(self, alias):
         return alias.split('_')

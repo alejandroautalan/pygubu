@@ -97,6 +97,7 @@ class PropertiesEditor(object):
 
     def _on_property_changed(self, name, editor):
         print(editor.value)
+        self._current.set_property(name, editor.value)
 
     def update_editor(self, editor, wdescr, pname, propdescr):
         pdescr = propdescr.copy()
@@ -115,6 +116,7 @@ class PropertiesEditor(object):
         editor.edit(value)
 
     def edit(self, wdescr):
+        self._current = wdescr
         wclass = wdescr.get_class()
         class_descr = CLASS_MAP[wclass].classobj
         
