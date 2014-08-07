@@ -27,90 +27,77 @@ except:
     import tkColorChooser
     tk.colorchooser = tkColorChooser
 
-from pygubudesigner.widgets.compoundpropertyeditor import CompoundPropertyEditor
-#from compoundpropertyeditor import CompoundPropertyEditor
+from pygubudesigner.widgets.propertyeditor import *
 
 
-class ColorEntry(CompoundPropertyEditor):
-    count = 0
-    ttk_style = None
-    btn_bgcolor = ''
+class ColorPropertyEditor(PropertyEditor):
+    count = 0  # instance counter, to generate unike style name
+    ttk_style = None  # style instance for all color instances
+    btn_bgcolor = ''  # default background color picked from current theme
+    style_name_tpl = 'ID{0}.ColorSelectorButton.Toolbutton'
 
-    def __init__(self, master=None, **kw):
-        CompoundPropertyEditor.__init__(self, master, **kw)
-        
-        if ColorEntry.ttk_style is None:
-            ColorEntry.ttk_style = ttk.Style()
-            ColorEntry.btn_bgcolor = ColorEntry.ttk_style.lookup('Toolbutton', 'background')
+    def _create_ui(self):
+        cls = ColorPropertyEditor
+        if cls.ttk_style is None:
+            cls.ttk_style = ttk.Style()
+            cls.btn_bgcolor = cls.ttk_style.lookup('Toolbutton', 'background')
 
-        ColorEntry.count += 1
+        cls.count += 1
 
-        self._entryvar = tk.StringVar()
-        self.entry = w = ttk.Entry(self, textvariable=self._entryvar)
+        self._entry = w = ttk.Entry(self, textvariable=self._variable)
         w.grid(sticky='ew')
-        w.bind('<FocusOut>', self._on_entry_changed)
-        w.bind('<KeyPress-Return>', self._on_entry_changed)
-        w.bind('<KeyPress-KP_Enter>', self._on_entry_changed)
-        selector_id = ColorEntry.count
-        self.stylename = 'ID{0}.ColorSelectorButton.Toolbutton'.format(selector_id)
-        self.button = w = ttk.Button(self, text='…', style=self.stylename)
+        w.bind('<FocusOut>', self._on_variable_changed)
+        w.bind('<KeyPress-Return>', self._on_variable_changed)
+        w.bind('<KeyPress-KP_Enter>', self._on_variable_changed)
+
+        selector_id = cls.count
+        self._stylename = cls.style_name_tpl.format(selector_id)
+        self._button = w = ttk.Button(self, text='…', style=self._stylename)
         w.grid(row=0, column=1, padx="5 0")
         w.configure(command=self._on_button_click)
-        
+
         self.columnconfigure(0, weight=1)
 
     def _on_button_click(self):
-        current = self._entryvar.get()
+        current = self._get_value()
         txtcolor = None
         try:
             _, txtcolor = tk.colorchooser.askcolor(color=current)
+            self._set_value(txtcolor)
+            self._on_variable_changed(event=None)
         except tk.TclError:
             pass
         self._change_color(txtcolor)
 
-
-    def _change_color(self, newcolor, gen_event=True):
+    def _change_color(self, newcolor):
+        cls = ColorPropertyEditor
         if newcolor:
             try:
                 rgb = self.winfo_rgb(newcolor)
-                ColorEntry.ttk_style.configure(self.stylename, background=newcolor)
-            except tk.TclError as e:
+                cls.ttk_style.configure(self._stylename,
+                                        background=newcolor)
+            except tk.TclError:
                 pass
         else:
-            ColorEntry.ttk_style.configure(self.stylename,
-                background=ColorEntry.btn_bgcolor)
-            newcolor = ''
-        self._disable_cb()
-        self._variable.set(newcolor)
-        self._entryvar.set(newcolor)
-        self._enable_cb()
-        if gen_event:
-            self.event_generate('<<ColorEntryChanged>>')
+            cls.ttk_style.configure(self._stylename,
+                                    background=cls.btn_bgcolor)
 
-    def _on_entry_changed(self, event=None):
-        color = self._entryvar.get()
-        self._change_color(color)
+    def edit(self, value):
+        PropertyEditor.edit(self, value)
+        self._change_color(value)
 
-    def _on_variable_changed(self, varname, elementname, mode):
-        color = self._variable.get()
-        self._change_color(color, gen_event=False)
 
-    
-    
+register_editor('colorentry', ColorPropertyEditor)
+
+
 if __name__ == '__main__':
     root = tk.Tk()
-    var = tk.StringVar()
-    
-    def see_var():
-        print(var.get())
+    editor = ColorPropertyEditor(root)
+    editor.grid()
+    editor.edit('red')
 
-    entry = ColorEntry(root, textvariable=var)
-    entry.grid()
-    entry.configure(textvariable=var)
-    var.set('red')
-    
-    btn = ttk.Button(root, text='Value', command=see_var)
-    btn.grid(row=0, column=1)
+    def see_var(event=None):
+        print(editor.value)
 
+    editor.bind('<<PropertyChanged>>', see_var)
     root.mainloop()
-

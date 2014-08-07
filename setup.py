@@ -23,11 +23,11 @@ if 'USE_SETUPTOOLS' in os.environ or 'pip' in __file__:
         with_setuptools = True
     except:
         with_setuptools = False
-        
+
 if with_setuptools is False:
     from distutils.command.install import install
     from distutils.core import setup
-        
+
 
 class CustomInstall(install):
     """Custom installation class on package files.
@@ -72,9 +72,11 @@ Pygubu is inspired by Glade.
 Installation
 ------------
 
-Pygubu requires python >= 2.7 (Tested only in python 2.7.3 and 3.2.3 with tk8.5)
+Pygubu requires python >= 2.7 (Tested only in python 2.7.3 and 3.2.3
+with tk8.5)
 
-Download and extract the tarball. Open a console in the extraction path and execute:
+Download and extract the tarball. Open a console in the extraction
+path and execute:
 
 ::
 
@@ -111,7 +113,8 @@ your aplication script as shown below:
         root.mainloop()
 
 
-See the examples directory or watch this hello world example on video http://youtu.be/wuzV9P8geDg
+See the examples directory or watch this hello world example on
+video http://youtu.be/wuzV9P8geDg
 """
 setup(
     name='pygubu',

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 from __future__ import print_function
+
 import os
 import sys
 import subprocess
@@ -46,6 +47,7 @@ gtk_imgs = {
 IMG_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)),
         'pygubudesigner', 'images', 'widgets')
 
+
 def create_images():
     origin = os.path.join(IMG_DIR, 'png', '22x22')
     dest = os.path.join(IMG_DIR, '22x22')
@@ -54,7 +56,7 @@ def create_images():
         iimage = os.path.join(origin, f)
         for output in v:
             print('.', end='', flush=True)
-            oimage = os.path.join(dest,output)
+            oimage = os.path.join(dest, output)
             cmd = 'convert {0} {1}.gif'.format(iimage, oimage)
             cmd = shlex.split(cmd)
             subprocess.call(cmd)
@@ -76,7 +78,7 @@ def create_images():
 
 def find_source_image_for(widget_name):
     found = None
-    for k, v in gtk_imgs.iteritems():
+    for k, v in gtk_imgs.items():
         if widget_name in v:
             found = k
             break

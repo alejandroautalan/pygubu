@@ -542,71 +542,23 @@
                                 <property name="sticky">nsew</property>
                                 <property name="text" translatable="yes">General</property>
                                 <child>
-                                  <object class="pygubu.builder.widgets.scrolledframe" id="properties_sf">
+                                  <object class="pygubu.builder.widgets.scrolledframe" id="propertiesframe">
                                     <property name="padding">5</property>
                                     <layout>
                                       <property name="column">0</property>
                                       <property name="row">0</property>
                                       <property name="sticky">nsew</property>
+                                      <rows>
+                                        <row id="0">
+                                          <property name="weight">1</property>
+                                        </row>
+                                      </rows>
+                                      <columns>
+                                        <column id="0">
+                                          <property name="weight">1</property>
+                                        </column>
+                                      </columns>
                                     </layout>
-                                    <child>
-                                      <object class="ttk.Frame" id="Frame_2">
-                                        <property name="height">200</property>
-                                        <property name="width">200</property>
-                                        <layout>
-                                          <property name="column">0</property>
-                                          <property name="propagate">True</property>
-                                          <property name="row">0</property>
-                                          <property name="sticky">nesw</property>
-                                          <rows>
-                                            <row id="0">
-                                              <property name="weight">0</property>
-                                            </row>
-                                          </rows>
-                                          <columns>
-                                            <column id="0">
-                                              <property name="weight">0</property>
-                                            </column>
-                                          </columns>
-                                        </layout>
-                                        <child>
-                                          <object class="ttk.Labelframe" id="Labelframe_2">
-                                            <property name="height">200</property>
-                                            <property name="padding">5</property>
-                                            <property name="text" translatable="yes">Widget properties</property>
-                                            <property name="width">200</property>
-                                            <layout>
-                                              <property name="column">0</property>
-                                              <property name="propagate">True</property>
-                                              <property name="row">0</property>
-                                              <property name="sticky">nesw</property>
-                                              <rows>
-                                                <row id="0">
-                                                  <property name="weight">0</property>
-                                                </row>
-                                              </rows>
-                                              <columns>
-                                                <column id="0">
-                                                  <property name="weight">0</property>
-                                                </column>
-                                              </columns>
-                                            </layout>
-                                            <child>
-                                              <object class="ttk.Frame" id="propertiesframe">
-                                                <property name="height">200</property>
-                                                <property name="width">200</property>
-                                                <layout>
-                                                  <property name="column">0</property>
-                                                  <property name="propagate">True</property>
-                                                  <property name="row">0</property>
-                                                  <property name="sticky">nesw</property>
-                                                </layout>
-                                              </object>
-                                            </child>
-                                          </object>
-                                        </child>
-                                      </object>
-                                    </child>
                                   </object>
                                 </child>
                               </object>
@@ -616,25 +568,13 @@
                                 <property name="sticky">nsew</property>
                                 <property name="text" translatable="yes">Layout</property>
                                 <child>
-                                  <object class="pygubu.builder.widgets.scrolledframe" id="layoutframe_sf">
+                                  <object class="pygubu.builder.widgets.scrolledframe" id="layoutframe">
                                     <property name="padding">5</property>
                                     <layout>
                                       <property name="column">0</property>
                                       <property name="row">0</property>
                                       <property name="sticky">nsew</property>
                                     </layout>
-                                    <child>
-                                      <object class="ttk.Frame" id="layoutframe">
-                                        <property name="height">200</property>
-                                        <property name="width">200</property>
-                                        <layout>
-                                          <property name="column">0</property>
-                                          <property name="propagate">True</property>
-                                          <property name="row">0</property>
-                                          <property name="sticky">nesw</property>
-                                        </layout>
-                                      </object>
-                                    </child>
                                   </object>
                                 </child>
                               </object>

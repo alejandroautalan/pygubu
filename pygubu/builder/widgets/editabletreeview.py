@@ -9,7 +9,6 @@ class EditableTreeviewBO(TTKTreeviewBO):
     class_ = EditableTreeview
 
 
-
 classid = 'pygubu.builder.widgets.editabletreeview'
 if classid not in TTKTreeviewColBO.allowed_parents:
     TTKTreeviewColBO.allowed_parents = \
@@ -19,4 +18,4 @@ if classid not in TTKSBHelperBO.allowed_children:
         TTKSBHelperBO.allowed_children + (classid, )
 
 register_widget('pygubu.builder.widgets.editabletreeview', EditableTreeviewBO,
-    'EditableTreeview', ('Pygubu Widgets', 'ttk'))
+                'EditableTreeview', ('Pygubu Widgets', 'ttk'))

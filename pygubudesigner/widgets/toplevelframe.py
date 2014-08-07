@@ -24,6 +24,7 @@ except:
 from pygubu.builder.builderobject import *
 from pygubu.builder.tkstdwidgets import TKToplevel
 
+
 class ToplevelFramePreview(tk.Frame):
 
     def __init__(self, master=None, **kw):
@@ -126,4 +127,4 @@ class ToplevelFramePreviewBO(BuilderObject):
 
 
 register_widget('pygubudesigner.ToplevelFramePreview',
-    ToplevelFramePreviewBO, 'ToplevelFramePreview', tuple())
+                ToplevelFramePreviewBO, 'ToplevelFramePreview', tuple())

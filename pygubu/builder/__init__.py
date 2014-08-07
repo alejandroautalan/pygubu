@@ -37,9 +37,7 @@ import pygubu.builder.tkstdwidgets
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('pygubu.builder')
 
-#
-#
-#
+
 def data_xmlnode_to_dict(element, translator=None):
     data = {}
 
@@ -48,7 +46,7 @@ def data_xmlnode_to_dict(element, translator=None):
 
     #properties
     properties = element.findall('./property')
-    pdict= {}
+    pdict = {}
     for p in properties:
         pvalue = p.text
         if translator is not None and p.get('translatable'):
@@ -149,7 +147,7 @@ def data_dict_to_xmlnode(data, translatable_props=None):
                 pnode.set('name', prop)
                 pnode.text = pv
                 layout_node.append(pnode)
-        keys = {'rows':'row', 'columns':'column'}
+        keys = {'rows': 'row', 'columns': 'column'}
         for key in keys:
             if key in layout:
                 erows = ET.Element(key)
@@ -193,11 +191,9 @@ class Builder:
         self._resource_paths = []
         self.translator = translator
 
-
     def add_resource_path(self, path):
         """Add additional path to the resources paths."""
         self._resource_paths.append(path)
-
 
     def get_image(self, path):
         """Return tk image corresponding to name which is taken form path."""
@@ -213,7 +209,6 @@ class Builder:
             pass
         return image
 
-
     def __find_image(self, relpath):
         image_path = None
         for rp in self._resource_paths:
@@ -223,11 +218,9 @@ class Builder:
                 break
         return image_path
 
-
     def get_variable(self, varname):
         """Return a tk variable created with 'create_variable' method."""
         return self.tkvariables[varname]
-
 
     def create_variable(self, varname, vtype=None):
         """Create a tk variable.
@@ -235,7 +228,7 @@ class Builder:
         """
 
         var = None
-        type_from_name = 'string' #default type
+        type_from_name = 'string'  # default type
         if ':' in varname:
             type_from_name, varname = varname.split(':')
 
@@ -259,7 +252,6 @@ class Builder:
             self.tkvariables[varname] = var
         return var
 
-
     def add_from_file(self, fpath):
         """Load ui definition from file."""
         if self.tree is None:
@@ -272,7 +264,6 @@ class Builder:
             #TODO: append to current tree
             pass
 
-
     def add_from_string(self, strdata):
         """Load ui definition from string."""
         if self.tree is None:
@@ -282,7 +273,6 @@ class Builder:
         else:
             #TODO: append to current tree
             pass
-
 
     def add_from_xmlnode(self, element):
         """Load ui definition from xml.etree.Element node."""
@@ -296,7 +286,6 @@ class Builder:
         else:
             #TODO: append to current tree
             pass
-
 
     def get_object(self, name, master=None):
         """Find and create the widget named name.
@@ -317,13 +306,11 @@ class Builder:
             raise Exception('Widget not defined.')
         return widget
 
-
     def _import_class(self, modulename):
         if modulename.startswith('ttk.'):
             importlib.import_module('pygubu.builder.ttkstdwidgets')
         else:
             importlib.import_module(modulename)
-
 
     def _realize(self, master, element):
         """Builds a widget from xml element using master as parent."""
@@ -355,7 +342,6 @@ class Builder:
         else:
             raise Exception('Class "{0}" not mapped'.format(cname))
 
-
     def _check_data(self, data):
         cname = data['class']
         uniqueid = data['id']
@@ -364,7 +350,6 @@ class Builder:
         if layout_required and not layout:
             logger.warning('No layout information for: (%s, %s).',
                 cname, uniqueid)
-
 
     def connect_callbacks(self, callbacks_bag):
         """Connect callbacks specified in callbacks_bag with callbacks
