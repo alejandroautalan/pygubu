@@ -38,24 +38,18 @@ class WidgetDescr(Observable, dict):
         self.max_row = 0;
         self.max_col = 0;
 
-
     def get_class(self):
         return self['class']
 
-
     def get_id(self):
         return self['id']
-
-    def set_id(self, newid):
-        self['id'] = newid
-
 
     def set_property(self, name, value):
         if name in ('id', 'class'):
             self[name] = value
         else:
             self['properties'][name] = value
-
+        self.notify('PROPERTY_CHANGED', self)
 
     def get_property(self, name):
         if name in ('id', 'class'):
@@ -63,10 +57,9 @@ class WidgetDescr(Observable, dict):
         else:
             return self['properties'].get(name, '')
 
-
     def set_layout_property(self, name, value):
         self['layout'][name] = value
-
+        self.notify('LAYOUT_CHANGED', self)
 
     def get_layout_property(self, name):
         default = ''
@@ -74,26 +67,22 @@ class WidgetDescr(Observable, dict):
             default = '0'
         return self['layout'].get(name, default)
 
-
     def set_grid_row_property(self, row, name, value):
         self['layout']['rows'][row][name] = value
-
+        self.notify('GRID_RC_CHANGED', self)
 
     def get_grid_row_property(self, row, name):
         return self['layout']['rows'][row].get(name, '0')
 
-
     def set_grid_col_property(self, col, name, value):
         self['layout']['columns'][col][name] = value
-
+        self.notify('GRID_RC_CHANGED', self)
 
     def get_grid_col_property(self, col, name):
         return self['layout']['columns'][col].get(name, '0')
 
-
     def to_xml_node(self):
         return data_dict_to_xmlnode(self, TRANSLATABLE_PROPERTIES)
-
 
     def from_xml_node(self, node):
         data = data_xmlnode_to_dict(node)

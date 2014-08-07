@@ -23,11 +23,9 @@ class Observable(object):
         super(Observable, self).__init__()
         self._observers = []
 
-
     def attach(self, observer):
         if not observer in self._observers:
             self._observers.append(observer)
-
 
     def detach(self, observer):
         try:
@@ -35,8 +33,7 @@ class Observable(object):
         except ValueError:
             pass
 
-
-    def notify(self, modifier=None):
+    def notify(self, hint=None, modifier=None):
         for observer in self._observers:
             if modifier != observer:
-                observer.update_event(self)
+                observer.update_event(hint, self)

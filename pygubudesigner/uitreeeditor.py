@@ -532,7 +532,7 @@ class WidgetsTreeEditor(object):
         data.from_xml_node(element)
         cname = data.get_class()
         uniqueid = self.get_unique_id(cname, data.get_id())
-        data.set_id(uniqueid)
+        data.set_property('id', uniqueid)
 
         if cname in builder.CLASS_MAP:
             pwidget = self._insert_item(master, data)
@@ -590,7 +590,7 @@ class WidgetsTreeEditor(object):
         return (max_row, max_col)
 
 
-    def update_event(self, obj):
+    def update_event(self, hint, obj):
         """Updates tree colums when itemdata is changed."""
 
         tree = self.treeview

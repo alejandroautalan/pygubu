@@ -96,7 +96,6 @@ class PropertiesEditor(object):
         return editor
 
     def _on_property_changed(self, name, editor):
-        print(editor.value)
         self._current.set_property(name, editor.value)
 
     def update_editor(self, editor, wdescr, pname, propdescr):
