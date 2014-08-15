@@ -1,0 +1,65 @@
+<?xml version="1.0" ?>
+<interface>
+  <object class="tk.Menu" id="mainmenu">
+    <property name="tearoff">0</property>
+    <child>
+      <object class="tk.Menuitem.Submenu" id="mfile">
+        <property name="command_id_arg">False</property>
+        <property name="label" translatable="yes">File</property>
+        <property name="tearoff">0</property>
+        <child>
+          <object class="tk.Menuitem.Command" id="mfile_open">
+            <property name="command">on_mfile_item_clicked</property>
+            <property name="command_id_arg">True</property>
+            <property name="label" translatable="yes">Open</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Separator" id="separator1"/>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Command" id="mfile_quit">
+            <property name="command">on_mfile_item_clicked</property>
+            <property name="command_id_arg">True</property>
+            <property name="label" translatable="yes">Quit</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Menuitem.Submenu" id="mhelp">
+        <property name="command_id_arg">False</property>
+        <property name="label" translatable="yes">Help</property>
+        <property name="tearoff">0</property>
+        <child>
+          <object class="tk.Menuitem.Command" id="mhelp_about">
+            <property name="command">on_about_clicked</property>
+            <property name="command_id_arg">False</property>
+            <property name="label" translatable="yes">About</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="ttk.Frame" id="mainwindow">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+      <property name="sticky">nesw</property>
+    </layout>
+    <child>
+      <object class="ttk.Label" id="Label_1">
+        <property name="padding">20</property>
+        <property name="text" translatable="yes">Menu tips and tricks.</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>
