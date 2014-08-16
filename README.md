@@ -79,6 +79,11 @@ See the examples directory or watch this hello world example on [video](http://y
 History
 =======
 
+Changes for version 0.9.5.1
+
+  * Add select hotkey to widget tree. (i - select previous item, k - select next item)
+  * Copied menu example from wiki to examples folder.
+
 Changes for version 0.9.5
 
   * Renamed designer startup script to pygubu-designer (see [#20](/../../issues/20))
