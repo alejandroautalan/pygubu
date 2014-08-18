@@ -615,7 +615,31 @@ CUSTOM_OPTIONS = {
             'values': ('true', 'false'),
             'state': 'readonly'},
         'default': 'false'},
+    'geometry': {
+        'editor': 'entry'},
     'invalidcommand_args': {
+        'editor': 'entry'},
+    'maxsize': {
+        'editor': 'whentry'},
+    'minsize': {
+        'editor': 'whentry'},
+    'overrideredirect': {
+        'editor': 'choice',
+        'params': {'values': ('', 'True', 'False'), 'state': 'readonly'}},
+    'resizable': {
+        'editor': 'choice',
+        'params': {
+            'values': ('', 'both', 'horizontally', 'vertically', 'none'),
+            'state': 'readonly'}},
+    'scrolltype': {
+        'editor': 'choice',
+        'params': {
+            'values': ('both', 'vertical', 'horizontal'),
+            'state': 'readonly'},
+        'default': 'both'},
+    'text': {
+        'editor': 'text'},
+    'title': {
         'editor': 'entry'},
     'tree_column': {
         'editor': 'choice',
@@ -627,14 +651,6 @@ CUSTOM_OPTIONS = {
         'editor': 'choice',
         'params': {'values': ('true', 'false'), 'state': 'readonly'},
         'default': 'true'},
-    'text': {
-        'editor': 'text'},
-    'scrolltype': {
-        'editor': 'choice',
-        'params': {
-            'values': ('both', 'vertical', 'horizontal'),
-            'state': 'readonly'},
-        'default': 'both'}
     }
 
 WIDGET_REQUIRED_OPTIONS = ('class', 'id')
@@ -686,7 +702,9 @@ WIDGET_SPECIFIC_OPTIONS = (
 
 WIDGET_CUSTOM_OPTIONS = [
     'command_id_arg', 'invalidcommand_args', 'tree_column',
-    'validatecommand_args', 'visible', 'scrolltype', 'text'
+    'validatecommand_args', 'visible', 'scrolltype', 'text',
+    'title', 'geometry', 'overrideredirect', 'resizable',
+    'minsize', 'maxsize'
     ]
 
 WIDGET_PROPERTIES = wp = dict(TK_WIDGET_OPTIONS)
