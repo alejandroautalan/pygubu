@@ -30,6 +30,7 @@ from collections import defaultdict
 
 from pygubu.builder.builderobject import *
 from pygubu.stockimage import *
+import pygubu.builder.tkstdwidgets
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('pygubu.builder')
