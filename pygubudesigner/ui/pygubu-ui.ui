@@ -213,16 +213,16 @@
       <property name="column">0</property>
       <property name="row">0</property>
       <property name="sticky">nsew</property>
-      <rows>
-        <row id="1">
-          <property name="weight">1</property>
-        </row>
-      </rows>
       <columns>
         <column id="0">
           <property name="weight">1</property>
         </column>
       </columns>
+      <rows>
+        <row id="1">
+          <property name="weight">1</property>
+        </row>
+      </rows>
     </layout>
     <child>
       <object class="ttk.Frame" id="top_frame">
@@ -230,17 +230,17 @@
           <property name="column">0</property>
           <property name="row">0</property>
           <property name="sticky">nsew</property>
-          <rows>
-            <row id="0">
-              <property name="pad">10</property>
-            </row>
-          </rows>
           <columns>
             <column id="1">
               <property name="pad">10</property>
               <property name="weight">1</property>
             </column>
           </columns>
+          <rows>
+            <row id="0">
+              <property name="pad">10</property>
+            </row>
+          </rows>
         </layout>
         <child>
           <object class="ttk.Label" id="label_project">
@@ -274,16 +274,16 @@
           <property name="propagate">True</property>
           <property name="row">1</property>
           <property name="sticky">nesw</property>
-          <rows>
-            <row id="0">
-              <property name="weight">1</property>
-            </row>
-          </rows>
           <columns>
             <column id="0">
               <property name="weight">1</property>
             </column>
           </columns>
+          <rows>
+            <row id="0">
+              <property name="weight">1</property>
+            </row>
+          </rows>
         </layout>
         <child>
           <object class="ttk.Panedwindow" id="panedwindow_1">
@@ -306,16 +306,16 @@
                       <property name="propagate">True</property>
                       <property name="row">0</property>
                       <property name="sticky">sw</property>
-                      <rows>
-                        <row id="0">
-                          <property name="weight">1</property>
-                        </row>
-                      </rows>
                       <columns>
                         <column id="0">
                           <property name="weight">1</property>
                         </column>
                       </columns>
+                      <rows>
+                        <row id="0">
+                          <property name="weight">1</property>
+                        </row>
+                      </rows>
                     </layout>
                     <child>
                       <object class="pygubu.builder.widgets.scrolledframe" id="widgetlist_sf">
@@ -324,16 +324,16 @@
                           <property name="propagate">True</property>
                           <property name="row">0</property>
                           <property name="sticky">nesw</property>
-                          <rows>
-                            <row id="0">
-                              <property name="weight">1</property>
-                            </row>
-                          </rows>
                           <columns>
                             <column id="0">
                               <property name="weight">1</property>
                             </column>
                           </columns>
+                          <rows>
+                            <row id="0">
+                              <property name="weight">1</property>
+                            </row>
+                          </rows>
                         </layout>
                         <child>
                           <object class="ttk.Frame" id="widgetlist">
@@ -344,16 +344,16 @@
                               <property name="propagate">True</property>
                               <property name="row">0</property>
                               <property name="sticky">nesw</property>
-                              <rows>
-                                <row id="0">
-                                  <property name="weight">1</property>
-                                </row>
-                              </rows>
                               <columns>
                                 <column id="0">
                                   <property name="weight">1</property>
                                 </column>
                               </columns>
+                              <rows>
+                                <row id="0">
+                                  <property name="weight">1</property>
+                                </row>
+                              </rows>
                             </layout>
                           </object>
                         </child>
@@ -381,16 +381,16 @@
                               <property name="column">0</property>
                               <property name="row">0</property>
                               <property name="sticky">nsew</property>
-                              <rows>
-                                <row id="1">
-                                  <property name="weight">1</property>
-                                </row>
-                              </rows>
                               <columns>
                                 <column id="0">
                                   <property name="weight">1</property>
                                 </column>
                               </columns>
+                              <rows>
+                                <row id="1">
+                                  <property name="weight">1</property>
+                                </row>
+                              </rows>
                             </layout>
                             <child>
                               <object class="ttk.Frame" id="filter_frame">
@@ -442,16 +442,16 @@
                                   <property name="column">0</property>
                                   <property name="row">1</property>
                                   <property name="sticky">nsew</property>
-                                  <rows>
-                                    <row id="0">
-                                      <property name="weight">1</property>
-                                    </row>
-                                  </rows>
                                   <columns>
                                     <column id="0">
                                       <property name="weight">1</property>
                                     </column>
                                   </columns>
+                                  <rows>
+                                    <row id="0">
+                                      <property name="weight">1</property>
+                                    </row>
+                                  </rows>
                                 </layout>
                                 <child>
                                   <object class="ttk.Treeview" id="treeview1">
@@ -544,20 +544,21 @@
                                 <child>
                                   <object class="pygubu.builder.widgets.scrolledframe" id="propertiesframe">
                                     <property name="padding">5</property>
+                                    <property name="scrolltype">both</property>
                                     <layout>
                                       <property name="column">0</property>
                                       <property name="row">0</property>
                                       <property name="sticky">nsew</property>
-                                      <rows>
-                                        <row id="0">
-                                          <property name="weight">1</property>
-                                        </row>
-                                      </rows>
                                       <columns>
                                         <column id="0">
                                           <property name="weight">1</property>
                                         </column>
                                       </columns>
+                                      <rows>
+                                        <row id="0">
+                                          <property name="weight">1</property>
+                                        </row>
+                                      </rows>
                                     </layout>
                                   </object>
                                 </child>
@@ -570,6 +571,7 @@
                                 <child>
                                   <object class="pygubu.builder.widgets.scrolledframe" id="layoutframe">
                                     <property name="padding">5</property>
+                                    <property name="scrolltype">both</property>
                                     <layout>
                                       <property name="column">0</property>
                                       <property name="row">0</property>
@@ -593,16 +595,16 @@
                                       <property name="propagate">True</property>
                                       <property name="row">0</property>
                                       <property name="sticky">nesw</property>
-                                      <rows>
-                                        <row id="0">
-                                          <property name="weight">1</property>
-                                        </row>
-                                      </rows>
                                       <columns>
                                         <column id="0">
                                           <property name="weight">1</property>
                                         </column>
                                       </columns>
+                                      <rows>
+                                        <row id="0">
+                                          <property name="weight">1</property>
+                                        </row>
+                                      </rows>
                                     </layout>
                                     <child>
                                       <object class="pygubu.builder.widgets.scrollbarhelper" id="bindingsframe">
@@ -698,18 +700,18 @@
                       <property name="propagate">True</property>
                       <property name="row">0</property>
                       <property name="sticky">nesw</property>
-                      <rows>
-                        <row id="0">
-                          <property name="minsize">100</property>
-                          <property name="weight">1</property>
-                        </row>
-                      </rows>
                       <columns>
                         <column id="0">
                           <property name="minsize">100</property>
                           <property name="weight">1</property>
                         </column>
                       </columns>
+                      <rows>
+                        <row id="0">
+                          <property name="minsize">100</property>
+                          <property name="weight">1</property>
+                        </row>
+                      </rows>
                     </layout>
                     <child>
                       <object class="pygubu.builder.widgets.scrollbarhelper" id="scrollbarhelper_1">
