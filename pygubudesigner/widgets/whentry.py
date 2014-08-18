@@ -15,24 +15,37 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import unicode_literals
+try:
+    import tkinter.ttk as ttk
+except:
+    import ttk
+
 from pygubudesigner.widgets.propertyeditor import *
 
 
 class WHPropertyEditor(PropertyEditor):
 
     def _create_ui(self):
+        self._wlabel = w = ttk.Label(self, text='w:',
+                                     font='TkSmallCaptionFont')
+        w.grid(row=0, column=0)
         self._weditor = w = EntryPropertyEditor(self)
-        w.grid(sticky='we')
-        w.parameters(width=8)
-        self._heditor = w = EntryPropertyEditor(self)
         w.grid(row=0, column=1, sticky='we')
-        w.parameters(width=8)
+        w.parameters(width=4)
+        
+        self._wlabel = w = ttk.Label(self, text='h:',
+                                     font='TkSmallCaptionFont')
+        w.grid(row=0, column=2)
+        self._heditor = w = EntryPropertyEditor(self)
+        w.grid(row=0, column=3, sticky='we')
+        w.parameters(width=4)
 
         self._weditor.bind('<<PropertyChanged>>', self._on_variable_changed)
         self._heditor.bind('<<PropertyChanged>>', self._on_variable_changed)
 
         self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
+        self.columnconfigure(1, weight=1)
+        self.columnconfigure(3, weight=1)
 
     def _get_value(self):
         value = ''
