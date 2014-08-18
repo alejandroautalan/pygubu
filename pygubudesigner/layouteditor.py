@@ -40,6 +40,9 @@ class LayoutEditor(PropertiesEditor):
         self._fgrid = f = ttk.Labelframe(self._sframe.innerframe,
                                          text=_('Grid options:'), padding=5)
         f.grid(sticky='nswe')
+        #  hack to resize correctly when properties are hidden
+        label = ttk.Label(f)
+        label.grid()
 
         label_tpl = "{0}:"
         row = 0
@@ -190,7 +193,6 @@ class LayoutEditor(PropertiesEditor):
         else:
             # asume that is a grid row/col property
             rowcol, number, pname = self.identify_gridrc_property(name)
-            number = int(number)
             if rowcol == 'row':
                 self._current.set_grid_row_property(number, pname, value)
             else:
@@ -228,9 +230,9 @@ class LayoutEditor(PropertiesEditor):
 
         value = ''
         if type_ == 'row':
-            value = wdescr.get_grid_row_property(index, pname)
+            value = wdescr.get_grid_row_property(str(index), pname)
         else:
-            value = wdescr.get_grid_col_property(index, pname)
+            value = wdescr.get_grid_col_property(str(index), pname)
         if not value and default:
             value = default
         editor.edit(value)
@@ -241,3 +243,7 @@ class LayoutEditor(PropertiesEditor):
         for _v, (label, widget) in self._rcbag.items():
             label.grid_remove()
             widget.grid_remove()
+        
+        for h in self._internal['grc_headers']:
+            h.grid_remove()
+
