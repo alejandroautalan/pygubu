@@ -33,7 +33,7 @@ class BindingsEditor:
         self._curr_data = None
         self._adder = 'adder'
         self._allow_edit = False
-        self._parent = self.tv.nametowidget(self.tv.winfo_parent())
+        self._parent = etreeview.nametowidget(etreeview.winfo_parent())
         self.tv.insert('', tk.END, iid=self._adder, values=('+',))
         self.tv.bind('<<TreeviewInplaceEdit>>', self._on_inplace_edit)
         self.tv.bind('<<TreeviewCellEdited>>', self._on_cell_edited)
@@ -41,6 +41,7 @@ class BindingsEditor:
 
         self._del_btn = ttk.Button(self.tv, text='-',
                                    command=self._on_del_clicked)
+        self.hide_all()
 
     def _on_add_clicked(self, event):
 #        print('_on_add_clicked')
