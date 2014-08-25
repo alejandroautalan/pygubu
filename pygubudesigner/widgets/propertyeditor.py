@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 
 __all__ = ['PropertyEditor', 'EntryPropertyEditor', 'SpinboxPropertyEditor',
            'ChoicePropertyEditor', 'TextPropertyEditor',
-           'register_editor', 'create_editor']
+           'CheckbuttonPropertyEditor', 'register_editor', 'create_editor']
 
 try:
     import tkinter as tk
@@ -153,6 +153,18 @@ class ChoicePropertyEditor(PropertyEditor):
         self._combobox.configure(**kw)
 
 
+class CheckbuttonPropertyEditor(PropertyEditor):
+    def _create_ui(self):
+        self._checkb = w = ttk.Checkbutton(self, variable=self._variable)
+        w.grid(sticky='we')
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        w.configure(command=self._on_variable_changed)
+
+    def parameters(self, **kw):
+        self._checkb.configure(**kw)
+
+
 EDITORS = {}
 
 
@@ -168,6 +180,7 @@ register_editor('entry', EntryPropertyEditor)
 register_editor('choice', ChoicePropertyEditor)
 register_editor('spinbox', SpinboxPropertyEditor)
 register_editor('text', TextPropertyEditor)
+register_editor('checkbutton', CheckbuttonPropertyEditor)
 
 
 if __name__ == '__main__':
