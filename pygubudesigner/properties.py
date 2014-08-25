@@ -16,12 +16,12 @@
 #
 # For further info, check  http://pygubu.web.here
 from __future__ import unicode_literals
-from collections import OrderedDict
 try:
     import tkinter as tk
 except:
     import Tkinter as tk
 from pygubu.builder import builderobject
+
 
 # translator marker
 def _(x):
@@ -153,7 +153,7 @@ TK_WIDGET_OPTIONS = {
         'params': {'values': ('', 'normal', 'active', 'disabled')}},
     'digits': {
         'editor': 'spinbox',
-        'params': {'from_': 0, 'to': 999},},
+        'params': {'from_': 0, 'to': 999}},
     'direction': {
         'editor': 'choice',
         'tk.Menubutton': {
@@ -178,8 +178,7 @@ TK_WIDGET_OPTIONS = {
         'editor': 'choice',
         'params': {'values': ('', 'true', 'false'), 'state': 'readonly'}},
     # ttk.Label
-    'font': {
-        'editor': 'entry'},
+    'font': { 'editor': 'fontentry'},
     # ttk.Label
     'foreground': {
         'editor': 'colorentry'},
@@ -281,7 +280,7 @@ TK_WIDGET_OPTIONS = {
     'length': {
         'editor': 'entry'},
     'listvariable': {
-        'editor': 'tkvarentry' },
+        'editor': 'tkvarentry'},
     # ttk.Progressbar
     'maximum': {
         'editor': 'entry'},
@@ -436,8 +435,9 @@ TK_WIDGET_OPTIONS = {
         'params': {'values': ('', tk.NORMAL, tk.DISABLED),
                    'state': 'readonly'},
         'tk.Button': {
-            'params': {'values': ('', tk.NORMAL, tk.ACTIVE, tk.DISABLED),
-            'state': 'readonly'}},
+            'params': {
+                'values': ('', tk.NORMAL, tk.ACTIVE, tk.DISABLED),
+                'state': 'readonly'}},
         'tk.Entry': {
             'params': {
                 'values': ('', tk.NORMAL, tk.DISABLED, 'readonly'),
@@ -467,7 +467,7 @@ TK_WIDGET_OPTIONS = {
         'params': {
             'values': ('', 'n', 's', 'w', 'e', 'nw', 'ne', 'sw', 'se',
                        'ns', 'we', 'nsw', 'nse', 'nswe'),
-             'state': 'readonly'}},
+            'state': 'readonly'}},
     # ttk.Treeview.Column
     'stretch': {
         'editor': 'choice',
@@ -541,9 +541,9 @@ TK_WIDGET_OPTIONS = {
         'editor': 'dynamic',
         'params': {'mode': 'spinbox', 'from_': 0, 'to': 999},
         'tk.Button': {
-            'params': {'mode': 'spinbox', 'from_': -999, 'to': 999},},
+            'params': {'mode': 'spinbox', 'from_': -999, 'to': 999}},
         'ttk.Button': {
-            'params': {'mode': 'spinbox', 'from_': -999, 'to': 999},},
+            'params': {'mode': 'spinbox', 'from_': -999, 'to': 999}},
         'tk.Canvas': {
             'params': {'mode': 'entry'}
             },
@@ -656,7 +656,7 @@ CUSTOM_OPTIONS = {
 WIDGET_REQUIRED_OPTIONS = ('class', 'id')
 WIDGET_STANDARD_OPTIONS = (
     'accelerator', 'activerelief', 'activestyle', 'activebackground',
-    'activeborderwidth', 'activeforeground', 'after', 
+    'activeborderwidth', 'activeforeground', 'after',
     'anchor', 'background', 'bitmap', 'borderwidth',
     'class_', 'compound', 'cursor', 'disabledforeground',
     'exportselection',
@@ -679,7 +679,7 @@ WIDGET_SPECIFIC_OPTIONS = (
     'closeenough', 'confine', 'default', 'digits', 'direction',
     'disabledbackground', 'disabledforeground', 'elementborderwidth',
     'endline', 'exportselection', 'font',
-    'foreground', 'format', 'from_', 'to', 
+    'foreground', 'format', 'from_', 'to',
     'inactiveselectbackground', 'increment', 'insertunfocussed',
     'invalidcommand', 'justify', 'handlepad', 'handlesize',
     'heading_anchor', 'height', 'image', 'indicatoron',
@@ -723,9 +723,9 @@ LAYOUT_OPTIONS = {
          'validator': 'number_integer'},
     'sticky': {
         'editor': 'choice',
-        'params':{
-            'values':
-               ('', 'n', 's', 'w', 'e',
+        'params': {
+            'values': (
+                '', 'n', 's', 'w', 'e',
                 'nw', 'ne', 'sw', 'se',
                 'ns', 'we', 'nsw', 'nse', 'nswe'),
             'state': 'readonly'}},
@@ -753,23 +753,23 @@ LAYOUT_OPTIONS = {
         'params': {'values': ('True', 'False'), 'state': 'readonly'},
         'default': 'True'},
     #
-    #grid row and column properties (can be applied to each row or column)
+    # grid row and column properties (can be applied to each row or column)
     #
     'minsize': {
         'editor': 'spinbox',
-        'params': {'from_': 0, 'to':999, 'state': 'readonly', 'width': 3}},
+        'params': {'from_': 0, 'to': 999, 'state': 'readonly', 'width': 3}},
     'pad': {
         'editor': 'spinbox',
-        'params': {'from_': 0, 'to':999, 'state': 'readonly', 'width': 3}},
+        'params': {'from_': 0, 'to': 999, 'state': 'readonly', 'width': 3}},
     'weight': {
         'editor': 'spinbox',
-        'params': {'from_': 0, 'to':999, 'state': 'readonly', 'width': 3}}
+        'params': {'from_': 0, 'to': 999, 'state': 'readonly', 'width': 3}}
 }
 
 GRID_PROPERTIES = [
     'row', 'column', 'sticky', 'rowspan', 'columnspan', 'padx', 'pady',
     'ipadx', 'ipady', 'propagate']
-    
+
 GRID_RC_PROPERTIES = ['minsize', 'pad', 'weight']
 
 TRANSLATABLE_PROPERTIES = [
@@ -782,6 +782,7 @@ def _register_custom(name, descr):
         CUSTOM_OPTIONS[name] = descr
         WIDGET_PROPERTIES.update(CUSTOM_OPTIONS)
         WIDGET_CUSTOM_OPTIONS.append(name)
+
 
 def register_property(name, descr):
     _register_custom(name, descr)

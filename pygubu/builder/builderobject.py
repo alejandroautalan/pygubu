@@ -60,6 +60,7 @@ class BuilderObject(object):
     allow_bindings = True
     tkvar_properties = ('listvariable', 'textvariable', 'variable')
     tkimage_properties = ('image', 'selectimage')
+    tkfont_properties = ('font',)
 
     @classmethod
     def factory(cls, builder, wdata):
@@ -113,6 +114,8 @@ class BuilderObject(object):
                     propvalue.set(self.properties['value'])
             elif pname in self.tkimage_properties:
                 propvalue = self.builder.get_image(value)
+            elif pname in self.tkfont_properties:
+                propvalue = value.split('|')
 
             try:
                 target_widget[pname] = propvalue
