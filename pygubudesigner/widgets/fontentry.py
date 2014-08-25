@@ -128,7 +128,6 @@ class FontPropertyEditor(PropertyEditor):
     def _set_value(self, value):
         parts = value.split(self._sep)
         count = len(parts)
-        print(count, parts)
         value = parts[0]
         self._name.edit(value)
         if not value:
