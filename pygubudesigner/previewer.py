@@ -27,8 +27,7 @@ except:
     import ttk
 
 import pygubu
-from pygubu.stockimage import StockImage, StockImageException
-from . import util
+from pygubu.stockimage import StockImage
 import pygubudesigner.widgets.toplevelframe
 
 
@@ -46,9 +45,9 @@ class Preview(object):
         self.canvas = canvas
         self.shapes = {}
         self._create_shapes()
-        #--------
+        # --------
         self.builder = None
-        self.canvas_window= None
+        self.canvas_window = None
 
     def width(self):
         return self.w
@@ -57,15 +56,15 @@ class Preview(object):
         return self.h + self.resizer_h
 
     def _create_shapes(self):
-        #Preview box
+        # Preview box
         c = self.canvas
         x, y, x2, y2 = (-1001, -1000, -1001, -1000)
         s1 = c.create_rectangle(x, y, x2, y2,
-            width=2, outline='blue', tags=self.id)
+                                width=2, outline='blue', tags=self.id)
         s2 = c.create_rectangle(x, y, x2, y2, fill='blue', outline='blue',
-            tags=(self.id, 'resizer'))
+                                tags=(self.id, 'resizer'))
         s3 = c.create_text(x, y, text='widget_id', anchor=tk.NW,
-            fill='white', tags=self.id)
+                           fill='white', tags=self.id)
         s4 = c.create_window(x, y, anchor=tk.NW, tags=self.id)
         self.shapes = {
             'outline': s1,
@@ -85,7 +84,7 @@ class Preview(object):
         x, y, x2, y2 = (self.x, self.y, self.x + self.w, self.y + self.h)
         c.coords(self.shapes['outline'], x, y, x2, y2)
         tbbox = c.bbox(self.shapes['text'])
-        tw , th = tbbox[2] - tbbox[0] + 10, tbbox[3] - tbbox[1] + 6
+        tw, th = tbbox[2] - tbbox[0] + 10, tbbox[3] - tbbox[1] + 6
         self.resizer_h = th
         rx2 = self.x + self.w
         ry2 = self.y + self.h + self.resizer_h
@@ -124,15 +123,15 @@ class Preview(object):
             self.canvas_window.configure(width=self.w, height=self.h)
 
     def update(self, widget_id, xmlnode):
-        #delete current preview
-        #FIXME maybe do something to update preview without re-creating all ?
+        # delete current preview
+        # FIXME maybe do something to update preview without re-creating all ?
         del self.builder
         self.builder = None
         self.canvas.itemconfigure(self.shapes['window'], window='')
         if self.canvas_window:
             self.canvas_window.destroy()
 
-        #Create preview
+        # Create preview
         canvas_window = ttk.Frame(self.canvas)
         canvas_window.rowconfigure(0, weight=1)
         canvas_window.columnconfigure(0, weight=1)
@@ -150,7 +149,6 @@ class Preview(object):
         self.h = self.min_h = preview_widget.winfo_reqheight()
         self.resize_to(self.w, self.h)
 
-
     def create_preview_widget(self, parent, widget_id, xmlnode):
         self.builder = pygubu.Builder()
         self.builder.add_from_xmlnode(xmlnode)
@@ -160,9 +158,8 @@ class Preview(object):
     def get_widget_by_id(self, widget_id):
         return self.builder.get_object(widget_id)
 
-
     def create_toplevel(self, widget_id, xmlnode):
-        #Create preview
+        # Create preview
         builder = pygubu.Builder()
         builder.add_from_xmlnode(xmlnode)
         top = tk.Toplevel(self.canvas)
@@ -184,7 +181,7 @@ class MenuPreview(Preview):
         return menubutton
 
     def create_toplevel(self, widget_id, xmlnode):
-        #Create preview
+        # Create preview
         builder = pygubu.Builder()
         builder.add_from_xmlnode(xmlnode)
         top = tk.Toplevel(self.canvas)
@@ -210,14 +207,14 @@ class ToplevelPreview(Preview):
             p.text = v
             layout.append(p)
         xmlnode.append(layout)
-        #print(ET.tostring(xmlnode))
+        # print(ET.tostring(xmlnode))
         self.builder = pygubu.Builder()
         self.builder.add_from_xmlnode(xmlnode)
         widget = self.builder.get_object(widget_id, parent)
         return widget
 
     def create_toplevel(self, widget_id, xmlnode):
-        #Create preview
+        # Create preview
         builder = pygubu.Builder()
         builder.add_from_xmlnode(xmlnode)
         top = builder.get_object(widget_id, self.canvas)
@@ -233,8 +230,6 @@ class DialogPreview(ToplevelPreview):
 
 #    def get_widget_by_id(self, widget_id):
 #        return self.canvas_window
-
-
 
 
 class PreviewHelper:
@@ -255,8 +250,8 @@ class PreviewHelper:
         canvas.bind('<Button-1>', self.click_handler)
         canvas.bind('<ButtonRelease-1>', self.release_handler)
         canvas.bind('<Motion>', self.motion_handler)
-        canvas.bind('<4>', lambda event : canvas.yview('scroll', -1, 'units'))
-        canvas.bind('<5>', lambda event : canvas.yview('scroll', 1, 'units'))
+        canvas.bind('<4>', lambda event: canvas.yview('scroll', -1, 'units'))
+        canvas.bind('<5>', lambda event: canvas.yview('scroll', 1, 'units'))
         self._create_indicators()
 
     def motion_handler(self, event):
@@ -308,7 +303,7 @@ class PreviewHelper:
     def resize_preview(self, dw, dh):
         "Resizes preview that is currently dragged"
 
-        #identify preview
+        # identify preview
         if self._objects_moving:
             id_ = self._objects_moving[0]
             tags = self.canvas.gettags(id_)
@@ -332,7 +327,7 @@ class PreviewHelper:
     def move_previews(self):
         "Move previews after a resize event"
 
-        #calculate new positions
+        # calculate new positions
         min_y = self._calc_preview_ypos()
         for idx, (key, p) in enumerate(self.previews.items()):
             new_dy = min_y[idx] - p.y
@@ -368,7 +363,8 @@ class PreviewHelper:
             preview_class = DialogPreview
         if identifier not in self.previews:
             x, y = self._get_slot()
-            self.previews[identifier] = preview = preview_class(identifier, self.canvas, x, y)
+            self.previews[identifier] = preview \
+                = preview_class(identifier, self.canvas, x, y)
         else:
             preview = self.previews[identifier]
         preview.update(widget_id, xmlnode)
@@ -376,15 +372,15 @@ class PreviewHelper:
         self.move_previews()
 
     def _create_indicators(self):
-        #selected indicators
+        # selected indicators
         self.indicators = []
         anchors = {'nw': tk.SE, 'ne': tk.SW, 'sw': tk.NE, 'se': tk.NW}
         for sufix in self.indicators_tag:
             label = tk.Label(self.canvas,
-                    image=StockImage.get('indicator_' + sufix))
+                             image=StockImage.get('indicator_' + sufix))
             self.indicators.append(label)
             self.canvas.create_window(-10, -10, anchor=anchors[sufix],
-                    window=label, tags=sufix)
+                                      window=label, tags=sufix)
 
     def _calculate_indicator_coords(self, tag, widget):
         x = y = 0
@@ -444,7 +440,6 @@ class PreviewHelper:
         if identifier == self._sel_id:
             self._sel_id = None
             self._sel_widget = None
-
 
     def remove_all(self):
         for identifier in self.previews:
