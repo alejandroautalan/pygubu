@@ -490,6 +490,11 @@ TK_WIDGET_OPTIONS = {
     'takefocus': {
         'editor': 'choice',
         'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
+    'tearoff': {
+        'editor': 'choice',
+        'params': {'values': ('', 'false', 'true'), 'state': 'readonly'}},
+    'tearoffcommand': {
+        'editor': 'entry' },
     # ttk.Label
     'text': {
         'editor': 'text'},
@@ -697,7 +702,8 @@ WIDGET_SPECIFIC_OPTIONS = (
     'text', 'textvariable', 'tickinterval', 'tristateimage',
     'tristatevalue', 'underline', 'validate', 'undo', 'validatecommand',
     'value', 'values', 'variable', 'weight', 'width', 'wrap',
-    'wraplength', 'xscrollincrement', 'yscrollincrement'
+    'wraplength', 'xscrollincrement', 'yscrollincrement',
+    'tearoff', 'tearoffcommand'
     )
 
 WIDGET_CUSTOM_OPTIONS = [

@@ -376,32 +376,6 @@ register_widget('tk.Spinbox', TKSpinbox,
                 'Spinbox', ('Control & Display', 'tk'))
 
 
-class TKMenu(BuilderObject):
-    layout_required = False
-    allowed_parents = ('root', 'tk.Menubutton', 'ttk.Menubutton')
-    allowed_children = (
-        'tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
-        'tk.Menuitem.Command', 'tk.Menuitem.Radiobutton',
-        'tk.Menuitem.Separator')
-    class_ = tk.Menu
-    container = True
-    allow_container_layout = False
-    OPTIONS_STANDARD = ('activebackground', 'activeborderwidth',
-                        'activeforeground',  'background', 'borderwidth',
-                        'cursor', 'disabledforeground', 'font', 'foreground',
-                        'relief', 'takefocus')
-    OPTIONS_SPECIFIC = ('postcommand',  'selectcolor', 'tearoff',
-                        'tearoffcommand', 'title')
-    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
-    command_properties = ('postcommand', 'tearoffcommand')
-    allow_bindings = False
-
-    def layout(self):
-        pass
-
-register_widget('tk.Menu', TKMenu, 'Menu', ('Containers', 'tk', 'ttk'))
-
-
 class TKCanvas(BuilderObject):
     class_ = tk.Canvas
     container = False
@@ -421,6 +395,30 @@ class TKCanvas(BuilderObject):
 register_widget('tk.Canvas', TKCanvas,
                 'Canvas', ('Control & Display', 'tk', 'ttk'))
 
+
+class TKMenu(BuilderObject):
+    layout_required = False
+    allowed_parents = ('root', 'tk.Menubutton', 'ttk.Menubutton')
+    allowed_children = (
+        'tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
+        'tk.Menuitem.Command', 'tk.Menuitem.Radiobutton',
+        'tk.Menuitem.Separator')
+    class_ = tk.Menu
+    container = True
+    allow_container_layout = False
+    OPTIONS_STANDARD = ('activebackground', 'activeborderwidth',
+                        'activeforeground',  'background', 'borderwidth',
+                        'cursor', 'disabledforeground', 'font', 'foreground',
+                        'relief', 'takefocus')
+    OPTIONS_SPECIFIC = ('postcommand',  'tearoff', 'tearoffcommand', 'title')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+    command_properties = ('postcommand', 'tearoffcommand')
+    allow_bindings = False
+
+    def layout(self):
+        pass
+
+register_widget('tk.Menu', TKMenu, 'Menu', ('Containers', 'tk', 'ttk'))
 
 #
 # Helpers for Standard tk widgets
@@ -484,7 +482,18 @@ class TKMenuitemSubmenu(TKMenu):
         'tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
         'tk.Menuitem.Command', 'tk.Menuitem.Radiobutton',
         'tk.Menuitem.Separator')
-    properties = tuple(set(TKMenu.properties + TKMenuitem.properties))
+    OPTIONS_STANDARD = ('activebackground', 'activeborderwidth',
+                        'activeforeground',  'background', 'borderwidth',
+                        'bitmap', 'compound',
+                        'cursor', 'disabledforeground', 'font', 'foreground',
+                        'relief', 'takefocus', 'state')
+    OPTIONS_SPECIFIC = ('accelerator', 'columnbreak',
+                        'hidemargin', 'image', 'label',
+                        'tearoff', 'tearoffcommand',
+                        'underline')
+    OPTIONS_CUSTOM = tuple()
+    properties = tuple(set(OPTIONS_STANDARD + OPTIONS_SPECIFIC +
+                           OPTIONS_CUSTOM))
 
     def realize(self, parent):
         master = parent.widget
@@ -495,6 +504,10 @@ class TKMenuitemSubmenu(TKMenu):
         item_properties = dict(
             (k, v) for k, v in self.properties.items()
             if k in TKMenuitem.properties and k != 'command_id_arg')
+        for imageprop in ('image', 'selectimage'):
+            if imageprop in item_properties:
+                name = item_properties[imageprop]
+                item_properties[imageprop] = self.builder.get_image(name)
 
         self.widget = submenu = TKMenu.class_(master, **menu_properties)
         item_properties['menu'] = submenu
