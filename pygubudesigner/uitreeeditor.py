@@ -469,12 +469,13 @@ class WidgetsTreeEditor(object):
 
         item = self._insert_item(root, data)
 
-        # Select and show the item created
-        tree.selection_set(item)
-        tree.focus(item)
-        tree.after_idle(lambda: tree.see(item))
         # Do redraw
         self.draw_widget(item)
+
+        # Select and show the item created
+        tree.after_idle(lambda: tree.selection_set(item))
+        tree.after_idle(lambda: tree.focus(item))
+        tree.after_idle(lambda: tree.see(item))
 
     def remove_all(self):
         self.filter_remove()
