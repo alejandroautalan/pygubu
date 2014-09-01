@@ -79,6 +79,13 @@ See the examples directory or watch this hello world example on [video](http://y
 History
 =======
 
+Changes for version 0.9.6.2
+
+  * Property editors rewritten from scratch
+  * Improved menu preview
+  * Added font property editor
+  * Fixed menu issues
+
 Changes for version 0.9.5.1
 
   * Add select hotkey to widget tree. (i - select previous item, k - select next item)
