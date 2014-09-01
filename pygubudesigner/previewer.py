@@ -19,6 +19,7 @@
 from __future__ import unicode_literals
 from collections import OrderedDict
 import xml.etree.ElementTree as ET
+import re
 try:
     import tkinter as tk
     import tkinter.ttk as ttk
@@ -29,6 +30,14 @@ except:
 import pygubu
 from pygubu.stockimage import StockImage
 import pygubudesigner.widgets.toplevelframe
+
+try:
+    basestring
+except NameError:
+    basestring = str
+
+
+RE_FONT = re.compile("(?P<family>\{\w+(\w|\s)*\}|\w+)\s?(?P<size>-?\d+)?\s?(?P<modifiers>\{\w+(\w|\s)*\}|\w+)?")
 
 
 class Preview(object):
@@ -138,16 +147,18 @@ class Preview(object):
 
         self.canvas.itemconfigure(self.shapes['text'], text=widget_id)
 
-        preview_widget = self.create_preview_widget(
-            canvas_window, widget_id, xmlnode)
+        self._preview_widget = \
+            self.create_preview_widget(canvas_window, widget_id, xmlnode)
 
         self.canvas_window = canvas_window
         self.canvas.itemconfigure(self.shapes['window'], window=canvas_window)
         canvas_window.update_idletasks()
         canvas_window.grid_propagate(0)
-        self.w = self.min_w = preview_widget.winfo_reqwidth()
-        self.h = self.min_h = preview_widget.winfo_reqheight()
-        self.resize_to(self.w, self.h)
+        self.min_w = self._get_wreqwidth()
+        self.min_h = self._get_wreqheight()
+        self.w = self.min_w * 2
+        self.h = self.min_h * 2
+        self.resize_to(self.min_w, self.min_h)
 
     def create_preview_widget(self, parent, widget_id, xmlnode):
         self.builder = pygubu.Builder()
@@ -168,17 +179,111 @@ class Preview(object):
         builder.get_object(widget_id, top)
         return top
 
+    def _get_wreqwidth(self):
+        return self._preview_widget.winfo_reqwidth()
+
+    def _get_wreqheight(self):
+        return self._preview_widget.winfo_reqheight()
+
 
 class MenuPreview(Preview):
+    fonts = {}
+
+    def __init__(self, id_, canvas, x=0, y=0):
+        super(MenuPreview, self).__init__(id_, canvas, x, y)
+        self._menu = None
+        self._cwidth = 0
+        self._cheight = 0
+
+    def _get_wreqwidth(self):
+        return self._cwidth
+
+    def _get_wreqheight(self):
+        return self._cheight
+
+    def _get_font(self, font):
+        fontname = family = 'TkMenuFont'
+        size = 12
+        modifiers = ''
+        tclobject = False
+
+        if font and isinstance(font, basestring):
+            fontname = family = font
+        elif isinstance(font, tk._tkinter.Tcl_Obj):
+            fontname = family = str(font)
+            tclobject = True
+        elif isinstance(font, tuple):
+            fontname = str(font[4])
+            tclobject = True
+        if tclobject:
+            s = RE_FONT.search(fontname)
+            if s:
+                g = s.groupdict()
+                family = g['family'].replace('{', '').replace('}', '')
+                size = g['size']
+                modifiers = g['modifiers'] if g['modifiers'] else ''
+        if fontname not in MenuPreview.fonts:
+            weight = 'bold' if 'bold' in modifiers else 'normal'
+            slant = 'italic' if 'italic' in modifiers else 'roman'
+            underline = '1' if 'underline' in modifiers else '0'
+            overstrike = '1' if 'overstrike' in modifiers else '0'
+            kw = {'family': family, 'weight': weight, 'slant': slant,
+                  'underline': underline, 'overstrike': overstrike}
+            if size:
+                kw['size'] = size
+            MenuPreview.fonts[fontname] = tk.font.Font(**kw)
+        return MenuPreview.fonts[fontname]
+
+    def _calculate_menu_wh(self):
+        """ Calculate menu widht and height."""
+        w = iw = 50
+        h = ih = 0
+        count = self._menu.index(tk.END) + 1
+
+        # First calculate using the font paramters of root menu:
+        font = self._menu.cget('font')
+        font = self._get_font(font)
+        for i in range(0, count):
+            mtype = self._menu.type(i)
+            if mtype == 'tearoff':
+                continue
+            label = self._menu.entrycget(i, 'label')
+            wpx = font.measure(label)
+            hpx = font.metrics('linespace')
+            w += wpx
+            if hpx > h:
+                h = hpx * 2
+            # Calculate using font configured for each subitem
+            ifont = self._menu.entrycget(i, 'font')
+            ifont = self._get_font(ifont)
+            wpx = ifont.measure(label)
+            hpx = ifont.metrics('linespace')
+            iw += wpx
+            if hpx > ih:
+                ih = hpx * 2
+        # Then compare 2 sizes and use the greatest
+        w = max(w, iw, 100)
+        h = max(h, ih, 25)
+        self._cwidth = w + int(w * 0.25)
+        self._cheight = h + int(h * 0.25)
 
     def create_preview_widget(self, parent, widget_id, xmlnode):
+        container = tk.Frame(parent, container=True, height=50)
+        container.grid(sticky='nswe')
+        container.rowconfigure(0, weight=1)
+        container.columnconfigure(0, weight=1)
+
+        self._top = top = tk.Toplevel(parent, use=container.winfo_id())
+        top.maxsize(2048, 50)
+        top.resizable(width=True, height=False)
+        top.update()
+
         self.builder = pygubu.Builder()
         self.builder.add_from_xmlnode(xmlnode)
-        menubutton = ttk.Menubutton(parent, text='Menu preview')
-        menubutton.grid()
-        widget = self.builder.get_object(widget_id, menubutton)
-        menubutton.configure(menu=widget)
-        return menubutton
+        self._menu = widget = self.builder.get_object(widget_id, top)
+        top.configure(menu=widget)
+        self._calculate_menu_wh()
+        return parent
 
     def create_toplevel(self, widget_id, xmlnode):
         # Create preview
@@ -192,8 +297,8 @@ class MenuPreview(Preview):
         top['menu'] = menu
         return top
 
-    def resize_by(self, dw, hw):
-        return
+#    def resize_by(self, dw, hw):
+#        return
 
 
 class ToplevelPreview(Preview):
