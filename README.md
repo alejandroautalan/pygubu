@@ -79,6 +79,10 @@ See the examples directory or watch this hello world example on [video](http://y
 History
 =======
 
+Changes for version 0.9.6.3
+
+  * Use old menu preview on platforms other than linux  (new preview does not work on windows)
+
 Changes for version 0.9.6.2
 
   * Property editors rewritten from scratch

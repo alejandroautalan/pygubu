@@ -78,6 +78,10 @@ Busca en el directorio de ejemplos o mira este ejemplo de 'Hola mundo' en
 Historia
 ========
 
+Cambios de la versión 0.9.6.3
+
+  * Use old menu preview on platforms other than linux  (new preview does not work on windows)
+
 Cambios de la versión 0.9.6.2
 
   * Property editors rewritten from scratch

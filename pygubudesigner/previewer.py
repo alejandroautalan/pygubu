@@ -18,6 +18,7 @@
 
 from __future__ import unicode_literals
 from collections import OrderedDict
+import sys
 import xml.etree.ElementTree as ET
 import re
 try:
@@ -186,11 +187,38 @@ class Preview(object):
         return self._preview_widget.winfo_reqheight()
 
 
-class MenuPreview(Preview):
+class DefaultMenuPreview(Preview):
+
+    def create_preview_widget(self, parent, widget_id, xmlnode):
+        self.builder = pygubu.Builder()
+        self.builder.add_from_xmlnode(xmlnode)
+        menubutton = ttk.Menubutton(parent, text='Menu preview')
+        menubutton.grid()
+        widget = self.builder.get_object(widget_id, menubutton)
+        menubutton.configure(menu=widget)
+        return menubutton
+
+    def create_toplevel(self, widget_id, xmlnode):
+        # Create preview
+        builder = pygubu.Builder()
+        builder.add_from_xmlnode(xmlnode)
+        top = tk.Toplevel(self.canvas)
+        top.columnconfigure(0, weight=1)
+        top.rowconfigure(0, weight=1)
+
+        menu = builder.get_object(widget_id, top)
+        top['menu'] = menu
+        return top
+
+    def resize_by(self, dw, hw):
+        return
+
+
+class OnCanvasMenuPreview(Preview):
     fonts = {}
 
     def __init__(self, id_, canvas, x=0, y=0):
-        super(MenuPreview, self).__init__(id_, canvas, x, y)
+        super(OnCanvasMenuPreview, self).__init__(id_, canvas, x, y)
         self._menu = None
         self._cwidth = 0
         self._cheight = 0
@@ -222,7 +250,7 @@ class MenuPreview(Preview):
                 family = g['family'].replace('{', '').replace('}', '')
                 size = g['size']
                 modifiers = g['modifiers'] if g['modifiers'] else ''
-        if fontname not in MenuPreview.fonts:
+        if fontname not in OnCanvasMenuPreview.fonts:
             weight = 'bold' if 'bold' in modifiers else 'normal'
             slant = 'italic' if 'italic' in modifiers else 'roman'
             underline = '1' if 'underline' in modifiers else '0'
@@ -231,8 +259,8 @@ class MenuPreview(Preview):
                   'underline': underline, 'overstrike': overstrike}
             if size:
                 kw['size'] = size
-            MenuPreview.fonts[fontname] = tk.font.Font(**kw)
-        return MenuPreview.fonts[fontname]
+            OnCanvasMenuPreview.fonts[fontname] = tk.font.Font(**kw)
+        return OnCanvasMenuPreview.fonts[fontname]
 
     def _calculate_menu_wh(self):
         """ Calculate menu widht and height."""
@@ -247,14 +275,17 @@ class MenuPreview(Preview):
             mtype = self._menu.type(i)
             if mtype == 'tearoff':
                 continue
-            label = self._menu.entrycget(i, 'label')
+            label = 'default'
+            ifont = 'TkMenuFont'
+            if mtype != 'separator':
+                label = self._menu.entrycget(i, 'label')
+                ifont = self._menu.entrycget(i, 'font')
             wpx = font.measure(label)
             hpx = font.metrics('linespace')
             w += wpx
             if hpx > h:
                 h = hpx * 2
             # Calculate using font configured for each subitem
-            ifont = self._menu.entrycget(i, 'font')
             ifont = self._get_font(ifont)
             wpx = ifont.measure(label)
             hpx = ifont.metrics('linespace')
@@ -297,8 +328,10 @@ class MenuPreview(Preview):
         top['menu'] = menu
         return top
 
-#    def resize_by(self, dw, hw):
-#        return
+
+MenuPreview = DefaultMenuPreview
+if sys.platform == 'linux':
+    MenuPreview = OnCanvasMenuPreview
 
 
 class ToplevelPreview(Preview):
