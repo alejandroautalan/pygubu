@@ -9,10 +9,12 @@ class TTKSBHelperBO(BuilderObject):
     container = True
     maxchildren = 1
     allowed_children = ('tk.Entry', 'ttk.Entry', 'tk.Text', 'tk.Canvas',
-        'tk.Listbox', 'ttk.Treeview' )
-    properties = ['scrolltype', 'cursor', 'height', 'padding',
-            'relief', 'style', 'takefocus', 'width']
-    ro_properties = ('scrolltype', )
+                        'tk.Listbox', 'ttk.Treeview' )
+    OPTIONS_STANDARD = ('class_', 'cursor', 'takefocus', 'style')
+    OPTIONS_SPECIFIC = ('borderwidth', 'relief', 'padding', 'height', 'width')
+    OPTIONS_CUSTOM = ('scrolltype', )
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
+    ro_properties = ('class_', 'scrolltype', )
     allow_bindings = False
 
 

@@ -24,10 +24,8 @@ import logging
 import xml.etree.ElementTree as ET
 try:
     import tkinter
-    from tkinter import ttk
 except:
     import Tkinter as tkinter
-    import ttk
 from collections import defaultdict
 
 from pygubu.builder.builderobject import *
@@ -37,18 +35,16 @@ import pygubu.builder.tkstdwidgets
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('pygubu.builder')
 
-#
-#
-#
+
 def data_xmlnode_to_dict(element, translator=None):
     data = {}
 
     data['class'] = element.get('class')
     data['id'] = element.get('id')
 
-    #properties
+    # properties
     properties = element.findall('./property')
-    pdict= {}
+    pdict = {}
     for p in properties:
         pvalue = p.text
         if translator is not None and p.get('translatable'):
@@ -57,7 +53,7 @@ def data_xmlnode_to_dict(element, translator=None):
 
     data['properties'] = pdict
 
-    #Bindings
+    # Bindings
     bindings = []
     bind_elements = element.findall('./bind')
     for e in bind_elements:
@@ -68,8 +64,8 @@ def data_xmlnode_to_dict(element, translator=None):
             })
     data['bindings'] = bindings
 
-    #get layout properties
-    #use grid layout for all
+    # get layout properties
+    # use grid layout for all
     layout_properties = {}
     layout_elem = element.find('./layout')
     if layout_elem is not None:
@@ -77,7 +73,7 @@ def data_xmlnode_to_dict(element, translator=None):
         for p in props:
             layout_properties[p.get('name')] = p.text
 
-        #get grid row and col properties:
+        # get grid row and col properties:
         rows_dict = defaultdict(dict)
         erows = layout_elem.find('./rows')
         if erows is not None:
@@ -125,7 +121,7 @@ def data_dict_to_xmlnode(data, translatable_props=None):
                 pnode.set('translatable', 'yes')
             node.append(pnode)
 
-    #bindings:
+    # bindings:
     bindings = sorted(data['bindings'], key=lambda b: b['sequence'])
     for v in bindings:
         bind = ET.Element('bind')
@@ -133,10 +129,10 @@ def data_dict_to_xmlnode(data, translatable_props=None):
             bind.set(attr, value)
         node.append(bind)
 
-    #layout:
+    # layout:
     layout_required = CLASS_MAP[data['class']].classobj.layout_required
     if layout_required:
-        #create layout node
+        # create layout node
         layout = data['layout']
         layout_node = ET.Element('layout')
         has_layout = False
@@ -149,7 +145,7 @@ def data_dict_to_xmlnode(data, translatable_props=None):
                 pnode.set('name', prop)
                 pnode.text = pv
                 layout_node.append(pnode)
-        keys = {'rows':'row', 'columns':'column'}
+        keys = {'rows': 'row', 'columns': 'column'}
         for key in keys:
             if key in layout:
                 erows = ET.Element(key)
@@ -193,11 +189,9 @@ class Builder:
         self._resource_paths = []
         self.translator = translator
 
-
     def add_resource_path(self, path):
         """Add additional path to the resources paths."""
         self._resource_paths.append(path)
-
 
     def get_image(self, path):
         """Return tk image corresponding to name which is taken form path."""
@@ -209,10 +203,10 @@ class Builder:
                 StockImage.register(name, ipath)
         try:
             image = StockImage.get(name)
-        except StockImageException as e:
+        except StockImageException:
+            # TODO: notify something here.
             pass
         return image
-
 
     def __find_image(self, relpath):
         image_path = None
@@ -223,11 +217,9 @@ class Builder:
                 break
         return image_path
 
-
     def get_variable(self, varname):
         """Return a tk variable created with 'create_variable' method."""
         return self.tkvariables[varname]
-
 
     def create_variable(self, varname, vtype=None):
         """Create a tk variable.
@@ -235,7 +227,7 @@ class Builder:
         """
 
         var = None
-        type_from_name = 'string' #default type
+        type_from_name = 'string'  # default type
         if ':' in varname:
             type_from_name, varname = varname.split(':')
 
@@ -243,8 +235,7 @@ class Builder:
             var = self.tkvariables[varname]
         else:
             if vtype is None:
-                #get type from name
-                lvname = varname.lower()
+                # get type from name
                 if type_from_name == 'int':
                     var = tkinter.IntVar()
                 elif type_from_name == 'boolean':
@@ -259,7 +250,6 @@ class Builder:
             self.tkvariables[varname] = var
         return var
 
-
     def add_from_file(self, fpath):
         """Load ui definition from file."""
         if self.tree is None:
@@ -269,9 +259,8 @@ class Builder:
             self.root = tree.getroot()
             self.objects = {}
         else:
-            #TODO: append to current tree
+            # TODO: append to current tree
             pass
-
 
     def add_from_string(self, strdata):
         """Load ui definition from string."""
@@ -280,9 +269,8 @@ class Builder:
             self.root = tree.getroot()
             self.objects = {}
         else:
-            #TODO: append to current tree
+            # TODO: append to current tree
             pass
-
 
     def add_from_xmlnode(self, element):
         """Load ui definition from xml.etree.Element node."""
@@ -292,11 +280,10 @@ class Builder:
             self.tree = tree = ET.ElementTree(root)
             self.root = tree.getroot()
             self.objects = {}
-            #ET.dump(tree)
+            # ET.dump(tree)
         else:
-            #TODO: append to current tree
+            # TODO: append to current tree
             pass
-
 
     def get_object(self, name, master=None):
         """Find and create the widget named name.
@@ -317,13 +304,11 @@ class Builder:
             raise Exception('Widget not defined.')
         return widget
 
-
     def _import_class(self, modulename):
         if modulename.startswith('ttk.'):
             importlib.import_module('pygubu.builder.ttkstdwidgets')
         else:
             importlib.import_module(modulename)
-
 
     def _realize(self, master, element):
         """Builds a widget from xml element using master as parent."""
@@ -355,7 +340,6 @@ class Builder:
         else:
             raise Exception('Class "{0}" not mapped'.format(cname))
 
-
     def _check_data(self, data):
         cname = data['class']
         uniqueid = data['id']
@@ -363,8 +347,7 @@ class Builder:
         layout_required = CLASS_MAP[cname].classobj.layout_required
         if layout_required and not layout:
             logger.warning('No layout information for: (%s, %s).',
-                cname, uniqueid)
-
+                           cname, uniqueid)
 
     def connect_callbacks(self, callbacks_bag):
         """Connect callbacks specified in callbacks_bag with callbacks

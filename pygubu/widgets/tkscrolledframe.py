@@ -90,7 +90,7 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
             else: # mode == 'scroll'
                 clipperWidth = self._clipper.winfo_width()
                 if units == 'units':
-                    jump = int(clipperWidth * self.jfraction)
+                    jump = int(clipperWidth * self._jfraction)
                 else:
                     jump = clipperWidth
                 self._startX = self._startX + value * jump
@@ -112,7 +112,7 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
             else: # mode == 'scroll'
                 clipperHeight = self._clipper.winfo_height()
                 if units == 'units':
-                    jump = int(clipperHeight * self.jfraction)
+                    jump = int(clipperHeight * self._jfraction)
                 else:
                     jump = clipperHeight
                 self._startY = self._startY + value * jump

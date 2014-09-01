@@ -29,73 +29,55 @@ except:
     tk.filedialog = tkFileDialog
 
 from pygubu.stockimage import *
-from pygubudesigner.widgets.compoundpropertyeditor import CompoundPropertyEditor
-#from compoundpropertyeditor import CompoundPropertyEditor
+from pygubudesigner.widgets.propertyeditor import *
 
 
-class ImageEntry(CompoundPropertyEditor):
+class ImagePropertyEditor(PropertyEditor):
 
-    def __init__(self, master=None, **kw):
-        CompoundPropertyEditor.__init__(self, master, **kw)
-        
-        self._entryvar = tk.StringVar()
-        self.entry = w = ttk.Entry(self, textvariable=self._entryvar)
+    def _create_ui(self):
+        self._entry = w = ttk.Entry(self, textvariable=self._variable)
         w.grid(sticky='ew')
-        w.bind('<FocusOut>', self._on_entry_changed)
-        w.bind('<KeyPress-Return>', self._on_entry_changed)
-        w.bind('<KeyPress-KP_Enter>', self._on_entry_changed)
-        self.button = w = ttk.Button(self, text='…',
-            style='ImageSelectorButton.Toolbutton')
+        w.bind('<FocusOut>', self._on_variable_changed)
+        w.bind('<KeyPress-Return>', self._on_variable_changed)
+        w.bind('<KeyPress-KP_Enter>', self._on_variable_changed)
+
+        btn_style = 'ImageSelectorButton.Toolbutton'
+        self._button = w = ttk.Button(self, text='…', style=btn_style)
         w.grid(row=0, column=1, padx="5 0")
         w.configure(command=self._on_button_click)
-        
+
+        self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
 
     def _on_button_click(self):
         ext = ['*.gif', '*.pgm', '*.ppm']
         if tk.TkVersion >= 8.6:
             ext.append('*.png')
-        options = {
-            'filetypes':[('All Images', ' '.join(ext))] }
+        options = {'filetypes': [('All Images', ' '.join(ext))]}
 
         fname = tk.filedialog.askopenfilename(**options)
         if fname:
             base, name = os.path.split(fname)
+            self._set_value(name)
+            self._on_variable_changed(event=None)
             if not StockImage.is_registered(name):
                 StockImage.register(name, fname)
-            self._disable_cb()
-            self._variable.set(name)
-            self._entryvar.set(name)
-            self._enable_cb()
-            self.event_generate('<<ImageEntryChanged>>')
 
-    def _on_entry_changed(self, event=None):
-        imagename = self._entryvar.get()
-        self._disable_cb()
-        self._variable.set(imagename)
-        self._enable_cb()
-        self.event_generate('<<ImageEntryChanged>>')
 
-    def _on_variable_changed(self, varname, elementname, mode):
-        imagename = self._variable.get()
-        self._entryvar.set(imagename)
+register_editor('imageentry', ImagePropertyEditor)
 
-    
-    
+
 if __name__ == '__main__':
     root = tk.Tk()
-    var = tk.StringVar()
-    
+
     def see_var():
         print(var.get())
 
-    entry = ImageEntry(root, textvariable=var)
+    entry = ImagePropertyEditor(root)
     entry.grid()
-    entry.configure(textvariable=var)
-    var.set('red')
-    
+
+    entry.edit('image.gif')
     btn = ttk.Button(root, text='Value', command=see_var)
     btn.grid(row=0, column=1)
 
     root.mainloop()
-
