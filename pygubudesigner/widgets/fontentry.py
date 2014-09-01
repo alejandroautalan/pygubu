@@ -164,7 +164,7 @@ class FontPropertyEditor(PropertyEditor):
 
     def edit(self, value):
         self._clear_editors()
-        super(FontPropertyEditor, self).edit(value)
+        PropertyEditor.edit(self, value)
         self._on_fontname_changed()
 
     def _on_fontname_changed(self, event=None):
