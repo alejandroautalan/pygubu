@@ -114,8 +114,6 @@ class BuilderObject(object):
                     propvalue.set(self.properties['value'])
             elif pname in self.tkimage_properties:
                 propvalue = self.builder.get_image(value)
-            elif pname in self.tkfont_properties:
-                propvalue = self._parse_font(value)
 
             try:
                 target_widget[pname] = propvalue
@@ -123,17 +121,6 @@ class BuilderObject(object):
                 msg = "Failed to set property '{0}' on class '{1}'. TclError: {2}"
                 msg = msg.format(pname, repr(self.class_), str(e))
                 logger.error(msg)
-
-    def _parse_font(self, descr):
-        sep = '|'
-        value = None
-        if sep not in descr:
-            # pygubu v0.9.5.1 and bellow
-            value = descr
-        else:
-            # since pygubu v0.9.6
-            value = descr.split(sep)
-        return value
 
     def layout(self, target=None):
         if not self.layout_required:

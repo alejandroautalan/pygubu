@@ -18,6 +18,7 @@ from __future__ import unicode_literals
 
 import os
 import sys
+import re
 try:
     import tkinter as tk
     import tkinter.ttk as ttk
@@ -31,7 +32,7 @@ except:
 from pygubu.stockimage import StockImage, StockImageException
 from pygubudesigner.widgets.propertyeditor import *
 
-
+RE_FONT = re.compile("(?P<family>\{\w+(\w|\s)*\}|\w+)\s?(?P<size>-?\d+)?\s?(?P<modifiers>\{\w+(\w|\s)*\}|\w+)?")
 FILE_DIR = os.path.dirname(os.path.abspath(__file__))
 IMAGES_DIR = os.path.join(FILE_DIR, "..", "images", "widgets", "fontentry")
 IMAGES_DIR = os.path.abspath(IMAGES_DIR)
@@ -64,8 +65,6 @@ if _sp == 'darwin':
 class FontPropertyEditor(PropertyEditor):
 
     def _create_ui(self):
-        self._sep = '|'
-        self._sep2 = ' '
         self._dsize = '12'  # default font size
 
         self._name = w = ChoicePropertyEditor(self)
@@ -125,7 +124,6 @@ class FontPropertyEditor(PropertyEditor):
                 value = name
             else:
                 size = self._size.value if self._size.value else self._dsize
-                value = '{1}{0}{2}'.format(self._sep, name, size)
                 modifiers = []
                 if self._bold.value:
                     modifiers.append(self._bold.value)
@@ -135,23 +133,34 @@ class FontPropertyEditor(PropertyEditor):
                     modifiers.append(self._underline.value)
                 if self._overstrike.value:
                     modifiers.append(self._overstrike.value)
-                modifiers = self._sep2.join(modifiers)
-                value = '{1}{0}{2}'.format(self._sep, value, modifiers)
+                modifiers = ' '.join(modifiers)
+                tkformat = '{{{0}}} {1} {{{2}}}'
+                value = tkformat.format(name, size, modifiers)
         else:
             self._clear_editors()
             
         return value
 
     def _set_value(self, value):
-        parts = value.split(self._sep)
-        count = len(parts)
-        value = parts[0]
-        self._name.edit(value)
-        if count >= 2:
-            self._size.edit(parts[1])
-        if count == 3:
-            modifiers = parts[2]
-            modifiers = modifiers.split(self._sep2)
+        family = value
+        size = None
+        modifiers = ''
+
+        s = RE_FONT.search(value)
+        if s:
+            g = s.groupdict()
+            family = g['family'].replace('{', '').replace('}','')
+            size = g['size']
+            modifiers = g['modifiers']
+            if  modifiers is not None:
+                modifiers = modifiers.replace('{', '').replace('}','')
+            else:
+                modifiers = ''
+        self._name.edit(family)
+        if size:
+            self._size.edit(size)
+        if modifiers:
+            modifiers = modifiers.split(' ')
             for m in modifiers:
                 if m == 'bold':
                     self._bold.edit(m)

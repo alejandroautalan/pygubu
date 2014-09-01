@@ -457,9 +457,6 @@ class TKMenuitem(BuilderObject):
             if pname in ('image', 'selectimage'):
                 name = itemproperties[pname]
                 itemprops[pname] = self.builder.get_image(name)
-            if pname in self.tkfont_properties:
-                value = itemprops[pname]
-                itemprops[pname] = self._parse_font(value)
 
     def configure(self):
         pass
