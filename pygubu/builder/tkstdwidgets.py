@@ -441,20 +441,25 @@ class TKMenuitem(BuilderObject):
     def realize(self, parent):
         self.widget = master = parent.widget
         itemproperties = dict(self.properties)
-        pname = 'command_id_arg'
-        if pname in itemproperties:
-            itemproperties.pop(pname)
-        pname = 'variable'
-        if pname in itemproperties:
-            varname = itemproperties[pname]
-            itemproperties[pname] = self.builder.create_variable(varname)
-        for imageprop in ('image', 'selectimage'):
-            if imageprop in itemproperties:
-                name = itemproperties[imageprop]
-                itemproperties[imageprop] = self.builder.get_image(name)
+        self._setup_item_properties(itemproperties)
         master.add(self.itemtype, **itemproperties)
         self.__index = master.index(tk.END)
         return self.widget
+
+    def _setup_item_properties(self, itemprops):
+        pname = 'command_id_arg'
+        if pname in itemprops:
+            itemprops.pop(pname)
+        for pname in itemprops:
+            if pname == 'variable':
+                varname = itemprops[pname]
+                itemprops[pname] = self.builder.create_variable(varname)
+            if pname in ('image', 'selectimage'):
+                name = itemproperties[pname]
+                itemprops[pname] = self.builder.get_image(name)
+            if pname in self.tkfont_properties:
+                value = itemprops[pname]
+                itemprops[pname] = self._parse_font(value)
 
     def configure(self):
         pass
@@ -476,7 +481,7 @@ class TKMenuitem(BuilderObject):
         self.widget.entryconfigure(self.__index, command=callback)
 
 
-class TKMenuitemSubmenu(TKMenu):
+class TKMenuitemSubmenu(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     allowed_children = (
         'tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
@@ -500,14 +505,12 @@ class TKMenuitemSubmenu(TKMenu):
         menu_properties = dict(
             (k, v) for k, v in self.properties.items()
             if k in TKMenu.properties)
+        self._setup_item_properties(menu_properties)
 
         item_properties = dict(
             (k, v) for k, v in self.properties.items()
-            if k in TKMenuitem.properties and k != 'command_id_arg')
-        for imageprop in ('image', 'selectimage'):
-            if imageprop in item_properties:
-                name = item_properties[imageprop]
-                item_properties[imageprop] = self.builder.get_image(name)
+            if k in TKMenuitem.properties)
+        self._setup_item_properties(item_properties)
 
         self.widget = submenu = TKMenu.class_(master, **menu_properties)
         item_properties['menu'] = submenu
