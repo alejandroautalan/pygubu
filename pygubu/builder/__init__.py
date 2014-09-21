@@ -226,13 +226,21 @@ class Builder:
         If the variable was created previously return that instance.
         """
 
+        var_types = ('string', 'int', 'boolean', 'double')
+        vname = varname
         var = None
         type_from_name = 'string'  # default type
         if ':' in varname:
-            type_from_name, varname = varname.split(':')
+            type_from_name, vname = varname.split(':')
+            #  Fix incorrect order bug #33
+            if type_from_name not in (var_types):
+                #  Swap order
+                type_from_name, vname = vname, type_from_name
+                if type_from_name not in (var_types):
+                    raise Exception('Undefined variable type in "{0}"'.format(varname))
 
-        if varname in self.tkvariables:
-            var = self.tkvariables[varname]
+        if vname in self.tkvariables:
+            var = self.tkvariables[vname]
         else:
             if vtype is None:
                 # get type from name
@@ -247,7 +255,7 @@ class Builder:
             else:
                 var = vtype()
 
-            self.tkvariables[varname] = var
+            self.tkvariables[vname] = var
         return var
 
     def add_from_file(self, fpath):

@@ -45,7 +45,7 @@ class TkVarPropertyEditor(PropertyEditor):
     def _get_value(self):
         value = ''
         if self._entry.value != '':
-            value = '{0}:{1}'.format(self._entry.value, self._cbox.value)
+            value = '{0}:{1}'.format(self._cbox.value, self._entry.value)
         return value
 
     def _set_value(self, value):
