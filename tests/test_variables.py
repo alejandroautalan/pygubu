@@ -23,70 +23,9 @@ class TestVariables(unittest.TestCase):
 
     def setUp(self):
         support.root_deiconify()
-        xmldata = """<?xml version="1.0" ?>
-<interface>
-  <object class="ttk.Frame" id="mainwindow">
-    <property name="height">250</property>
-    <property name="width">250</property>
-    <layout>
-      <property name="column">0</property>
-      <property name="sticky">nesw</property>
-      <property name="propagate">True</property>
-      <property name="row">0</property>
-    </layout>
-    <child>
-      <object class="ttk.Entry" id="string_entry">
-        <property name="textvariable">string:strvar</property>
-        <property name="validate">none</property>
-        <property name="text">string</property>
-        <layout>
-          <property name="column">0</property>
-          <property name="propagate">True</property>
-          <property name="row">0</property>
-        </layout>
-      </object>
-    </child>
-    <child>
-      <object class="ttk.Entry" id="int_entry">
-        <property name="textvariable">int:intvar</property>
-        <property name="validate">none</property>
-        <property name="text">22</property>
-        <layout>
-          <property name="column">0</property>
-          <property name="propagate">True</property>
-          <property name="row">1</property>
-        </layout>
-      </object>
-    </child>
-    <child>
-      <object class="ttk.Entry" id="double_entry">
-        <property name="textvariable">double:doublevar</property>
-        <property name="validate">none</property>
-        <property name="text">22.22</property>
-        <layout>
-          <property name="column">0</property>
-          <property name="propagate">True</property>
-          <property name="row">2</property>
-        </layout>
-      </object>
-    </child>
-    <child>
-      <object class="ttk.Entry" id="boolean_entry">
-        <property name="textvariable">boolean:booleanvar</property>
-        <property name="validate">none</property>
-        <property name="text">False</property>
-        <layout>
-          <property name="column">0</property>
-          <property name="propagate">True</property>
-          <property name="row">3</property>
-        </layout>
-      </object>
-    </child>
-  </object>
-</interface>
-"""
+        xmldata = "test_variables.ui"
         self.builder = builder = pygubu.Builder()
-        builder.add_from_string(xmldata)
+        builder.add_from_file(xmldata)
         self.widget = builder.get_object('mainwindow')
 
 
@@ -112,6 +51,17 @@ class TestVariables(unittest.TestCase):
         var = self.builder.get_variable('booleanvar')
         self.assertIsInstance(var, tk.BooleanVar)
         self.assertEqual(False, var.get())
+        self.widget.destroy()
+    
+    def test_bugged_oldformat_var(self):
+        var = self.builder.get_variable('testoldformat')
+        self.assertIsInstance(var, tk.StringVar)
+        self.widget.destroy()
+        
+    def test_invalid_variable_type(self):
+        # self.builder.create_variable('complex:mycomplexvar')
+        self.assertRaises(Exception, self.builder.create_variable,
+                          'complex:mycomplexvar')
         self.widget.destroy()
 
 
