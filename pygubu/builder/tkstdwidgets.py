@@ -455,7 +455,7 @@ class TKMenuitem(BuilderObject):
                 varname = itemprops[pname]
                 itemprops[pname] = self.builder.create_variable(varname)
             if pname in ('image', 'selectimage'):
-                name = itemproperties[pname]
+                name = itemprops[pname]
                 itemprops[pname] = self.builder.get_image(name)
 
     def configure(self):
