@@ -25,6 +25,8 @@ class TestMenu(unittest.TestCase):
         support.root_deiconify()
         xmldata = 'test_menu.ui'
         self.builder = builder = pygubu.Builder()
+        filepath = os.path.dirname(os.path.realpath(__file__))
+        builder.add_resource_path(filepath)
         builder.add_from_file(xmldata)
         self.widget = builder.get_object('mainmenu')
 
