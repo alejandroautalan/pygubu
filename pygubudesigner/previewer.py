@@ -54,7 +54,7 @@ class BuilderForPreview(pygubu.Builder):
 
 class Preview(object):
 
-    def __init__(self, id_, canvas, x=0, y=0):
+    def __init__(self, id_, canvas, x=0, y=0, rpaths=None):
         self.id = 'preview_{0}'.format(id_)
         self.x = x
         self.y = y
@@ -69,12 +69,19 @@ class Preview(object):
         # --------
         self.builder = None
         self.canvas_window = None
+        self._resource_paths = rpaths if rpaths is not None else []
 
     def width(self):
         return self.w
 
     def height(self):
         return self.h + self.resizer_h
+        
+    def _create_builder(self):
+        b = BuilderForPreview()
+        for p in self._resource_paths:
+            b.add_resource_path(p)
+        return b
 
     def _create_shapes(self):
         # Preview box
@@ -173,7 +180,7 @@ class Preview(object):
         self.resize_to(self.min_w, self.min_h)
 
     def create_preview_widget(self, parent, widget_id, xmlnode):
-        self.builder = BuilderForPreview()
+        self.builder = self._create_builder()
         self.builder.add_from_xmlnode(xmlnode)
         widget = self.builder.get_object(widget_id, parent)
         return widget
@@ -201,7 +208,7 @@ class Preview(object):
 class DefaultMenuPreview(Preview):
 
     def create_preview_widget(self, parent, widget_id, xmlnode):
-        self.builder = BuilderForPreview()
+        self.builder = self._create_builder()
         self.builder.add_from_xmlnode(xmlnode)
         menubutton = ttk.Menubutton(parent, text='Menu preview')
         menubutton.grid()
@@ -228,8 +235,8 @@ class DefaultMenuPreview(Preview):
 class OnCanvasMenuPreview(Preview):
     fonts = {}
 
-    def __init__(self, id_, canvas, x=0, y=0):
-        super(OnCanvasMenuPreview, self).__init__(id_, canvas, x, y)
+    def __init__(self, id_, canvas, x=0, y=0, rpaths=None):
+        super(OnCanvasMenuPreview, self).__init__(id_, canvas, x, y, rpaths)
         self._menu = None
         self._cwidth = 0
         self._cheight = 0
@@ -320,7 +327,7 @@ class OnCanvasMenuPreview(Preview):
         top.resizable(width=True, height=False)
         top.update()
 
-        self.builder = BuilderForPreview()
+        self.builder = self._create_builder()
         self.builder.add_from_xmlnode(xmlnode)
         self._menu = widget = self.builder.get_object(widget_id, top)
         top.configure(menu=widget)
@@ -357,7 +364,7 @@ class ToplevelPreview(Preview):
             layout.append(p)
         xmlnode.append(layout)
         # print(ET.tostring(xmlnode))
-        self.builder = BuilderForPreview()
+        self.builder = self._create_builder()
         self.builder.add_from_xmlnode(xmlnode)
         widget = self.builder.get_object(widget_id, parent)
         return widget
@@ -392,6 +399,7 @@ class PreviewHelper:
         self._sel_id = None
         self._sel_widget = None
         self.toplevel_previews = []
+        self.resource_paths = []
 
         self._moving = False
         self._last_event = None
@@ -402,6 +410,9 @@ class PreviewHelper:
         canvas.bind('<4>', lambda event: canvas.yview('scroll', -1, 'units'))
         canvas.bind('<5>', lambda event: canvas.yview('scroll', 1, 'units'))
         self._create_indicators()
+        
+    def add_resource_path(self, path):
+        self._resource_paths.append(path)
 
     def motion_handler(self, event):
         if not self._moving:
@@ -513,7 +524,8 @@ class PreviewHelper:
         if identifier not in self.previews:
             x, y = self._get_slot()
             self.previews[identifier] = preview \
-                = preview_class(identifier, self.canvas, x, y)
+                = preview_class(identifier, self.canvas, x, y,
+                                self.resource_paths)
         else:
             preview = self.previews[identifier]
         preview.update(widget_id, xmlnode)
@@ -593,6 +605,7 @@ class PreviewHelper:
     def remove_all(self):
         for identifier in self.previews:
             self.delete(identifier)
+        self.resource_paths = []
 
     def preview_in_toplevel(self, identifier, widget_id, xmlnode):
         preview = self.previews[identifier]

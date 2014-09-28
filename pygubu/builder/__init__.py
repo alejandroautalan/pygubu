@@ -201,6 +201,9 @@ class Builder(object):
             ipath = self.__find_image(path)
             if ipath is not None:
                 StockImage.register(name, ipath)
+            else:
+                msg = "Image '{0}' not found in resource paths.".format(name)
+                logger.warning(msg)
         try:
             image = StockImage.get(name)
         except StockImageException:
@@ -211,9 +214,11 @@ class Builder(object):
     def __find_image(self, relpath):
         image_path = None
         for rp in self._resource_paths:
-            path = os.path.join(rp, relpath)
-            if os.path.exists(path):
-                image_path = path
+            for root, dirs, files in os.walk(rp):
+                if relpath in files:
+                    image_path = os.path.join(root, relpath)
+                    break
+            if image_path is not None:
                 break
         return image_path
 
