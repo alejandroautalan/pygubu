@@ -7,30 +7,38 @@
     <property name="foreground">#080060</property>
     <property name="relief">flat</property>
     <child>
-      <object class="tk.Menuitem.Command" id="Command_1">
-        <property name="command_id_arg">False</property>
-        <property name="label" translatable="yes">Command_1</property>
-      </object>
-    </child>
-    <child>
-      <object class="tk.Menuitem.Checkbutton" id="Checkbutton_1">
-        <property name="command_id_arg">False</property>
-        <property name="label" translatable="yes">Checkbutton_1</property>
-      </object>
-    </child>
-    <child>
-      <object class="tk.Menuitem.Radiobutton" id="Radiobutton_1">
-        <property name="command_id_arg">False</property>
-        <property name="label" translatable="yes">Radiobutton_1</property>
-      </object>
-    </child>
-    <child>
-      <object class="tk.Menuitem.Separator" id="Separator_1" />
-    </child>
-    <child>
-      <object class="tk.Menuitem.Command" id="Command_2">
-        <property name="command_id_arg">False</property>
-        <property name="label" translatable="yes">Command_2</property>
+      <object class="tk.Menuitem.Submenu" id="Submenu_1">
+        <property name="bitmap">info</property>
+        <property name="compound">left</property>
+        <property name="label" translatable="yes">Submenu_1</property>
+        <child>
+          <object class="tk.Menuitem.Command" id="Command_1">
+            <property name="command_id_arg">False</property>
+            <property name="label" translatable="yes">Command_1</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Checkbutton" id="Checkbutton_1">
+            <property name="command_id_arg">False</property>
+            <property name="label" translatable="yes">Checkbutton_1</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Radiobutton" id="Radiobutton_1">
+            <property name="command_id_arg">False</property>
+            <property name="label" translatable="yes">Radiobutton_1</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Separator" id="Separator_1" />
+        </child>
+        <child>
+          <object class="tk.Menuitem.Command" id="Command_2">
+            <property name="command_id_arg">False</property>
+            <property name="image">example.gif</property>
+            <property name="label" translatable="yes">Command_2</property>
+          </object>
+        </child>
       </object>
     </child>
   </object>
