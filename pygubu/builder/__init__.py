@@ -225,6 +225,11 @@ class Builder(object):
     def get_variable(self, varname):
         """Return a tk variable created with 'create_variable' method."""
         return self.tkvariables[varname]
+        
+    def import_variables(self, container):
+        """Helper method to avoid call get_variable for every variable."""
+        for keyword in self.tkvariables:
+            setattr(container, keyword, self.tkvariables[keyword])
 
     def create_variable(self, varname, vtype=None):
         """Create a tk variable.
