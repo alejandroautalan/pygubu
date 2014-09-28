@@ -58,10 +58,11 @@ class ImagePropertyEditor(PropertyEditor):
         fname = tk.filedialog.askopenfilename(**options)
         if fname:
             base, name = os.path.split(fname)
-            self._set_value(name)
-            self._on_variable_changed(event=None)
+            #  Register image before change event is generated:
             if not StockImage.is_registered(name):
                 StockImage.register(name, fname)
+            self._set_value(name)
+            self._on_variable_changed(event=None)
 
 
 register_editor('imageentry', ImagePropertyEditor)
