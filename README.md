@@ -79,6 +79,12 @@ See the examples directory or watch this hello world example on [video](http://y
 History
 =======
 
+Changes for version 0.9.6.5
+
+  * Fixed bug on menu creation.
+  * Fixed issues #14 and #22
+  * Added helper method to avoid call get_variable for every variable. refs #29
+
 Changes for version 0.9.6.4
 
   * Fixed bug #33 "Wrong textvariable format when create ui file"

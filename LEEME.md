@@ -78,6 +78,12 @@ Busca en el directorio de ejemplos o mira este ejemplo de 'Hola mundo' en
 Historia
 ========
 
+Cambios de la versión 0.9.6.5
+
+  * Fixed bug on menu creation.
+  * Fixed issues #14 and #22
+  * Added helper method to avoid call get_variable for every variable. refs #29
+
 Cambios de la versión 0.9.6.4
 
   * Fixed bug #33 "Wrong textvariable format when create ui file"
