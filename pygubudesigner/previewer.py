@@ -41,6 +41,17 @@ except NameError:
 RE_FONT = re.compile("(?P<family>\{\w+(\w|\s)*\}|\w+)\s?(?P<size>-?\d+)?\s?(?P<modifiers>\{\w+(\w|\s)*\}|\w+)?")
 
 
+class BuilderForPreview(pygubu.Builder):
+    def _pre_process_data(self, data):
+        super(BuilderForPreview, self)._pre_process_data(data)
+        cname = data['class']
+        
+        #  Do not resize main window when
+        #  Sizegrip is dragged on preview panel.
+        if cname == 'ttk.Sizegrip':
+            data['properties']['class_'] = 'DUMMY_CLASS'
+
+
 class Preview(object):
 
     def __init__(self, id_, canvas, x=0, y=0):
@@ -162,7 +173,7 @@ class Preview(object):
         self.resize_to(self.min_w, self.min_h)
 
     def create_preview_widget(self, parent, widget_id, xmlnode):
-        self.builder = pygubu.Builder()
+        self.builder = BuilderForPreview()
         self.builder.add_from_xmlnode(xmlnode)
         widget = self.builder.get_object(widget_id, parent)
         return widget
@@ -190,7 +201,7 @@ class Preview(object):
 class DefaultMenuPreview(Preview):
 
     def create_preview_widget(self, parent, widget_id, xmlnode):
-        self.builder = pygubu.Builder()
+        self.builder = BuilderForPreview()
         self.builder.add_from_xmlnode(xmlnode)
         menubutton = ttk.Menubutton(parent, text='Menu preview')
         menubutton.grid()
@@ -309,7 +320,7 @@ class OnCanvasMenuPreview(Preview):
         top.resizable(width=True, height=False)
         top.update()
 
-        self.builder = pygubu.Builder()
+        self.builder = BuilderForPreview()
         self.builder.add_from_xmlnode(xmlnode)
         self._menu = widget = self.builder.get_object(widget_id, top)
         top.configure(menu=widget)
@@ -346,7 +357,7 @@ class ToplevelPreview(Preview):
             layout.append(p)
         xmlnode.append(layout)
         # print(ET.tostring(xmlnode))
-        self.builder = pygubu.Builder()
+        self.builder = BuilderForPreview()
         self.builder.add_from_xmlnode(xmlnode)
         widget = self.builder.get_object(widget_id, parent)
         return widget

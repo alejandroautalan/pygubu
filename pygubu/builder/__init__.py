@@ -178,7 +178,7 @@ def data_dict_to_xmlnode(data, translatable_props=None):
 # Builder class
 #
 
-class Builder:
+class Builder(object):
     """Allows to build a tk interface from xml definition."""
 
     def __init__(self, translator=None):
@@ -329,7 +329,7 @@ class Builder:
             self._import_class(cname)
 
         if cname in CLASS_MAP:
-            self._check_data(data)
+            self._pre_process_data(data)
             parent = CLASS_MAP[cname].classobj.factory(self, data)
             widget = parent.realize(master)
 
@@ -348,7 +348,7 @@ class Builder:
         else:
             raise Exception('Class "{0}" not mapped'.format(cname))
 
-    def _check_data(self, data):
+    def _pre_process_data(self, data):
         cname = data['class']
         uniqueid = data['id']
         layout = data['layout']
