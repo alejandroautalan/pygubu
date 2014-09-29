@@ -201,7 +201,6 @@ class TTKLabelframe(TTKWidgetBO):
     container = True
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
-#TODO: Add helper so the labelwidget can be configured on GUI
 register_widget('ttk.Labelframe', TTKLabelframe,
                 'Labelframe', ('Containers', 'ttk'))
 

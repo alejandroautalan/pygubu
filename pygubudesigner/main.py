@@ -47,6 +47,7 @@ from .i18n import translator
 from pygubu.widgets.accordionframe import AccordionFrame
 from pygubu.widgets.autoarrangeframe import AutoArrangeFrame
 import pygubu.widgets.simpletooltip as tooltip
+from pygubudesigner.preferences import PreferencesUI
 
 #translator function
 _ = translator
@@ -116,6 +117,7 @@ class PygubuUI(pygubu.TkApplication):
 
         self.preview = None
         self.about_dialog = None
+        self.preferences = None
         self.builder = pygubu.Builder(translator)
         self.currentfile = None
         self.is_changed = False
@@ -462,6 +464,8 @@ class PygubuUI(pygubu.TkApplication):
             self.tree_editor.on_item_grid_move(WidgetsTreeEditor.GRID_LEFT)
         elif itemid == 'grid_right':
             self.tree_editor.on_item_grid_move(WidgetsTreeEditor.GRID_RIGHT)
+        elif itemid == 'edit_preferences':
+            self._edit_preferences()
 
     #preview menu
     def on_previewmenu_action(self, itemid):
@@ -503,6 +507,11 @@ class PygubuUI(pygubu.TkApplication):
             self.about_dialog.run()
         else:
             self.about_dialog.show()
+
+    def _edit_preferences(self):
+        if self.preferences is None:
+            self.preferences = PreferencesUI(self.master, translator)
+        self.preferences.dialog.run()
 
 
 def start_pygubu():

@@ -5,7 +5,8 @@ try:
 except:
     import Tkinter as tk
 
-from .builderobject import *
+from .builderobject import BuilderObject, register_widget, EntryBaseBO
+from .builderobject import PanedWindowBO, PanedWindowPaneBO
 
 
 #
@@ -109,8 +110,6 @@ class TKLabelFrame(BuilderObject):
     OPTIONS_SPECIFIC = ('background', 'class_', 'height',
                         'labelanchor', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
-
-#TODO: Add helper so the labelwidget can be configured on GUI
 
 register_widget('tk.LabelFrame', TKLabelFrame,
                 'LabelFrame', ('Containers', 'tk'))
@@ -363,7 +362,7 @@ class TKSpinbox(BuilderObject):
                           'xscrollcommand')
 
     def configure(self):
-        #hack to configure 'from_' and 'to' and avoid exception
+        # hack to configure 'from_' and 'to' and avoid exception
         if 'from_' in self.properties:
             from_ = float(self.properties['from_'])
             to = float(self.properties.get('to', 0))
@@ -423,6 +422,7 @@ register_widget('tk.Menu', TKMenu, 'Menu', ('Containers', 'tk', 'ttk'))
 #
 # Helpers for Standard tk widgets
 #
+
 
 class TKMenuitem(BuilderObject):
     class_ = None
@@ -584,3 +584,22 @@ class TKPanedWindowPane(PanedWindowPaneBO):
 
 register_widget('tk.PanedWindow.Pane', TKPanedWindowPane,
                 'PanedWindow.Pane', ('Pygubu Helpers', 'tk'))
+
+
+class TKLabelwidgetBO(BuilderObject):
+    class_ = None
+    container = True
+    allowed_parents = ('tk.LabelFrame', 'ttk.Labelframe')
+    maxchildren = 1
+    layout_required = False
+    allow_bindings = False
+
+    def realize(self, parent):
+        self.widget = parent.widget
+        return self.widget
+
+    def add_child(self, bobject):
+        self.widget.configure(labelwidget=bobject.widget)
+
+register_widget('pygubu.builder.widgets.Labelwidget', TKLabelwidgetBO,
+                'Labelwidget', ('Pygubu Helpers', 'tk', 'ttk'))
