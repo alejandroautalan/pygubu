@@ -230,6 +230,7 @@
     </layout>
     <child>
       <object class="ttk.Frame" id="top_frame">
+        <property name="padding">2 6 2 6</property>
         <layout>
           <property name="column">0</property>
           <property name="row">0</property>
@@ -381,6 +382,7 @@
                       <object class="ttk.Panedwindow.Pane" id="tvpane">
                         <child>
                           <object class="ttk.Frame" id="addwframe1">
+                            <property name="padding">0 0 0 2</property>
                             <layout>
                               <property name="column">0</property>
                               <property name="row">0</property>
@@ -399,7 +401,7 @@
                             <child>
                               <object class="ttk.Frame" id="filter_frame">
                                 <property name="height">200</property>
-                                <property name="padding">0 0 0 2</property>
+                                <property name="padding">0 0 0 6</property>
                                 <property name="width">200</property>
                                 <layout>
                                   <property name="column">0</property>
@@ -536,6 +538,7 @@
                         <child>
                           <object class="ttk.Notebook" id="notebook1">
                             <property name="height">200</property>
+                            <property name="padding">0 2 0 0</property>
                             <property name="width">300</property>
                             <layout>
                               <property name="column">0</property>
@@ -543,7 +546,7 @@
                             </layout>
                             <child>
                               <object class="ttk.Notebook.Tab" id="generaltab">
-                                <property name="padding">5</property>
+                                <property name="padding">2 6 2 6</property>
                                 <property name="sticky">nsew</property>
                                 <property name="text" translatable="yes">General</property>
                                 <child>
@@ -571,7 +574,7 @@
                             </child>
                             <child>
                               <object class="ttk.Notebook.Tab" id="layouttab">
-                                <property name="padding">5</property>
+                                <property name="padding">2 6 2 6</property>
                                 <property name="sticky">nsew</property>
                                 <property name="text" translatable="yes">Layout</property>
                                 <child>
@@ -589,7 +592,7 @@
                             </child>
                             <child>
                               <object class="ttk.Notebook.Tab" id="bindingtab">
-                                <property name="padding">5</property>
+                                <property name="padding">2 6 2 6</property>
                                 <property name="text" translatable="yes">Bindings</property>
                                 <child>
                                   <object class="ttk.Frame" id="bindingscontainer">
