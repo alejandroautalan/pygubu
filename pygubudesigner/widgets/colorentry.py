@@ -63,8 +63,9 @@ class ColorPropertyEditor(PropertyEditor):
         txtcolor = None
         try:
             _, txtcolor = tk.colorchooser.askcolor(color=current)
-            self._set_value(txtcolor)
-            self._on_variable_changed(event=None)
+            if txtcolor is not None:
+                self._set_value(txtcolor)
+                self._on_variable_changed(event=None)
         except tk.TclError:
             pass
         self._change_color(txtcolor)
