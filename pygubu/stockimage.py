@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU General Public License along
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-# For further info, check  http://pygubu.web.here
 
 from __future__ import unicode_literals
 
@@ -27,22 +26,29 @@ try:
 except:
     import Tkinter as tk
 
-stock_data = {}
 
 logger = logging.getLogger(__name__)
-
+    
 
 class StockImageException(Exception):
     pass
 
 
-#class StockImage(Object):
-class StockImage:
+TK_IMAGE_FORMATS = ('.gif', '.pgm', '.ppm')
+
+if tk.TkVersion >= 8.6:
+    TK_IMAGE_FORMATS += ('.png',)
+
+
+STOCK_DATA = {}
+
+
+class StockImage(object):
     """Maintain references to image name and file.
 When image is used, the class maintains it on memory for tkinter"""
-    _stock = stock_data
+    _stock = STOCK_DATA
     _cached = {}
-    _formats = ('.gif',)
+    _formats = TK_IMAGE_FORMATS
 
     @classmethod
     def clear_cache(cls):
