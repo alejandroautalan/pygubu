@@ -8,6 +8,7 @@ Needed packages to run (using Debian/Ubuntu package names):
     python3-tk
 """
 
+import sys
 import os
 import shutil
 import platform
@@ -37,6 +38,7 @@ class CustomInstall(install):
         """Run parent install, and then save the install dir in the script."""
         install.run(self)
 
+        #
         # fix installation path in the script(s)
         for script in self.distribution.scripts:
             script_path = os.path.join(self.install_scripts,
@@ -54,6 +56,22 @@ class CustomInstall(install):
             if platform.system() == 'Windows':
                 dest = script_path + '.py'
                 shutil.move(script_path, dest)
+        #
+        # Remove old pygubu.py from scripts path if exists
+        spath = os.path.join(self.install_scripts, 'pygubu')
+        for ext in ('.py', '.pyw'):
+            filename = spath + ext
+            if os.path.exists(filename):
+                os.remove(filename)
+        #
+        # Create .bat file on windows
+        if platform.system() == 'Windows':
+            pdpath = os.path.join(self.install_scripts, 'pygubu-designer.py')
+            batpath = os.path.join(self.install_scripts,
+                                    'pygubu-designer.bat')
+            with open(batpath, 'w') as batfile:
+                content = "{0} {1}".format(sys.executable, pdpath)
+                batfile.write(content)
 
 
 long_description = \
