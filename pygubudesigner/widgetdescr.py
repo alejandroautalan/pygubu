@@ -107,14 +107,16 @@ class WidgetDescr(Observable, dict):
     def update_max_grid_rc(self):
         """Deletes unused grid row/cols"""
 
-        ckeys = tuple(self['layout']['columns'].keys())
-        for key in ckeys:
-            value = int(key)
-            if value > self.max_col:
-                del self['layout']['columns'][key]
-        rkeys = tuple(self['layout']['rows'].keys())
-        for key in rkeys:
-            value = int(key)
-            if value > self.max_row:
-                del self['layout']['rows'][key]
+        if 'columns' in self['layout']:
+            ckeys = tuple(self['layout']['columns'].keys())
+            for key in ckeys:
+                value = int(key)
+                if value > self.max_col:
+                    del self['layout']['columns'][key]
+        if 'rows' in self['layout']:
+            rkeys = tuple(self['layout']['rows'].keys())
+            for key in rkeys:
+                value = int(key)
+                if value > self.max_row:
+                    del self['layout']['rows'][key]
 
