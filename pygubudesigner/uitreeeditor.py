@@ -136,6 +136,10 @@ class WidgetsTreeEditor(object):
 
         tv = self.treeview
         selection = tv.selection()
+
+        # Need to remove filter
+        self.filter_remove(remember=True)
+
         toplevel_items = tv.get_children()
         for item in selection:
             try:
@@ -148,12 +152,15 @@ class WidgetsTreeEditor(object):
                 tv.delete(item)
                 self.app.set_changed()
                 if parent:
+                    self._update_max_grid_rc(parent)
                     self.draw_widget(parent)
                 self.widget_editor.hide_all()
             except tk.TclError:
                 # Selection of parent and child items ??
                 # TODO: notify something here
                 pass
+        # restore filter
+        self.filter_restore()
 
     def tree_to_xml(self):
         """Traverses treeview and generates a ElementTree object"""
@@ -238,6 +245,7 @@ class WidgetsTreeEditor(object):
             row, col = self.get_max_row_col(item)
             item_data.max_col = col
             item_data.max_row = row
+            item_data.update_max_grid_rc()
 
     def copy_to_clipboard(self):
         """

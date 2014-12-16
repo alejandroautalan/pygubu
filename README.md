@@ -79,6 +79,17 @@ See the examples directory or watch this hello world example on [video](http://y
 History
 =======
 
+Changes for version 0.9.6.7
+
+  * Remove old pygubu.py script for old installations.
+    Create pybugu-designer.bat file for windows platform. Fixes #38
+
+Changes for version 0.9.6.6
+
+  * Fixed bug: color value setting to None when presing Cancel on color selector.
+  * Add '.png' format to Stockimage if tk version support it. fixes #36
+  * Minor changes to main UI.
+
 Changes for version 0.9.6.5
 
   * Fixed bug on menu creation.
