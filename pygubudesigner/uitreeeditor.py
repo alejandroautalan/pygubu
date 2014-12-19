@@ -196,7 +196,7 @@ class WidgetsTreeEditor(object):
 
         return node
 
-    def _insert_item(self, root, data):
+    def _insert_item(self, root, data,from_file=False):
         """Insert a item on the treeview and fills columns from data"""
 
         tree = self.treeview
@@ -209,7 +209,7 @@ class WidgetsTreeEditor(object):
             # fix row position when using copy and paste
             # If collision, increase by 1
             row_count = self.get_max_row(root)
-            if row_count > int(row) and int(col) == 0:
+            if not from_file and (row_count > int(row) and int(col) == 0):
                 row = str(row_count + 1)
                 data.set_layout_property('row', row)
 
@@ -511,13 +511,13 @@ class WidgetsTreeEditor(object):
 
         self.previewer.resource_paths.append(os.path.dirname(filename))
         for element in eroot:
-            self.populate_tree('', eroot, element)
+            self.populate_tree('', eroot, element,from_file=True)
         children = self.treeview.get_children('')
         for child in children:
             self.draw_widget(child)
         self.previewer.show_selected(None, None)
 
-    def populate_tree(self, master, parent, element):
+    def populate_tree(self, master, parent, element,from_file=False):
         """Reads xml nodes and populates tree item"""
 
         data = WidgetDescr(None, None)
@@ -527,12 +527,12 @@ class WidgetsTreeEditor(object):
         data.set_property('id', uniqueid)
 
         if cname in builder.CLASS_MAP:
-            pwidget = self._insert_item(master, data)
+            pwidget = self._insert_item(master, data,from_file=from_file)
             xpath = "./child"
             children = element.findall(xpath)
             for child in children:
                 child_object = child.find('./object')
-                cwidget = self.populate_tree(pwidget, child, child_object)
+                cwidget = self.populate_tree(pwidget, child, child_object,from_file=from_file)
 
             return pwidget
         else:
