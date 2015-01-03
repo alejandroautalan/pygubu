@@ -104,7 +104,7 @@ class WidgetDescr(Observable, dict):
             'add': add
             })
 
-    def update_max_grid_rc(self):
+    def remove_unused_grid_rc(self):
         """Deletes unused grid row/cols"""
 
         if 'columns' in self['layout']:
