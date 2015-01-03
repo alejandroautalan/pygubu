@@ -196,7 +196,7 @@ class WidgetsTreeEditor(object):
 
         return node
 
-    def _insert_item(self, root, data,from_file=False):
+    def _insert_item(self, root, data, from_file=False):
         """Insert a item on the treeview and fills columns from data"""
 
         tree = self.treeview
@@ -233,19 +233,20 @@ class WidgetsTreeEditor(object):
         self.treedata[item] = data
 
         # Update grid r/c data
-        self._update_max_grid_rc(root)
+        self._update_max_grid_rc(root, from_file=True)
         self.app.set_changed()
 
         return item
 
-    def _update_max_grid_rc(self, item):
+    def _update_max_grid_rc(self, item, from_file=False):
         # Calculate max grid row/col for item
         if item != '':
             item_data = self.treedata[item]
             row, col = self.get_max_row_col(item)
             item_data.max_col = col
             item_data.max_row = row
-            item_data.update_max_grid_rc()
+            if not from_file:
+                item_data.remove_unused_grid_rc()
 
     def copy_to_clipboard(self):
         """
