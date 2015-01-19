@@ -86,7 +86,7 @@ class LayoutEditor(PropertiesEditor):
         self._internal = {'grc_headers': headers}
 
         #
-        name_format = '{}_{}_{}'  # {row/column}_{number}_{name}
+        name_format = '{0}_{1}_{2}'  # {row/column}_{number}_{name}
         MAX_RC = 50
         #rowconfig
         row += 1

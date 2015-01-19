@@ -77,7 +77,7 @@ logger = logging.getLogger('pygubu.designer')
 logger.setLevel(logging.INFO)
 
 
-class StatusBarHandler(logging.Handler):
+class StatusBarHandler(logging.Handler, object):
     def __init__(self, tklabel, level=logging.NOTSET):
         super(StatusBarHandler, self).__init__(level)
         self.tklabel = tklabel

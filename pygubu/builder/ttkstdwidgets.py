@@ -1,5 +1,5 @@
 from __future__ import unicode_literals
-from collections import OrderedDict
+from ordereddict import OrderedDict
 
 try:
     import tkinter as tk
