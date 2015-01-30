@@ -1,6 +1,6 @@
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
-  <object class="ttk.Frame" id="mainframe">
+  <object class="ttk.Frame" id="mainwindow">
     <property name="height">200</property>
     <property name="padding">20</property>
     <property name="width">200</property>
