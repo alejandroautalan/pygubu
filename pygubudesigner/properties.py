@@ -463,11 +463,8 @@ TK_WIDGET_OPTIONS = {
                 'state': 'readonly'}}},
     # ttk.Notebook.Tab
     'sticky': {
-        'editor': 'choice',
-        'params': {
-            'values': ('', 'n', 's', 'w', 'e', 'nw', 'ne', 'sw', 'se',
-                       'ns', 'we', 'nsw', 'nse', 'nswe'),
-            'state': 'readonly'}},
+        'editor': 'stickyentry',
+        'params': {}},
     # ttk.Treeview.Column
     'stretch': {
         'editor': 'choice',
@@ -728,13 +725,8 @@ LAYOUT_OPTIONS = {
          'params': {'from_': 0, 'to': 50},
          'validator': 'number_integer'},
     'sticky': {
-        'editor': 'choice',
-        'params': {
-            'values': (
-                '', 'n', 's', 'w', 'e',
-                'nw', 'ne', 'sw', 'se',
-                'ns', 'we', 'nsw', 'nse', 'nswe'),
-            'state': 'readonly'}},
+        'editor': 'stickyentry',
+        'params': {}},
     'rowspan':
         {'editor': 'spinbox',
          'params':

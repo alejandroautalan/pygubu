@@ -7,3 +7,4 @@ from .propertyeditor import CheckbuttonPropertyEditor
 from .whentry import WHPropertyEditor
 from .dynamicpropeditor import DynamicPropertyEditor
 from .fontentry import FontPropertyEditor
+from .stickyentry import StickyPropertyEditor
