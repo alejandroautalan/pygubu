@@ -713,7 +713,7 @@ class WidgetsTreeEditor(object):
         if self.filter_prev_value:
             self.filtervar.set(self.filter_prev_value)
             item = self.filter_prev_sitem
-            if item:
+            if item and self.treeview.exists(item):
                 self.treeview.selection_set(item)
                 self.treeview.after_idle(lambda: self._see(item))
             # clear
