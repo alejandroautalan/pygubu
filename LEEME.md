@@ -32,6 +32,20 @@ pip install pygubu
 Modo de uso
 ===========
 
+En sistemas tipo unix ejecuta el diseñador usando el commando:
+
+```
+pygubu-designer
+```
+
+En Windows usa:
+
+```
+c:\Python34\Scripts\pygubu-designer.bat
+```
+
+Donde 'c:\Python34' es **tu** directorio de instalación de python.
+
 Crea una interfaz de usuario usando pygubu y guárdala en un archivo (ejemplo: holamundo.ui).
 
 [holamundo.ui] (examples/helloworld.ui)

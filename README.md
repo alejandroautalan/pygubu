@@ -34,7 +34,21 @@ pip install pygubu
 Usage
 =====
 
-Create an UI definition using pygubu-designer and save it to a file.
+On unix like systems start the designer using:
+
+```
+pygubu-designer
+```
+
+On Windows use:
+
+```
+c:\Python34\Scripts\pygubu-designer.bat
+```
+
+Where 'c:\Python34' is **your** python installation directory.
+
+Create an UI definition using **pygubu-designer** and save it to a file.
 
 [helloworld.ui] (examples/helloworld.ui)
 
