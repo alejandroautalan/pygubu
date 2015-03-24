@@ -83,7 +83,7 @@ class BindingsEditor:
         self.clear()
         self._curr_data = wdescr
         
-        self._allow_edit = CLASS_MAP[wclass].classobj.allow_bindings
+        self._allow_edit = CLASS_MAP[wclass].builder.allow_bindings
         if self._allow_edit:
             self._parent.grid()
         else:

@@ -123,12 +123,12 @@ class LayoutEditor(PropertiesEditor):
         max_row = wdescr.max_row
         max_col = wdescr.max_col
         wclass = wdescr.get_class()
-        class_descr = CLASS_MAP[wclass].classobj
-        max_children = CLASS_MAP[wclass].classobj.maxchildren
+        class_descr = CLASS_MAP[wclass].builder
+        max_children = CLASS_MAP[wclass].builder.maxchildren
         max_children = 0 if max_children is None else max_children
-        is_container = CLASS_MAP[wclass].classobj.container
-        layout_required = CLASS_MAP[wclass].classobj.layout_required
-        allow_container_layout = CLASS_MAP[wclass].classobj.allow_container_layout
+        is_container = CLASS_MAP[wclass].builder.container
+        layout_required = CLASS_MAP[wclass].builder.layout_required
+        allow_container_layout = CLASS_MAP[wclass].builder.allow_container_layout
         show_layout = layout_required
 
         #grid layout properties

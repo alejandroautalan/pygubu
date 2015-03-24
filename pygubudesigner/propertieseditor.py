@@ -117,7 +117,7 @@ class PropertiesEditor(object):
     def edit(self, wdescr):
         self._current = wdescr
         wclass = wdescr.get_class()
-        class_descr = CLASS_MAP[wclass].classobj
+        class_descr = CLASS_MAP[wclass].builder
         
         # GroupCode, PropertyType, dict, tuple
         groups = (

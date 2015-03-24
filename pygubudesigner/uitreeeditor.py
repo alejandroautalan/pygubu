@@ -277,11 +277,11 @@ class WidgetsTreeEditor(object):
     def _validate_add(self, root_item, classname, show_warnings=True):
         is_valid = True
 
-        new_boclass = builder.CLASS_MAP[classname].classobj
+        new_boclass = builder.CLASS_MAP[classname].builder
         root = root_item
         if root:
             root_classname = self.treedata[root].get_class()
-            root_boclass = builder.CLASS_MAP[root_classname].classobj
+            root_boclass = builder.CLASS_MAP[root_classname].builder
             # print('rootclass:', root_classname)
 
             allowed_children = root_boclass.allowed_children
@@ -448,7 +448,7 @@ class WidgetsTreeEditor(object):
         data = WidgetDescr(wclass, widget_id)
 
         # setup default values for properties
-        for pname in builder.CLASS_MAP[wclass].classobj.properties:
+        for pname in builder.CLASS_MAP[wclass].builder.properties:
             pdescription = {}
             if pname in properties.WIDGET_PROPERTIES:
                 pdescription = properties.WIDGET_PROPERTIES[pname]
@@ -463,7 +463,7 @@ class WidgetsTreeEditor(object):
         #
         #  default grid properties
         #
-        # is_container = builder.CLASS_MAP[wclass].classobj.container
+        # is_container = builder.CLASS_MAP[wclass].builder.container
         for prop_name in properties.GRID_PROPERTIES:
             pdescription = properties.LAYOUT_OPTIONS[prop_name]
             if wclass in pdescription:

@@ -110,7 +110,7 @@ def data_dict_to_xmlnode(data, translatable_props=None):
     for prop in ('id', 'class'):
         node.set(prop, data[prop])
 
-    wclass_props = sorted(CLASS_MAP[data['class']].classobj.properties)
+    wclass_props = sorted(CLASS_MAP[data['class']].builder.properties)
     for prop in wclass_props:
         pv = data['properties'].get(prop, None)
         if pv:
@@ -130,7 +130,7 @@ def data_dict_to_xmlnode(data, translatable_props=None):
         node.append(bind)
 
     # layout:
-    layout_required = CLASS_MAP[data['class']].classobj.layout_required
+    layout_required = CLASS_MAP[data['class']].builder.layout_required
     if layout_required:
         # create layout node
         layout = data['layout']
@@ -340,7 +340,7 @@ class Builder(object):
 
         if cname in CLASS_MAP:
             self._pre_process_data(data)
-            parent = CLASS_MAP[cname].classobj.factory(self, data)
+            parent = CLASS_MAP[cname].builder.factory(self, data)
             widget = parent.realize(master)
 
             self.objects[uniqueid] = parent
@@ -362,7 +362,7 @@ class Builder(object):
         cname = data['class']
         uniqueid = data['id']
         layout = data['layout']
-        layout_required = CLASS_MAP[cname].classobj.layout_required
+        layout_required = CLASS_MAP[cname].builder.layout_required
         if layout_required and not layout:
             logger.warning('No layout information for: (%s, %s).',
                            cname, uniqueid)

@@ -8,26 +8,26 @@ except:
 
 __all__ = [
     'BuilderObject', 'EntryBaseBO', 'PanedWindowBO', 'PanedWindowPaneBO',
-    'WidgetClassDescr', 'CLASS_MAP', 'CUSTOM_PROPERTIES',
+    'WidgetDescription', 'CLASS_MAP', 'CUSTOM_PROPERTIES',
     'register_widget', 'register_property']
 
 logging.basicConfig(level=logging.WARNING)
 logger = logging.getLogger('pygubu.builderobject')
 
 
-WidgetClassDescr = namedtuple('WidgetClassDescr',
-                              ['classname', 'classobj', 'label', 'tags'])
+WidgetDescription = namedtuple('WidgetDescription',
+                              ['classname', 'builder', 'label', 'tags'])
 
 CLASS_MAP = {}
 
 
-def register_widget(classname, classobj, label=None, tags=None):
+def register_widget(classname, builder, label=None, tags=None):
     if label is None:
         label = classname
     if tags is None:
         tags = tuple()
 
-    CLASS_MAP[classname] = WidgetClassDescr(classname, classobj, label, tags)
+    CLASS_MAP[classname] = WidgetDescription(classname, builder, label, tags)
 
 
 CUSTOM_PROPERTIES = {}
