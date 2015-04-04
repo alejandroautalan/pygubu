@@ -6,7 +6,7 @@ from pygubu.builder import Builder
 from pygubu.builder.builderobject import BuilderObject, register_widget
 
 
-__version__ = '0.9.7.2'
+__version__ = '0.9.7.3'
 
 
 class TkApplication:
