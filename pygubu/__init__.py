@@ -1,8 +1,9 @@
 from __future__ import unicode_literals
 
-__all__ = ['Builder', 'TkApplication']
+__all__ = ['Builder', 'TkApplication', 'BuilderObject', 'register_widget']
 
 from pygubu.builder import Builder
+from pygubu.builder.builderobject import BuilderObject, register_widget
 
 
 __version__ = '0.9.7.2'

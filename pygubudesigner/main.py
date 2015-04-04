@@ -47,7 +47,7 @@ from .i18n import translator
 from pygubu.widgets.accordionframe import AccordionFrame
 from pygubu.widgets.autoarrangeframe import AutoArrangeFrame
 import pygubu.widgets.simpletooltip as tooltip
-from pygubudesigner.preferences import PreferencesUI
+from pygubudesigner.preferences import PreferencesUI, get_custom_widgets
 
 #translator function
 _ = translator
@@ -62,6 +62,15 @@ mwpath = os.path.dirname(mwidgets.__file__)
 for mfile in os.listdir(mwpath):
     if mfile.endswith('.py') and not mfile.startswith('__'):
         modulename = "{0}.{1}".format(widgets_pkg, mfile[:-3])
+        importlib.import_module(modulename)
+
+#initialize custom widgets
+for path in get_custom_widgets():
+    dirname, fname = os.path.split(path)
+    if fname.endswith('.py'):
+        if dirname not in sys.path:
+            sys.path.append(dirname)
+        modulename = fname[:-3]
         importlib.import_module(modulename)
 
 #Initialize images

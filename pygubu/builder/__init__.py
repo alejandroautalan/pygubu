@@ -326,7 +326,20 @@ class Builder(object):
         if modulename.startswith('ttk.'):
             importlib.import_module('pygubu.builder.ttkstdwidgets')
         else:
-            importlib.import_module(modulename)
+            # Import module as full path
+            try:
+                importlib.import_module(modulename)
+            except ImportError as e:
+                # A single module can contain various widgets
+                # try to import the first part of the path
+                if '.' in modulename:
+                    first, last = modulename.rsplit('.', 1)
+                    try:
+                        importlib.import_module(first)
+                    except ImportError as e:
+                        importlib.import_module(last)
+                else:
+                    raise e
 
     def _realize(self, master, element):
         """Builds a widget from xml element using master as parent."""
