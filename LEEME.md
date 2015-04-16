@@ -54,7 +54,10 @@ Luego, crea tu aplicación como se muestra a continuación:
 
 ```python
 #prueba.py
-import tkinter as tk
+try:
+    import tkinter as tk
+except:
+    import Tkinter as tk
 import pygubu
 
 

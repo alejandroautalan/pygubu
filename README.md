@@ -57,7 +57,10 @@ your aplication script as shown below:
 
 ```python
 #test.py
-import tkinter as tk
+try:
+    import tkinter as tk
+except:
+    import Tkinter as tk
 import pygubu
 
 
