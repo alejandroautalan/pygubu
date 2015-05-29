@@ -47,31 +47,33 @@ from .i18n import translator
 from pygubu.widgets.accordionframe import AccordionFrame
 from pygubu.widgets.autoarrangeframe import AutoArrangeFrame
 import pygubu.widgets.simpletooltip as tooltip
+import pygubudesigner
 from pygubudesigner.preferences import PreferencesUI, get_custom_widgets
 
 #translator function
 _ = translator
 
-#initialize standard ttk widgets
-import pygubu.builder.ttkstdwidgets
+def init_pygubu_widgets():
+    #initialize standard ttk widgets
+    import pygubu.builder.ttkstdwidgets
 
-#initialize extra widgets
-widgets_pkg = 'pygubu.builder.widgets'
-mwidgets = importlib.import_module(widgets_pkg)
-mwpath = os.path.dirname(mwidgets.__file__)
-for mfile in os.listdir(mwpath):
-    if mfile.endswith('.py') and not mfile.startswith('__'):
-        modulename = "{0}.{1}".format(widgets_pkg, mfile[:-3])
-        importlib.import_module(modulename)
+    #initialize extra widgets
+    widgets_pkg = 'pygubu.builder.widgets'
+    mwidgets = importlib.import_module(widgets_pkg)
+    mwpath = os.path.dirname(mwidgets.__file__)
+    for mfile in os.listdir(mwpath):
+        if mfile.endswith('.py') and not mfile.startswith('__'):
+            modulename = "{0}.{1}".format(widgets_pkg, mfile[:-3])
+            importlib.import_module(modulename)
 
-#initialize custom widgets
-for path in get_custom_widgets():
-    dirname, fname = os.path.split(path)
-    if fname.endswith('.py'):
-        if dirname not in sys.path:
-            sys.path.append(dirname)
-        modulename = fname[:-3]
-        importlib.import_module(modulename)
+    #initialize custom widgets
+    for path in get_custom_widgets():
+        dirname, fname = os.path.split(path)
+        if fname.endswith('.py'):
+            if dirname not in sys.path:
+                sys.path.append(dirname)
+            modulename = fname[:-3]
+            importlib.import_module(modulename)
 
 #Initialize images
 DESIGNER_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -83,8 +85,7 @@ StockImage.register_from_dir(
     os.path.join(IMAGES_DIR, 'widgets', '16x16'), '16x16-')
 
 #Initialize logger
-logger = logging.getLogger('pygubu.designer')
-logger.setLevel(logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class StatusBarHandler(logging.Handler):
@@ -120,6 +121,9 @@ FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 
 class PygubuUI(pygubu.TkApplication):
     """Main gui class"""
+
+    def _init_before(self):
+        init_pygubu_widgets()
 
     def _create_ui(self):
         """Creates all gui widgets"""
@@ -529,12 +533,7 @@ def start_pygubu():
     app = PygubuUI(root)
     root.deiconify()
 
-    filename = None
-    if len(sys.argv) > 1:
-        farg = sys.argv[1]
-        if os.path.isfile(farg):
-            filename = farg
-
+    filename = pygubudesigner.args.filename
     if filename is not None:
         app.load_file(filename)
 
