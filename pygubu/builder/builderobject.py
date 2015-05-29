@@ -11,8 +11,7 @@ __all__ = [
     'WidgetDescription', 'CLASS_MAP', 'CUSTOM_PROPERTIES',
     'register_widget', 'register_property']
 
-logging.basicConfig(level=logging.WARNING)
-logger = logging.getLogger('pygubu.builderobject')
+logger = logging.getLogger(__name__)
 
 
 WidgetDescription = namedtuple('WidgetDescription',
@@ -35,6 +34,7 @@ CUSTOM_PROPERTIES = {}
 
 def register_property(name, description):
     CUSTOM_PROPERTIES[name] = description
+    logger.debug('Registered property {0}'.format(name))
 
 
 #

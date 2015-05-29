@@ -1,12 +1,18 @@
 from __future__ import unicode_literals
 
-__all__ = ['Builder', 'TkApplication', 'BuilderObject', 'register_widget']
+__all__ = ['Builder', 'TkApplication', 'BuilderObject', 'register_widget',
+           'register_property']
 
+import pygubu.builder.builderobject
 from pygubu.builder import Builder
 from pygubu.builder.builderobject import BuilderObject, register_widget
 
 
 __version__ = '0.9.7.3'
+
+
+def register_property(name, description):
+    return pygubu.builder.builderobject.register_property(name, description)
 
 
 class TkApplication:
