@@ -16,12 +16,16 @@
 #
 # For further info, check  http://pygubu.web.here
 from __future__ import unicode_literals
+import logging
+
 try:
     import tkinter as tk
 except:
     import Tkinter as tk
+
 from pygubu.builder import builderobject
 
+logger = logging.getLogger(__name__)
 
 # translator marker
 def _(x):
@@ -780,7 +784,8 @@ def _register_custom(name, descr):
         CUSTOM_OPTIONS[name] = descr
         WIDGET_PROPERTIES.update(CUSTOM_OPTIONS)
         WIDGET_CUSTOM_OPTIONS.append(name)
-
+        WIDGET_CUSTOM_OPTIONS.sort()
+        logger.debug('Registered property; {0}'.format(name))
 
 def register_property(name, descr):
     _register_custom(name, descr)
@@ -792,3 +797,4 @@ if not hasattr(builderobject, '_register_fixed_'):
     builderobject._register_fixed_ = True
     builderobject._old_register_property = builderobject.register_property
     builderobject.register_property = register_property
+    logger.debug('Installed custom register_property function')

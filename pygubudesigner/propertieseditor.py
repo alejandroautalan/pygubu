@@ -16,6 +16,7 @@
 #
 # For further info, check  http://pygubu.web.here
 from __future__ import unicode_literals, print_function
+import logging
 
 try:
     import tkinter as tk
@@ -29,6 +30,7 @@ from pygubudesigner.widgets.propertyeditor import create_editor
 from pygubudesigner import properties
 from pygubudesigner.i18n import translator as _
 
+logger = logging.getLogger(__name__)
 CLASS_MAP = builder.CLASS_MAP
 
 
@@ -78,6 +80,7 @@ class PropertiesEditor(object):
                 widget.grid(row=row, column=col+1, sticky=tk.EW, pady=2)
                 row += 1
                 self._propbag[gcode+name] = (label, widget)
+                logger.debug('Created property: {0}-{1}'.format(gname,name))
 
     def _create_editor(self, master, pname, wdata):
         editor = None
