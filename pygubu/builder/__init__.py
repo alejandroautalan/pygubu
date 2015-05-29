@@ -32,8 +32,7 @@ from pygubu.builder.builderobject import *
 from pygubu.stockimage import *
 import pygubu.builder.tkstdwidgets
 
-logging.basicConfig(level=logging.WARNING)
-logger = logging.getLogger('pygubu.builder')
+logger = logging.getLogger(__name__)
 
 
 def data_xmlnode_to_dict(element, translator=None):
@@ -226,10 +225,15 @@ class Builder(object):
         """Return a tk variable created with 'create_variable' method."""
         return self.tkvariables[varname]
         
-    def import_variables(self, container):
+    def import_variables(self, container, varnames=None):
         """Helper method to avoid call get_variable for every variable."""
-        for keyword in self.tkvariables:
-            setattr(container, keyword, self.tkvariables[keyword])
+        if varnames is None:
+            for keyword in self.tkvariables:
+                setattr(container, keyword, self.tkvariables[keyword])
+        else:
+            for keyword in varnames:
+                if keyword in self.tkvariables:
+                    setattr(container, keyword, self.tkvariables[keyword])
 
     def create_variable(self, varname, vtype=None):
         """Create a tk variable.
