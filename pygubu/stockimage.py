@@ -68,6 +68,24 @@ When image is used, the class maintains it on memory for tkinter"""
         logger.info('%s registered as %s' % (filename, key))
 
     @classmethod
+    def register_from_data(cls, key, format, data):
+        """Register a image data using key"""
+
+        if key in cls._stock:
+            logger.info('Warning, replacing resource ' + str(key))
+        cls._stock[key] = {'type': 'data', 'data': data, 'format': format }
+        logger.info('%s registered as %s' % ('data', key))
+
+    @classmethod
+    def register_created(cls, key, image):
+        """Register an already created image using key"""
+
+        if key in cls._stock:
+            logger.info('Warning, replacing resource ' + str(key))
+        cls._stock[key] = {'type': 'created', 'image': image}
+        logger.info('%s registered as %s' % ('data', key))
+
+    @classmethod
     def is_registered(cls, key):
         return key in cls._stock
 
@@ -91,8 +109,11 @@ When image is used, the class maintains it on memory for tkinter"""
 
         v = cls._stock[rkey]
         img = None
-        if v['type'] == 'stock':
+        itype = v['type']
+        if itype in ('stock', 'data'):
             img = tk.PhotoImage(format=v['format'], data=v['data'])
+        elif itype == 'created':
+            img = v['image']
         else:
             img = tk.PhotoImage(file=v['filename'])
         cls._cached[rkey] = img
