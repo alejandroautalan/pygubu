@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+import logging
 
 try:
     import tkinter as tk
@@ -8,6 +9,7 @@ except:
 from .builderobject import BuilderObject, register_widget, EntryBaseBO
 from .builderobject import PanedWindowBO, PanedWindowPaneBO
 
+logger = logging.getLogger(__name__)
 
 #
 # tkinter widgets
@@ -443,7 +445,15 @@ class TKMenuitem(BuilderObject):
         itemproperties = dict(self.properties)
         self._setup_item_properties(itemproperties)
         master.add(self.itemtype, **itemproperties)
-        self.__index = master.index(tk.END)
+        index = master.index(tk.END)
+        # TODO: index of items is shifted if tearoff is changed
+        # for now check tearoff config and recalculate index.
+        has_tearoff = True if master.type(0) == 'tearoff' else False
+        tearoff_conf = parent.properties.get('tearoff', '1')
+        offset = 0
+        if has_tearoff and tearoff_conf in ('0', 'false'):
+            offset = 1
+        self.__index = index - offset
         return self.widget
 
     def _setup_item_properties(self, itemprops):
