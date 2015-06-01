@@ -3,7 +3,7 @@ import argparse
 
 # Setup logging level
 parser = argparse.ArgumentParser()
-parser.add_argument('filename')
+parser.add_argument('filename', nargs='?')
 parser.add_argument('--loglevel')
 args = parser.parse_args()
 
