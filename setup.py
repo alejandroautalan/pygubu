@@ -157,7 +157,7 @@ setup(
     cmdclass={
         'install': CustomInstall,
     },
-    install_requires=['appdirs>=1.4'],
+    install_requires=['appdirs>=1.3'],
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
