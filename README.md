@@ -1,59 +1,71 @@
 [Leer en español] (LEEME.md)
 
-Welcome to pygubu a GUI designer for tkinter
+Welcome to Pygubu!
 ============================================
 
-Pygubu is a RAD tool to enable quick & easy development of user interfaces
-for the python tkinter module.
+`Pygubu` is a [RAD tool](https://en.wikipedia.org/wiki/Rapid_application_development) to enable quick and easy development of user interfaces for the Python's `tkinter` module.
 
-The user interfaces designed are saved as XML, and by using the pygubu builder
-these can be loaded by applications dynamically as needed.
-Pygubu is inspired by Glade.
+The user interfaces designed are saved as [XML](https://en.wikipedia.org/wiki/XML) files, and, by using the _pygubu builder_, these can be loaded by applications dynamically as needed.
+
+Pygubu is inspired by [Glade](https://glade.gnome.org).
 
 Installation
-============
+====
 
-Pygubu requires python >= 2.7 (Tested only in python 2.7.3 and 3.2.3 with tk8.5)
+Pygubu requires Python >= 2.7 (Tested only in Python 2.7.3 and 3.2.3 with tk8.5).
 
-Using zip tarball:
+You can install pygubu using:
 
-Download and extract the tarball. Open a console in the extraction path
- and execute:
+### `zip tarball`
+
+Download and extract the tarball. Open a console in the extraction path and execute:
 
 ```
 python setup.py install
 ```
 
-Using pip:
+### `pip`
 
 ```
 pip install pygubu
 ```
 
+Note that if you are using a Python 3 version, you might want to use its `pip` tool, for example:
+
+    pip3.5 install pygubu
+    
+In the previous case, I am using the `pip` tool of Python 3.5.    
 
 Usage
 =====
 
-On unix like systems start the designer using:
+Type on the terminal one of the following commands depending on your system.
+
+### Unix-like systems
 
 ```
 pygubu-designer
 ```
 
-On Windows use:
+### Windows
 
 ```
-c:\Python34\Scripts\pygubu-designer.bat
+C:\Python34\Scripts\pygubu-designer.bat
 ```
 
-Where 'c:\Python34' is **your** python installation directory.
+Where `C:\Python34` is the path to **your** Python installation directory.
+
+---
+
+The following _pygubu-designer_ interface should appear:
+
+
 
 Create an UI definition using **pygubu-designer** and save it to a file.
 
 [helloworld.ui] (examples/helloworld.ui)
 
-Then, create
-your aplication script as shown below:
+Then, create your aplication script as shown below:
 
 ```python
 #test.py
