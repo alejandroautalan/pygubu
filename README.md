@@ -16,7 +16,7 @@ Pygubu requires Python >= 2.7 (Tested only in Python 2.7.3 and 3.2.3 with tk8.5)
 
 You can install pygubu using:
 
-### `zip tarball`
+### zip tarball
 
 Download and extract the [tarball](http://searchenterpriselinux.techtarget.com/definition/tarball). Open a console in the extraction path and execute:
 
@@ -24,7 +24,7 @@ Download and extract the [tarball](http://searchenterpriselinux.techtarget.com/d
 python setup.py install
 ```
 
-### `pip`
+### pip
 
 ```
 pip install pygubu
