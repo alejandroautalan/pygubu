@@ -18,7 +18,7 @@ You can install pygubu using:
 
 ### `zip tarball`
 
-Download and extract the tarball. Open a console in the extraction path and execute:
+Download and extract the [tarball](http://searchenterpriselinux.techtarget.com/definition/tarball). Open a console in the extraction path and execute:
 
 ```
 python setup.py install
@@ -34,7 +34,14 @@ Note that if you are using a Python 3 version, you might want to use its `pip` t
 
     pip3.5 install pygubu
     
-In the previous case, I am using the `pip` tool of Python 3.5.    
+In the previous case, I am using the `pip` tool of Python 3.5.  
+
+
+To check that the installation was successful, you can try to import `pygubu` (for example from the [IDLE](https://en.wikipedia.org/wiki/IDLE_(Python)))
+
+    import pygubu
+    
+If you have no `ImportError`, then your installation was successful.
 
 Usage
 =====
@@ -55,11 +62,10 @@ C:\Python34\Scripts\pygubu-designer.bat
 
 Where `C:\Python34` is the path to **your** Python installation directory.
 
----
 
 The following _pygubu-designer_ interface should appear:
 
-
+[]()
 
 Create an UI definition using **pygubu-designer** and save it to a file.
 
