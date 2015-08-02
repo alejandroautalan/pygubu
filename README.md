@@ -144,7 +144,7 @@ builder.add_from_file('helloworld.ui')
 You should insert the _filename_ (or path) of your just saved UI definition.
 
 
-Note also that instead of `'mainwindow'` in the following line
+Note also that instead of `'mainwindow'` in the following line:
 
 ```python
 self.mainwindow = builder.get_object('mainwindow', master)
