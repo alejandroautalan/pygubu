@@ -163,7 +163,7 @@ Documentation
 Visit the pygubu [wiki](https://github.com/alejandroautalan/pygubu/wiki) for more documentation.
 
 
-The following are some good tkinter references:
+The following are some good tkinter (and tk) references:
 
 - [TkDocs](http://www.tkdocs.com)
 - [Graphical User Interfaces with Tk](http://docs.python.org/3.5/library/tk.html)
@@ -172,7 +172,7 @@ The following are some good tkinter references:
 - [Tcl/Tk 8.5 Manual](http://www.tcl.tk/man/tcl8.5/)
 
 
-See the [examples](examples) directory or watch this introductory [video tutorial](http://youtu.be/wuzV9P8geDg).
+You can also see the [examples](examples) directory or watch [this introductory video tutorial](http://youtu.be/wuzV9P8geDg).
 
 
 History
