@@ -54,7 +54,7 @@ Ejecuta el diseñador ejecutando en una consola los siguientes comandos, dependi
 pygubu-designer
 ```
 
-## Windows:
+### Windows:
 
 ```
 c:\Python34\Scripts\pygubu-designer.bat
@@ -71,12 +71,12 @@ Ahora, puedes comenzar a crear tu aplicación tkinter usando los widgets que enc
 
 Luego de finalizar la creación de tu _interface de usuario_, grabala en un archivo`.ui` con la opción `Archivo > Guardar` del menu principal.
 
-El siguiente es un ejemplo de interfaz de usuario denominado [helloworld.ui] (examples/helloworld.ui) creado usando pygubu-designer:
+El siguiente es un ejemplo de interfaz de usuario denominado [holamundo.ui] (examples/holamundo.ui) creado usando pygubu-designer:
 
 ```xml
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
-  <object class="ttk.Frame" id="mainwindow">
+  <object class="ttk.Frame" id="mainframe">
     <property name="height">200</property>
     <property name="padding">20</property>
     <property name="width">200</property>
@@ -91,7 +91,7 @@ El siguiente es un ejemplo de interfaz de usuario denominado [helloworld.ui] (ex
         <property name="anchor">center</property>
         <property name="font">Helvetica 26</property>
         <property name="foreground">#0000b8</property>
-        <property name="text" translatable="yes">Hello World !</property>
+        <property name="text" translatable="yes">Hola Mundo !</property>
         <layout>
           <property name="column">0</property>
           <property name="propagate">True</property>
@@ -100,7 +100,7 @@ El siguiente es un ejemplo de interfaz de usuario denominado [helloworld.ui] (ex
       </object>
     </child>
   </object>
-</interface
+</interface>
 ```
 
 Luego, crea tu _aplicación_ como se muestra a continuación:
@@ -124,7 +124,7 @@ class Application:
         builder.add_from_file('holamundo.ui')
 
         #3: Crea el widget usando 'master' como padre
-        self.mainwindow = builder.get_object('mainwindow', master)
+        self.mainwindow = builder.get_object('mainframe', master)
 
 
 if __name__ == '__main__':
@@ -133,19 +133,19 @@ if __name__ == '__main__':
     root.mainloop()
 ```
 
-Ten en cuenta que en lugar de `helloworld.ui` en la línea:
+Ten en cuenta que en lugar de `holamundo.ui` en la línea:
 
 ```python
-builder.add_from_file('helloworld.ui')
+builder.add_from_file('holamundo.ui')
 ```
 
 Debes insertar el _nombre de archivo_ (o path) de la interfaz de usuario que acabas de grabar.
 
 
-Ten en cuenta además que en lugar de `'mainwindow'` en la línea:
+Ten en cuenta además que en lugar de `'mainframe'` en la línea:
 
 ```python
-self.mainwindow = builder.get_object('mainwindow', master)
+self.mainwindow = builder.get_object('mainframe', master)
 ```
 
 Debes tener el nombre del _widget principal_ (el padre de todos los widgets), en caso contrario obtendras un error similar al siguiente::
