@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="ttk.Frame" id="mainframe">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="tk.Text" id="Text_1">
+        <property name="height">10</property>
+        <property name="state">disabled</property>
+        <property name="text" translatable="yes">In the designer:
+- Add a text widget
+- Set state to disabled
+- Enter content in the text property
+- Text content should be set by pygubu-designer.</property>
+        <property name="width">50</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>
