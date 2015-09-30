@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="ttk.Frame" id="mainwindow">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="ttk.Combobox" id="combobox1">
+        <property name="invalidcommand">cbox_invalid</property>
+        <property name="invalidcommand_args">%P</property>
+        <property name="validate">key</property>
+        <property name="validatecommand">cbox_validate</property>
+        <property name="validatecommand_args">%d %P</property>
+        <property name="values">option1 option2 option3</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>

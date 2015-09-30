@@ -93,8 +93,8 @@ register_widget('ttk.Radiobutton', TTKRadiobutton,
 class TTKCombobox(TTKWidgetBO):
     OPTIONS_SPECIFIC = ('exportselection', 'justify', 'height',
                         'postcommand', 'state', 'textvariable', 'values',
-                        'width', 'validatecommand', 'invalidcommand',
-                        'xscrollcommand')
+                        'width', 'validate', 'validatecommand',
+                        'invalidcommand', 'xscrollcommand')
     OPTIONS_CUSTOM = ('validatecommand_args', 'invalidcommand_args')
     class_ = ttk.Combobox
     container = False
