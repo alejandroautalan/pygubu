@@ -105,7 +105,7 @@ The following is a UI definition example called [helloworld.ui] (examples/hellow
 </interface
 ```
 
-Then, you should create your _aplication script_ as shown below:
+Then, you should create your _application script_ as shown below:
 
 ```python
 #test.py
