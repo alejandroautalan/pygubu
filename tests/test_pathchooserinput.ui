@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="ttk.Frame" id="mainwindow">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="pygubu.builder.widgets.pathchooserinput" id="pathchooserinput1">
+        <property name="path">/home/user</property>
+        <property name="type">file</property>
+        <bind add="" handler="on_path_changed" sequence="&lt;&lt;PathChooserPathChanged&gt;&gt;" />
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>
