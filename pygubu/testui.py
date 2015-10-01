@@ -21,6 +21,7 @@ from __future__ import unicode_literals
 
 import sys
 import os
+import argparse
 try:
     import tkinter as tk
 except:
@@ -36,28 +37,50 @@ from pygubu import Builder, TkApplication
 
 
 class UITester(TkApplication):
+    def __init__(self, uifile, rootwidget, rootmenu=None, master=None):
+        self.uifile = uifile
+        self.rootwidget = rootwidget
+        self.rootmenu = rootmenu
+        TkApplication.__init__(self, master)
+
     def _create_ui(self):
         self.builder = Builder()
-        self.builder.add_from_file(sys.argv[1])
-        self.builder.get_object('mainwindow', self.master)
+        self.builder.add_from_file(self.uifile)
+        self.builder.get_object(self.rootwidget, self.master)
 
-        try:
-            menu = self.builder.get_object('mainmenu', top)
+        if self.rootmenu:
+            menu = self.builder.get_object(self.rootmenu, top)
             self.set_menu(menu)
-        except:
-            pass
 
         #show callbacks defined
-        self.builder.connect_callbacks({})
+        bag = {}
+        callbacks = self.builder.connect_callbacks({})
+        if callbacks is not None:
+            for cb in callbacks:
+                def create_cb(cbname):
+                    def dummy_cb(event=None):
+                        print('on:', cbname)
+                    return dummy_cb
+                bag[cb] = create_cb(cb)
+            self.builder.connect_callbacks(bag)
+            
 
-        self.set_title('Pygubu UI tester')
+        self.set_title('Pygubu UI Tester')
         self.set_resizable()
 
-if len(sys.argv) == 1:
-    print('Nombre archivo:')
-    filename = input()
-    sys.argv = [sys.argv[0], filename]
+
+def main():
+    # Setup logging level
+    parser = argparse.ArgumentParser()
+    parser.add_argument('filename', help='.ui file')
+    parser.add_argument('rootwidget', default='mainwindow', nargs='?',
+                        help='Toplevel widget (default: mainwidow)')    
+    parser.add_argument('rootmenu', default=None, nargs='?',
+                        help='Toplevel menu (default: None)',)
+    args = parser.parse_args()
+    app = UITester(args.filename, args.rootwidget, args.rootmenu, tk.Tk())
+    app.run()
+
 
 if __name__ == '__main__':
-    app = UITester(tk.Tk())
-    app.run()
+    main()
