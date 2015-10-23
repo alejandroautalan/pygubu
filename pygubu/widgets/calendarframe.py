@@ -57,20 +57,24 @@ class CalendarFrame(ttk.Frame):
     timedelta = calendar.datetime.timedelta
 
     def __init__(self, master=None, **kw):
+        self.__cb = None  # For callback check.
+
+        fwday = kw.pop('firstweekday', calendar.SUNDAY)
+        year = kw.pop('year', self.datetime.now().year)
+        month = kw.pop('month', self.datetime.now().month)
+        locale = kw.pop('locale', None)
+
         ttk.Frame.__init__(self, master, **kw)
         
+        # Calendar variables
+        self._date = self.datetime(year, month, 1)
+        self._cal = get_calendar(locale, fwday)
+        self._weeks = self._cal.monthdayscalendar(year, month)
+        self._selection = None
+        
+        # Canvas variables
         self._sel_bg = '#ecffc4'
         self._sel_fg = '#05640e'
-        
-        self.__cb = None
-        #calendar variables
-        year = 2015
-        month = 9
-        self._date = self.datetime(year, month, 1)
-        self._cal = get_calendar(None, calendar.MONDAY)
-        self._weeks = self._cal.monthdayscalendar(year, month)
-        
-        #Canvas variables
         self._rheader = None
         self._theader = [ 0 for x in range(0, 7)]
         self._recmat = [ 0 for x in rowmajor(6, 7) ]
@@ -84,66 +88,101 @@ class CalendarFrame(ttk.Frame):
         # BUILD UI
         # mainframe widget
         mainframe = self
-        mainframe.configure(width='200', height='200', padding='2')
+        mainframe.configure(width='200', padding='2', height='200')
         # frame2 widget
         frame2 = ttk.Frame(mainframe)
         frame2.configure(width='200', height='200')
         # bpmonth widget
         bpmonth = ttk.Button(frame2)
-        bpmonth.configure(style='Toolbutton', width='2', text='L')
-        bpmonth.grid(column='0', row='0')
+        bpmonth.configure(style='Toolbutton', text='L')
+        bpmonth.grid(row='0', column='0')
         bpmonth.propagate(True)
-        # lmonth widget
-        lmonth = ttk.Label(frame2)
-        lmonth.configure(anchor='center', text='Enero')
-        lmonth.grid(ipadx='5', row='0', column='1', sticky='ew')
-        lmonth.propagate(True)
         # bnmonth widget
         bnmonth = ttk.Button(frame2)
-        bnmonth.configure(style='Toolbutton', width='2', text='R')
-        bnmonth.grid(column='2', row='0')
+        bnmonth.configure(style='Toolbutton', text='R')
+        bnmonth.grid(row='0', column='1')
         bnmonth.propagate(True)
+        # lmonth widget
+        lmonth = ttk.Label(frame2)
+        lmonth.configure(text='Enero', anchor='center')
+        lmonth.grid(sticky='ew', column='2', row='0', ipadx='5')
+        lmonth.propagate(True)
+        # btoday widget
+        btoday = ttk.Button(frame2)
+        btoday.configure(style='Toolbutton')
+        btoday.grid(sticky='ew', column='3', row='0')
+        btoday.propagate(True)
         # bpyear widget
         bpyear = ttk.Button(frame2)
-        bpyear.configure(style='Toolbutton', width='2', text='L')
-        bpyear.grid(padx='5', column='4', row='0')
+        bpyear.configure(style='Toolbutton', text='L')
+        bpyear.grid(row='0', column='4')
         bpyear.propagate(True)
-        # lyear widget
-        lyear = ttk.Label(frame2)
-        lyear.configure(anchor='center', text='2015')
-        lyear.grid(ipadx='5', row='0', column='5', sticky='ew')
-        lyear.propagate(True)
         # bnyear widget
         bnyear = ttk.Button(frame2)
-        bnyear.configure(style='Toolbutton', width='2', text='R')
-        bnyear.grid(column='6', row='0')
+        bnyear.configure(style='Toolbutton', text='R')
+        bnyear.grid(row='0', column='5')
         bnyear.propagate(True)
-        frame2.grid(row='0', column='0', sticky='ew')
+        # lyear widget
+        lyear = ttk.Label(frame2)
+        lyear.configure(text='2015', anchor='center')
+        lyear.grid(sticky='ew', column='6', row='0', ipadx='5')
+        lyear.propagate(True)
+        frame2.grid(sticky='ew', column='0', row='0')
         frame2.propagate(True)
         frame2.columnconfigure(3, minsize='20', weight='1')
         # canvas widget
         canvas = tk.Canvas(mainframe)
-        canvas.configure(highlightthickness='0', borderwidth='0', background='#ffffff', height='180')
-        canvas.configure(width='260')
-        canvas.grid(row='1', column='0', sticky='nsew')
+        canvas.configure(width='240', background='#ffffff', borderwidth='0', highlightthickness='0')
+        canvas.configure(height='140')
+        canvas.grid(sticky='nsew', column='0', row='1')
         canvas.propagate(True)
-        mainframe.grid(row='0', column='0', sticky='nsew')
+        mainframe.grid(sticky='nsew', column='0', row='0')
         mainframe.propagate(True)
-        mainframe.rowconfigure(1, weight='1')
         mainframe.rowconfigure(0, weight='0')
+        mainframe.rowconfigure(1, weight='1')
         mainframe.columnconfigure(0, weight='1')
         
         self.__img_prev = imgp = tk.PhotoImage(data=imgp_data)
         self.__img_next = imgn = tk.PhotoImage(data=imgn_data)
-        bpmonth.configure(image=imgp)
-        bnmonth.configure(image=imgn)
-        bpyear.configure(image=imgp)
-        bnyear.configure(image=imgn)
+        self._lmonth = lmonth
+        self._lyear = lyear
+        callback = lambda event=None: self._change_date('month', -1)
+        bpmonth.configure(image=imgp, command=callback)
+        callback = lambda event=None: self._change_date('month', 1)
+        bnmonth.configure(image=imgn, command=callback)
+        callback = lambda event=None: self._change_date('year', -1)
+        bpyear.configure(image=imgp, command=callback)
+        callback = lambda event=None: self._change_date('year', 1)
+        bnyear.configure(image=imgn, command=callback)
+        today = self.datetime.now()
+        callback = lambda event=None: self._set_date(today)
+        btoday.configure(command=callback)
         canvas.bind('<Configure>', self._on_canvas_configure)
         self._canvas = canvas
-        self._draw_canvas(canvas)
+        self._draw_calendar(canvas)
         self._canvas.tag_bind('cell', '<Button-1>', self._on_cell_clicked)
         
+    def _set_date(self, newdate):
+        self._date = newdate
+        self._weeks = self._cal.monthdayscalendar(newdate.year, newdate.month)
+        self._redraw_calendar()
+    
+    def _change_date(self, element, direction):
+        newdate = None
+        if element == 'month':
+            if direction == -1:
+                newdate = self._date - self.timedelta(days=1)
+                newdate = self.datetime(newdate.year, newdate.month, 1)
+            else:
+                year, month = self._date.year, self._date.month
+                newdate = (self._date + 
+                           self.timedelta(days=calendar.monthrange(year, month)[1] + 1))
+                newdate = self.datetime(newdate.year, newdate.month, 1)
+        elif element == 'year':
+            year = self._date.year + direction
+            newdate = self.datetime(year, self._date.month, 1)
+        self._set_date(newdate)
+    
     def _on_cell_clicked(self, event=None):
         if self._selected_day_idx is not None:
             self._draw_day(self._selected_day_idx, marked=False)
@@ -160,6 +199,7 @@ class CalendarFrame(ttk.Frame):
             self._draw_day(idx)
     
     def _draw_day(self, idx, marked=True):
+        """Highlight day in calendar."""
         if marked:
             self._canvas.itemconfigure(self._recmat[idx], fill=self._sel_bg)
             self._canvas.itemconfigure(self._txtmat[idx], fill=self._sel_fg)
@@ -167,7 +207,15 @@ class CalendarFrame(ttk.Frame):
             self._canvas.itemconfigure(self._recmat[idx], fill='white')
             self._canvas.itemconfigure(self._txtmat[idx], fill='black')
 
-    def _draw_canvas(self, canvas, redraw=False):
+    def _draw_calendar(self, canvas, redraw=False):
+        """Draws calendar."""
+        # Update labels:
+        name = self._cal.formatmonthname(self._date.year, self._date.month, 0,
+                                         withyear=False)
+        self._lmonth.configure(text=name.title())
+        self._lyear.configure(text=str(self._date.year))
+        
+        # Update calendar
         ch = canvas.winfo_height()
         cw = canvas.winfo_width()
         rowh = ch / 7.0
@@ -203,7 +251,7 @@ class CalendarFrame(ttk.Frame):
             else:
                 rec = canvas.create_rectangle(x, y, x1, y1, width=1,
                                           fill='white', outline='white',
-                                          activeoutline='blue',
+                                          activeoutline='gray',
                                           activewidth=1, tags='cell')
                 self._recmat[i] = rec
         
@@ -230,15 +278,14 @@ class CalendarFrame(ttk.Frame):
                 self._txtmat[i] = canvas.create_text(x, y, text=txt,
                                                      state=tk.DISABLED)
     
-    def _redraw(self):
-        self._draw_canvas(self._canvas, redraw=True)
+    def _redraw_calendar(self):
+        self._draw_calendar(self._canvas, redraw=True)
         # after idle callback trick
         self.__cb = None
     
     def _on_canvas_configure(self, event=None):
-        print('on_canvas_configure')
         if self.__cb is None:
-            self.__cb = self.after_idle(self._redraw)
+            self.__cb = self.after_idle(self._redraw_calendar)
 
     def configure(self, cnf=None, **kw):
         args = tk._cnfmerge((cnf, kw))
@@ -264,7 +311,7 @@ class CalendarFrame(ttk.Frame):
 
 if __name__ == '__main__':
     root = tk.Tk()
-    c = CalendarFrame(root)
+    c = CalendarFrame(root, locale='es_AR.utf8')
     c.grid()
     root.rowconfigure(0, weight=1)
     root.columnconfigure(0, weight=1)
