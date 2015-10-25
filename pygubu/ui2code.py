@@ -68,7 +68,8 @@ class UI2Code(object):
         prop_stmt = "{0}.configure({1})"
         arg_stmt = "{0}='{1}'"
         properties = data['properties']
-        for g in grouper(properties.keys(), 4):
+        sorted_keys = sorted(properties.keys())
+        for g in grouper(sorted_keys, 4):
             args_bag = []
             for p in g:
                 if p is not None:
@@ -90,25 +91,25 @@ class UI2Code(object):
         layout = data['layout']
         if layout:
             args_bag = []
-            for p, v in layout.items():
+            for p, v in sorted(layout.items()):
                 if p not in ('columns', 'rows', 'propagate'):
                     args_bag.append(arg_stmt.format(p, v))
             args = ', '.join(args_bag)
             print(layout_stmt.format(uniqueid, args))
-            if 'propagate' in layout:
+            if 'propagate' in layout and layout['propagate'] == 'False': 
                 print('{0}.propagate({1})'.format(uniqueid, layout['propagate']))
             # rows
             for idx, pd in layout['rows'].items():
                 args_bag = []
-                for p, v in pd.items():
+                for p, v in sorted(pd.items()):
                     args_bag.append(arg_stmt.format(p, v))
                 if args_bag:
                     args = ', '.join(args_bag)
                     print(lrow_stmt.format(uniqueid, idx, args))
             # cols
-            for idx, pd in layout['columns'].items():
+            for idx, pd in sorted(layout['columns'].items()):
                 args_bag = []
-                for p, v in pd.items():
+                for p, v in sorted(pd.items()):
                     args_bag.append(arg_stmt.format(p, v))
                 if args_bag:
                     args = ', '.join(args_bag)
