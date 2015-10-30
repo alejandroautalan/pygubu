@@ -1,6 +1,9 @@
 # encoding: utf8
 from __future__ import unicode_literals
 
+__all__ = ['Calendar']
+
+import locale
 import calendar
 try:
     import tkinter as tk
@@ -44,7 +47,7 @@ def matrix_coords(rows, cols, rowh, colw, ox=0, oy=0):
         yield (i, x, y, x1, y1)
 
 
-class CalendarFrame(ttk.Frame):
+class Calendar(ttk.Frame):
     """ Allows to choose a date in a calendar.
     
     WIDGET-SPECIFIC OPTIONS
@@ -63,11 +66,17 @@ class CalendarFrame(ttk.Frame):
         self.__redraw_cb = None  # For redraw callback check.
         self.__markdays_cb = None  # For markdays callback check.
 
+        sysloc = locale.getlocale(locale.LC_TIME)
+        if None in sysloc:
+            sysloc = None
+        else:
+            sysloc = '{0}.{1}'.format(*sysloc)
+
         self.__options = options = {
             'firstweekday': calendar.SUNDAY,
             'year': self.datetime.now().year,
             'month': self.datetime.now().month,
-            'locale': None,
+            'locale': sysloc,
             'calendarfg': 'black',
             'calendarbg': 'white',
             'headerfg': 'black',            
@@ -115,20 +124,29 @@ class CalendarFrame(ttk.Frame):
             if key in args:
                 self.__options[key] = args.pop(key)
                 color_change = True
+        
         calendar_change = False
-        for key in ('locale', 'firstweekday'):
-            if key in args:
-                self.__options[key] = args.pop(key)
-                calendar_change = True
+        key = 'locale'
+        if key in args:
+            value = locale.normalize(args.pop(key))
+            self.__options[key] = value
+            calendar_change = True
+        key = 'firstweekday'
+        if key in args:
+            value = args.pop(key)
+            self.__options[key] = int(value)
+            calendar_change = True
         if calendar_change:
             self._reconfigure_calendar()
+        
         date_change = False
         for key in ('year', 'month'):
             if key in args:
-                self.__options[key] = args.pop(key)
+                self.__options[key] = int(args.pop(key))
                 date_change = True
         if date_change:
             self._reconfigure_date()
+        
         if color_change or calendar_change or date_change:
             self._redraw_calendar()
         ttk.Frame.configure(self, args)
@@ -449,8 +467,9 @@ class CalendarFrame(ttk.Frame):
 if __name__ == '__main__':
     import random
     
+    locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
     root = tk.Tk()
-    c = CalendarFrame(root, locale='es_AR.utf8')
+    c = Calendar(root)
     c.grid()
     
     # select day
