@@ -8,13 +8,13 @@ import shlex
 
 gtk_imgs = {
     'widget-gtk-button.png': ('ttk.Button', 'tk.Button'),
-    'widget-gtk-calendar.png': ('tk.Calendar',),
+    'widget-gtk-calendar.png': ('tk.Calendar', 'pygubu.builder.widgets.calendarwidget'),
     'widget-gtk-checkbutton.png': ('tk.Checkbutton', 'ttk.Checkbutton'),
     'widget-gtk-checkmenuitem.png': ('tk.Menuitem.Checkbutton',),
-    'widget-gtk-combobox.png': ('ttk.Combobox',),
+    'widget-gtk-combobox.png': ('ttk.Combobox', 'pygubu.builder.widgets.combobox'),
     'widget-gtk-default.png': ('tk.default',),
     'widget-gtk-drawingarea.png': ('tk.Canvas',),
-    'widget-gtk-entry.png': ('tk.Entry', 'ttk.Entry'),
+    'widget-gtk-entry.png': ('tk.Entry', 'ttk.Entry', 'pygubu.builder.widgets.pathchooserinput'),
     'widget-gtk-frame.png': ('tk.Frame', 'ttk.Frame'),
     'widget-gtk-hscale.png': ('tk.Scale', 'ttk.Scale'),
     'widget-gtk-hscrollbar.png': ('tk.Scrollbar', 'ttk.Scrollbar'),
