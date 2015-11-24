@@ -23,7 +23,7 @@ import sys
 import os
 
 # this will be replaced at install time
-INSTALLED_BASE_DIR = "@ INSTALLED_BASE_DIR @"
+INSTALLED_BASE_DIR = r"@ INSTALLED_BASE_DIR @"
 
 # get the replaced-at-install-time name if exists, or the project one
 if os.path.exists(INSTALLED_BASE_DIR):
