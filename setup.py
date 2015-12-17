@@ -7,7 +7,7 @@ Needed packages to run (using Debian/Ubuntu package names):
 
     python3-tk
 """
-
+from __future__ import print_function
 import sys
 import os
 import shutil
@@ -16,19 +16,12 @@ import pygubu
 
 VERSION = pygubu.__version__
 
-with_setuptools = False
-if 'USE_SETUPTOOLS' in os.environ or 'pip' in __file__:
-    try:
-        from setuptools.command.install import install
-        from setuptools import setup
-        with_setuptools = True
-    except:
-        with_setuptools = False
-
-if with_setuptools is False:
+try:
+    from setuptools.command.install import install
+    from setuptools import setup
+except:
     from distutils.command.install import install
     from distutils.core import setup
-
 
 class CustomInstall(install):
     """Custom installation class on package files.
@@ -39,24 +32,6 @@ class CustomInstall(install):
         install.run(self)
 
         #
-        # fix installation path in the script(s)
-        for script in self.distribution.scripts:
-            script_path = os.path.join(self.install_scripts,
-                                       os.path.basename(script))
-
-            with open(script_path) as fh:
-                content = fh.read()
-
-            ipath = os.path.abspath(self.install_lib)
-            content = content.replace('@ INSTALLED_BASE_DIR @', ipath)
-
-            with open(script_path, 'w') as fh:
-                fh.write(content)
-
-            if platform.system() == 'Windows':
-                dest = script_path + '.py'
-                shutil.move(script_path, dest)
-        #
         # Remove old pygubu.py from scripts path if exists
         spath = os.path.join(self.install_scripts, 'pygubu')
         for ext in ('.py', '.pyw'):
@@ -66,11 +41,10 @@ class CustomInstall(install):
         #
         # Create .bat file on windows
         if platform.system() == 'Windows':
-            pdpath = os.path.join(self.install_scripts, 'pygubu-designer.py')
-            batpath = os.path.join(self.install_scripts,
-                                    'pygubu-designer.bat')
+            batfilename = 'pygubu-designer.bat'
+            batpath = os.path.join(self.install_scripts, batfilename)
             with open(batpath, 'w') as batfile:
-                content = "{0} {1}".format(sys.executable, pdpath)
+                content = "{0} -m pygubudesigner".format(sys.executable)
                 batfile.write(content)
 
 
