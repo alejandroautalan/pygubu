@@ -1,18 +1,20 @@
 #!/bin/sh
+python3bin=$(which python3)
+echo " ============="
+echo " Default Python 3: $python3bin "
+echo " version: $($python3bin --version)"
+echo " tk version :$($python3bin -c 'import tkinter; print(tkinter.TkVersion)')"
 
-echo "============="
-echo " Python 3.4.0 (debian package)"
-echo " tk 8.6 (debian package)"
-
-cd tests; python3.4 -m unittest; cd ..;
+cd tests; $python3bin -m unittest; cd ..;
 
 
-echo ""
-echo "============="
-echo " Python 2.7 (debian package)"
-echo " tk 8.5 (debian package)"
+python2bin=$(which python)
+echo " ============="
+echo " Default Python 2: $python2bin"
+echo " version: $($python2bin --version)"
+echo " tk version :$($python2bin -c 'import Tkinter; print(Tkinter.TkVersion)')"
 
-cd tests; python2.7 -m unittest discover; cd ..;
+cd tests; $python2bin -m unittest discover; cd ..;
 
 
 echo ""
