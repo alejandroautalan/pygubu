@@ -1,3 +1,4 @@
+# encoding: utf8
 # menu.py
 import tkinter as tk
 from tkinter import messagebox

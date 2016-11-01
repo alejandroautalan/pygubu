@@ -1,3 +1,4 @@
+# encoding: utf8
 from __future__ import unicode_literals
 
 __all__ = ['Builder', 'TkApplication', 'BuilderObject', 'register_widget',

@@ -1,3 +1,4 @@
+# encoding: utf8
 from pygubu import BuilderObject, register_widget, register_property
 from pygubu.widgets.pathchooserinput import PathChooserInput
 

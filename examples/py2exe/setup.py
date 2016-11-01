@@ -1,3 +1,4 @@
+# encoding: utf8
 # setup.py
 import sys
 from distutils.core import setup

@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 # encoding: utf8
 #
 # Copyright 2012-2014 Alejandro Autalán

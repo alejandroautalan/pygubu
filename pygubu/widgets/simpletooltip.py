@@ -1,3 +1,4 @@
+# encoding: utf8
 __all__ = ['ToolTip']
 
 try:

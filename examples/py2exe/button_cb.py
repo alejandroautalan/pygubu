@@ -1,3 +1,4 @@
+# encoding: utf8
 # button_cb.py
 import sys
 import os
