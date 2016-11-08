@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="tk.Toplevel" id="mainwindow">
+    <property name="height">200</property>
+    <property name="resizable">both</property>
+    <property name="title" translatable="yes">Myapp</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Frame" id="Frame_2">
+        <property name="height">200</property>
+        <property name="padding">2</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="sticky">nsew</property>
+          <rows>
+            <row id="1">
+              <property name="weight">1</property>
+            </row>
+          </rows>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="Frame_3">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">ew</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="Button_1">
+                <property name="command">on_action1_clicked</property>
+                <property name="style">Toolbutton</property>
+                <property name="text" translatable="yes">Action1</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="Button_2">
+                <property name="command">on_action2_clicked</property>
+                <property name="style">Toolbutton</property>
+                <property name="text" translatable="yes">Action2</property>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="Button_3">
+                <property name="command">on_action3_clicked</property>
+                <property name="style">Toolbutton</property>
+                <property name="text" translatable="yes">Action3</property>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Menubutton" id="Menubutton_1">
+                <property name="text" translatable="yes">AppMenu</property>
+                <layout>
+                  <property name="column">3</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+                <child>
+                  <object class="tk.Menu" id="Menu_1">
+                    <child>
+                      <object class="tk.Menuitem.Command" id="cmd_app_quit">
+                        <property name="command">on_appmenu_action</property>
+                        <property name="command_id_arg">true</property>
+                        <property name="label" translatable="yes">Exit</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="Frame_4">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property name="sticky">nsew</property>
+              <rows>
+                <row id="0">
+                  <property name="weight">1</property>
+                </row>
+              </rows>
+              <columns>
+                <column id="0">
+                  <property name="weight">1</property>
+                </column>
+              </columns>
+            </layout>
+            <child>
+              <object class="pygubu.builder.widgets.scrollbarhelper" id="scrollbarhelper_1">
+                <property name="scrolltype">both</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">nsew</property>
+                </layout>
+                <child>
+                  <object class="tk.Canvas" id="Canvas_1">
+                    <property name="background">#ffffff</property>
+                    <property name="borderwidth">0</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                      <property name="sticky">nsew</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="Frame_5">
+            <property name="borderwidth">0</property>
+            <property name="height">200</property>
+            <property name="padding">2</property>
+            <property name="relief">ridge</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+              <property name="sticky">ew</property>
+            </layout>
+            <child>
+              <object class="ttk.Label" id="Label_1">
+                <property name="text" translatable="yes">status bar here</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">ew</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
