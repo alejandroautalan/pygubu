@@ -9,7 +9,7 @@ from pygubu.builder import Builder
 from pygubu.builder.builderobject import BuilderObject, register_widget
 
 
-__version__ = '0.9.7.8'
+__version__ = '0.9.7.9'
 
 
 def register_property(name, description):

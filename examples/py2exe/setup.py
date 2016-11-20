@@ -7,8 +7,17 @@ import py2exe
 sys.argv.append("py2exe")
 
 setup(
-    console=["button_cb.py"],
-    data_files=[("", ["button_cb.ui"])],
+    console=["myapp.py"],
+    data_files=[
+        ("", ['myapp.ui']),
+        ('imgs', [
+            'imgs/MenuIcon4.gif',
+            'imgs/ps_circle.gif',
+            'imgs/ps_cross.gif',
+            'imgs/ps_square.gif',
+            'imgs/ps_triangle.gif',
+            ])
+        ],
     options= {
         "py2exe": { 
             "includes" : ["pygubu.builder.tkstdwidgets",
