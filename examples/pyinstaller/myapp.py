@@ -1,17 +1,27 @@
 #file: myapp.py
+import sys
 import os
 import random
 import math
-import tkinter as tk
-import tkinter.messagebox
-import tkinter.ttk as ttk
+
+try:
+    import Tkinter as tk
+    import ttk
+    import tkMessageBox as tkmb
+    tk.messagebox = tkmb
+except:
+    import tkinter as tk
+    import tkinter.messagebox
+    import tkinter.ttk as ttk
+
 import pygubu
 
-#Help nuitka compiler to include specific modules
-import nuitkahelper
 
+try:
+    DATA_DIR = os.path.abspath(os.path.dirname(__file__))
+except NameError:
+    DATA_DIR = os.path.dirname(os.path.abspath(sys.argv[0]))
 
-CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 DEG2RAD = 4 * math.atan(1) * 2 / 360
 
 
@@ -21,8 +31,8 @@ class MyApplication:
         self.about_dialog = None
         
         self.builder = b = pygubu.Builder()
-        b.add_from_file(os.path.join(CURRENT_DIR, 'myapp.ui'))
-        b.add_resource_path(os.path.join(CURRENT_DIR, 'imgs'))
+        b.add_from_file(os.path.join(DATA_DIR, 'myapp.ui'))
+        b.add_resource_path(os.path.join(DATA_DIR, 'imgs'))
         
         self.mainwindow = b.get_object('mainwindow')
         self.mainmenu = b.get_object('mainmenu', self.mainwindow)
