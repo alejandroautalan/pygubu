@@ -284,7 +284,10 @@ class OnCanvasMenuPreview(Preview):
         """ Calculate menu widht and height."""
         w = iw = 50
         h = ih = 0
-        count = self._menu.index(tk.END) + 1
+        # menu.index returns None if there are no choices
+        index = self._menu.index(tk.END)
+        index = index if index is not None else 0
+        count = index + 1
 
         # First calculate using the font paramters of root menu:
         font = self._menu.cget('font')
