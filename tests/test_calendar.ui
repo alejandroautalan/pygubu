@@ -10,9 +10,18 @@
     </layout>
     <child>
       <object class="pygubu.builder.widgets.calendarwidget" id="calendar">
+        <property name="calendarbg">#f0e3f0</property>
+        <property name="calendarfg">#0000a1</property>
         <property name="firstweekday">6</property>
-        <property name="month">1</property>
-        <property name="selectbg">#d9ab2b</property>
+        <property name="headerbg">#abb8f0</property>
+        <property name="headerfg">#ffffff</property>
+        <property name="markbg">#f06ba4</property>
+        <property name="markfg">#ffffff</property>
+        <property name="month">9</property>
+        <property name="selectbg">#d926ff</property>
+        <property name="selectfg">#ffff00</property>
+        <property name="year">2000</property>
+        <bind add="" handler="on_date_selected" sequence="&lt;&lt;CalendarDateSelected&gt;&gt;" />
         <layout>
           <property name="column">0</property>
           <property name="propagate">True</property>

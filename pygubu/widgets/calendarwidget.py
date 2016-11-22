@@ -166,6 +166,8 @@ class Calendar(ttk.Frame):
             return self._date.month
         return ttk.Frame.cget(self, key)
     
+    __getitem__ = cget
+    
     def __build_ui(self):
         # BUILD UI
         # mainframe widget
@@ -463,6 +465,7 @@ class Calendar(ttk.Frame):
         self._selection = (year, month, day)
         self._call_mark_days()
         self.event_generate('<<CalendarDateSelected>>')
+
 
 if __name__ == '__main__':
     import random
