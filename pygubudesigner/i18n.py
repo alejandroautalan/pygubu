@@ -51,6 +51,10 @@ language = gettext.translation(APP_NAME,
 
 translator = language.gettext
 
+if sys.version_info < (3,):
+    # use ugettext on python 2
+    translator = language.ugettext
+
 # And now in your modules you can do:
 #
 # import i18n
