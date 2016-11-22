@@ -8,7 +8,7 @@ import shlex
 
 gtk_imgs = {
     'widget-gtk-button.png': ('ttk.Button', 'tk.Button'),
-    'widget-gtk-calendar.png': ('tk.Calendar', 'pygubu.builder.widgets.calendarwidget'),
+    'widget-gtk-calendar.png': ('tk.Calendar', 'pygubu.builder.widgets.calendarframe'),
     'widget-gtk-checkbutton.png': ('tk.Checkbutton', 'ttk.Checkbutton'),
     'widget-gtk-checkmenuitem.png': ('tk.Menuitem.Checkbutton',),
     'widget-gtk-combobox.png': ('ttk.Combobox', 'pygubu.builder.widgets.combobox'),

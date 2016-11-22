@@ -9,7 +9,7 @@
       <property name="row">0</property>
     </layout>
     <child>
-      <object class="pygubu.builder.widgets.calendarwidget" id="calendar">
+      <object class="pygubu.builder.widgets.calendarframe" id="calendar">
         <property name="calendarbg">#f0e3f0</property>
         <property name="calendarfg">#0000a1</property>
         <property name="firstweekday">6</property>
@@ -21,7 +21,7 @@
         <property name="selectbg">#d926ff</property>
         <property name="selectfg">#ffff00</property>
         <property name="year">2000</property>
-        <bind add="" handler="on_date_selected" sequence="&lt;&lt;CalendarDateSelected&gt;&gt;" />
+        <bind add="" handler="on_date_selected" sequence="&lt;&lt;CalendarFrameDateSelected&gt;&gt;" />
         <layout>
           <property name="column">0</property>
           <property name="propagate">True</property>

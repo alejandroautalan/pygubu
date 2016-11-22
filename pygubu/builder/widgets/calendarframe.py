@@ -1,11 +1,11 @@
 # encoding: utf8
 from pygubu import BuilderObject, register_widget, register_property
 from pygubu.builder.ttkstdwidgets import TTKFrame
-from pygubu.widgets.calendarwidget import Calendar
+from pygubu.widgets.calendarframe import CalendarFrame
 
 
-class CalendarBuilder(BuilderObject):
-    class_ = Calendar
+class CalendarFrameBuilder(BuilderObject):
+    class_ = CalendarFrame
     OPTIONS_STANDARD = TTKFrame.OPTIONS_STANDARD
     OPTIONS_SPECIFIC = TTKFrame.OPTIONS_SPECIFIC
     OPTIONS_CUSTOM = ('firstweekday', 'year', 'month',
@@ -13,8 +13,8 @@ class CalendarBuilder(BuilderObject):
                       'selectbg', 'selectfg', 'markbg', 'markfg')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
-register_widget('pygubu.builder.widgets.calendarwidget', CalendarBuilder,
-                'Calendar', ('ttk', 'Pygubu Widgets'))
+register_widget('pygubu.builder.widgets.calendarframe', CalendarFrameBuilder,
+                'CalendarFrame', ('ttk', 'Pygubu Widgets'))
 
 props = {
     'firstweekday': {

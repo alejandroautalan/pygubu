@@ -19,14 +19,14 @@ if pygubu_basedir not in sys.path:
 
 import pygubu
 import support
-from pygubu.widgets.calendarwidget import Calendar
+from pygubu.widgets.calendarframe import CalendarFrame
 
 
-class TestCalendar(unittest.TestCase):
+class TestCalendarFrame(unittest.TestCase):
 
     def setUp(self):
         support.root_deiconify()
-        xmldata = 'test_calendar.ui'
+        xmldata = 'test_calendarframe.ui'
         self.builder = builder = pygubu.Builder()
         builder.add_from_file(xmldata)
         self.mainwindow = builder.get_object('mainwindow')
@@ -36,7 +36,7 @@ class TestCalendar(unittest.TestCase):
         support.root_withdraw()
 
     def test_class(self):
-        self.assertIsInstance(self.widget, Calendar)
+        self.assertIsInstance(self.widget, CalendarFrame)
         self.widget.destroy()
         
     def test_selection(self):

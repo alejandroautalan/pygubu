@@ -1,7 +1,7 @@
 # encoding: utf8
 from __future__ import unicode_literals
 
-__all__ = ['Calendar']
+__all__ = ['CalendarFrame']
 
 import locale
 import calendar
@@ -47,7 +47,7 @@ def matrix_coords(rows, cols, rowh, colw, ox=0, oy=0):
         yield (i, x, y, x1, y1)
 
 
-class Calendar(ttk.Frame):
+class CalendarFrame(ttk.Frame):
     """ Allows to choose a date in a calendar.
     
     WIDGET-SPECIFIC OPTIONS
@@ -57,7 +57,7 @@ class Calendar(ttk.Frame):
             selectbg, selectfg,
             markbg, markfg,
     Generates:
-        <<CalendarDateSelected>>
+        <<CalendarFrameDateSelected>>
     """
     datetime = calendar.datetime.datetime
     timedelta = calendar.datetime.timedelta
@@ -464,7 +464,7 @@ class Calendar(ttk.Frame):
         self._reconfigure_date()
         self._selection = (year, month, day)
         self._call_mark_days()
-        self.event_generate('<<CalendarDateSelected>>')
+        self.event_generate('<<CalendarFrameDateSelected>>')
 
 
 if __name__ == '__main__':
@@ -472,7 +472,7 @@ if __name__ == '__main__':
     
     locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
     root = tk.Tk()
-    c = Calendar(root)
+    c = CalendarFrame(root)
     c.grid()
     
     # select day
