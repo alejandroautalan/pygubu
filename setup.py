@@ -44,7 +44,7 @@ class CustomInstall(install):
             batfilename = 'pygubu-designer.bat'
             batpath = os.path.join(self.install_scripts, batfilename)
             with open(batpath, 'w') as batfile:
-                content = "{0} -m pygubudesigner".format(sys.executable)
+                content = '"{0}" -m pygubudesigner'.format(sys.executable)
                 batfile.write(content)
 
 
