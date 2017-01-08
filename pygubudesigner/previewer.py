@@ -606,7 +606,7 @@ class PreviewHelper:
             self._sel_widget = None
 
     def remove_all(self):
-        for identifier in self.previews:
+        for identifier in list(self.previews):
             self.delete(identifier)
         self.resource_paths = []
 
