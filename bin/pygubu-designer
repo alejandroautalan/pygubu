@@ -39,9 +39,5 @@ except ImportError as e:
 
 from pygubudesigner import main
 
-# first of all, show the versions
-print("python version: {0} on {1}".format(platform.python_version(), sys.platform))
-print("pygubu version: {0}".format(pygubu.__version__))
-
 main.start_pygubu()
 

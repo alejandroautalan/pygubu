@@ -39,13 +39,11 @@ class CustomInstall(install):
             if os.path.exists(filename):
                 os.remove(filename)
         #
-        # Create .bat file on windows
+        # Remove old pygubu-designer.bat
         if platform.system() == 'Windows':
-            batfilename = 'pygubu-designer.bat'
-            batpath = os.path.join(self.install_scripts, batfilename)
-            with open(batpath, 'w') as batfile:
-                content = '"{0}" -m pygubudesigner %1'.format(sys.executable)
-                batfile.write(content)
+            spath = os.path.join(self.install_scripts, 'pygubu-designer.bat')
+            if os.path.exists(spath):
+                os.remove(spath)
 
 
 long_description = \
@@ -127,7 +125,12 @@ setup(
             'ui/*.ui',
             'locale/*/*/*.mo'],
     },
-    scripts=["bin/pygubu-designer"],
+#    scripts=["bin/pygubu-designer"],
+    entry_points={
+        'gui_scripts': [
+            'pygubu-designer = pygubudesigner.main:start_pygubu',
+        ]
+    },
     cmdclass={
         'install': CustomInstall,
     },

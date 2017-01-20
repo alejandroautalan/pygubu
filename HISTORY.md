@@ -1,6 +1,45 @@
 History
 =======
 
+Changes for version 0.9.8
+
+  * Use entry_points field for installing a startup script with setuptools
+  * Fixed issues #66, #86
+  
+Changes for version 0.9.7.9
+
+  * Fixed issues #72, #74, #78, #81
+
+Changes for version 0.9.7.8
+
+  * Added wheel support.
+  * Fixed issues #64, #65
+
+Changes for version 0.9.7.7
+
+  * Improved ui tester.
+  * Fixed issues #54, #58, #59, #60
+
+Changes for version 0.9.7.5
+
+  * Allow to specify variable names when importing tk variables.
+  * Allow to register an already created tk image.
+  * Allow to specify loggin level from console command.
+  * Added new pathchooser input widget.
+  * Improved README (thanks to Nelson Brochado)
+  * Fixed issue #52
+
+Changes for version 0.9.7.3
+
+  * Added custom widgets preference option.
+  * Added appdirs dependency.
+  * New sticky property editor.
+  * Fixed issues #40, #45
+
+Changes for version 0.9.7
+
+  * Fixed issues #39, #41 
+
 Changes for version 0.9.6.7
 
   * Remove old pygubu.py script for old installations.
