@@ -75,6 +75,8 @@ class PathChooserInput(ttk.Frame):
         if key == option:
             return self.entry.cget(option)
         return ttk.Frame.cget(self, key)
+
+    __getitem__ = cget
         
     def _is_changed(self):
 #        print(repr(self._oldvalue), ':', repr(self.entry.get()))

@@ -1,0 +1,344 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="tk.Menu" id="mainmenu">
+    <property name="tearoff">false</property>
+    <child>
+      <object class="tk.Menuitem.Command" id="mm_clear">
+        <property name="command">on_mainmenu_action</property>
+        <property name="command_id_arg">true</property>
+        <property name="label" translatable="yes">Clear</property>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Menuitem.Command" id="mm_about">
+        <property name="command">on_mainmenu_action</property>
+        <property name="command_id_arg">true</property>
+        <property name="label" translatable="yes">About</property>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Menuitem.Separator" id="Separator_1" />
+    </child>
+    <child>
+      <object class="tk.Menuitem.Command" id="mm_quit">
+        <property name="command">on_mainmenu_action</property>
+        <property name="command_id_arg">true</property>
+        <property name="label" translatable="yes">Quit</property>
+      </object>
+    </child>
+  </object>
+  <object class="tk.Toplevel" id="mainwindow">
+    <property name="height">200</property>
+    <property name="resizable">both</property>
+    <property name="title" translatable="yes">Myapp</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Frame" id="mw_fcontainer">
+        <property name="height">200</property>
+        <property name="padding">2</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="sticky">nsew</property>
+          <rows>
+            <row id="1">
+              <property name="weight">1</property>
+            </row>
+          </rows>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="mw_ftoolbar">
+            <property name="borderwidth">2</property>
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">ew</property>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="btn_menu">
+                <property name="command">btn_menu_clicked</property>
+                <property name="image">MenuIcon4.gif</property>
+                <property name="style">Toolbutton</property>
+                <property name="text" translatable="yes">Myappmenu</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Separator" id="Separator_2">
+                <property name="orient">vertical</property>
+                <layout>
+                  <property name="column">1</property>
+                  <property name="padx">5</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">ns</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="btn_triangle">
+                <property name="command">btn_triangle_clicked</property>
+                <property name="image">ps_triangle.gif</property>
+                <property name="style">Toolbutton</property>
+                <property name="text" translatable="yes">triangle</property>
+                <layout>
+                  <property name="column">2</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="btn_circle">
+                <property name="command">btn_circle_clicked</property>
+                <property name="image">ps_circle.gif</property>
+                <property name="style">Toolbutton</property>
+                <property name="text" translatable="yes">circle</property>
+                <layout>
+                  <property name="column">3</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="btn_cross">
+                <property name="command">btn_cross_clicked</property>
+                <property name="image">ps_cross.gif</property>
+                <property name="style">Toolbutton</property>
+                <property name="text" translatable="yes">cross</property>
+                <layout>
+                  <property name="column">4</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Button" id="btn_square">
+                <property name="command">btn_square_clicked</property>
+                <property name="image">ps_square.gif</property>
+                <property name="style">Toolbutton</property>
+                <property name="text" translatable="yes">square</property>
+                <layout>
+                  <property name="column">5</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="mw_fmain">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property name="sticky">nsew</property>
+              <rows>
+                <row id="0">
+                  <property name="weight">1</property>
+                </row>
+              </rows>
+              <columns>
+                <column id="0">
+                  <property name="weight">1</property>
+                </column>
+              </columns>
+            </layout>
+            <child>
+              <object class="pygubu.builder.widgets.scrollbarhelper" id="scrollbarhelper_1">
+                <property name="scrolltype">both</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">nsew</property>
+                </layout>
+                <child>
+                  <object class="tk.Canvas" id="main_canvas">
+                    <property name="background">#ffffff</property>
+                    <property name="borderwidth">0</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                      <property name="sticky">nsew</property>
+                    </layout>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="mw_fbottom">
+            <property name="borderwidth">1</property>
+            <property name="height">200</property>
+            <property name="relief">ridge</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+              <property name="sticky">ew</property>
+            </layout>
+            <child>
+              <object class="ttk.Label" id="sb_label">
+                <property name="text" translatable="yes">Welcome :)</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">ew</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+  <object class="pygubu.builder.widgets.dialog" id="dlg_about">
+    <property name="geometry">240x200</property>
+    <property name="height">100</property>
+    <property name="minsize">100|100</property>
+    <property name="modal">false</property>
+    <property name="resizable">both</property>
+    <property name="title" translatable="yes">Myapp: About</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Frame" id="about_fcontaner">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="sticky">nsew</property>
+          <rows>
+            <row id="0">
+              <property name="weight">1</property>
+            </row>
+          </rows>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
+        </layout>
+        <child>
+          <object class="ttk.Frame" id="about_fmain">
+            <property name="height">200</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">nsew</property>
+              <rows>
+                <row id="0">
+                  <property name="weight">1</property>
+                </row>
+                <row id="1">
+                  <property name="weight">1</property>
+                </row>
+                <row id="2">
+                  <property name="weight">1</property>
+                </row>
+              </rows>
+              <columns>
+                <column id="0">
+                  <property name="weight">1</property>
+                </column>
+              </columns>
+            </layout>
+            <child>
+              <object class="ttk.Label" id="Label_1">
+                <property name="font">{Helvetica} 16 {}</property>
+                <property name="text" translatable="yes">Myapp</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_2">
+                <property name="justify">right</property>
+                <property name="text" translatable="yes">This is a demo app for testing
+application freezing systems.</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Label" id="Label_3">
+                <property name="font">TkSmallCaptionFont</property>
+                <property name="justify">right</property>
+                <property name="text" translatable="yes">(All icons were downloaded from
+creativecommons.org
+under public domain)</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">2</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Frame" id="about_fbottom">
+            <property name="height">200</property>
+            <property name="padding">2 20 2 2</property>
+            <property name="width">200</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property name="sticky">ew</property>
+              <columns>
+                <column id="0">
+                  <property name="weight">1</property>
+                </column>
+              </columns>
+            </layout>
+            <child>
+              <object class="ttk.Button" id="about_btnclose">
+                <property name="text" translatable="yes">Close</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                  <property name="sticky">e</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

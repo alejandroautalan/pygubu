@@ -141,6 +141,7 @@ class WidgetsTreeEditor(object):
         self.filter_remove(remember=True)
 
         toplevel_items = tv.get_children()
+        parents_to_redraw = set()
         for item in selection:
             try:
                 parent = ''
@@ -153,12 +154,15 @@ class WidgetsTreeEditor(object):
                 self.app.set_changed()
                 if parent:
                     self._update_max_grid_rc(parent)
-                    self.draw_widget(parent)
+                    parents_to_redraw.add(parent)
                 self.widget_editor.hide_all()
             except tk.TclError:
                 # Selection of parent and child items ??
                 # TODO: notify something here
                 pass
+        # redraw widgets
+        for item in parents_to_redraw:
+            self.draw_widget(item)
         # restore filter
         self.filter_restore()
 

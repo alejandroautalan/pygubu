@@ -42,8 +42,8 @@ class CustomInstall(install):
         # Remove old pygubu-designer.bat
         if platform.system() == 'Windows':
             spath = os.path.join(self.install_scripts, 'pygubu-designer.bat')
-            batfilename = 'pygubu-designer.bat'
-            
+            if os.path.exists(spath):
+                os.remove(spath)
 
 
 long_description = \

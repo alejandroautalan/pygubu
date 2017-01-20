@@ -28,6 +28,29 @@ except:
 
 
 class EditableTreeview(ttk.Treeview):
+    """A simple editable treeview
+    
+    It uses the following events from Treeview:
+        <<TreviewSelect>>
+        <4>
+        <5>
+        <KeyRelease>
+        <Home>
+        <End>
+        <Configure>
+        <Button-1>
+        <ButtonRelease-1>
+        <Motion>
+    If you need them use add=True when calling bind method.
+    
+    It Generates two virtual events:
+        <<TreeviewInplaceEdit>>
+        <<TreeviewCellEdited>>
+    The first is used to configure cell editors.
+    The second is called after a cell was changed.
+    You can know wich cell is being configured or edited, using:
+        get_event_info()
+    """
     def __init__(self, master=None, **kw):
         ttk.Treeview.__init__(self, master, **kw)
 
@@ -35,6 +58,8 @@ class EditableTreeview(ttk.Treeview):
         self._inplace_widgets = {}
         self._inplace_widgets_show = {}
         self._inplace_vars = {}
+        self._header_clicked = False
+        self._header_dragged = False
 
         self.bind('<<TreeviewSelect>>', self.__check_focus)
         #Wheel events?
@@ -44,10 +69,28 @@ class EditableTreeview(ttk.Treeview):
         self.bind('<KeyRelease>', self.__check_focus)
         self.bind('<Home>', functools.partial(self.__on_key_press, 'Home'))
         self.bind('<End>', functools.partial(self.__on_key_press, 'End'))
+        self.bind('<Button-1>', self.__on_button1)
+        self.bind('<ButtonRelease-1>', self.__on_button1_release)
+        self.bind('<Motion>', self.__on_mouse_motion)
         self.bind('<Configure>',
             lambda e: self.after_idle(self.__updateWnds))
 
 
+    def __on_button1(self, event):
+        r = event.widget.identify_region(event.x, event.y)
+        if r in ('separator', 'header'):
+            self._header_clicked = True
+    
+    def __on_mouse_motion(self, event):
+        if self._header_clicked:
+            self._header_dragged = True
+    
+    def __on_button1_release(self, event):
+        if self._header_dragged:
+            self.after_idle(self.__updateWnds)
+        self._header_clicked = False
+        self._header_dragged = False
+    
     def __on_key_press(self, key, event):
         if key == 'Home':
             self.selection_set("")

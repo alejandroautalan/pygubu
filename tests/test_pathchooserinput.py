@@ -60,4 +60,8 @@ class TestPathChooserInput(unittest.TestCase):
         self.assertEqual('/home/user', path)
         self.widget.destroy()
     
+    def test_path_dictionary_like(self):
+        path = str(self.widget['path'])
+        self.assertEqual('/home/user', path)
+        self.widget.destroy()
 
