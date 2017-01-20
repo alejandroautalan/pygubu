@@ -57,11 +57,12 @@ pygubu-designer
 ### Windows
 
 ```
-C:\Python34\Scripts\pygubu-designer.bat
+C:\Python34\Scripts\pygubu-designer.exe
 ```
 
 Where `C:\Python34` is the path to **your** Python installation directory.
 
+> **Note**: for versions prior to **0.9.8** the executable script was named _**pygubu-designer.bat**_
 
 After that the _pygubu-designer_ application should appear:
 

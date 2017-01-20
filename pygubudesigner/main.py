@@ -19,6 +19,8 @@
 # For further info, check  http://pygubu.web.here
 
 from __future__ import unicode_literals
+from __future__ import print_function
+import platform
 import os
 import sys
 import logging
@@ -528,6 +530,9 @@ class PygubuUI(pygubu.TkApplication):
 
 
 def start_pygubu():
+    print("python version: {0} on {1}".format(
+                platform.python_version(), sys.platform))
+    print("pygubu version: {0}".format(pygubu.__version__))
     root = tk.Tk()
     root.withdraw()
     app = PygubuUI(root)
