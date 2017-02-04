@@ -44,7 +44,7 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
         # Mouse wheel support
         __active_area = None
         __init_binding = True
-        __OS = platform.system()
+        __os = platform.system()
         
         @staticmethod
         def on_mouse_wheel(event):
@@ -68,7 +68,7 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
             
             if ScrollbarHelper.__init_binding == True:
                 
-                if self.__OS == "Linux" :
+                if self.__os == "Linux" :
                     master.bind_all('<4>', ScrollbarHelper.on_mouse_wheel,  add='+')
                     master.bind_all('<5>', ScrollbarHelper.on_mouse_wheel,  add='+')
                 else:
@@ -78,18 +78,18 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
         
         def _make_onmousewheel_cb(self, widget, orient, factor = 1):
             view_command = getattr(widget, orient+'view')
-            if self.__OS == 'Linux':
+            if self.__os == 'Linux':
                 def on_mouse_wheel(event):
                     if event.num == 4:
                         view_command("scroll",(-1)*factor,"units")
                     elif event.num == 5:
                         view_command("scroll",factor,"units") 
             
-            elif self.__OS == 'Windows':
+            elif self.__os == 'Windows':
                 def on_mouse_wheel(event):        
                     view_command("scroll",(-1)*int((event.delta/120)*factor),"units") 
             
-            elif self.__OS == 'Darwin':
+            elif self.__os == 'Darwin':
                 def on_mouse_wheel(event):        
                     view_command("scroll",event.delta,"units")             
             
