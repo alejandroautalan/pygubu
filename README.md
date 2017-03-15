@@ -103,7 +103,7 @@ The following is a UI definition example called [helloworld.ui] (examples/hellow
       </object>
     </child>
   </object>
-</interface
+  </interface>
 ```
 
 Then, you should create your _application script_ as shown below:
