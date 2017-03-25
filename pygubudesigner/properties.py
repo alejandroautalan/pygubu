@@ -651,6 +651,12 @@ CUSTOM_OPTIONS = {
         'editor': 'choice',
         'params': {'values': ('true', 'false'), 'state': 'readonly'},
         'default': 'false'},
+    'usemousewheel': {
+        'editor': 'choice',
+        'params': {
+            'values': ('true', 'false'),
+            'state': 'readonly'},
+        'default': 'false'},
     'validatecommand_args': {
         'editor': 'entry'},
     'visible': {
@@ -711,7 +717,7 @@ WIDGET_CUSTOM_OPTIONS = [
     'command_id_arg', 'invalidcommand_args', 'tree_column',
     'validatecommand_args', 'visible', 'scrolltype', 'text',
     'title', 'geometry', 'overrideredirect', 'resizable',
-    'minsize', 'maxsize'
+    'minsize', 'maxsize', 'usemousewheel'
     ]
 
 WIDGET_PROPERTIES = wp = dict(TK_WIDGET_OPTIONS)

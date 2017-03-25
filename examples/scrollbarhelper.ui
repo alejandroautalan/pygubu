@@ -1,10 +1,10 @@
-<?xml version="1.0" ?>
+<?xml version='1.0' encoding='utf-8'?>
 <interface>
   <object class="ttk.Frame" id="mainwindow">
     <layout>
       <property name="column">0</property>
-      <property name="sticky">nsew</property>
       <property name="row">0</property>
+      <property name="sticky">nsew</property>
       <rows>
         <row id="1">
           <property name="weight">1</property>
@@ -18,7 +18,7 @@
     </layout>
     <child>
       <object class="ttk.Label" id="label1">
-        <property name="text">ScrollbarHelper test:</property>
+        <property name="text" translatable="yes">ScrollbarHelper test:</property>
         <layout>
           <property name="column">0</property>
           <property name="row">0</property>
@@ -28,10 +28,11 @@
     <child>
       <object class="pygubu.builder.widgets.scrollbarhelper" id="sbh1">
         <property name="scrolltype">both</property>
+        <property name="usemousewheel">false</property>
         <layout>
           <property name="column">0</property>
-          <property name="sticky">nsew</property>
           <property name="row">1</property>
+          <property name="sticky">nsew</property>
           <rows>
             <row id="0">
               <property name="weight">1</property>
