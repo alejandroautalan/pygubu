@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: utf-8
 from .colorentry import ColorPropertyEditor
 from .tkvarentry import TkVarPropertyEditor
 from .imageentry import ImagePropertyEditor

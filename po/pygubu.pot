@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-23 23:00-0300\n"
+"POT-Creation-Date: 2017-03-25 03:07-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -137,51 +137,51 @@ msgstr ""
 msgid "Widget List"
 msgstr ""
 
-#: pygubudesigner/ui/pygubu-ui.ui:433
+#: pygubudesigner/ui/pygubu-ui.ui:434
 msgid "✖"
 msgstr ""
 
-#: pygubudesigner/ui/pygubu-ui.ui:475
+#: pygubudesigner/ui/pygubu-ui.ui:477
 msgid "Widget Id"
 msgstr ""
 
-#: pygubudesigner/ui/pygubu-ui.ui:487
+#: pygubudesigner/ui/pygubu-ui.ui:489
 msgid "Class"
 msgstr ""
 
-#: pygubudesigner/ui/pygubu-ui.ui:499
+#: pygubudesigner/ui/pygubu-ui.ui:501
 msgid "R"
 msgstr ""
 
-#: pygubudesigner/ui/pygubu-ui.ui:511
+#: pygubudesigner/ui/pygubu-ui.ui:513
 msgid "C"
 msgstr ""
 
-#: pygubudesigner/ui/pygubu-ui.ui:551
+#: pygubudesigner/ui/pygubu-ui.ui:553
 msgid "General"
 msgstr ""
 
-#: pygubudesigner/ui/pygubu-ui.ui:579
+#: pygubudesigner/ui/pygubu-ui.ui:582
 msgid "Layout"
 msgstr ""
 
-#: pygubudesigner/ui/pygubu-ui.ui:596
+#: pygubudesigner/ui/pygubu-ui.ui:600
 msgid "Bindings"
 msgstr ""
 
-#: pygubudesigner/ui/pygubu-ui.ui:642
+#: pygubudesigner/ui/pygubu-ui.ui:647
 msgid "Sequence descriptor"
 msgstr ""
 
-#: pygubudesigner/ui/pygubu-ui.ui:654
+#: pygubudesigner/ui/pygubu-ui.ui:659
 msgid "Event Handler"
 msgstr ""
 
-#: pygubudesigner/ui/pygubu-ui.ui:666
+#: pygubudesigner/ui/pygubu-ui.ui:671
 msgid "Add"
 msgstr ""
 
-#: pygubudesigner/ui/pygubu-ui.ui:776
+#: pygubudesigner/ui/pygubu-ui.ui:782
 msgid "Status Bar"
 msgstr ""
 
@@ -244,65 +244,8 @@ msgid ""
 "for details, visit http://www.gnu.org/licenses/gpl-3.0.html"
 msgstr ""
 
-#: pygubudesigner/layouteditor.py:41
-msgid "Grid options:"
-msgstr ""
-
-#: pygubudesigner/layouteditor.py:70
-msgid "Grid row/column options:"
-msgstr ""
-
-#: pygubudesigner/layouteditor.py:93
-#, python-brace-format
-msgid "Row {0}:"
-msgstr ""
-
-#: pygubudesigner/layouteditor.py:94
-#, python-brace-format
-msgid "Column {0}:"
-msgstr ""
-
-#: pygubudesigner/main.py:261
-msgid "Pygubu a GUI builder for tkinter"
-msgstr ""
-
-#: pygubudesigner/main.py:381 pygubudesigner/main.py:425
-#: pygubudesigner/main.py:437
-msgid "File changed"
-msgstr ""
-
-#: pygubudesigner/main.py:382
-msgid "Changes not saved. Quit anyway?"
-msgstr ""
-
-#: pygubudesigner/main.py:392
-#, python-brace-format
-msgid "Project saved to {0}"
-msgstr ""
-
-#: pygubudesigner/main.py:397 pygubudesigner/main.py:442
-msgid "pygubu ui"
-msgstr ""
-
-#: pygubudesigner/main.py:397 pygubudesigner/main.py:442
-#: pygubudesigner/preferences.py:111
-msgid "All"
-msgstr ""
-
-#: pygubudesigner/main.py:426
-msgid "Changes not saved. Discard Changes?"
-msgstr ""
-
-#: pygubudesigner/main.py:438
-msgid "Changes not saved. Open new file anyway?"
-msgstr ""
-
-#: pygubudesigner/main.py:464
-msgid "Delete items"
-msgstr ""
-
-#: pygubudesigner/main.py:465
-msgid "Delete selected items?"
+#: pygubudesigner/properties.py:313
+msgid "offvalue_help"
 msgstr ""
 
 #: pygubudesigner/uitreeeditor.py:122
@@ -359,10 +302,67 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
-#: pygubudesigner/properties.py:313
-msgid "offvalue_help"
+#: pygubudesigner/layouteditor.py:41
+msgid "Grid options:"
 msgstr ""
 
-#: pygubudesigner/preferences.py:111
+#: pygubudesigner/layouteditor.py:70
+msgid "Grid row/column options:"
+msgstr ""
+
+#: pygubudesigner/layouteditor.py:93
+#, python-brace-format
+msgid "Row {0}:"
+msgstr ""
+
+#: pygubudesigner/layouteditor.py:94
+#, python-brace-format
+msgid "Column {0}:"
+msgstr ""
+
+#: pygubudesigner/main.py:261
+msgid "Pygubu a GUI builder for tkinter"
+msgstr ""
+
+#: pygubudesigner/main.py:381 pygubudesigner/main.py:425
+#: pygubudesigner/main.py:437
+msgid "File changed"
+msgstr ""
+
+#: pygubudesigner/main.py:382
+msgid "Changes not saved. Quit anyway?"
+msgstr ""
+
+#: pygubudesigner/main.py:392
+#, python-brace-format
+msgid "Project saved to {0}"
+msgstr ""
+
+#: pygubudesigner/main.py:397 pygubudesigner/main.py:442
+msgid "pygubu ui"
+msgstr ""
+
+#: pygubudesigner/main.py:397 pygubudesigner/main.py:442
+#: pygubudesigner/preferences.py:112
+msgid "All"
+msgstr ""
+
+#: pygubudesigner/main.py:426
+msgid "Changes not saved. Discard Changes?"
+msgstr ""
+
+#: pygubudesigner/main.py:438
+msgid "Changes not saved. Open new file anyway?"
+msgstr ""
+
+#: pygubudesigner/main.py:464
+msgid "Delete items"
+msgstr ""
+
+#: pygubudesigner/main.py:465
+msgid "Delete selected items?"
+msgstr ""
+
+#: pygubudesigner/preferences.py:112
 msgid "Python module"
 msgstr ""
