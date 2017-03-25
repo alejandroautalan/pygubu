@@ -14,7 +14,7 @@ class TKScrolledFrameBO(BuilderObject):
                         'padx', 'pady', 'relief', 'takefocus')
     OPTIONS_SPECIFIC = ('background',  'class_', 'container',
                         'height', 'width')
-    OPTIONS_CUSTOM = ('scrolltype',)
+    OPTIONS_CUSTOM = ('scrolltype', 'usemousewheel')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     ro_properties = ('class_', 'scrolltype')
 
@@ -23,6 +23,12 @@ class TKScrolledFrameBO(BuilderObject):
 
     def configure(self, target=None):
         super(TKScrolledFrameBO, self).configure(self.widget.innerframe)
+        
+    def _set_property(self, target_widget, pname, value):
+        if pname in ('usemousewheel',):
+            super(TKScrolledFrameBO, self)._set_property(self.widget, pname, value)
+        else:
+            super(TKScrolledFrameBO, self)._set_property(target_widget, pname, value)
 
     def layout(self, target=None):
         self._grid_layout(self.widget, configure_rc=False)

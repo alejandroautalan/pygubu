@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="tk.Toplevel" id="Toplevel_1">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <child>
+      <object class="tk.Frame" id="Frame_1">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+        <child>
+          <object class="pygubu.builder.widgets.tkscrollbarhelper" id="tkscrollbarhelper_1">
+            <property name="scrolltype">both</property>
+            <property name="usemousewheel">true</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">nsew</property>
+            </layout>
+            <child>
+              <object class="tk.Text" id="Text_1">
+                <property name="height">10</property>
+                <property name="text" translatable="yes">Text_1
+1
+2
+3
+4
+5
+6
+7
+8
+9
+0
+END</property>
+                <property name="width">50</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="pygubu.builder.widgets.tkscrollbarhelper" id="tkscrollbarhelper_2">
+            <property name="scrolltype">horizontal</property>
+            <property name="usemousewheel">true</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property name="sticky">ew</property>
+            </layout>
+            <child>
+              <object class="tk.Entry" id="Entry_1">
+                <property name="text" translatable="yes">START Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 END</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="pygubu.builder.widgets.tkscrolledframe" id="tkscrolledframe_1">
+            <property name="scrolltype">both</property>
+            <property name="usemousewheel">true</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">3</property>
+              <property name="sticky">nsew</property>
+            </layout>
+            <child>
+              <object class="tk.Canvas" id="Canvas_1">
+                <property name="background">#a4dbb6</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Canvas" id="Canvas_2">
+                <property name="background">#d9fe54</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

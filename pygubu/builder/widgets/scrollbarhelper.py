@@ -12,9 +12,9 @@ class TTKSBHelperBO(BuilderObject):
                         'tk.Listbox', 'ttk.Treeview' )
     OPTIONS_STANDARD = ('class_', 'cursor', 'takefocus', 'style')
     OPTIONS_SPECIFIC = ('borderwidth', 'relief', 'padding', 'height', 'width')
-    OPTIONS_CUSTOM = ('scrolltype', )
+    OPTIONS_CUSTOM = ('scrolltype', 'usemousewheel')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
-    ro_properties = ('class_', 'scrolltype', )
+    ro_properties = ('class_', 'scrolltype')
     allow_bindings = False
 
 

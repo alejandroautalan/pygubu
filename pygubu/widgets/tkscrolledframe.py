@@ -22,6 +22,7 @@ try:
     import tkinter as tk
 except:
     import Tkinter as tk
+from pygubu import ApplicationLevelBindManager as BindManager
 
 
 def ScrolledFrameFactory(frame_class, scrollbar_class):
@@ -32,7 +33,9 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
 
         def __init__(self, master=None, **kw):
             self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
-
+            self.usemousewheel = tk.getboolean(kw.pop('usemousewheel', False))
+            self._bindingids = []
+            
             super(ScrolledFrame, self).__init__(master, **kw)
 
             self._clipper = frame_class(self, width=200, height=200)
@@ -68,6 +71,7 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
             # update the scrollbars.
             self.innerframe.bind('<Configure>', self._reposition)
             self._clipper.bind('<Configure>', self._reposition)
+            self._configure_mousewheel()
 
         # Set timer to call real reposition method, so that it is not
         # called multiple times when many things are reconfigured at the
@@ -245,6 +249,59 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
             else:
                 self.vsb.grid_forget()
                 #interior.grid_columnconfigure(3, minsize = 0)
+        
+        def configure(self, cnf=None, **kw):
+            args = tk._cnfmerge((cnf, kw))
+            key = 'usemousewheel'
+            if key in args:
+                self.usemousewheel = tk.getboolean(args[key])
+                del args[key]
+                self._configure_mousewheel()
+            frame_class.configure(self, args)
+
+        config = configure
+
+        def cget(self, key):
+            option = 'usemousewheel'
+            if key == option:
+                return self.usemousewheel
+            return frame_class.cget(self, key)
+
+        __getitem__ = cget
+                
+        def _configure_mousewheel(self):
+            if self.usemousewheel:
+                BindManager.init_mousewheel_binding(self)
+
+                if self.hsb and not hasattr(self.hsb, 'on_mousewheel'):
+                    self.hsb.on_mousewheel = BindManager.make_onmousewheel_cb(self, 'x', 2)
+                if self.vsb and not hasattr(self.vsb, 'on_mousewheel'):
+                    self.vsb.on_mousewheel = BindManager.make_onmousewheel_cb(self, 'y', 2)
+
+                main_sb = self.vsb or self.hsb
+                if main_sb:
+                    self.on_mousewheel = main_sb.on_mousewheel
+                    bid = self.bind('<Enter>',
+                                    lambda event: BindManager.mousewheel_bind(self),
+                                    add='+')
+                    self._bindingids.append((self, bid))
+                    bid = self.bind('<Leave>',
+                                    lambda event: BindManager.mousewheel_unbind(),
+                                    add='+')
+                    self._bindingids.append((self, bid))
+                for s in (self.vsb, self.hsb):
+                    if s:
+                        bid = s.bind('<Enter>',
+                                     lambda event, scrollbar=s: BindManager.mousewheel_bind(scrollbar),
+                                     add='+')
+                        self._bindingids.append((s, bid))
+                        bid = s.bind('<Leave>',
+                                     lambda event: BindManager.mousewheel_unbind(),
+                                     add='+')
+                        self._bindingids.append((s, bid))
+            else:
+                for widget, bid in self._bindingids:
+                    remove_binding(widget, bid)
 
     return ScrolledFrame
 

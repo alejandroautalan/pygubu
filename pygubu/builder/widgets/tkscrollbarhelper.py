@@ -16,9 +16,9 @@ class TKSBHelperBO(BuilderObject):
                         'padx', 'pady', 'relief', 'takefocus')
     OPTIONS_SPECIFIC = ('background',  'class_', 'container',
                         'height', 'width')
-    OPTIONS_CUSTOM = ('scrolltype',)
+    OPTIONS_CUSTOM = ('scrolltype', 'usemousewheel')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
-    ro_properties = ('class_', 'scrolltype', )
+    ro_properties = ('class_', 'scrolltype')
     allow_bindings = False
 
     def add_child(self, bobject):
