@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="tk.Toplevel" id="mainwindow">
+    <property name="height">200</property>
+    <property name="resizable">both</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Frame" id="Frame_1">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="sticky">nsew</property>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
+          <rows>
+            <row id="0">
+              <property name="weight">1</property>
+            </row>
+          </rows>
+        </layout>
+        <child>
+          <object class="pygubu.builder.widgets.scrollbarhelper" id="scrollbarhelper_1">
+            <property name="scrolltype">both</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property name="sticky">nsew</property>
+            </layout>
+            <child>
+              <object class="tk.Text" id="Text_1">
+                <property name="height">10</property>
+                <property name="text" translatable="yes">Text_2
+Text_2
+Text_2
+Text_2
+Text_2
+Text_2
+Text_2
+Text_2
+Text_2
+Text_2
+Text_2
+Text_2
+Text_2
+Text_2
+Text_2</property>
+                <property name="width">50</property>
+                <property name="wrap">none</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="pygubu.builder.widgets.scrollbarhelper" id="scrollbarhelper_2">
+            <property name="scrolltype">horizontal</property>
+            <property name="usemousewheel">true</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property name="sticky">nsew</property>
+            </layout>
+            <child>
+              <object class="ttk.Entry" id="Entry_1">
+                <property name="text" translatable="yes">Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 Entry_1 </property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="pygubu.builder.widgets.scrolledframe" id="scrolledframe_1">
+            <property name="scrolltype">both</property>
+            <property name="usemousewheel">true</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">2</property>
+              <property name="sticky">nsew</property>
+            </layout>
+            <child>
+              <object class="tk.Canvas" id="Canvas_1">
+                <property name="background">#d9bcd9</property>
+                <property name="scrollregion">0 0 800 800</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">0</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Canvas" id="Canvas_2">
+                <property name="background">#8cd963</property>
+                <layout>
+                  <property name="column">0</property>
+                  <property name="propagate">True</property>
+                  <property name="row">1</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

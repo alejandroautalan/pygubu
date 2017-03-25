@@ -17,14 +17,15 @@
 # For further info, check  https://github.com/alejandroautalan/pygubu
 
 from __future__ import unicode_literals
-import platform
-
+import logging
 try:
     import tkinter as tk
 except:
     import Tkinter as tk
 from pygubu import ApplicationLevelBindManager as BindManager
 
+
+logger = logging.getLogger(__name__)
 
 def _autoscroll(sbar, first, last):
     """Hide and show scrollbar as needed.
@@ -43,7 +44,6 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
         VERTICAL = 'vertical'
         HORIZONTAL = 'horizontal'
         BOTH = 'both'
-        __os = platform.system()
 
         def __init__(self, master=None, **kw):
             self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
@@ -78,7 +78,7 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
                     cwidget.configure(yscrollcommand=lambda f, l: _autoscroll(self.vsb, f, l))
                 else:
                     msg = "widget {} has no attribute 'yview'".format(str(cwidget))
-                    logger.warning(msg)
+                    logger.info(msg)
 
             if self.scrolltype in (self.BOTH, self.HORIZONTAL):
                 if hasattr(cwidget, 'xview'):
@@ -86,7 +86,7 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
                     cwidget.configure(xscrollcommand=lambda f, l: _autoscroll(self.hsb, f, l))
                 else:
                     msg = "widget {} has no attribute 'xview'".format(str(cwidget))
-                    logger.warning(msg)
+                    logger.info(msg)
             self._configure_mousewheel()
         
         def configure(self, cnf=None, **kw):
@@ -113,46 +113,35 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
             if self.usemousewheel:
                 BindManager.init_mousewheel_binding(self)
 
-                if self.hsb and not hasattr(self.hsb, 'on_mouse_wheel'):
-                    self.hsb.on_mousewheel = self._make_onmousewheel_cb(cwidget, 'x', 2)
-                if self.vsb and not hasattr(self.vsb, 'on_mouse_wheel'):
-                    self.vsb.on_mousewheel = self._make_onmousewheel_cb(cwidget, 'y', 2)
+                if self.hsb and not hasattr(self.hsb, 'on_mousewheel'):
+                    self.hsb.on_mousewheel = BindManager.make_onmousewheel_cb(cwidget, 'x', 2)
+                if self.vsb and not hasattr(self.vsb, 'on_mousewheel'):
+                    self.vsb.on_mousewheel = BindManager.make_onmousewheel_cb(cwidget, 'y', 2)
 
                 main_sb = self.vsb or self.hsb
                 if main_sb:
                     cwidget.on_mousewheel = main_sb.on_mousewheel
-                    bid = cwidget.bind('<Enter>', lambda event: BindManager.mousewheel_bind(cwidget), add='+')
+                    bid = cwidget.bind('<Enter>',
+                                       lambda event: BindManager.mousewheel_bind(cwidget),
+                                       add='+')
                     self._bindingids.append((cwidget, bid))
-                    bid = cwidget.bind('<Leave>', lambda event: BindManager.mousewheel_unbind(), add='+')
+                    bid = cwidget.bind('<Leave>',
+                                       lambda event: BindManager.mousewheel_unbind(),
+                                       add='+')
                     self._bindingids.append((cwidget, bid))
                 for s in (self.vsb, self.hsb):
                     if s:
-                        bid = s.bind('<Enter>', lambda event, scrollbar=s: BindManager.mousewheel_bind(scrollbar) )
+                        bid = s.bind('<Enter>',
+                                     lambda event, scrollbar=s: BindManager.mousewheel_bind(scrollbar),
+                                     add='+')
                         self._bindingids.append((s, bid))
-                        bid = s.bind('<Leave>', lambda event: BindManager.mousewheel_unbind())
+                        bid = s.bind('<Leave>',
+                                     lambda event: BindManager.mousewheel_unbind(),
+                                     add='+')
                         self._bindingids.append((s, bid))
             else:
                 for widget, bid in self._bindingids:
                     remove_binding(widget, bid)
-        
-        def _make_onmousewheel_cb(self, widget, orient, factor = 1):
-            view_command = getattr(widget, orient+'view')
-            if self.__os == 'Linux':
-                def on_mousewheel(event):
-                    if event.num == 4:
-                        view_command("scroll",(-1)*factor,"units")
-                    elif event.num == 5:
-                        view_command("scroll",factor,"units") 
-            
-            elif self.__os == 'Windows':
-                def on_mousewheel(event):        
-                    view_command("scroll",(-1)*int((event.delta/120)*factor),"units") 
-            
-            elif self.__os == 'Darwin':
-                def on_mousewheel(event):        
-                    view_command("scroll",event.delta,"units")             
-            
-            return on_mousewheel
 
     return ScrollbarHelper
 

@@ -74,3 +74,28 @@ class ApplicationLevelBindManager(object):
                 master.bind_all("<MouseWheel>", ApplicationLevelBindManager.on_mousewheel,  add='+')
             ApplicationLevelBindManager.mw_initialized = True
 
+    @staticmethod
+    def make_onmousewheel_cb(widget, orient, factor = 1):
+        """Create a callback to manage mousewheel events
+        
+        orient: string (posible values: ('x', 'y'))
+        widget: widget that implement tk xview and yview methods
+        """
+        _os = platform.system()
+        view_command = getattr(widget, orient+'view')
+        if _os == 'Linux':
+            def on_mousewheel(event):
+                if event.num == 4:
+                    view_command("scroll",(-1)*factor,"units")
+                elif event.num == 5:
+                    view_command("scroll",factor,"units") 
+        
+        elif _os == 'Windows':
+            def on_mousewheel(event):        
+                view_command("scroll",(-1)*int((event.delta/120)*factor),"units") 
+        
+        elif _os == 'Darwin':
+            def on_mousewheel(event):        
+                view_command("scroll",event.delta,"units")             
+        
+        return on_mousewheel
