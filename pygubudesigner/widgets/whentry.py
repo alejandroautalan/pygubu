@@ -61,11 +61,19 @@ class WHPropertyEditor(PropertyEditor):
         else:
             self._weditor.edit('')
             self._heditor.edit('')
-
+    
     def _validate(self):
         isvalid = False
-        if self._weditor.value != '' and self._heditor.value != '':
+        w = self._weditor.value
+        h = self._heditor.value
+        if w == '' and h == '':
             isvalid = True
+        else:
+            try:
+                if int(w) >= 0 and int(h) >= 0:
+                    isvalid = True
+            except ValueError:
+                pass
         return isvalid
 
 register_editor('whentry', WHPropertyEditor)

@@ -16,6 +16,7 @@
 #
 # For further info, check  http://pygubu.web.here
 from __future__ import unicode_literals
+import platform
 import logging
 
 try:
@@ -34,10 +35,14 @@ def _(x):
 TK_BITMAPS = (
     'error', 'gray75', 'gray50', 'gray25', 'gray12',
     'hourglass', 'info', 'questhead', 'question', 'warning',
-    'document', 'stationery', 'edition', 'application', 'accesory',
+    )
+
+TK_BITMAPS_MAC = (
+    'document', 'stationery', 'edition', 'application', 'accessory',
     'forder', 'pfolder', 'trash', 'floppy', 'ramdisk', 'cdrom',
     'preferences', 'querydoc', 'stop', 'note', 'caution'
-)
+    )
+
 TK_CURSORS = (
     'arrow', 'based_arrow_down', 'based_arrow_up', 'boat',
     'bogosity', 'bottom_left_corner', 'bottom_right_corner',
@@ -56,6 +61,25 @@ TK_CURSORS = (
     'star', 'target', 'tcross', 'top_left_arrow', 'top_left_corner',
     'top_right_corner', 'top_side', 'top_tee', 'trek', 'ul_angle',
     'umbrella', 'ur_angle', 'watch', 'xterm', 'X_cursor')
+
+TK_CURSORS_WINDOWS = (
+    'no', 'starting', 'size', 'size_ne_sw'
+    'size_ns', 'size_nw_se', 'size_we','uparrow', 'wait'
+    )
+
+TK_CURSORS_MAC = (
+    'copyarrow', 'aliasarrow', 'contextualmenuarrow', 'text',
+    'cross-hair', 'closedhand', 'openhand', 'pointinghand',
+    'resizeleft', 'resizeright', 'resizeleftright', 'resizeup',
+    'resizedown', 'resizeupdown', 'notallowed', 'poof',
+    'countinguphand', 'countingdownhand', 'countingupanddownhand', 'spinning'
+    )
+
+if platform.system() == 'Darwin':
+    TK_BITMAPS = TK_BITMAPS + TK_BITMAPS_MAC
+    TK_CURSORS = TK_CURSORS + TK_CURSORS_MAC
+elif platform.system() == 'Windows':
+    TK_CURSORS = TK_CURSORS + TK_CURSORS_WINDOWS
 
 TK_RELIEFS = (tk.FLAT, tk.RAISED, tk.SUNKEN, tk.GROOVE, tk.RIDGE)
 
