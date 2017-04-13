@@ -52,6 +52,10 @@ import pygubu.widgets.simpletooltip as tooltip
 import pygubudesigner
 from pygubudesigner.preferences import PreferencesUI, get_custom_widgets
 
+
+#Initialize logger
+logger = logging.getLogger(__name__)
+
 #translator function
 _ = translator
 
@@ -66,7 +70,13 @@ def init_pygubu_widgets():
     for mfile in os.listdir(mwpath):
         if mfile.endswith('.py') and not mfile.startswith('__'):
             modulename = "{0}.{1}".format(widgets_pkg, mfile[:-3])
-            importlib.import_module(modulename)
+            try:
+                importlib.import_module(modulename)
+            except Exception as e:
+                logger.exception(e)
+                msg = _("Failed to load widget module: \n'{0}'")
+                msg = msg.format(modulename)
+                messagebox.showerror(_('Error'), msg)
 
     #initialize custom widgets
     for path in get_custom_widgets():
@@ -75,7 +85,13 @@ def init_pygubu_widgets():
             if dirname not in sys.path:
                 sys.path.append(dirname)
             modulename = fname[:-3]
-            importlib.import_module(modulename)
+            try:
+                importlib.import_module(modulename)
+            except Exception as e:
+                logger.exception(e)
+                msg = _("Failed to load custom widget module: \n'{0}'")
+                msg = msg.format(path)
+                messagebox.showerror(_('Error'), msg)
 
 #Initialize images
 DESIGNER_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -85,9 +101,6 @@ StockImage.register_from_dir(
     os.path.join(IMAGES_DIR, 'widgets', '22x22'), '22x22-')
 StockImage.register_from_dir(
     os.path.join(IMAGES_DIR, 'widgets', '16x16'), '16x16-')
-
-#Initialize logger
-logger = logging.getLogger(__name__)
 
 
 class StatusBarHandler(logging.Handler):
