@@ -17,8 +17,8 @@
 from __future__ import unicode_literals
 
 import os
-import xml.etree.ElementTree as ET
-from collections import Counter
+import lxml.etree as ET
+from col import Counter
 import logging
 try:
     import tkinter as tk

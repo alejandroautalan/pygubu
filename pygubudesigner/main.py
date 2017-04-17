@@ -90,7 +90,7 @@ StockImage.register_from_dir(
 logger = logging.getLogger(__name__)
 
 
-class StatusBarHandler(logging.Handler):
+class StatusBarHandler(logging.Handler, object):
     def __init__(self, tklabel, level=logging.NOTSET):
         super(StatusBarHandler, self).__init__(level)
         self.tklabel = tklabel

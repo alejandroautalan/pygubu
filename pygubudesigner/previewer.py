@@ -17,7 +17,7 @@
 # For further info, check  http://pygubu.web.here
 
 from __future__ import unicode_literals
-from collections import OrderedDict
+from ordereddict import OrderedDict
 import sys
 import xml.etree.ElementTree as ET
 import re

@@ -21,7 +21,8 @@ from __future__ import unicode_literals
 import os
 import importlib
 import logging
-import xml.etree.ElementTree as ET
+import lxml.etree as ET
+
 try:
     import tkinter
 except:
