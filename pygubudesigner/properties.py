@@ -750,36 +750,31 @@ wp.update(CUSTOM_OPTIONS)
 
 LAYOUT_OPTIONS = {
     # grid packing properties
-    'row':
-        {'editor': 'spinbox',
-         'params': {'from_': 0, 'to': 50},
-         'validator': 'number_integer'},
-    'column':
-        {'editor': 'spinbox',
-         'params': {'from_': 0, 'to': 50},
-         'validator': 'number_integer'},
+    'row': {
+        'editor': 'numberentry',
+        # to_ = 50 is a pygubu-designer restriction
+        'params': {'from_': 0, 'to_': 50}
+        },
+    'column': {
+        'editor': 'numberentry',
+        # to_ = 50 is a pygubu-designer restriction
+        'params': {'from_': 0, 'to_': 50}
+        },
     'sticky': {
         'editor': 'stickyentry',
         'params': {}},
-    'rowspan':
-        {'editor': 'spinbox',
-         'params':
-            {'from_': 1, 'to': 50},
-         'validator': 'number_integer'},
+    'rowspan': {
+        'editor': 'numberentry',
+        'params': {'from_': 1, 'to_': 50}
+        },
     'columnspan': {
-        'editor': 'spinbox',
-        'params': {'from_': 1, 'to': 50},
-        'validator': 'number_integer'},
-    'padx': {'editor': 'entry', 'validator': 'tkpadding2'},
-    'pady': {'editor': 'entry', 'validator': 'tkpadding2'},
-    'ipadx':
-        {'editor': 'spinbox',
-         'params': {'from_': 0, 'to': 999},
-         'validator': 'number_integer'},
-    'ipady':
-        {'editor': 'spinbox',
-         'params': {'from_': 0, 'to': 999},
-         'validator': 'number_integer'},
+        'editor': 'numberentry',
+        'params': {'from_': 1, 'to_': 50}
+        },
+    'padx': {'editor': 'dimensionentry'},
+    'pady': {'editor': 'dimensionentry'},
+    'ipadx': {'editor': 'dimensionentry'},
+    'ipady': {'editor': 'dimensionentry'},
     'propagate': {
         'editor': 'choice',
         'params': {'values': ('True', 'False'), 'state': 'readonly'},
@@ -788,11 +783,11 @@ LAYOUT_OPTIONS = {
     # grid row and column properties (can be applied to each row or column)
     #
     'minsize': {
-        'editor': 'spinbox',
-        'params': {'from_': 0, 'to': 999, 'state': 'readonly', 'width': 3}},
+        'editor': 'dimensionentry',
+        'params': {'width': 4, 'empty_data': 0}},
     'pad': {
-        'editor': 'spinbox',
-        'params': {'from_': 0, 'to': 999, 'state': 'readonly', 'width': 3}},
+        'editor': 'dimensionentry',
+        'params': {'width': 4, 'empty_data': 0}},
     'weight': {
         'editor': 'spinbox',
         'params': {'from_': 0, 'to': 999, 'state': 'readonly', 'width': 3}}
