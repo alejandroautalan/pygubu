@@ -22,6 +22,8 @@ __all__ = ['PropertyEditor', 'EntryPropertyEditor', 'SpinboxPropertyEditor',
            'ChoicePropertyEditor', 'TextPropertyEditor',
            'CheckbuttonPropertyEditor', 'register_editor', 'create_editor']
 
+import os
+
 try:
     import tkinter as tk
     import tkinter.ttk as ttk
@@ -29,7 +31,14 @@ except:
     import Tkinter as tk
     import ttk
 
+from pygubu.stockimage import StockImage, StockImageException
 from pygubu.widgets.scrollbarhelper import ScrollbarHelper
+
+
+FILE_DIR = os.path.dirname(os.path.abspath(__file__))
+IMAGES_DIR = os.path.join(FILE_DIR, "..", "images", "widgets", "propertyeditor")
+IMAGES_DIR = os.path.abspath(IMAGES_DIR)
+StockImage.register_from_dir(IMAGES_DIR)
 
 
 class PropertyEditor(ttk.Frame):
@@ -74,6 +83,8 @@ class EntryPropertyEditor(PropertyEditor):
     def _create_ui(self):
         self._entry = entry = ttk.Entry(self, textvariable=self._variable)
         entry.grid(sticky='we')
+        self._error_label = elabel = ttk.Label(self)
+        elabel.grid(row=0, column=1)
         self.rowconfigure(0, weight=1)
         self.columnconfigure(0, weight=1)
         entry.bind('<FocusOut>', self._on_variable_changed)
@@ -82,6 +93,12 @@ class EntryPropertyEditor(PropertyEditor):
 
     def parameters(self, **kw):
         self._entry.configure(**kw)
+    
+    def show_invalid(self, value=True):
+       img = ''
+       if value:
+           img = StockImage.get('property_invalid')
+       self._error_label.configure(image=img)
 
 
 SpinboxClass = tk.Spinbox
@@ -165,6 +182,39 @@ class CheckbuttonPropertyEditor(PropertyEditor):
         self._checkb.configure(**kw)
 
 
+class NumberIntegerEditor(EntryPropertyEditor):
+    def _create_ui(self):
+        self._from = None
+        self._to = None
+        
+        EntryPropertyEditor._create_ui(self)
+        func = self._entry.register(self.validator_integer)
+        cmd = (func, '%d', '%P')
+        self._entry.configure(validate='key', validatecommand=cmd)
+        
+    def parameters(self, **kw):
+        pvalue = kw.pop('from_', None)
+        self._from = None if pvalue is None else int(pvalue)
+        pvalue = kw.pop('to_', None)
+        self._to = None if pvalue is None else int(pvalue)
+        self._entry.configure(**kw)
+
+    def validator_integer(self, action, newvalue):
+        valid = False
+        if action == '1': #1: insert 0: delete
+            valid = str(newvalue).isdigit()
+            if valid:
+                value = int(newvalue)
+                if self._from is not None:
+                    if value < self._from:
+                        valid = False
+                if self._to is not None:
+                    if value > self._to:
+                        valid = False
+        else:
+            valid = True
+        return valid
+
 EDITORS = {}
 
 
@@ -181,6 +231,7 @@ register_editor('choice', ChoicePropertyEditor)
 register_editor('spinbox', SpinboxPropertyEditor)
 register_editor('text', TextPropertyEditor)
 register_editor('checkbutton', CheckbuttonPropertyEditor)
+register_editor('numberentry', NumberIntegerEditor)
 
 
 if __name__ == '__main__':

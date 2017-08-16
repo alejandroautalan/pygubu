@@ -9,3 +9,4 @@ from .whentry import WHPropertyEditor
 from .dynamicpropeditor import DynamicPropertyEditor
 from .fontentry import FontPropertyEditor
 from .stickyentry import StickyPropertyEditor
+from .dimensionentry import DimensionPropertyEditor

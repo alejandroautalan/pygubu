@@ -244,7 +244,7 @@ class TTKMenubuttonBO(TTKWidgetBO):
         self.widget.configure(menu=bobject.widget)
 
 register_widget('ttk.Menubutton', TTKMenubuttonBO,
-                'Menubutton', ('Control & Display', 'ttk',))
+                'Menubutton', ('Menu', 'Control & Display', 'ttk',))
 
 
 class TTKTreeviewBO(TTKWidgetBO):

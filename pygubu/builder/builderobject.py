@@ -115,6 +115,9 @@ class BuilderObject(object):
                     propvalue.set(self.properties['value'])
             elif pname in self.tkimage_properties:
                 propvalue = self.builder.get_image(value)
+            elif pname == 'takefocus':
+                if value:
+                    propvalue = tk.getboolean(value)
 
             try:
                 target_widget[pname] = propvalue
