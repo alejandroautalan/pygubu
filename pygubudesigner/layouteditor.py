@@ -107,12 +107,12 @@ class LayoutEditor(PropertiesEditor):
 
                 alias = name_format.format('row', index, pname)
                 widget = self._create_editor(fgrc, alias, kwdata)
-                widget.grid(row=row, column=icol, pady=2)
+                widget.grid(row=row, column=icol, pady=2, sticky='ew')
                 self._rcbag[alias] = (label, widget)
 
                 alias = name_format.format('column', index, pname)
                 widget = self._create_editor(fgrc, alias, kwdata)
-                widget.grid(row=row + MAX_RC, column=icol, pady=2)
+                widget.grid(row=row + MAX_RC, column=icol, pady=2, sticky='ew')
                 self._rcbag[alias] = (labelc, widget)
 
                 icol += 1
