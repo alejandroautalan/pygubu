@@ -1,24 +1,21 @@
 #!/bin/sh
 
 echo "============="
-echo " Python 3.4.0 (debian package)"
-echo " tk 8.6 (debian package)"
+echo " $(python3 --version) (default python3)"
 
-cd tests; python3.4 -m unittest; cd ..;
+cd tests; python3 -m unittest; cd ..;
 
 
 echo ""
 echo "============="
-echo " Python 2.7 (debian package)"
-echo " tk 8.5 (debian package)"
+echo " $(python2 --version) (default python2)"
 
-cd tests; python2.7 -m unittest discover; cd ..;
+cd tests; python2 -m unittest discover; cd ..;
 
 
 echo ""
 echo "============="
 echo " Python 3.3.2 (custom build)"
-echo " tk 8.6 (debian package)"
 
 cd tests; cpython3.3.2 -m unittest; cd ..;
 
@@ -26,6 +23,5 @@ cd tests; cpython3.3.2 -m unittest; cd ..;
 echo ""
 echo "============="
 echo " Python 3.4.0 (custom build)"
-echo " tk 8.6 (debian package)"
 
 cd tests; cpython3.4 -m unittest; cd ..;
