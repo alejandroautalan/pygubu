@@ -1,4 +1,4 @@
-[Leer en Español] (LEEME.md)
+[Leer en Español](LEEME.md)
 
 Welcome to Pygubu!
 ============================================
