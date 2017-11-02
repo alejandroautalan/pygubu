@@ -1,4 +1,4 @@
-[Leer en Español] (LEEME.md)
+[Leer en Español](LEEME.md)
 
 Welcome to Pygubu!
 ============================================
@@ -73,7 +73,7 @@ Now, you can start creating your tkinter application using the widgets that you 
 
 After you finished creating your _UI definition_, save it to a `.ui` file by going to the top menu `File > Save`.
 
-The following is a UI definition example called [helloworld.ui] (examples/helloworld.ui) created using pygubu:
+The following is a UI definition example called [helloworld.ui](examples/helloworld.ui) created using pygubu:
 
 
 ```xml
