@@ -33,7 +33,7 @@ from pygubu.stockimage import *
 import pygubu.builder.tkstdwidgets
 
 logger = logging.getLogger(__name__)
-
+logging.basicConfig()  # line added according to python documentation, to load standard Handlers of logging module
 
 def data_xmlnode_to_dict(element, translator=None):
     data = {}
