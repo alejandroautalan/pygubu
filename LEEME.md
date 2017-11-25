@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/alejandroautalan/pygubu.svg?branch=master)](https://travis-ci.org/alejandroautalan/pygubu)
+
 Bienvenido a Pygubu!
 ============================================
 
