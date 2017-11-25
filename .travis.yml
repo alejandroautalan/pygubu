@@ -1,0 +1,20 @@
+language: python
+
+python:
+  - "3.6"
+
+branches:
+  only:
+    - master
+
+install:
+  - pip install appdirs
+
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start
+
+script:
+  - cd tests
+  - python -m unittest discover
