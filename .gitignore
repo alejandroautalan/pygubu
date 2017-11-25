@@ -9,4 +9,4 @@ MANIFEST
 TODO
 pygubu.nja
 pygubu.egg-info/
-myvenv/
+myvenv*/
