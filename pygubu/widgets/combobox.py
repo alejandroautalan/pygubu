@@ -189,8 +189,10 @@ if __name__ == '__main__':
         print('current:', cbox.current())
     
     root = tk.Tk()
-    c = Combobox(root, values='[["DNI", "Doc.Nac.Id."], ["LE", "Libreta Enrolamiento"]]')
+    txtvalues = '[["DNI", "Doc.Nac.Id."], ["LE", "Libreta Enrolamientox"]]'
+    c = Combobox(root, values=txtvalues)
     c.bind('<<ComboboxSelected>>', show_selection)
+    c.configure(values=txtvalues)
     c.set('LE')
     c.grid()
     

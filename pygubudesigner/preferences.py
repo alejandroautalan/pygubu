@@ -23,9 +23,16 @@ FILE_PATH = os.path.dirname(os.path.abspath(__file__))
 dirs = AppDirs('pygubu-designer')
 CONFIG_FILE = os.path.join(dirs.user_data_dir, 'config')
 
-CUSTOM_WIDGETS = 'CUSTOM_WIDGETS'
+options = {
+    'widget_set': {'values': '["tk", "ttk"]', 'default':'ttk'},
+    'widget_palette': {'values': '["accordion", "treeview"]', 'default':'accordion'}
+}
+
+SEC_GENERAL = 'GENERAL'
+SEC_CUSTOM_WIDGETS = 'CUSTOM_WIDGETS'
 config = configparser.SafeConfigParser()
-config.add_section(CUSTOM_WIDGETS)
+config.add_section(SEC_CUSTOM_WIDGETS)
+config.add_section(SEC_GENERAL)
 
 
 def initialize_configfile():
@@ -40,6 +47,11 @@ def save_configfile():
         config.write(configfile)
 
 def load_configfile():
+    defaults = {}
+    for k in options:
+        defaults[k] = options[k]['default']
+    config[SEC_GENERAL] = defaults
+    
     if not os.path.exists(CONFIG_FILE):
         initialize_configfile()
     else:
@@ -47,9 +59,12 @@ def load_configfile():
 
 def get_custom_widgets():
     paths = []
-    for k, p in config.items(CUSTOM_WIDGETS):
+    for k, p in config.items(SEC_CUSTOM_WIDGETS):
         paths.append(p)
     return paths
+    
+def get_option(key):
+    return config.get(SEC_GENERAL, key)
 
 # Get user configuration
 load_configfile()
@@ -61,35 +76,54 @@ class PreferencesUI(object):
         self.master = master
         self.translator = translator
         self.dialog = None
+        self.builder = None
         self._create_preferences_dialog()
         self._load_options()
 
     def _create_preferences_dialog(self):
-        builder = pygubu.Builder(self.translator)
+        self.builder = builder = pygubu.Builder(self.translator)
         uifile = os.path.join(FILE_PATH, "ui/preferences_dialog.ui")
         builder.add_from_file(uifile)
 
         top = self.master.winfo_toplevel()
         self.dialog = dialog = builder.get_object('preferences', top)
+        
+        #General
+        for key in ('widget_set', 'widget_palette'):
+            cbox = builder.get_object(key)
+            cbox.configure(values=options[key]['values'])
+        
+        #Custom widgets
         self.cwtv = builder.get_object('cwtv')
         self.path_remove = builder.get_object('path_remove')
         builder.connect_callbacks(self)
         
     def _load_options(self):
-        for k, p in config.items(CUSTOM_WIDGETS):
+        # General
+        for key in options:
+            var = self.builder.get_variable(key)
+            var.set(get_option(key))
+        # Custom widgets
+        for k, p in config.items(SEC_CUSTOM_WIDGETS):
             self.cwtv.insert('', 'end', text=p)
         self._configure_path_remove()
 
     def _save_options(self):
-        config.remove_section(CUSTOM_WIDGETS)
-        config.add_section(CUSTOM_WIDGETS)
+        # General
+        for key in options:
+            var = self.builder.get_variable(key)
+            config.set(SEC_GENERAL, key, var.get())
+        # Custom Widgets
+        config.remove_section(SEC_CUSTOM_WIDGETS)
+        config.add_section(SEC_CUSTOM_WIDGETS)
         paths = []
         for iid in self.cwtv.get_children():
             txt = self.cwtv.item(iid, 'text')
             paths.append(txt)
         for j, p in enumerate(paths):
-            config.set(CUSTOM_WIDGETS, 'w{0}'.format(j), p)
+            config.set(SEC_CUSTOM_WIDGETS, 'w{0}'.format(j), p)
         save_configfile()
+        self.master.event_generate('<<PygubuDesignerPreferencesSaved>>')
 
     def _configure_path_remove(self):
         if len(self.cwtv.get_children()):
