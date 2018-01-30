@@ -323,7 +323,8 @@ class Builder(object):
                 bobject = self._realize(root, node)
                 widget = bobject.widget
         if widget is None:
-            raise Exception('Widget not defined.')
+            msg = 'Widget "{0}" not defined.'.format(name)
+            raise Exception(msg)
         return widget
 
     def _import_class(self, modulename):
