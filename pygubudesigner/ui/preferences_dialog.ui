@@ -18,16 +18,16 @@
           <property name="propagate">True</property>
           <property name="row">0</property>
           <property name="sticky">nsew</property>
-          <columns>
-            <column id="0">
-              <property name="weight">1</property>
-            </column>
-          </columns>
           <rows>
             <row id="0">
               <property name="weight">1</property>
             </row>
           </rows>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
         </layout>
         <child>
           <object class="ttk.Notebook" id="Notebook_1">
@@ -40,7 +40,65 @@
               <property name="sticky">nsew</property>
             </layout>
             <child>
-              <object class="ttk.Notebook.Tab" id="Tab_1">
+              <object class="ttk.Notebook.Tab" id="Tab_general">
+                <property name="sticky">nsew</property>
+                <property name="text" translatable="yes">General</property>
+                <child>
+                  <object class="ttk.Frame" id="fgeneral">
+                    <property name="height">200</property>
+                    <property name="padding">5</property>
+                    <property name="width">200</property>
+                    <layout>
+                      <property name="column">0</property>
+                      <property name="propagate">True</property>
+                      <property name="row">0</property>
+                    </layout>
+                    <child>
+                      <object class="ttk.Label" id="lblpt">
+                        <property name="text" translatable="yes">Prefered widget set:</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="pygubu.builder.widgets.combobox" id="widget_set">
+                        <property name="keyvariable">string:widget_set</property>
+                        <layout>
+                          <property name="column">1</property>
+                          <property name="propagate">True</property>
+                          <property name="row">0</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="ttk.Label" id="Label_3">
+                        <property name="text" translatable="yes">Widget Palette:</property>
+                        <layout>
+                          <property name="column">0</property>
+                          <property name="propagate">True</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="pygubu.builder.widgets.combobox" id="widget_palette">
+                        <property name="keyvariable">string:widget_palette</property>
+                        <layout>
+                          <property name="column">1</property>
+                          <property name="propagate">True</property>
+                          <property name="row">1</property>
+                        </layout>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="ttk.Notebook.Tab" id="Tab_cwidgets">
                 <property name="sticky">nsew</property>
                 <property name="text" translatable="yes">Custom Widgets</property>
                 <child>
@@ -53,16 +111,16 @@
                       <property name="propagate">True</property>
                       <property name="row">1</property>
                       <property name="sticky">nsew</property>
-                      <columns>
-                        <column id="0">
-                          <property name="weight">1</property>
-                        </column>
-                      </columns>
                       <rows>
                         <row id="1">
                           <property name="weight">1</property>
                         </row>
                       </rows>
+                      <columns>
+                        <column id="0">
+                          <property name="weight">1</property>
+                        </column>
+                      </columns>
                     </layout>
                     <child>
                       <object class="ttk.Label" id="Label_1">
@@ -86,11 +144,6 @@
                           <property name="propagate">True</property>
                           <property name="row">1</property>
                           <property name="sticky">nswe</property>
-                          <columns>
-                            <column id="0">
-                              <property name="weight">1</property>
-                            </column>
-                          </columns>
                           <rows>
                             <row id="0">
                               <property name="weight">0</property>
@@ -99,6 +152,11 @@
                               <property name="weight">1</property>
                             </row>
                           </rows>
+                          <columns>
+                            <column id="0">
+                              <property name="weight">1</property>
+                            </column>
+                          </columns>
                         </layout>
                         <child>
                           <object class="ttk.Label" id="Label_2">
