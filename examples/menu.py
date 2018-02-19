@@ -1,6 +1,10 @@
 # menu.py
-import tkinter as tk
-from tkinter import messagebox
+try:
+    import tkinter as tk
+    from tkinter import messagebox
+except:
+    import Tkinter as tk
+    import tkMessageBox as messagebox
 import pygubu
 
 class MyApplication(pygubu.TkApplication):
