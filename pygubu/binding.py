@@ -66,7 +66,7 @@ class ApplicationLevelBindManager(object):
     def init_mousewheel_binding(master):
         if ApplicationLevelBindManager.mw_initialized == False:
             _os = platform.system()
-            if _os == "Linux" :
+            if _os in ('Linux', 'OpenBSD', 'FreeBSD'):
                 master.bind_all('<4>', ApplicationLevelBindManager.on_mousewheel,  add='+')
                 master.bind_all('<5>', ApplicationLevelBindManager.on_mousewheel,  add='+')
             else:
@@ -83,19 +83,23 @@ class ApplicationLevelBindManager(object):
         """
         _os = platform.system()
         view_command = getattr(widget, orient+'view')
-        if _os == 'Linux':
+        if _os in ('Linux', 'OpenBSD', 'FreeBSD'):
             def on_mousewheel(event):
                 if event.num == 4:
-                    view_command("scroll",(-1)*factor,"units")
+                    view_command('scroll', (-1)*factor, 'units')
                 elif event.num == 5:
-                    view_command("scroll",factor,"units") 
+                    view_command('scroll', factor, 'units') 
         
         elif _os == 'Windows':
             def on_mousewheel(event):        
-                view_command("scroll",(-1)*int((event.delta/120)*factor),"units") 
+                view_command('scroll', (-1)*int((event.delta/120)*factor), 'units') 
         
         elif _os == 'Darwin':
             def on_mousewheel(event):        
-                view_command("scroll",event.delta,"units")             
+                view_command('scroll', event.delta, 'units')
+        else:
+            # FIXME: unknown platform scroll method
+            def on_mousewheel(event):
+                pass
         
         return on_mousewheel
