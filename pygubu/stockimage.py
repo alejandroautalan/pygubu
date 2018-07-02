@@ -37,7 +37,7 @@ class StockImageException(Exception):
 TK_IMAGE_FORMATS = ('.gif', '.pgm', '.ppm')
 
 if tk.TkVersion >= 8.6:
-    TK_IMAGE_FORMATS += ('.png',)
+    TK_IMAGE_FORMATS = ('.png',) + TK_IMAGE_FORMATS
 
 
 STOCK_DATA = {}
