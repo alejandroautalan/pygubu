@@ -20,6 +20,7 @@
           <object class="ttk.Label" id="name">
             <property name="anchor">e</property>
             <property name="font">Sans 18 bold</property>
+            <property name="image">pygubu200</property>
             <property name="text" translatable="yes">pygubu</property>
             <layout>
               <property name="column">0</property>
@@ -31,8 +32,8 @@
           <object class="ttk.Label" id="version">
             <property name="anchor">e</property>
             <property name="font">Sans 8</property>
-            <property name="padding">0 0 0 20</property>
-            <property name="text" translatable="yes">version %version%</property>
+            <property name="padding">0 0 0 5</property>
+            <property name="text" translatable="yes">v%version%</property>
             <layout>
               <property name="column">0</property>
               <property name="propagate">True</property>
@@ -54,8 +55,8 @@
         <child>
           <object class="ttk.Label" id="copyr">
             <property name="font">Sans 8</property>
-            <property name="padding">0 20 0 20</property>
-            <property name="text" translatable="yes">Copyright © 2012-2014 Alejandro Autalán</property>
+            <property name="padding">0 10 0 10</property>
+            <property name="text" translatable="yes">Copyright © 2012-2018 Alejandro Autalán</property>
             <layout>
               <property name="column">0</property>
               <property name="row">3</property>
