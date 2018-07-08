@@ -598,6 +598,7 @@ class PygubuUI(pygubu.TkApplication):
         builder = pygubu.Builder(translator)
         uifile = os.path.join(FILE_PATH, "ui/about_dialog.ui")
         builder.add_from_file(uifile)
+        builder.add_resource_path(os.path.join(FILE_PATH, "images"))
 
         dialog = builder.get_object(
             'aboutdialog', self.master.winfo_toplevel())
