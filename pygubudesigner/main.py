@@ -217,6 +217,9 @@ class PygubuUI(pygubu.TkApplication):
         master.bind_all(
             '<F5>',
             lambda e: self.tree_editor.preview_in_toplevel())
+        master.bind_all(
+            '<F6>',
+            lambda e: self.previewer.close_toplevel_previews())
 
         #
         # Widget bindings
@@ -587,7 +590,7 @@ class PygubuUI(pygubu.TkApplication):
         if itemid == 'preview_toplevel':
             self.tree_editor.preview_in_toplevel()
         if itemid == 'preview_toplevel_closeall':
-            self.previewer.close_toplevel_previews()
+            eslf.previewer.close_toplevel_previews()
 
     #Help menu
     def on_help_menuitem_clicked(self, itemid):
