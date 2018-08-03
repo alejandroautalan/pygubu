@@ -590,7 +590,7 @@ class PygubuUI(pygubu.TkApplication):
         if itemid == 'preview_toplevel':
             self.tree_editor.preview_in_toplevel()
         if itemid == 'preview_toplevel_closeall':
-            eslf.previewer.close_toplevel_previews()
+            self.previewer.close_toplevel_previews()
 
     #Help menu
     def on_help_menuitem_clicked(self, itemid):
