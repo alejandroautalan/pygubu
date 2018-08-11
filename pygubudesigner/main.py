@@ -214,6 +214,12 @@ class PygubuUI(pygubu.TkApplication):
         master.bind_all(
             '<Control-KeyPress-k>',
             lambda e: self.on_edit_menuitem_clicked('edit_item_down'))
+        master.bind_all(
+            '<F5>',
+            lambda e: self.tree_editor.preview_in_toplevel())
+        master.bind_all(
+            '<F6>',
+            lambda e: self.previewer.close_toplevel_previews())
 
         #
         # Widget bindings

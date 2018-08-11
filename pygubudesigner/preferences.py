@@ -1,5 +1,6 @@
 # encoding: utf-8
 import os
+import sys
 try:
     import tkinter as tk
     from tkinter import ttk
@@ -50,8 +51,14 @@ def load_configfile():
     defaults = {}
     for k in options:
         defaults[k] = options[k]['default']
-    config[SEC_GENERAL] = defaults
-    
+    if sys.version_info < (3,0):
+        #Python 2.7
+        keys = defaults.keys()
+        for i in range(0, len(defaults)):
+            config.set(SEC_GENERAL, keys[i], defaults.get(keys[i]))
+    else:
+        #Python 3
+        config[SEC_GENERAL] = defaults
     if not os.path.exists(CONFIG_FILE):
         initialize_configfile()
     else:
