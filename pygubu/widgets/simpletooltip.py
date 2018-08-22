@@ -36,7 +36,8 @@ class ToolTip(object):
         except tk.TclError:
             pass
         label = tk.Label(tw, text=self.text, justify=tk.LEFT,
-                      background="#ffffe0", relief=tk.SOLID, borderwidth=1,
+                      background="#ffffe0", foreground="black",
+                      relief=tk.SOLID, borderwidth=1,
                       font=("tahoma", "8", "normal"))
         label.pack(ipadx=1)
 
