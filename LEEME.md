@@ -168,7 +168,7 @@ Los siguientes links son buenas referencias (en inglés) de tkinter (y tk):
 
 - [TkDocs](http://www.tkdocs.com)
 - [Graphical User Interfaces with Tk](http://docs.python.org/3.5/library/tk.html)
-- [Tkinter 8.5 reference: a GUI for Python](http://infohost.nmt.edu/tcc/help/pubs/tkinter/web/index.html)
+- [Tkinter 8.5 reference: a GUI for Python](https://web.archive.org/web/20181211092656/http://infohost.nmt.edu/~shipman/soft/tkinter/web/index.html)
 - [An Introduction to Tkinter](http://effbot.org/tkinterbook/)
 - [Tcl/Tk 8.5 Manual](http://www.tcl.tk/man/tcl8.5/)
 
