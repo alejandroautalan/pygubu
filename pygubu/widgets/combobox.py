@@ -34,8 +34,15 @@ class Combobox(ttk.Combobox):
             values = self.__choices2tkvalues(self.choices)
             kw[key] = values
         
-        # set readonly mode
-        kw['state'] = 'readonly'
+        # only normal/disabled supported
+        # normal is converted to readonly
+        key = 'state'
+        if key in kw:
+            if kw[key] not in ('readonly', 'disabled'):
+                kw[key] = 'readonly'
+        else:
+            kw[key] = 'readonly'
+            
         ttk.Combobox.__init__(self, master, **kw)
         
         self.__config_keyvar(options['keyvariable'])
@@ -94,6 +101,12 @@ class Combobox(ttk.Combobox):
         if key in args:
             value = args[key]
             self.__config_txtvar(value)
+        
+        # only readonly and disabled supported
+        key = 'state'
+        if key in args:
+            if args[key] not in ('readonly', 'disabled'):
+                args[key] = 'readonly'
         return ttk.Combobox.configure(self, args)
 
     config = configure

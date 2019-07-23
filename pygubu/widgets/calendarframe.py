@@ -83,6 +83,7 @@ class CalendarFrame(ttk.Frame):
             'headerbg': 'grey90',
             'selectbg': '#8000FF',
             'selectfg': 'white',
+            'state': 'normal',
             'markbg': 'white',
             'markfg': 'blue',
         }
@@ -124,6 +125,14 @@ class CalendarFrame(ttk.Frame):
             if key in args:
                 self.__options[key] = args.pop(key)
                 color_change = True
+        key = 'state'
+        if key in args:
+            value = args.pop(key)
+            self.__options[key] = value
+            self._canvas.config(state=value)
+            for w in self._topframe.winfo_children():
+                if w.winfo_class() == 'TButton':
+                    w.config(state=value)
         
         calendar_change = False
         key = 'locale'
@@ -156,7 +165,7 @@ class CalendarFrame(ttk.Frame):
     def cget(self, key):
         if key in ('locale', 'firstweekday', 'calendarfg', 'calendarbg',
                    'headerfg', 'headerbg', 'selectbg', 'selectfg',
-                   'markbg', 'markfg'):
+                   'markbg', 'markfg', 'state'):
            return self.__options[key]
         option = 'year'
         if key == option:
@@ -230,6 +239,7 @@ class CalendarFrame(ttk.Frame):
         bnyear.configure(image=imgn, command=callback)
         btoday.configure(command=self._go_today)
         canvas.bind('<Configure>', self._on_canvas_configure)
+        self._topframe = frame2
         self._canvas = canvas
         self._draw_calendar(canvas)
         self._canvas.tag_bind('cell', '<Button-1>', self._on_cell_clicked)

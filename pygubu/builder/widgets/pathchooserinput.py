@@ -5,7 +5,7 @@ from pygubu.widgets.pathchooserinput import PathChooserInput
 
 class PathChooserInputBuilder(BuilderObject):
     class_ = PathChooserInput
-    OPTIONS_CUSTOM = ('type', 'path', 'image', 'textvariable')
+    OPTIONS_CUSTOM = ('type', 'path', 'image', 'textvariable', 'state')
     properties = OPTIONS_CUSTOM
 
 register_widget('pygubu.builder.widgets.pathchooserinput', PathChooserInputBuilder,
@@ -26,6 +26,13 @@ props = {
         },
     'textvariable': {
         'editor': 'tkvarentry'
+        },
+    'state': {
+        'editor': 'choice',
+        'pygubu.builder.widgets.pathchooserinput': {
+            'params': {
+                'values': ('', 'normal', 'disabled', 'readonly'),
+                'state': 'readonly'}},
         }
     }
 

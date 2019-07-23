@@ -34,8 +34,12 @@ CUSTOM_PROPERTIES = {}
 
 
 def register_property(name, description):
-    CUSTOM_PROPERTIES[name] = description
-    logger.debug('Registered property {0}'.format(name))
+    if name in CUSTOM_PROPERTIES:
+        CUSTOM_PROPERTIES[name].update(description)
+        logger.debug('Updating registered property {0}'.format(name))
+    else:
+        CUSTOM_PROPERTIES[name] = description
+        logger.debug('Registered property {0}'.format(name))
 
 
 #

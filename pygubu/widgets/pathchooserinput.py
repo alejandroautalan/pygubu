@@ -25,12 +25,18 @@ class PathChooserInput(ttk.Frame):
         ttk.Frame.__init__(self, master, **kw)
         self._choose = self.FILE
         self._oldvalue = ''
+        self._state = 'normal'
         # subwidgets
-        self.entry = o = ttk.Entry(self)
+        self.entry = o = ttk.Entry(self, state=self._state)
         o.grid(row=0, column=0, sticky='ew')
         o.bind('<KeyPress>', self.__on_enter_key_pressed)
         o.bind('<FocusOut>', self.__on_focus_out)
-        self.folder_button = o = ttk.Button(self, text='▶', command = self.__on_folder_btn_pressed, width=4)
+        self.folder_button = o = ttk.Button(
+                self,
+                text='▶',
+                command=self.__on_folder_btn_pressed,
+                width=4,
+                state=self._state)
         o.grid(row=0, column=1, padx=2)
 
         #self.rowconfigure(0, weight = 0)
@@ -57,6 +63,15 @@ class PathChooserInput(ttk.Frame):
             self.entry.configure(textvariable=args[key])
             self._generate_changed_event()
             del args[key]
+        key = 'state'
+        if key in args:
+            value = args[key]
+            self.entry.config(state=value)
+            if value in ('disabled', 'readonly'):
+                self.folder_button.config(state='disabled')
+            else:
+                self.folder_button.config(state=value)
+            del args[key]
         ttk.Frame.configure(self, args)
 
     config = configure
@@ -72,6 +87,9 @@ class PathChooserInput(ttk.Frame):
         if key == option:
             return self.entry.get()
         option = 'textvariable'
+        if key == option:
+            return self.entry.cget(option)
+        option = 'state'
         if key == option:
             return self.entry.cget(option)
         return ttk.Frame.cget(self, key)
