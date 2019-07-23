@@ -10,13 +10,20 @@ class CalendarFrameBuilder(BuilderObject):
     OPTIONS_SPECIFIC = TTKFrame.OPTIONS_SPECIFIC
     OPTIONS_CUSTOM = ('firstweekday', 'year', 'month',
                       'calendarfg', 'calendarbg', 'headerfg', 'headerbg',
-                      'selectbg', 'selectfg', 'markbg', 'markfg')
+                      'selectbg', 'selectfg', 'state', 'markbg', 'markfg')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
 register_widget('pygubu.builder.widgets.calendarframe', CalendarFrameBuilder,
                 'CalendarFrame', ('ttk', 'Pygubu Widgets'))
 
 props = {
+    'state': {
+        'editor': 'choice',
+        'pygubu.builder.widgets.calendarframe': {
+            'params': {
+                'values': ('', 'normal', 'disabled'),
+                'state': 'readonly'}},
+        },
     'firstweekday': {
         'editor': 'choice',
         'params': {

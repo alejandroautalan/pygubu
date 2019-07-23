@@ -18,6 +18,13 @@ register_widget('pygubu.builder.widgets.combobox', ComboboxBuilder, 'Combobox',
 props = {
     'keyvariable': {
         'editor': 'tkvarentry'
+        },
+    'state': {
+        'editor': 'choice',
+        'pygubu.builder.widgets.combobox': {
+            'params': {
+                'values': ('', 'normal', 'disabled'),
+                'state': 'readonly'}},
         }
     }
 

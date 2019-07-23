@@ -64,4 +64,24 @@ class TestPathChooserInput(unittest.TestCase):
         path = str(self.widget['path'])
         self.assertEqual('/home/user', path)
         self.widget.destroy()
+        
+    def test_state(self):
+        # allowed states normal/disabled/readonly
+        
+        # normal
+        state = str(self.widget.cget('state'))
+        self.assertEqual('normal', state)
+        
+        # disabled
+        self.widget.config(state='disabled')
+        state = str(self.widget.cget('state'))
+        self.assertEqual('disabled', state)
+        
+        # readonly
+        self.widget.config(state='readonly')
+        state = str(self.widget.cget('state'))
+        self.assertEqual('readonly', state)
+        
+        
+        self.widget.destroy()
 
