@@ -23,6 +23,7 @@ try:
 except:
     import Tkinter as tk
 from pygubu import ApplicationLevelBindManager as BindManager
+from pygubu.binding import remove_binding
 
 
 logger = logging.getLogger(__name__)
@@ -88,7 +89,7 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
                     msg = "widget {} has no attribute 'xview'".format(str(cwidget))
                     logger.info(msg)
             self._configure_mousewheel()
-        
+
         def configure(self, cnf=None, **kw):
             args = tk._cnfmerge((cnf, kw))
             key = 'usemousewheel'
@@ -107,7 +108,7 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
             return frame_class.cget(self, key)
 
         __getitem__ = cget
-        
+
         def _configure_mousewheel(self):
             cwidget = self.cwidget
             if self.usemousewheel:

@@ -29,7 +29,7 @@ except:
 
 class EditableTreeview(ttk.Treeview):
     """A simple editable treeview
-    
+
     It uses the following events from Treeview:
         <<TreviewSelect>>
         <4>
@@ -42,7 +42,7 @@ class EditableTreeview(ttk.Treeview):
         <ButtonRelease-1>
         <Motion>
     If you need them use add=True when calling bind method.
-    
+
     It Generates two virtual events:
         <<TreeviewInplaceEdit>>
         <<TreeviewCellEdited>>
@@ -80,17 +80,17 @@ class EditableTreeview(ttk.Treeview):
         r = event.widget.identify_region(event.x, event.y)
         if r in ('separator', 'header'):
             self._header_clicked = True
-    
+
     def __on_mouse_motion(self, event):
         if self._header_clicked:
             self._header_dragged = True
-    
+
     def __on_button1_release(self, event):
         if self._header_dragged:
             self.after_idle(self.__updateWnds)
         self._header_clicked = False
         self._header_dragged = False
-    
+
     def __on_key_press(self, key, event):
         if key == 'Home':
             self.selection_set("")
@@ -272,7 +272,7 @@ class EditableTreeview(ttk.Treeview):
                 textvariable=svar, from_=min, to=max, increment=step)
         sb = self._inplace_widgets[col]
         sb.bind('<Unmap>', lambda e: self.__update_value(col, item))
-        cb.bind('<FocusOut>', lambda e: self.__update_value(col, item))
+        sb.bind('<FocusOut>', lambda e: self.__update_value(col, item))
         self._inplace_widgets_show[col] = True
 
 
