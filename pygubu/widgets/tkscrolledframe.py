@@ -23,6 +23,7 @@ try:
 except:
     import Tkinter as tk
 from pygubu import ApplicationLevelBindManager as BindManager
+from pygubu.binding import remove_binding
 
 
 def ScrolledFrameFactory(frame_class, scrollbar_class):
@@ -35,7 +36,7 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
             self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
             self.usemousewheel = tk.getboolean(kw.pop('usemousewheel', False))
             self._bindingids = []
-            
+
             super(ScrolledFrame, self).__init__(master, **kw)
 
             self._clipper = frame_class(self, width=200, height=200)
@@ -168,7 +169,7 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
                 relheight = 1
             else:
                 # The scrolled frame is larger than the clipping window.
-                # use expand by default 
+                # use expand by default
                 if self._startY + clipperHeight > frameHeight:
                     self._startY = frameHeight - clipperHeight
                     endScrollY = 1.0
@@ -249,7 +250,7 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
             else:
                 self.vsb.grid_forget()
                 #interior.grid_columnconfigure(3, minsize = 0)
-        
+
         def configure(self, cnf=None, **kw):
             args = tk._cnfmerge((cnf, kw))
             key = 'usemousewheel'
@@ -268,7 +269,7 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
             return frame_class.cget(self, key)
 
         __getitem__ = cget
-                
+
         def _configure_mousewheel(self):
             if self.usemousewheel:
                 BindManager.init_mousewheel_binding(self)
