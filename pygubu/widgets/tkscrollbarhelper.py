@@ -88,7 +88,7 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
                     msg = "widget {} has no attribute 'xview'".format(str(cwidget))
                     logger.info(msg)
             self._configure_mousewheel()
-        
+
         def configure(self, cnf=None, **kw):
             args = tk._cnfmerge((cnf, kw))
             key = 'usemousewheel'
@@ -107,7 +107,7 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
             return frame_class.cget(self, key)
 
         __getitem__ = cget
-        
+
         def _configure_mousewheel(self):
             cwidget = self.cwidget
             if self.usemousewheel:
@@ -135,10 +135,11 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
                                      lambda event, scrollbar=s: BindManager.mousewheel_bind(scrollbar),
                                      add='+')
                         self._bindingids.append((s, bid))
-                        bid = s.bind('<Leave>',
-                                     lambda event: BindManager.mousewheel_unbind(),
-                                     add='+')
-                        self._bindingids.append((s, bid))
+                        if s != main_sb:
+                            bid = s.bind('<Leave>',
+                                         lambda event: BindManager.mousewheel_unbind(),
+                                         add='+')
+                            self._bindingids.append((s, bid))
             else:
                 for widget, bid in self._bindingids:
                     remove_binding(widget, bid)
