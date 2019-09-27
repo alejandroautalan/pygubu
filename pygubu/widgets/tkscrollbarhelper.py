@@ -136,10 +136,11 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
                                      lambda event, scrollbar=s: BindManager.mousewheel_bind(scrollbar),
                                      add='+')
                         self._bindingids.append((s, bid))
-                        bid = s.bind('<Leave>',
-                                     lambda event: BindManager.mousewheel_unbind(),
-                                     add='+')
-                        self._bindingids.append((s, bid))
+                        if s != main_sb:
+                            bid = s.bind('<Leave>',
+                                         lambda event: BindManager.mousewheel_unbind(),
+                                         add='+')
+                            self._bindingids.append((s, bid))
             else:
                 for widget, bid in self._bindingids:
                     remove_binding(widget, bid)
