@@ -514,7 +514,8 @@ class WidgetsTreeEditor(object):
         self.previewer.remove_all()
         self.widget_editor.hide_all()
 
-        self.previewer.resource_paths.append(os.path.dirname(filename))
+        dirname = os.path.dirname(os.path.abspath(filename))
+        self.previewer.resource_paths.append(dirname)
         for element in eroot:
             self.populate_tree('', eroot, element,from_file=True)
         children = self.treeview.get_children('')
