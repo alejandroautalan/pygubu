@@ -17,7 +17,7 @@
 
 from __future__ import unicode_literals
 
-__all__ = ['StockImage', 'StockImageException']
+__all__ = ['StockImage', 'StockImageException', 'TK_IMAGE_FORMATS']
 
 import os
 import logging
@@ -40,7 +40,31 @@ if tk.TkVersion >= 8.6:
     TK_IMAGE_FORMATS = ('.png',) + TK_IMAGE_FORMATS
 
 
-STOCK_DATA = {}
+_img_notsupported = '''\
+R0lGODlhZAAyAIQAAAAAAAsLCxMTExkZGSYmJicnJ11dXYGBgZubm5ycnJ2dnbGxsbOzs8TExMXF
+xdXV1dbW1uTk5PLy8v39/f7+/v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEK
+AB8ALAAAAABkADIAAAX+4CeOZGmeaKqubOu+cCzPMmDfeK7vfO//QJ5rQCwaj8ikcslsOpUswGBC
+qVqv2Kx2y+16v9nJAKAaFCiVtHrNbrvf8Lh83qYUBigplc7v+/9yFGJkJVJogIiJinAUYyaGi5GS
+iI2EJJBuDQ0UChFqmmkNCAqHnAijFKKnnmoRpwgNoagVrqexFaBpEaS0qxWms26VjwOHbaeNDJ4Q
+BwgVEAsICQ8SEg8Jp6QIBr5qEAG2z9HTEt+nCxAVCAfpEQzFEQ6nDhGcBga8wo6FxW/IAwISTCAA
+rtEDQQMgQChmRR2CKmwWUqmS8FdCiRQenEEQgMCEBAKKIaNwKk1JRvv+LvVz8+/BA4//Qo5RWEyB
+GZIBiKTzJmUAqYqNFPZMgObUQJcicw4AZ9IZSksjMB17mLCcw2QQHgigScGdSHYQJKyBIOABhHpA
+L5Zt1vRZua8K2TqMM4yfMTb/dl5Ne3YaBAfawIr1tpKTg6wJIixMhW5umsUnIzt9U1fl3TUKSBXQ
+m9lOOs+/7ihIY1Pn2DOYbz5DDeFMZm+uR1d4PVs25ZRRV9ZBcxeisd8QfzVkc3n4LzW8ewtPEzz4
+bagipE6aTl0f9A/Sq2unXjm3cuTImxtfc2X58vLMxztHL9x3Q/bIcUfX3brU5tA+SRfRy/zOTdqd
++cdaEbYtBJSAaBj+6JMdRLi2H3HyYUcfOJ4EFYFfgHXFQFmD6eKXQo79wwBiipX1FykNoAPNJgOM
+eE0E1gigDFbprKPQArcwF6FU5tAT1GLP9APkGheaxYpkWL1IllkZItkiiRZ99mSNTp2k43U81iTQ
+RUJ2eRl+RIVIVUis9SSbkwKEVEpaZJJU5WQWYUkfQw/MBOSdupGX0UZvGhQcRoc4idSaUh5U1Jvk
+7TgnGjGGdQ0CjQV5WS2QtiMPAj5WRNhd8cyDlqOJRWlRM9pwgykrVxJjzC6ldPKLArC0kk8rr+RY
+S4WuyjqpL5zg6uur2aTyCqqp2rXdsdwp+iWyzP7R3Xx7NCutHwiGXSeCatNmS9cdKugBxre7fSvu
+uFcMwsIT6KKGnH/otuuuES4EIW+elchr77050ECDdM/q6++/M/AbIcAEF5yCwNYarLDC2P5i7sIQ
+K+ztunhEbHHBUlV78cb/YsIgxyDr663GIZcMgw3wmqxyvPmu7HIeCb8sc1Qxz2zzzTjnrPPOPPcs
+QwgAOw==
+'''
+
+STOCK_DATA = {
+    'img_not_supported': {'type': 'data', 'data': _img_notsupported, 'format': 'gif' }
+}
 
 
 class StockImage(object):
@@ -90,16 +114,20 @@ When image is used, the class maintains it on memory for tkinter"""
         return key in cls._stock
 
     @classmethod
-    def register_from_dir(cls, dir_path, prefix=''):
+    def register_from_dir(cls, dir_path, prefix='', ext=TK_IMAGE_FORMATS):
         """List files from dir_path and register images with
             filename as key (without extension)
-        Additionaly a prefix for the key can be provided,
-        so the resulting key will be prefix + filename
+        
+        :param str dir_path: path to search for images.
+        :param str prefix: Additionaly a prefix for the key can be provided,
+            so the resulting key will be prefix + filename
+        :param iterable ext: list of file extensions to load. Defaults to
+            tk suported image extensions. Example ('.jpg', '.png')
         """
 
         for filename in os.listdir(dir_path):
             name, file_ext = os.path.splitext(filename)
-            if file_ext in cls._formats:
+            if file_ext in ext:
                 fkey = '{0}{1}'.format(prefix, name)
                 cls.register(fkey, os.path.join(dir_path, filename))
 
@@ -115,7 +143,23 @@ When image is used, the class maintains it on memory for tkinter"""
         elif itype == 'created':
             img = v['image']
         else:
-            img = tk.PhotoImage(file=v['filename'])
+            # custom
+            fpath = v['filename']
+            fname = os.path.basename(fpath)
+            name, file_ext = os.path.splitext(fname)
+            if file_ext in cls._formats:
+                img = tk.PhotoImage(file=fpath)
+            else:
+                try:
+                    from PIL import Image, ImageTk
+                    aux = Image.open(fpath)
+                    img = ImageTk.PhotoImage(aux)
+                except Exception as e:
+                    msg = 'Error loading image {0}, try installing Pillow module.'
+                    msg = msg.format(fpath)
+                    logger.error(msg)
+                    img = cls.get('img_not_supported')
+                
         cls._cached[rkey] = img
         logger.info('Loaded resource %s.' % rkey)
         return img

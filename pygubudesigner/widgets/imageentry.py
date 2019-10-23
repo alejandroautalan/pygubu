@@ -30,6 +30,9 @@ except:
 
 from pygubu.stockimage import *
 from pygubudesigner.widgets.propertyeditor import *
+from pygubudesigner.i18n import translator
+
+_ = translator
 
 
 class ImagePropertyEditor(PropertyEditor):
@@ -50,10 +53,13 @@ class ImagePropertyEditor(PropertyEditor):
         self.columnconfigure(0, weight=1)
 
     def _on_button_click(self):
-        ext = ['*.gif', '*.pgm', '*.ppm']
-        if tk.TkVersion >= 8.6:
-            ext.append('*.png')
-        options = {'filetypes': [('All Images', ' '.join(ext))]}
+        ext = [ '*{0}'.format(e) for e in TK_IMAGE_FORMATS]
+        options = {
+            'filetypes': [
+                (_('Tk image formats'), ' '.join(ext)),
+                (_('All Files'), '*.*')
+                ]
+            }
 
         fname = tk.filedialog.askopenfilename(**options)
         if fname:
