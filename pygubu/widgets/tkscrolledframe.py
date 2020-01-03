@@ -88,7 +88,7 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
             if type(value) == str:
                 value = float(value)
             if mode is None:
-                return self.hbar.get()
+                return self.hsb.get()
             elif mode == 'moveto':
                 frameWidth = self.innerframe.winfo_reqwidth()
                 self._startX = value * float(frameWidth)
@@ -110,7 +110,7 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
             if type(value) == str:
                 value = float(value)
             if mode is None:
-                return self.vbar.get()
+                return self.vsb.get()
             elif mode == 'moveto':
                 frameHeight = self.innerframe.winfo_reqheight()
                 self._startY = value * float(frameHeight)
