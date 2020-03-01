@@ -75,52 +75,68 @@ Now, you can start creating your tkinter application using the widgets that you 
 
 After you finished creating your _UI definition_, save it to a `.ui` file by going to the top menu `File > Save`.
 
-The following is a UI definition example called [helloworld.ui](examples/helloworld.ui) created using pygubu:
+The following is a UI definition example called [helloworld.ui](examples/helloworld/helloworld.ui) created using pygubu:
 
 
 ```xml
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
-  <object class="ttk.Frame" id="mainwindow">
+  <object class="tk.Toplevel" id="mainwindow">
     <property name="height">200</property>
-    <property name="padding">20</property>
+    <property name="resizable">both</property>
+    <property name="title" translatable="yes">Hello World App</property>
     <property name="width">200</property>
-    <layout>
-      <property name="column">0</property>
-      <property name="propagate">True</property>
-      <property name="row">0</property>
-      <property name="sticky">nesw</property>
-    </layout>
     <child>
-      <object class="ttk.Label" id="label1">
-        <property name="anchor">center</property>
-        <property name="font">Helvetica 26</property>
-        <property name="foreground">#0000b8</property>
-        <property name="text" translatable="yes">Hello World !</property>
+      <object class="ttk.Frame" id="mainframe">
+        <property name="height">200</property>
+        <property name="padding">20</property>
+        <property name="width">200</property>
         <layout>
           <property name="column">0</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
+          <property name="sticky">nsew</property>
+          <rows>
+            <row id="0">
+              <property name="weight">1</property>
+            </row>
+          </rows>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
         </layout>
+        <child>
+          <object class="ttk.Label" id="label1">
+            <property name="anchor">center</property>
+            <property name="font">Helvetica 26</property>
+            <property name="foreground">#0000b8</property>
+            <property name="text" translatable="yes">Hello World !</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
       </object>
     </child>
   </object>
-  </interface>
+</interface>
 ```
 
-Then, you should create your _application script_ as shown below:
+Then, you should create your _application script_ as shown below ([helloworld.py](examples/helloworld/helloworld.py)):
 
 ```python
-#test.py
-try:
-    import tkinter as tk  # for python 3
-except:
-    import Tkinter as tk  # for python 2
+# helloworld.py
+import tkinter as tk
 import pygubu
 
 
-class Application:
-    def __init__(self, master):
+class HelloWorldApp:
+    
+    def __init__(self):
 
         #1: Create a builder
         self.builder = builder = pygubu.Builder()
@@ -128,14 +144,16 @@ class Application:
         #2: Load an ui file
         builder.add_from_file('helloworld.ui')
 
-        #3: Create the widget using a master as parent
-        self.mainwindow = builder.get_object('mainwindow', master)
+        #3: Create the mainwindow
+        self.mainwindow = builder.get_object('mainwindow')
+        
+    def run(self):
+        self.mainwindow.mainloop()
 
 
 if __name__ == '__main__':
-    root = tk.Tk()
-    app = Application(root)
-    root.mainloop()
+    app = HelloWorldApp()
+    app.run()
 ```
 
 Note that instead of `helloworld.ui` in the following line:
@@ -150,7 +168,7 @@ You should insert the _filename_ (or path) of your just saved UI definition.
 Note also that instead of `'mainwindow'` in the following line:
 
 ```python
-self.mainwindow = builder.get_object('mainwindow', master)
+self.mainwindow = builder.get_object('mainwindow')
 ```
 
 You should have the name of your _main widget_ (the parent of all widgets), otherwise you will get an error similar to the following:

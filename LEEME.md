@@ -75,66 +75,84 @@ Ahora, puedes comenzar a crear tu aplicación tkinter usando los widgets que enc
 
 Luego de finalizar la creación de tu _interface de usuario_, grabala en un archivo`.ui` con la opción `Archivo > Guardar` del menu principal.
 
-El siguiente es un ejemplo de interfaz de usuario denominado [holamundo.ui] (examples/holamundo.ui) creado usando pygubu-designer:
+El siguiente es un ejemplo de interfaz de usuario denominado [holamundo.ui](examples/helloworld/holamundo.ui) creado usando pygubu-designer:
 
 ```xml
 <?xml version='1.0' encoding='utf-8'?>
 <interface>
-  <object class="ttk.Frame" id="mainframe">
+  <object class="tk.Toplevel" id="mainwindow">
     <property name="height">200</property>
-    <property name="padding">20</property>
+    <property name="resizable">both</property>
+    <property name="title" translatable="yes">Hello World App</property>
     <property name="width">200</property>
-    <layout>
-      <property name="column">0</property>
-      <property name="propagate">True</property>
-      <property name="row">0</property>
-      <property name="sticky">nesw</property>
-    </layout>
     <child>
-      <object class="ttk.Label" id="label1">
-        <property name="anchor">center</property>
-        <property name="font">Helvetica 26</property>
-        <property name="foreground">#0000b8</property>
-        <property name="text" translatable="yes">Hola Mundo !</property>
+      <object class="ttk.Frame" id="mainframe">
+        <property name="height">200</property>
+        <property name="padding">20</property>
+        <property name="width">200</property>
         <layout>
           <property name="column">0</property>
           <property name="propagate">True</property>
           <property name="row">0</property>
+          <property name="sticky">nsew</property>
+          <rows>
+            <row id="0">
+              <property name="weight">1</property>
+            </row>
+          </rows>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
         </layout>
+        <child>
+          <object class="ttk.Label" id="label1">
+            <property name="anchor">center</property>
+            <property name="font">Helvetica 26</property>
+            <property name="foreground">#0000b8</property>
+            <property name="text" translatable="yes">Hello World !</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
       </object>
     </child>
   </object>
 </interface>
 ```
 
-Luego, crea tu _aplicación_ como se muestra a continuación:
+Luego, crea tu _aplicación_ como se muestra a continuación ([holamundo.py](examples/helloworld/holamundo.py)):
 
 ```python
-#prueba.py
-try:
-    import tkinter as tk  # for python 3
-except:
-    import Tkinter as tk  # for python 2
+# helloworld.py
+import tkinter as tk
 import pygubu
 
 
-class Application:
-    def __init__(self, master):
+class HelloWorldApp:
+    
+    def __init__(self):
 
-        #1: Crea un constructor
+        #1: Create a builder
         self.builder = builder = pygubu.Builder()
 
-        #2: Carga un archivo con el diseño de la interfaz
-        builder.add_from_file('holamundo.ui')
+        #2: Load an ui file
+        builder.add_from_file('helloworld.ui')
 
-        #3: Crea el widget usando 'master' como padre
-        self.mainwindow = builder.get_object('mainframe', master)
+        #3: Create the mainwindow
+        self.mainwindow = builder.get_object('mainwindow')
+        
+    def run(self):
+        self.mainwindow.mainloop()
 
 
 if __name__ == '__main__':
-    root = tk.Tk()
-    app = Application(root)
-    root.mainloop()
+    app = HelloWorldApp()
+    app.run()
 ```
 
 Ten en cuenta que en lugar de `holamundo.ui` en la línea:
@@ -146,10 +164,10 @@ builder.add_from_file('holamundo.ui')
 Debes insertar el _nombre de archivo_ (o path) de la interfaz de usuario que acabas de grabar.
 
 
-Ten en cuenta además que en lugar de `'mainframe'` en la línea:
+Ten en cuenta además que en lugar de `'mainwindow'` en la línea:
 
 ```python
-self.mainwindow = builder.get_object('mainframe', master)
+self.mainwindow = builder.get_object('mainwindow')
 ```
 
 Debes tener el nombre del _widget principal_ (el padre de todos los widgets), en caso contrario obtendras un error similar al siguiente::

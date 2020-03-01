@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="tk.Toplevel" id="mainwindow">
+    <property name="height">200</property>
+    <property name="resizable">both</property>
+    <property name="title" translatable="yes">Hello World App</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Frame" id="mainframe">
+        <property name="height">200</property>
+        <property name="padding">20</property>
+        <property name="width">200</property>
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+          <property name="sticky">nsew</property>
+          <rows>
+            <row id="0">
+              <property name="weight">1</property>
+            </row>
+          </rows>
+          <columns>
+            <column id="0">
+              <property name="weight">1</property>
+            </column>
+          </columns>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="label1">
+            <property name="anchor">center</property>
+            <property name="font">Helvetica 26</property>
+            <property name="foreground">#0000b8</property>
+            <property name="text" translatable="yes">Hello World !</property>
+            <layout>
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
