@@ -76,31 +76,37 @@ path and execute:
 Usage
 -----
 
-Create an UI definition using pygubu and save it to a file. Then, create
-your aplication script as shown below:
+Create an UI definition using pygubu and save it to a file. Then, 
+create your aplication script as shown below. Note that 'mainwindow' 
+is the name of your Toplevel widget.
 
 ::
 
-    #test.py
+    # helloworld.py
     import tkinter as tk
     import pygubu
-
-    class Application:
-        def __init__(self, master):
-
+    
+    
+    class HelloWorldApp:
+        
+        def __init__(self):
+    
             #1: Create a builder
-            self.builder = builder = pugubu.Builder()
-
+            self.builder = builder = pygubu.Builder()
+    
             #2: Load an ui file
-            builder.add_from_file('test.ui')
+            builder.add_from_file('helloworld.ui')
+    
+            #3: Create the mainwindow
+            self.mainwindow = builder.get_object('mainwindow')
+            
+        def run(self):
+            self.mainwindow.mainloop()
 
-            #3: Create the widget using a master as parent
-            self.mainwindow = builder.get_object('mainwindow', master)
 
     if __name__ == '__main__':
-        root = tk.Tk()
-        app = Application(root)
-        root.mainloop()
+        app = HelloWorldApp()
+        app.run()
 
 
 See the examples directory or watch this hello world example on
