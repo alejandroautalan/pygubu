@@ -186,8 +186,8 @@ class PygubuUI(pygubu.TkApplication):
         self.statusbar = self.builder.get_object('statusbar')
         handler = StatusBarHandler(self.statusbar)
         handler.setLevel(logging.INFO)
-        logger.addHandler(handler)
-        pygubu.builder.logger.addHandler(handler)
+        # add handler to the root logger:
+        logging.getLogger().addHandler(handler)
 
         #app grid
         self.set_resizable()

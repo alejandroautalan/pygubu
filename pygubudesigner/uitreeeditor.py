@@ -434,10 +434,11 @@ class WidgetsTreeEditor(object):
 
         root = selected_item
         #  check if the widget can be added at selected point
-        if not self._validate_add(root, wclass, False):
+        if not self._validate_add(root, wclass, True):
             #  if not try to add at item parent level
             parent = tree.parent(root)
             if parent != root:
+                logger.warning('Failed to add widget, trying one level up.')
                 if self._validate_add(parent, wclass):
                     root = parent
                 else:
