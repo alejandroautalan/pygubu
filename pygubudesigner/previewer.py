@@ -358,14 +358,37 @@ if sys.platform == 'linux':
 class ToplevelPreview(Preview):
 
     def create_preview_widget(self, parent, widget_id, xmlnode):
+        # Change real Toplevel for a preview replacement:
         xmlnode.set('class', 'pygubudesigner.ToplevelFramePreview')
+        # Add same behavior of Toplevel. Default expand both sides:
         layout = ET.Element('layout')
         for n, v in (('row', '0'), ('column', '0'), ('sticky', 'nsew')):
             p = ET.Element('property')
             p.set('name', n)
             p.text = v
             layout.append(p)
+        rc = ET.Element('rows')
+        row = ET.Element('row')
+        row.set('id', '0')
+        p = ET.Element('property')
+        p.set('name', 'weight')
+        p.text = '1'
+        row.append(p)
+        rc.append(row)
+        layout.append(rc)
+        
+        rc = ET.Element('columns')
+        col = ET.Element('column')
+        col.set('id', '0')
+        p = ET.Element('property')
+        p.set('name', 'weight')
+        p.text = '1'
+        col.append(p)
+        rc.append(col)
+        layout.append(rc)
         xmlnode.append(layout)
+        # end add behaviour
+        
         # print(ET.tostring(xmlnode))
         self.builder = self._create_builder()
         self.builder.add_from_xmlnode(xmlnode)

@@ -23,6 +23,7 @@ class TKToplevel(BuilderObject):
     allow_container_layout = False
     layout_required = False
     allowed_parents = ('root',)
+    maxchildren = 1
     OPTIONS_STANDARD = ('borderwidth', 'cursor', 'highlightbackground',
                         'highlightcolor', 'highlightthickness',
                         'padx', 'pady', 'relief', 'takefocus')
@@ -46,6 +47,14 @@ class TKToplevel(BuilderObject):
         else:
             self.widget = self.class_(master, **args)
         return self.widget
+    
+    def layout(self, target=None):
+        # we marked this widget as not allowed to edit layout, and
+        # by default the toplevel is configured to expand bot sides.
+        if target is None:
+            target = self.widget
+        target.columnconfigure(0, weight=1)
+        target.rowconfigure(0, weight=1)
 
     def _set_property(self, target_widget, pname, value):
         method_props = ('geometry', 'overrideredirect', 'title')
@@ -54,10 +63,6 @@ class TKToplevel(BuilderObject):
             method(value)
         elif pname == 'resizable' and value:
             target_widget.resizable(*self.RESIZABLE[value])
-            if value in ('both', 'horizontally'):
-                target_widget.columnconfigure(0, weight=1)
-            if value in ('both', 'vertically'):
-                target_widget.rowconfigure(0, weight=1)
         elif pname == 'maxsize':
             if '|' in value:
                 w, h = value.split('|')
