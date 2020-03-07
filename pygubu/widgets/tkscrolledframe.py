@@ -58,8 +58,16 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
             #configure scroll
             self.hsb.set(0.0, 1.0)
             self.vsb.set(0.0, 1.0)
-            self.vsb.config(command=self.yview)
-            self.hsb.config(command=self.xview)
+            # Scroll limiting config variables updated during scrolls to keep track
+            self._x_skip, self._y_skip = 0, 0
+            # number of scroll events to be skipped before an event is handled
+            # set to zero to achieve default behaviour
+            # do not set a huge value or there would basically no scrolling possible. Preferred value after visual
+            # tests is around 3
+            self._x_skip_max, self._y_skip_max = 3, 3
+            # use scroll limiting methods instead of xview and yview directly
+            self.vsb.config(command=self._y_scroll_limiting)
+            self.hsb.config(command=self._x_scroll_limiting)
 
             #grid
             self._clipper.grid(row=0, column=0, sticky=tk.NSEW)
@@ -80,6 +88,25 @@ def ScrolledFrameFactory(frame_class, scrollbar_class):
         def reposition(self):
             if self._scrollTimer is None:
                 self._scrollTimer = self.after_idle(self._scrollBothNow)
+
+        # This method is a fix for lagging scroll in the scrolled frame
+        # Scrollbars emit a lot of scroll events but here's the catch, we don't need to process all of them
+        # We can still skip a few "frames" of rendering without hurting user experience
+        # these limiting methods skip _x_skip_max and _y_skip_max number of events before firing the actual
+        # xview and yview methods. The implementation below is self explanatory
+        def _x_scroll_limiting(self, mode=None, value=None, units=None):
+            if self._x_skip == self._x_skip_max:
+                self.xview(mode, value, units)
+                self._x_skip = 0
+            else:
+                self._x_skip += 1
+
+        def _y_scroll_limiting(self, mode=None, value=None, units=None):
+            if self._y_skip == self._y_skip_max:
+                self.yview(mode, value, units)
+                self._y_skip = 0
+            else:
+                self._y_skip += 1
 
         # Called when the user clicks in the horizontal scrollbar.
         # Calculates new position of frame then calls reposition() to
