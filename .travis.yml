@@ -3,6 +3,13 @@ language: python
 python:
   - "2.7"
   - "3.6"
+  - "3.7"
+  - "3.8"
+
+addons:
+  apt:
+    packages:
+      - "xvfb"
 
 branches:
   only:
@@ -14,7 +21,7 @@ install:
 
 before_script:
   - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
+  - "Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &"
   - sleep 3 # give xvfb some time to start
 
 script:
