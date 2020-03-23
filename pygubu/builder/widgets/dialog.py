@@ -14,7 +14,10 @@ class DialogBO(TKToplevel):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
     def realize(self, parent):
-        BuilderObject.realize(self, parent)
+        super(TKToplevel, self).realize(parent)
+    
+    def layout(self, target=None):
+        super(DialogBO, self).layout(self.widget.toplevel)
 
     def _set_property(self, target_widget, pname, value):
         if pname == 'modal':
