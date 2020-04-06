@@ -1,5 +1,5 @@
 # encoding: utf8
-
+from __future__ import print_function
 from collections import OrderedDict
 import json
 try:
@@ -10,7 +10,7 @@ except:
     import ttk
 
 
-class Combobox(ttk.Combobox):
+class Combobox(ttk.Combobox, object):
     """
     A ttk.Combobox that accepts a list of (key, label) pair of options.
     """
@@ -92,6 +92,13 @@ class Combobox(ttk.Combobox):
         if key in args:
             self.choices = args[key]
             args[key] = self.__choices2tkvalues(self.choices)
+            # clear variables:
+            keyvar = self.__options['keyvariable']
+            if keyvar is not None:
+                keyvar.set('')
+            txtvar = self.cget('textvariable')
+            if txtvar is not None:
+                txtvar.set('')
         key = 'keyvariable'
         if key in args:
             value = args.pop(key)
@@ -165,7 +172,7 @@ class Combobox(ttk.Combobox):
         self._choices.clear()
         for idx, v in enumerate(values):
             key = value = v
-            if type(v) != type('') and len(v) == 2:
+            if type(v) != type(u'') and len(v) == 2:
                 key, value = v
             self._choices[key] = value
     
