@@ -20,7 +20,6 @@ logger = logging.getLogger(__name__)
 class TKToplevel(BuilderObject):
     class_ = tk.Toplevel
     container = True
-    allow_container_layout = False
     layout_required = False
     allowed_parents = ('root',)
     maxchildren = 1
@@ -53,6 +52,7 @@ class TKToplevel(BuilderObject):
         # by default the toplevel is configured to expand bot sides.
         if target is None:
             target = self.widget
+        #self._grid_rc_layout(target)
         target.columnconfigure(0, weight=1)
         target.rowconfigure(0, weight=1)
 
@@ -418,7 +418,6 @@ class TKMenu(BuilderObject):
         'tk.Menuitem.Separator')
     class_ = tk.Menu
     container = True
-    allow_container_layout = False
     OPTIONS_STANDARD = ('activebackground', 'activeborderwidth',
                         'activeforeground',  'background', 'borderwidth',
                         'cursor', 'disabledforeground', 'font', 'foreground',

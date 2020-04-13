@@ -28,8 +28,8 @@ class TTKScrolledFrameBO(BuilderObject):
         else:
             super(TTKScrolledFrameBO, self)._set_property(target_widget, pname, value)
     
-    def layout(self, target=None):
-        self._grid_layout(self.widget, configure_rc=False)
+    def layout(self, target=None, configure_grid=True):
+        super(TTKScrolledFrameBO, self).layout(target, False)
         self._grid_rc_layout(self.widget.innerframe)
         
 
