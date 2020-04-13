@@ -221,7 +221,6 @@ class TTKNotebook(TTKWidgetBO):
     OPTIONS_SPECIFIC = ('height', 'padding', 'width')
     class_ = ttk.Notebook
     container = True
-    allow_container_layout = False
     allowed_children = ('ttk.Notebook.Tab',)
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
 

@@ -36,6 +36,8 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
             self.vsb = None
             self.hsb = None
             self.cwidget = None
+            self.container = c = frame_class(self)
+            c.grid(row=0, column=0, sticky='nsew')
             self._bindingids = []
             self._create_scrollbars()
 
@@ -54,7 +56,7 @@ def ScrollbarHelperFactory(frame_class, scrollbar_class):
 
         def add_child(self, cwidget):
             self.cwidget = cwidget
-            cwidget.grid(column=0, row=0, sticky=tk.NSEW, in_=self)
+            cwidget.pack(expand=True, fill='both', in_=self.container)
 
             if self.scrolltype in (self.BOTH, self.VERTICAL):
                 if hasattr(cwidget, 'yview'):

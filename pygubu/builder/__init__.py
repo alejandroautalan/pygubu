@@ -48,40 +48,48 @@ def data_xmlnode_to_dict(element, translator=None):
 
     # get layout properties
     # use grid layout for all
+    manager = 'grid'
+    #childrenmanager = manager
     layout_properties = {}
     layout_elem = element.find('./layout')
     if layout_elem is not None:
+        manager = layout_elem.get('manager', 'grid')
+        #childrenmanager = layout_elem.get('childrenmanager', manager)
         props = layout_elem.findall('./property')
         for p in props:
             layout_properties[p.get('name')] = p.text
 
-        # get grid row and col properties:
-        rows_dict = defaultdict(dict)
-        erows = layout_elem.find('./rows')
-        if erows is not None:
-            rows = erows.findall('./row')
-            for row in rows:
-                row_id = row.get('id')
-                row_properties = {}
-                props = row.findall('./property')
-                for p in props:
-                    row_properties[p.get('name')] = p.text
-                rows_dict[row_id] = row_properties
-        layout_properties['rows'] = rows_dict
-
-        columns_dict = defaultdict(dict)
-        ecolums = layout_elem.find('./columns')
-        if ecolums is not None:
-            columns = ecolums.findall('./column')
-            for column in columns:
-                column_id = column.get('id')
-                column_properties = {}
-                props = column.findall('./property')
-                for p in props:
-                    column_properties[p.get('name')] = p.text
-                columns_dict[column_id] = column_properties
-        layout_properties['columns'] = columns_dict
+        #if childrenmanager == 'grid':
+        if True:
+            # get grid row and col properties:
+            rows_dict = defaultdict(dict)
+            erows = layout_elem.find('./rows')
+            if erows is not None:
+                rows = erows.findall('./row')
+                for row in rows:
+                    row_id = row.get('id')
+                    row_properties = {}
+                    props = row.findall('./property')
+                    for p in props:
+                        row_properties[p.get('name')] = p.text
+                    rows_dict[row_id] = row_properties
+            layout_properties['rows'] = rows_dict
+            
+            columns_dict = defaultdict(dict)
+            ecolums = layout_elem.find('./columns')
+            if ecolums is not None:
+                columns = ecolums.findall('./column')
+                for column in columns:
+                    column_id = column.get('id')
+                    column_properties = {}
+                    props = column.findall('./property')
+                    for p in props:
+                        column_properties[p.get('name')] = p.text
+                    columns_dict[column_id] = column_properties
+            layout_properties['columns'] = columns_dict
     data['layout'] = layout_properties
+    data['manager'] = manager
+    #data['childrenmanager'] = childrenmanager
 
     return data
 
@@ -116,43 +124,47 @@ def data_dict_to_xmlnode(data, translatable_props=None):
     if layout_required:
         # create layout node
         layout = data['layout']
+        manager = data.get('manager', 'grid')
         layout_node = ET.Element('layout')
-        has_layout = False
+        layout_node.set('manager', manager)
+        #children_manager = data.get('childrenmanager', manager)
+        #if CLASS_MAP[data['class']].builder.container == True:
+            #layout_node.set('childrenmanager', children_manager)
+        
         sorted_keys = sorted(layout)
         for prop in sorted_keys:
             pv = layout[prop]
             if pv and prop != 'rows' and prop != 'columns':
-                has_layout = True
                 pnode = ET.Element('property')
                 pnode.set('name', prop)
                 pnode.text = pv
                 layout_node.append(pnode)
-        keys = {'rows': 'row', 'columns': 'column'}
-        for key in keys:
-            if key in layout:
-                erows = ET.Element(key)
-                include_key = False
-                sorted_keys = sorted(layout[key])
-                for rowid in sorted_keys:
-                    erow = ET.Element(keys[key])
-                    erow.set('id', rowid)
-                    inlcude_rc = False
-                    sorted_props = sorted(layout[key][rowid])
-                    for pname in sorted_props:
-                        include_key = True
-                        inlcude_rc = True
-                        eprop = ET.Element('property')
-                        eprop.set('name', pname)
-                        eprop.text = layout[key][rowid][pname]
-                        erow.append(eprop)
-                    if inlcude_rc:
-                        erows.append(erow)
-                if include_key:
-                    layout_node.append(erows)
-
-        if has_layout:
-            node.append(layout_node)
-
+        #if children_manager == 'grid':
+        if True:
+            keys = {'rows': 'row', 'columns': 'column'}
+            for key in keys:
+                if key in layout:
+                    erows = ET.Element(key)
+                    include_key = False
+                    sorted_keys = sorted(layout[key])
+                    for rowid in sorted_keys:
+                        erow = ET.Element(keys[key])
+                        erow.set('id', rowid)
+                        inlcude_rc = False
+                        sorted_props = sorted(layout[key][rowid])
+                        for pname in sorted_props:
+                            include_key = True
+                            inlcude_rc = True
+                            eprop = ET.Element('property')
+                            eprop.set('name', pname)
+                            eprop.text = layout[key][rowid][pname]
+                            erow.append(eprop)
+                        if inlcude_rc:
+                            erows.append(erow)
+                    if include_key:
+                        layout_node.append(erows)
+        # Append node layout
+        node.append(layout_node)
     return node
 
 
@@ -342,7 +354,7 @@ class Builder(object):
         if cname in CLASS_MAP:
             self._pre_process_data(data)
             parent = CLASS_MAP[cname].builder.factory(self, data)
-            widget = parent.realize(master)
+            parent.realize(master)
 
             self.objects[uniqueid] = parent
 

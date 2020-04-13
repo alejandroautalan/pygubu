@@ -53,8 +53,6 @@ class BuilderObject(object):
     OPTIONS_CUSTOM = tuple()
     class_ = None
     container = False
-    # allow_container_layout, True if widget can setup grid row/col options
-    allow_container_layout = True
     allowed_parents = None
     allowed_children = None
     maxchildren = None
@@ -79,6 +77,7 @@ class BuilderObject(object):
         self.descr = wdescr
         self.properties = wdescr.get('properties', {})
         self.layout_properties = wdescr.get('layout', {})
+        self.layout_manager = wdescr.get('manager', 'grid')
         self.bindings = wdescr.get('bindings', [])
 
     def realize(self, parent):
@@ -130,28 +129,58 @@ class BuilderObject(object):
                 msg = msg.format(pname, repr(self.class_), str(e))
                 logger.error(msg)
 
-    def layout(self, target=None):
-        if not self.layout_required:
-            return
-        if target is None:
-            target = self.widget
+    def layout(self, target=None, configure_grid=True):
+        if self.layout_required:
+            if target is None:
+                target = self.widget
+    
+            # Check manager
+            if self.layout_manager == 'grid':
+                self._grid_layout(target)
+            elif self.layout_manager == 'pack':
+                self._pack_layout(target)
+            elif self.layout_manager == 'place':
+                self._place_layout(target)
+            else:
+                msg = 'Invalid layout manager: {0}'.format(self.layout_manager)
+                raise Exception(msg)
+        if configure_grid:
+            parent = target.nametowidget(target.winfo_parent())
+            self._grid_rc_layout(parent)
 
-        #use grid layout for all
-        self._grid_layout(target)
-
-    def _grid_layout(self, target, configure_rc=True):
+    def _pack_layout(self, target):
+        properties = dict(self.layout_properties)
+        propagate = properties.pop('propagate', 'True')
+        # remove grid stuff
+        properties.pop('rows', None)
+        properties.pop('columns', None)
+        # Do pack
+        target.pack(**properties)
+        if propagate != 'True':
+            target.pack_propagate(0)
+    
+    def _place_layout(self, target):
+        properties = dict(self.layout_properties)
+        # remove grid stuff
+        properties.pop('rows', None)
+        properties.pop('columns', None)
+        # Do place
+        target.place(**properties)
+    
+    def _grid_layout(self, target):
         properties = dict(self.layout_properties)
         grid_propagate = properties.pop('propagate', 'True')
-        rowsprop = properties.pop('rows', None)
-        colsprop = properties.pop('columns', None)
+        # remove grid rc stuff
+        properties.pop('rows', None)
+        properties.pop('columns', None)
 
         target.grid(**properties)
         if grid_propagate != 'True':
             target.grid_propagate(0)
-        if configure_rc:
-            self._grid_rc_layout(target, rowsprop, colsprop)
 
     def _grid_rc_layout(self, target, rowsprop=None, colsprop=None):
+        if 'rows' not in self.layout_properties:
+            return
         if rowsprop is None:
             properties = dict(self.layout_properties)
             rowsprop = properties.pop('rows', {})
