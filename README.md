@@ -3,7 +3,7 @@
 [Leer en Español](LEEME.md)
 
 Welcome to Pygubu!
-============================================
+==================
 
 `Pygubu` is a [RAD tool](https://en.wikipedia.org/wiki/Rapid_application_development) to enable _quick_ and _easy development of user interfaces_ for the Python's `tkinter` module.
 
@@ -12,70 +12,25 @@ The user interfaces designed are saved as [XML](https://en.wikipedia.org/wiki/XM
 Pygubu is inspired by [Glade](https://glade.gnome.org).
 
 Installation
-====
+============
 
-Pygubu requires Python >= 2.7 (Tested only in Python 2.7.3 and 3.2.3 with tk8.5).
-
-You can install pygubu using:
-
-### zip tarball
-
-Download and extract the [tarball](http://searchenterpriselinux.techtarget.com/definition/tarball). Open a console in the extraction path and execute:
-
-```
-python setup.py install
-```
-
-### pip
+Pygubu requires Python >= 2.7
 
 ```
 pip install pygubu
 ```
 
-Note that if you are using a Python 3 version, you might want to use its `pip` tool, for example:
-
-    pip3.5 install pygubu
-    
-In the previous case, I am using the `pip` tool of Python 3.5.  
-
-
-To check that the installation was successful, you can try to import `pygubu` (for example from the [IDLE](https://en.wikipedia.org/wiki/IDLE_(Python)))
-
-    import pygubu
-    
-If you have no [`ImportError`](https://docs.python.org/3.5/library/exceptions.html#ImportError), then your installation was successful.
-
 Usage
 =====
 
-Type on the terminal one of the following commands depending on your system.
+Since version 0.10 the project was splitted in two main modules:
 
-### Unix-like systems
+- The pygubu core (this project), that load and build user interfaces defined in xml.
+- The interface editor (pygubu-designer), that helps you create the xml definition graphically
 
-```
-pygubu-designer
-```
+Start creating your tkinter application xml UI definition using the pygubu-designer editor.
 
-### Windows
-
-```
-C:\Python34\Scripts\pygubu-designer.exe
-```
-
-Where `C:\Python34` is the path to **your** Python installation directory.
-
-> **Note**: for versions prior to **0.9.8** the executable script was named _**pygubu-designer.bat**_
-
-After that the _pygubu-designer_ application should appear:
-
-<img src="pygubu-designer.png" alt="pygubu-desinger.png">
-
-
-Now, you can start creating your tkinter application using the widgets that you find in the left panel called `Widget List`.
-
-After you finished creating your _UI definition_, save it to a `.ui` file by going to the top menu `File > Save`.
-
-The following is a UI definition example called [helloworld.ui](examples/helloworld/helloworld.ui) created using pygubu:
+The following is a UI definition example called [helloworld.ui](examples/helloworld/helloworld.ui):
 
 
 ```xml
