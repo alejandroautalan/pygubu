@@ -111,27 +111,17 @@ if __name__ == '__main__':
     app.run()
 ```
 
-Note that instead of `helloworld.ui` in the following line:
+Note that instead of `helloworld.ui`, you should insert the _filename_ (or full path) of your UI definition:
 
 ```python
-builder.add_from_file('helloworld.ui')
+builder.add_from_file('your_ui_definition.ui')
 ```
 
-You should insert the _filename_ (or path) of your just saved UI definition.
-
-
-Note also that instead of `'mainwindow'` in the following line:
+Note also that instead of 'mainwindow', you should have the name of your _main_widget_ (the parent of all widgets) in the following line:
 
 ```python
-self.mainwindow = builder.get_object('mainwindow')
+self.mainwindow = builder.get_object('_your_main_widget_')
 ```
-
-You should have the name of your _main widget_ (the parent of all widgets), otherwise you will get an error similar to the following:
-    
-    Exception: Widget not defined.
-
-See [this](https://github.com/alejandroautalan/pygubu/issues/40) issue for more information.
-
 
 Documentation
 =============
