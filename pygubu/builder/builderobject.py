@@ -68,17 +68,13 @@ class BuilderObject(object):
     @classmethod
     def factory(cls, builder, wdata):
         clsobj = cls(builder, wdata)
+        wdata.layout_required = clsobj.layout_required
         return clsobj
 
-    def __init__(self, builder, wdescr):
+    def __init__(self, builder, wmeta):
         self.widget = None
         self.builder = builder
-        self.objectid = wdescr.get('id', None)
-        self.descr = wdescr
-        self.properties = wdescr.get('properties', {})
-        self.layout_properties = wdescr.get('layout', {})
-        self.layout_manager = wdescr.get('manager', 'grid')
-        self.bindings = wdescr.get('bindings', [])
+        self.wmeta = wmeta
 
     def realize(self, parent):
         args = self._get_init_args()
@@ -91,14 +87,14 @@ class BuilderObject(object):
 
         args = {}
         for rop in self.ro_properties:
-            if rop in self.properties:
-                args[rop] = self.properties[rop]
+            if rop in self.wmeta.properties:
+                args[rop] = self.wmeta.properties[rop]
         return args
 
     def configure(self, target=None):
         if target is None:
             target = self.widget
-        for pname, value in self.properties.items():
+        for pname, value in self.wmeta.properties.items():
             if (pname not in self.ro_properties and
                 pname not in self.command_properties):
                 self._set_property(target, pname, value)
@@ -112,10 +108,10 @@ class BuilderObject(object):
             propvalue = value
             if pname in self.tkvar_properties:
                 propvalue = self.builder.create_variable(value)
-                if 'text' in self.properties and pname == 'textvariable':
-                    propvalue.set(self.properties['text'])
-                elif 'value' in self.properties and pname == 'variable':
-                    propvalue.set(self.properties['value'])
+                if 'text' in self.wmeta.properties and pname == 'textvariable':
+                    propvalue.set(self.wmeta.properties['text'])
+                elif 'value' in self.wmeta.properties and pname == 'variable':
+                    propvalue.set(self.wmeta.properties['value'])
             elif pname in self.tkimage_properties:
                 propvalue = self.builder.get_image(value)
             elif pname == 'takefocus':
@@ -129,67 +125,52 @@ class BuilderObject(object):
                 msg = msg.format(pname, repr(self.class_), str(e))
                 logger.error(msg)
 
-    def layout(self, target=None, configure_grid=True):
+    def layout(self, target=None, configure_gridrc=True):
         if self.layout_required:
             if target is None:
                 target = self.widget
     
             # Check manager
-            if self.layout_manager == 'grid':
+            manager = self.wmeta.manager
+            if manager == 'grid':
                 self._grid_layout(target)
-            elif self.layout_manager == 'pack':
+            elif manager == 'pack':
                 self._pack_layout(target)
-            elif self.layout_manager == 'place':
+            elif manager == 'place':
                 self._place_layout(target)
             else:
-                msg = 'Invalid layout manager: {0}'.format(self.layout_manager)
+                msg = 'Invalid layout manager: {0}'.format(manager)
                 raise Exception(msg)
-        if configure_grid:
+        if configure_gridrc:
             parent = target.nametowidget(target.winfo_parent())
-            self._grid_rc_layout(parent)
+            self._gridrc_config(parent)
 
     def _pack_layout(self, target):
-        properties = dict(self.layout_properties)
-        propagate = properties.pop('propagate', 'True')
-        # remove grid stuff
-        properties.pop('rows', None)
-        properties.pop('columns', None)
+        properties = dict(self.wmeta.layout_properties)
+        propagate = properties.pop('propagate', 'true')
         # Do pack
         target.pack(**properties)
-        if propagate != 'True':
+        if propagate.lower() != 'true':
             target.pack_propagate(0)
     
     def _place_layout(self, target):
-        properties = dict(self.layout_properties)
-        # remove grid stuff
-        properties.pop('rows', None)
-        properties.pop('columns', None)
         # Do place
-        target.place(**properties)
+        target.place(**self.wmeta.layout_properties)
     
     def _grid_layout(self, target):
-        properties = dict(self.layout_properties)
-        grid_propagate = properties.pop('propagate', 'True')
-        # remove grid rc stuff
-        properties.pop('rows', None)
-        properties.pop('columns', None)
-
+        properties = dict(self.wmeta.layout_properties)
+        propagate = properties.pop('propagate', 'true')
         target.grid(**properties)
-        if grid_propagate != 'True':
+        if propagate.lower != 'true':
             target.grid_propagate(0)
 
-    def _grid_rc_layout(self, target, rowsprop=None, colsprop=None):
-        if 'rows' not in self.layout_properties:
-            return
-        if rowsprop is None:
-            properties = dict(self.layout_properties)
-            rowsprop = properties.pop('rows', {})
-            colsprop = properties.pop('columns', {})
+    def _gridrc_config(self, target):
         # configure grid row/col properties:
-        for row in rowsprop:
-            target.rowconfigure(row, **rowsprop[row])
-        for col in colsprop:
-            target.columnconfigure(col, **colsprop[col])
+        for type_, num, pname, value in self.wmeta.gridrc_properties:
+            if type_ == 'row':
+                target.rowconfigure(num, **{pname: value})
+            else:
+                target.columnconfigure(num, **{pname: value})
 
     def get_child_master(self):
         return self.widget
@@ -209,7 +190,7 @@ class BuilderObject(object):
 
         if isinstance(cmd_bag, dict):
             for cmd in self.command_properties:
-                cmd_name = self.properties.get(cmd, None)
+                cmd_name = self.wmeta.properties.get(cmd, None)
                 if cmd_name is not None:
                     if cmd_name in cmd_bag:
                         callback = self._create_callback(cmd,
@@ -219,7 +200,7 @@ class BuilderObject(object):
                         notconnected.append(cmd_name)
         else:
             for cmd in self.command_properties:
-                cmd_name = self.properties.get(cmd, None)
+                cmd_name = self.wmeta.properties.get(cmd, None)
                 if cmd_name is not None:
                     if hasattr(cmd_bag, cmd_name):
                         callback = self._create_callback(cmd,
@@ -236,27 +217,21 @@ class BuilderObject(object):
         notconnected = []
 
         if isinstance(cb_bag, dict):
-            for bind in self.bindings:
-                cb_name = bind.get('handler', None)
-                if cb_name is not None:
-                    if cb_name in cb_bag:
-                        callback = cb_bag[cb_name]
-                        cb_seq = bind.get('sequence')
-                        cb_add = bind.get('add', None)
-                        self.widget.bind(cb_seq, callback, add=cb_add)
-                    else:
-                        notconnected.append(cb_name)
+            for bind in self.wmeta.bindings:
+                cb_name = bind.handler
+                if cb_name in cb_bag:
+                    callback = cb_bag[cb_name]
+                    self.widget.bind(bind.sequence, callback, add=bind.add)
+                else:
+                    notconnected.append(cb_name)
         else:
-            for bind in self.bindings:
-                cb_name = bind.get('handler', None)
-                if cb_name is not None:
-                    if hasattr(cb_bag, cb_name):
-                        callback = getattr(cb_bag, cb_name)
-                        cb_seq = bind.get('sequence')
-                        cb_add = bind.get('add', None)
-                        self.widget.bind(cb_seq, callback, add=cb_add)
-                    else:
-                        notconnected.append(cb_name)
+            for bind in self.wmeta.bindings:
+                cb_name = bind.handler
+                if hasattr(cb_bag, cb_name):
+                    callback = getattr(cb_bag, cb_name)
+                    self.widget.bind(bind.sequence, callback, add=bind.add)
+                else:
+                    notconnected.append(cb_name)
         if notconnected:
             return notconnected
         else:
@@ -280,7 +255,7 @@ class EntryBaseBO(BuilderObject):
     def _create_callback(self, cpname, command):
         callback = command
         if cpname in ('validatecommand', 'invalidcommand'):
-            args = self.properties.get(cpname + '_args', '')
+            args = self.wmeta.properties.get(cpname + '_args', '')
             if args:
                 args = args.split(' ')
                 callback = (self.widget.register(command),) + tuple(args)
@@ -328,4 +303,4 @@ class PanedWindowPaneBO(BuilderObject):
         pass
 
     def add_child(self, bobject):
-        self.widget.add(bobject.widget, **self.properties)
+        self.widget.add(bobject.widget, **self.wmeta.properties)

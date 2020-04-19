@@ -28,9 +28,9 @@ class TTKScrolledFrameBO(BuilderObject):
         else:
             super(TTKScrolledFrameBO, self)._set_property(target_widget, pname, value)
     
-    def layout(self, target=None, configure_grid=True):
+    def layout(self, target=None, configure_gridrc=True):
         super(TTKScrolledFrameBO, self).layout(target, False)
-        self._grid_rc_layout(self.widget.innerframe)
+        self._gridrc_config(self.widget.innerframe)
         
 
 register_widget('pygubu.builder.widgets.scrolledframe', TTKScrolledFrameBO,

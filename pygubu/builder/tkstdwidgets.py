@@ -453,14 +453,14 @@ class TKMenuitem(BuilderObject):
 
     def realize(self, parent):
         self.widget = master = parent.widget
-        itemproperties = dict(self.properties)
+        itemproperties = dict(self.wmeta.properties)
         self._setup_item_properties(itemproperties)
         master.add(self.itemtype, **itemproperties)
         index = master.index(tk.END)
         # TODO: index of items is shifted if tearoff is changed
         # for now check tearoff config and recalculate index.
         has_tearoff = True if master.type(0) == 'tearoff' else False
-        tearoff_conf = parent.properties.get('tearoff', '1')
+        tearoff_conf = parent.wmeta.properties.get('tearoff', '1')
         offset = 0
         if has_tearoff and tearoff_conf in ('0', 'false'):
             offset = 1
@@ -487,10 +487,10 @@ class TKMenuitem(BuilderObject):
 
     def _create_callback(self, cpname, callback):
         command = callback
-        include_id = self.properties.get('command_id_arg', 'false')
+        include_id = self.wmeta.properties.get('command_id_arg', 'false')
         include_id = include_id.lower()
         if include_id != 'false':
-            def item_callback(item_id=self.objectid):
+            def item_callback(item_id=self.wmeta.identifier):
                 callback(item_id)
             command = item_callback
         return command
@@ -521,12 +521,12 @@ class TKMenuitemSubmenu(TKMenuitem):
     def realize(self, parent):
         master = parent.widget
         menu_properties = dict(
-            (k, v) for k, v in self.properties.items()
+            (k, v) for k, v in self.wmeta.properties.items()
             if k in TKMenu.properties)
         self._setup_item_properties(menu_properties)
 
         item_properties = dict(
-            (k, v) for k, v in self.properties.items()
+            (k, v) for k, v in self.wmeta.properties.items()
             if k in TKMenuitem.properties)
         self._setup_item_properties(item_properties)
 

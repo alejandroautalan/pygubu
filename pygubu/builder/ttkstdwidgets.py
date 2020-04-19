@@ -113,7 +113,7 @@ class TTKCombobox(TTKWidgetBO):
     def _create_callback(self, cpname, command):
         callback = command
         if cpname in ('validatecommand', 'invalidcommand'):
-            args = self.properties.get(cpname + '_args', '')
+            args = self.wmeta.properties.get(cpname + '_args', '')
             if args:
                 args = args.split(' ')
                 callback = (self.widget.register(command),) + tuple(args)
@@ -337,7 +337,7 @@ class TTKNotebookTab(TTKWidgetBO):
         pass
 
     def add_child(self, bobject):
-        self.widget.add(bobject.widget, **self.properties)
+        self.widget.add(bobject.widget, **self.wmeta.properties)
 
 register_widget('ttk.Notebook.Tab', TTKNotebookTab,
                 'Notebook.Tab', ('Pygubu Helpers', 'ttk'))
@@ -359,12 +359,12 @@ class TTKTreeviewColBO(TTKWidgetBO):
     def realize(self, parent):
         self.widget = parent.widget
 
-        col_props = dict(self.properties)  # copy properties
+        col_props = dict(self.wmeta.properties)  # copy properties
 
         tree_column = col_props.pop('tree_column', 'false')
         tree_column = tree_column.lower()
         tree_column = True if tree_column == 'true' else False
-        column_id = '#0' if tree_column else self.objectid
+        column_id = '#0' if tree_column else self.wmeta.identifier
         visible = col_props.pop('visible', 'false')
         visible = visible.lower()
         is_visible = True if visible == 'true' else False
@@ -395,10 +395,10 @@ class TTKTreeviewColBO(TTKWidgetBO):
         pass
 
     def _connect_command(self, cpname, callback):
-        tree_column = self.properties.get('tree_column', 'false')
+        tree_column = self.wmeta.properties.get('tree_column', 'false')
         tree_column = tree_column.lower()
         tree_column = True if tree_column == 'true' else False
-        column_id = '#0' if tree_column else self.objectid
+        column_id = '#0' if tree_column else self.wmeta.identifier
         self.widget.heading(column_id, command=callback)
 
 register_widget('ttk.Treeview.Column', TTKTreeviewColBO,
