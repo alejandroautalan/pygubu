@@ -10,9 +10,9 @@ try:
 except:
     import Tkinter as tkinter
 
-from pygubu.builder.builderobject import *
-from pygubu.stockimage import *
-from .widgetmeta import *
+from pygubu.builder.builderobject import BuilderObject, CLASS_MAP
+from pygubu.stockimage import StockImage, StockImageException
+from .uidefinition import UIDefinition
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +25,8 @@ class Builder(object):
     """Allows to build a tk interface from xml definition."""
 
     def __init__(self, translator=None):
-        self.tree = None
+        super(Builder, self).__init__()
+        self.uidefinition = UIDefinition(translator=translator)
         self.root = None
         self.objects = {}
         self.tkvariables = {}
@@ -116,40 +117,16 @@ class Builder(object):
             self.tkvariables[vname] = var
         return var
 
-    def add_from_file(self, fpath):
+    def add_from_file(self, file_or_filename):
         """Load ui definition from file."""
-        if self.tree is None:
-            base, name = os.path.split(fpath)
-            self.add_resource_path(base)
-            self.tree = tree = ET.parse(fpath)
-            self.root = tree.getroot()
-            self.objects = {}
-        else:
-            # TODO: append to current tree
-            pass
+        self.uidefinition.load_file(file_or_filename)
 
     def add_from_string(self, strdata):
-        """Load ui definition from string."""
-        if self.tree is None:
-            self.tree = tree = ET.ElementTree(ET.fromstring(strdata))
-            self.root = tree.getroot()
-            self.objects = {}
-        else:
-            # TODO: append to current tree
-            pass
+        self.uidefinition.load_from_string(strdata)
 
     def add_from_xmlnode(self, element):
         """Load ui definition from xml.etree.Element node."""
-        if self.tree is None:
-            root = ET.Element('interface')
-            root.append(element)
-            self.tree = tree = ET.ElementTree(root)
-            self.root = tree.getroot()
-            self.objects = {}
-            # ET.dump(tree)
-        else:
-            # TODO: append to current tree
-            pass
+        self.uidefinition.add_xmlnode(element)
 
     def get_object(self, name, master=None):
         """Find and create the widget named name.
@@ -159,12 +136,11 @@ class Builder(object):
         if name in self.objects:
             widget = self.objects[name].widget
         else:
-            xpath = ".//object[@id='{0}']".format(name)
-            node = self.tree.find(xpath)
-            if node is not None:
+            wmeta = self.uidefinition.get_widget(name)
+            if wmeta is not None:
                 root = BuilderObject(self, dict())
                 root.widget = master
-                bobject = self._realize(root, node)
+                bobject = self._realize(root, wmeta)
                 widget = bobject.widget
         if widget is None:
             msg = 'Widget "{0}" not defined.'.format(name)
@@ -174,7 +150,7 @@ class Builder(object):
     def _import_class(self, modulename):
         if modulename.startswith('tk.'):
             importlib.import_module('pygubu.builder.tkstdwidgets')
-        if modulename.startswith('ttk.'):
+        elif modulename.startswith('ttk.'):
             importlib.import_module('pygubu.builder.ttkstdwidgets')
         else:
             # Import module as full path
@@ -192,11 +168,9 @@ class Builder(object):
                 else:
                     raise e
 
-    def _realize(self, master, element):
-        """Builds a widget from xml element using master as parent."""
-
-        wmeta = WidgetMeta.from_xmlnode(element, self.translator)
-
+    def _realize(self, master, wmeta):
+        """Builds a widget from widget metadata using master as parent."""
+        
         if wmeta.classname not in CLASS_MAP:
             self._import_class(wmeta.classname)
 
@@ -208,13 +182,10 @@ class Builder(object):
 
             self.objects[wmeta.identifier] = parent
 
-            xpath = "./child"
-            children = element.findall(xpath)
-            for child in children:
-                child_xml = child.find('./object')
-                child = self._realize(parent, child_xml)
+            for childmeta in \
+                self.uidefinition.widget_children(wmeta.identifier):
+                child = self._realize(parent, childmeta)
                 parent.add_child(child)
-
             parent.configure()
             parent.layout()
             return parent
