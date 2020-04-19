@@ -72,6 +72,7 @@ class BuilderObject(object):
         return clsobj
 
     def __init__(self, builder, wmeta):
+        super(BuilderObject, self).__init__()
         self.widget = None
         self.builder = builder
         self.wmeta = wmeta

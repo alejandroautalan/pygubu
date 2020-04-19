@@ -15,7 +15,7 @@ class WidgetMeta(object):
     def __init__(self, cname, identifier, manager=None,
                  properties_defaults=None,
                  layout_defaults=None):
-        super().__init__()
+        super(WidgetMeta, self).__init__()
         self.classname = cname
         self.identifier = identifier
         self.properties = {}
@@ -83,11 +83,8 @@ class WidgetMeta(object):
             self.gridrc_properties[index] = line
     
     def __repr__(self):
-        tpl = '''<WidgetMeta {0} classname: {1} identifier: {2}>
-gridrc_prop:{3}
-        '''
-        return tpl.format(id(self), self.classname, self.identifier,
-                          self.gridrc_properties)
+        tpl = '''<WidgetMeta classname: {0} identifier: {1}>'''
+        return tpl.format(self.classname, self.identifier)
     
     @classmethod
     def from_xmlnode(cls, element, translator=None):
