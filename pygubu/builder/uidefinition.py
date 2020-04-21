@@ -1,7 +1,9 @@
 from __future__ import unicode_literals, print_function
 import sys
+import operator
 import xml.etree.ElementTree as ET
-from pygubu.builder.widgetmeta import WidgetMeta
+from pygubu.builder.builderobject import CLASS_MAP
+from pygubu.builder.widgetmeta import WidgetMeta, BindingMeta, GridRCLine
 
 
 # in-place prettyprint formatter
@@ -22,17 +24,117 @@ def indent(elem, level=0):
 
 
 class UIDefinition(object):
-    def __init__(self, author=None, wmetaclass=None, translator=None):
+    TRANSLATABLE_PROPERTIES = ['label', 'text', 'title']
+    
+    def __init__(self, wmetaclass=None, translator=None):
         super(UIDefinition, self).__init__()
         self.tree = None
         self.root = None
         self.version = 0
-        self.author = author if author is not None else ''
+        self.author = ''
         self.wmetaclass = wmetaclass
         if wmetaclass is None:
             self.wmetaclass = WidgetMeta
         self.translator = translator
         self.__create()
+    
+    def xmlnode_to_widget(self, element):
+        meta = self.wmetaclass(element.get('class'), element.get('id'))
+    
+        # properties
+        properties = element.findall('./property')
+        pdict = {}
+        for p in properties:
+            pvalue = p.text
+            if self.translator is not None and p.get('translatable'):
+                pvalue = self.translator(pvalue)
+            pdict[p.get('name')] = pvalue
+    
+        meta.properties = pdict
+    
+        # Bindings
+        bindings = []
+        bind_elements = element.findall('./bind')
+        for e in bind_elements:
+            binding = BindingMeta(
+                e.get('sequence'), e.get('handler'), e.get('add')
+            )
+            bindings.append(binding)
+        meta.bindings = bindings
+    
+        # layout properties
+        # use grid layout by default
+        manager = 'grid'
+        layout_elem = element.find('./layout')
+        if layout_elem is not None:
+            manager = layout_elem.get('manager', 'grid')
+            meta.manager = manager
+            props = layout_elem.findall('./property')
+            if manager == 'grid':
+                for p in props:
+                    ptype = p.get('type', None)
+                    if ptype is None:
+                        meta.layout_properties[p.get('name')] = p.text
+                    else:
+                        rcid = p.get('id')
+                        rcname = p.get('name')
+                        rcvalue = p.text
+                        line = GridRCLine(ptype, rcid, rcname, rcvalue)
+                        meta.gridrc_properties.append(line)
+            else:
+                for p in props:
+                    meta.layout_properties[p.get('name')] = p.text
+        return meta
+    
+    def widget_to_xmlnode(self, wmeta):
+        node = ET.Element('object')
+    
+        node.set('class', wmeta.classname)
+        node.set('id', wmeta.identifier)
+    
+        pkeys = sorted(wmeta.properties.keys())
+        for pkey in pkeys:
+            pnode = ET.Element('property')
+            pnode.set('name', pkey)
+            pnode.text = wmeta.properties[pkey]
+            if pkey in self.TRANSLATABLE_PROPERTIES:
+                pnode.set('translatable', 'yes')
+            node.append(pnode)
+    
+        # bindings:
+        bindings = sorted(wmeta.bindings, key=operator.itemgetter(0, 1))
+        for b in bindings:
+            bind = ET.Element('bind')
+            for key in b._fields:
+                bind.set(key, getattr(b, key))
+            node.append(bind)
+    
+        # layout:
+        #if self.layout_required:
+        if CLASS_MAP[wmeta.classname].builder.layout_required:
+            # create layout node
+            layout_node = ET.Element('layout')
+            layout_node.set('manager', wmeta.manager)
+            
+            keys = sorted(wmeta.layout_properties)
+            for prop in keys:
+                pnode = ET.Element('property')
+                pnode.set('name', prop)
+                pnode.text = wmeta.layout_properties[prop]
+                layout_node.append(pnode)
+            
+            lines = sorted(wmeta.gridrc_properties,
+                           key=operator.itemgetter(0,1,2))
+            for line in lines:
+                p = ET.Element('property')
+                p.set('type', line.rctype)
+                p.set('id', line.rcid)
+                p.set('name', line.pname)
+                p.text = line.pvalue
+                layout_node.append(p)
+            # Append node layout
+            node.append(layout_node)
+        return node    
         
     def __create(self):
         self.root = root = ET.Element('interface')
@@ -59,6 +161,11 @@ class UIDefinition(object):
     
     def load_from_string(self, source):
         self._tree_load(ET.ElementTree(ET.fromstring(source)))
+    
+    def get_xmlnode(self, identifier):
+        xpath = ".//object[@id='{0}']".format(identifier)
+        node = self.tree.find(xpath)
+        return node
         
     def add_xmlnode(self, node, parent=None):
         if parent is None:
@@ -68,12 +175,9 @@ class UIDefinition(object):
         return node
     
     def add_xmlchild(self, parent, node):
-        xpath = "./child"
-        child = parent.find(xpath)
-        if child is None:
-            child = ET.Element('child')
-            parent.append(child)
+        child = ET.Element('child')
         child.append(node)
+        parent.append(child)
         
     def __str__(self):
         encoding='unicode'
@@ -94,31 +198,49 @@ class UIDefinition(object):
         xpath = ".//object[@id='{0}']".format(identifier)
         node = self.tree.find(xpath)
         if node is not None:
-            wmeta = self.wmetaclass.from_xmlnode(node, self.translator)
+            wmeta = self.xmlnode_to_widget(node)
         return wmeta
     
     def widgets(self):
         xpath = "./object"
         children = self.root.findall(xpath)
         for child in children:
-            wmeta = self.wmetaclass.from_xmlnode(child, self.translator)
+            wmeta = self.xmlnode_to_widget(child)
             yield wmeta
     
     def widget_children(self, identifier):
         xpath = ".//object[@id='{0}']".format(identifier)
         node = self.tree.find(xpath)
         if node is not None:
-            xpath = "./child"
+            xpath = "./child/object"
             children = node.findall(xpath)
             for child in children:
-                oxml = child.find('./object')
-                wmeta = self.wmetaclass.from_xmlnode(oxml, self.translator)
+                wmeta = self.xmlnode_to_widget(child)
                 yield wmeta
+    
+    def replace_widget(self, identifier, rootmeta):
+        xpath = ".//object[@id='{0}']".format(identifier)
+        parent = self.root.find(xpath + '/..')
+        target = parent.find(xpath)
+        
+        if parent is not None:
+            # found something
+            parent.remove(target)
+            replacement = self.widget_to_xmlnode(rootmeta)
+            xpath = "./child/object"
+            children = target.findall(xpath)
+            for child in children:
+                self.add_xmlchild(replacement, child)
+            if parent.tag == 'interface':
+                parent.append(replacement)
+            else:
+                self.add_xmlchild(parent, replacement)
         
 
 
 if __name__ == '__main__':
-    ui = UIDefinition('Module test')
+    ui = UIDefinition()
+    ui.author = 'Module test'
     print(ui)
     
     xml='''<?xml version='1.0' encoding='utf-8'?>

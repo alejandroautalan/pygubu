@@ -1,6 +1,5 @@
 from __future__ import unicode_literals, print_function
 import xml.etree.ElementTree as ET
-import operator
 from collections import namedtuple
 
 __all__ = ['WidgetMeta', 'BindingMeta']
@@ -86,104 +85,17 @@ class WidgetMeta(object):
         tpl = '''<WidgetMeta classname: {0} identifier: {1}>'''
         return tpl.format(self.classname, self.identifier)
     
-    @classmethod
-    def from_xmlnode(cls, element, translator=None):
-        meta = cls(element.get('class'), element.get('id'))
+    def copy_gridrc(self, from_, rctype):
+        '''Copy gridrc lines of type rctype from from_'''
+        rc = [ line for line in self.gridrc_properties 
+               if line.rctype != rctype ]
+        for line in from_.gridrc_properties:
+            if line.rctype == rctype:
+                rc.append(line)
+        self.gridrc_properties = rc
     
-        # properties
-        properties = element.findall('./property')
-        pdict = {}
-        for p in properties:
-            pvalue = p.text
-            if translator is not None and p.get('translatable'):
-                pvalue = translator(pvalue)
-            pdict[p.get('name')] = pvalue
-    
-        meta.properties = pdict
-    
-        # Bindings
-        bindings = []
-        bind_elements = element.findall('./bind')
-        for e in bind_elements:
-            binding = BindingMeta(
-                e.get('sequence'), e.get('handler'), e.get('add')
-            )
-            bindings.append(binding)
-        meta.bindings = bindings
-    
-        # layout properties
-        # use grid layout by default
-        manager = 'grid'
-        layout_elem = element.find('./layout')
-        if layout_elem is not None:
-            manager = layout_elem.get('manager', 'grid')
-            meta.manager = manager
-            props = layout_elem.findall('./property')
-            if manager == 'grid':
-                for p in props:
-                    ptype = p.get('type', None)
-                    if ptype is None:
-                        meta.layout_properties[p.get('name')] = p.text
-                    else:
-                        rcid = p.get('id')
-                        rcname = p.get('name')
-                        rcvalue = p.text
-                        line = GridRCLine(ptype, rcid, rcname, rcvalue)
-                        meta.gridrc_properties.append(line)
-            else:
-                for p in props:
-                    meta.layout_properties[p.get('name')] = p.text
-        return meta
-    
-    def to_xmlnode(self, translatable_props=None):
-        node = ET.Element('object')
-    
-        node.set('class', self.classname)
-        node.set('id', self.identifier)
-    
-        pkeys = sorted(self.properties.keys())
-        for pkey in pkeys:
-            pnode = ET.Element('property')
-            pnode.set('name', pkey)
-            pnode.text = self.properties[pkey]
-            if (translatable_props is not None 
-                and pkey in translatable_props):
-                pnode.set('translatable', 'yes')
-            node.append(pnode)
-    
-        # bindings:
-        bindings = sorted(self.bindings, key=operator.itemgetter(0, 1))
-        for b in bindings:
-            bind = ET.Element('bind')
-            for key in b._fields:
-                bind.set(key, getattr(b, key))
-            node.append(bind)
-    
-        # layout:
-        if self.layout_required:
-            # create layout node
-            layout_node = ET.Element('layout')
-            layout_node.set('manager', self.manager)
-            
-            keys = sorted(self.layout_properties)
-            for prop in keys:
-                pnode = ET.Element('property')
-                pnode.set('name', prop)
-                pnode.text = self.layout_properties[prop]
-                layout_node.append(pnode)
-            
-            lines = sorted(self.gridrc_properties,
-                           key=operator.itemgetter(0,1,2))
-            for line in lines:
-                p = ET.Element('property')
-                p.set('type', line.rctype)
-                p.set('id', line.rcid)
-                p.set('name', line.pname)
-                p.text = line.pvalue
-                layout_node.append(p)
-            # Append node layout
-            node.append(layout_node)
-        return node
+    def copy_properties(self, wfrom):
+        self.properties = wfrom.properties.copy()
 
 
 if __name__ == '__main__':
