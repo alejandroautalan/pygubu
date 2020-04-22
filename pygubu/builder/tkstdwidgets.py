@@ -87,6 +87,7 @@ class TKFrame(BuilderObject):
     class_ = tk.Frame
     container = True
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+    ro_properties = ('class_',)
 
 register_widget('tk.Frame', TKFrame, 'Frame', ('Containers', 'tk'))
 
@@ -118,6 +119,7 @@ class TKLabelFrame(BuilderObject):
     OPTIONS_SPECIFIC = ('background', 'class_', 'height',
                         'labelanchor', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+    ro_properties = ('class_',)
 
 register_widget('tk.LabelFrame', TKLabelFrame,
                 'LabelFrame', ('Containers', 'tk'))
@@ -307,7 +309,7 @@ class TKRadiobutton(BuilderObject):
         'takefocus', 'text', 'textvariable', 'underline',  'wraplength')
     OPTIONS_SPECIFIC = (
         'command', 'height', 'indicatoron', 'overrelief', 'offrelief',
-        'offvalue', 'onvalue', 'overrelief', 'selectcolor', 'selectimage',
+        'overrelief', 'selectcolor', 'selectimage',
         'state', 'tristateimage', 'tristatevalue', 'value',
         'variable', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
@@ -377,12 +379,12 @@ class TKSpinbox(BuilderObject):
 
     def configure(self):
         # hack to configure 'from_' and 'to' and avoid exception
-        if 'from_' in self.properties:
-            from_ = float(self.properties['from_'])
-            to = float(self.properties.get('to', 0))
+        if 'from_' in self.wmeta.properties:
+            from_ = float(self.wmeta.properties['from_'])
+            to = float(self.wmeta.properties.get('to', 0))
             if from_ > to:
                 to = from_ + 1
-                self.properties['to'] = str(to)
+                self.wmeta.properties['to'] = str(to)
         super(TKSpinbox, self).configure()
 
 register_widget('tk.Spinbox', TKSpinbox,
