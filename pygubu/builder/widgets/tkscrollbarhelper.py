@@ -20,6 +20,9 @@ class TKSBHelperBO(BuilderObject):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     ro_properties = ('class_', 'scrolltype')
     allow_bindings = False
+    
+    def get_child_master(self):
+        return self.widget.container
 
     def add_child(self, bobject):
         cwidget = bobject.widget
