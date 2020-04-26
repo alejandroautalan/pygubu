@@ -327,7 +327,7 @@ class TTKNotebookTab(TTKWidgetBO):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
     def realize(self, parent):
-        self.widget = parent.widget
+        self.widget = parent.get_child_master()
         return self.widget
 
     def configure(self):
@@ -357,7 +357,7 @@ class TTKTreeviewColBO(TTKWidgetBO):
     command_properties = ('command',)
 
     def realize(self, parent):
-        self.widget = parent.widget
+        self.widget = parent.get_child_master()
 
         col_props = dict(self.wmeta.properties)  # copy properties
 

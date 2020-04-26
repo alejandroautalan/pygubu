@@ -8,7 +8,7 @@ except:
     import Tkinter as tk
 
 from .builderobject import BuilderObject, register_widget, EntryBaseBO
-from .builderobject import PanedWindowBO, PanedWindowPaneBO
+from .builderobject import PanedWindowBO, PanedWindowPaneBO, CodeGeneratorBase
 
 logger = logging.getLogger(__name__)
 
@@ -454,7 +454,7 @@ class TKMenuitem(BuilderObject):
     allow_bindings = False
 
     def realize(self, parent):
-        self.widget = master = parent.widget
+        self.widget = master = parent.get_child_master()
         itemproperties = dict(self.wmeta.properties)
         self._setup_item_properties(itemproperties)
         master.add(self.itemtype, **itemproperties)
@@ -521,7 +521,7 @@ class TKMenuitemSubmenu(TKMenuitem):
                            OPTIONS_CUSTOM))
 
     def realize(self, parent):
-        master = parent.widget
+        master = parent.get_child_master()
         menu_properties = dict(
             (k, v) for k, v in self.wmeta.properties.items()
             if k in TKMenu.properties)
@@ -618,11 +618,30 @@ class TKLabelwidgetBO(BuilderObject):
     allow_bindings = False
 
     def realize(self, parent):
-        self.widget = parent.widget
+        self.widget = parent.get_child_master()
         return self.widget
 
     def add_child(self, bobject):
         self.widget.configure(labelwidget=bobject.widget)
+    
+    def layout(self, target=None, configure_gridrc=True):
+        pass
+    
+    def code_generator(self, masterid):
+        '''Create code generation class'''
+        
+        class LabelWidgetCG(CodeGeneratorBase):
+            def child_master(self):
+                return self.masterid
+            
+            def add_child(self, childid, childmeta):
+                line = '{0}.configure(labelwidget={1})'
+                line = line.format(self.masterid, childid)
+                return (line,)
+            
+        return LabelWidgetCG(self, masterid)
+    
+
 
 register_widget('pygubu.builder.widgets.Labelwidget', TKLabelwidgetBO,
                 'Labelwidget', ('Pygubu Helpers', 'tk', 'ttk'))

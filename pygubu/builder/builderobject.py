@@ -238,6 +238,10 @@ class BuilderObject(object):
         else:
             return None
 
+    def code_generator(self, masterid):
+        '''Return a CodeGeneratorBase instance for this builder'''
+        return None
+
 
 #
 # Base clases for some widgets
@@ -274,7 +278,7 @@ class PanedWindowBO(BuilderObject):
     ro_properties = ('orient', )
 
     def realize(self, parent):
-        master = parent.widget
+        master = parent.get_child_master()
         args = self._get_init_args()
         if 'orient' not in args:
             args['orient'] = 'vertical'
@@ -294,7 +298,7 @@ class PanedWindowPaneBO(BuilderObject):
     allow_bindings = False
 
     def realize(self, parent):
-        self.widget = parent.widget
+        self.widget = parent.get_child_master()
         return self.widget
 
     def configure(self):
@@ -305,3 +309,28 @@ class PanedWindowPaneBO(BuilderObject):
 
     def add_child(self, bobject):
         self.widget.add(bobject.widget, **self.wmeta.properties)
+
+
+
+class CodeGeneratorBase(object):
+    
+    def __init__(self, builder, masterid):
+        super(CodeGeneratorBase, self).__init__()
+        self.builder = builder
+        self.masterid = masterid
+        self.identifier = builder.wmeta.identifier
+    
+    def create(self):
+        pass
+    
+    def configure(self):
+        pass
+    
+    def layout(self):
+        pass
+
+    def add_child(self, childid, childmeta):
+        pass
+    
+    def child_master(self):
+        return self.identifier

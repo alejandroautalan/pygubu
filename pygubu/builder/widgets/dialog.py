@@ -12,9 +12,6 @@ class DialogBO(TKToplevel):
     OPTIONS_CUSTOM = \
         TKToplevel.OPTIONS_CUSTOM + ('modal',)
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
-
-    def realize(self, parent):
-        super(TKToplevel, self).realize(parent)
     
     def layout(self, target=None):
         super(DialogBO, self).layout(self.widget.toplevel)
