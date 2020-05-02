@@ -309,6 +309,31 @@ class PanedWindowPaneBO(BuilderObject):
 
     def add_child(self, bobject):
         self.widget.add(bobject.widget, **self.wmeta.properties)
+    
+    def code_generator(self, masterid):
+        '''Create code generation class'''
+        
+        class PanedWindowPaneCGBase(CodeGeneratorBase):
+            def child_master(self):
+                return self.masterid
+            
+            def add_child(self, childid, childmeta):
+                config = []
+                for pname, val in self.builder.wmeta.properties.items():
+                    line = "{}='{}'".format(pname, val)
+                    config.append(line)
+                pconfig = ', '.join(config)
+                lines = []
+                line = '# Pane {0}'.format(self.identifier)
+                lines.append(line)
+                if config:
+                    line = '{0}.add({1}, {2})'.format(self.masterid, childid, pconfig)
+                else:
+                    line = '{0}.add({1})'.format(self.masterid, childid)
+                lines.append(line)
+                return lines
+            
+        return PanedWindowPaneCGBase(self, masterid)
 
 
 
