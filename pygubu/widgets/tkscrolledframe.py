@@ -291,12 +291,12 @@ class ScrolledFrameBase(object):
                 remove_binding(widget, bid)
 
 
-class ScrolledFrameFactory(type):
+class TkScrolledFrameFactory(type):
     def __new__(cls, clsname, superclasses, attrs):
         return type.__new__(cls, clsname, superclasses, attrs)
 
 
-TkScrolledFrame = ScrolledFrameFactory('TkScrolledFrame',
+TkScrolledFrame = TkScrolledFrameFactory('TkScrolledFrame',
                                        (ScrolledFrameBase, tk.Frame, object),
                                        {'_framecls':tk.Frame,
                                         '_sbarcls': tk.Scrollbar})
