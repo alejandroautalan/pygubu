@@ -8,7 +8,7 @@ except:
     import Tkinter as tk
 
 from .builderobject import BuilderObject, register_widget, EntryBaseBO
-from .builderobject import PanedWindowBO, PanedWindowPaneBO, CodeGeneratorBase
+from .builderobject import PanedWindowBO, PanedWindowPaneBO
 
 logger = logging.getLogger(__name__)
 
@@ -73,6 +73,26 @@ class TKToplevel(BuilderObject):
                 target_widget.minsize(w, h)
         else:
             super(TKToplevel, self)._set_property(target_widget, pname, value)
+    
+    #
+    # Code generation methods
+    #
+    def _code_set_property(self, targetid, pname, value, code_bag):
+        if pname in ('geometry', 'title', 'overrideredirect'):
+            line = "{0}.{1}('{2}')".format(targetid, pname, value)
+            code_bag[pname] = (line, )
+        elif pname == 'resizable':
+            p1, p2 = self.RESIZABLE[value]
+            line = '{0}.resizable({1}, {2})'.format(targetid, p1, p2)
+            code_bag[pname] = (line, )
+        elif pname in ('maxsize', 'minsize'):
+            if '|' in value:
+                w, h = value.split('|')
+                line = '{0}{1}({2}, {3})'.format(targetid, pname, w, h)
+                code_bag[pname] = (line, )
+        else:
+            super(TKToplevel, self)._code_set_property(targetid, pname,
+                                                   value, code_bag)
 
 register_widget('tk.Toplevel', TKToplevel,
                 'Toplevel', ('Containers', 'tk', 'ttk'))
@@ -238,6 +258,32 @@ class TKText(BuilderObject):
                 target_widget.insert('0.0', value)
         else:
             super(TKText, self)._set_property(target_widget, pname, value)
+    
+    #
+    # Code generation methods
+    #
+    def _code_set_property(self, targetid, pname, value, code_bag):
+        if pname == 'text':
+            state_value = ''
+            if 'state' in self.wmeta.properties:
+                state_value = self.wmeta.properties['state']
+            lines = []
+            line = "_text_ = '''{0}'''".format(value)
+            lines.append(line)
+            if state_value == tk.DISABLED:
+                line = "{0}.configure(state='normal')".format(targetid)
+                lines.append(line)
+                line = "{0}.insert('0.0', _text_)".format(targetid)
+                lines.append(line)
+                line = "{0}.configure(state='disabled')".format(targetid)
+                lines.append(line)
+            else:
+                line = "{0}.insert('0.0', _text_)".format(targetid)
+                lines.append(line)
+            code_bag[pname] = lines
+        else:
+            super(TKText, self)._code_set_property(targetid, pname,
+                                                   value, code_bag)
 
 
 register_widget('tk.Text', TKText, 'Text', ('Control & Display', 'tk', 'ttk'))
@@ -499,6 +545,40 @@ class TKMenuitem(BuilderObject):
 
     def _connect_command(self, cpname, callback):
         self.widget.entryconfigure(self.__index, command=callback)
+    
+    #
+    # code generation functions
+    #
+    def code_realize(self, boparent, code_identifier=None):
+        self._code_identifier = boparent.code_child_master()
+        masterid = self._code_identifier
+        code_bag, kwproperties, complex_properties = \
+            self._code_process_properties(self.wmeta.properties,
+                                          self._code_identifier)
+        lines = []
+        pbag = []
+        for pname in kwproperties:
+            line = "{0}={1}".format(pname, code_bag[pname])
+            pbag.append(line)
+        props = ''
+        if pbag:
+            props = ', ' + ', '.join(pbag)
+        itemtype = self.itemtype
+        line = "{0}.add('{1}'{2})".format(masterid, itemtype, props)
+        lines.append(line)
+        for pname in complex_properties:
+            lines.extend(code_bag[pname])
+        return lines
+    
+    def code_configure(self, targetid=None):
+        return tuple()
+    
+    def _code_set_property(self, targetid, pname, value, code_bag):
+        if pname == 'command_id_arg':
+            pass
+        else:
+            super(TKMenuitem, self)._code_set_property(targetid, pname, value,
+                                                       code_bag)
 
 
 class TKMenuitemSubmenu(TKMenuitem):
@@ -542,6 +622,69 @@ class TKMenuitemSubmenu(TKMenuitem):
 
     def layout(self):
         pass
+    
+    #
+    # code generation functions
+    #
+    def code_realize(self, boparent, code_identifier=None):
+        if self._code_identifier is None:
+            self._code_identifier = self.wmeta.identifier
+        
+        masterid = boparent.code_child_master()
+        lines = []
+        # menu properties
+        menuprop = {}
+        for pname, value in self.wmeta.properties.items():
+            if pname in TKMenu.properties:
+                menuprop[pname] = value
+        
+        code_bag, kw_properties, complex_properties = \
+            self._code_process_properties(menuprop,
+                                          self.code_identifier())
+        for pname in complex_properties:
+            lines.extend(code_bag[pname])
+            
+        mpbag = []
+        for pname in kw_properties:
+            line = "{0}={1}".format(pname, code_bag[pname])
+            mpbag.append(line)
+        mprops = ''
+        if mpbag:
+            mprops = ', ' + ', '.join(mpbag)
+        
+        # item properties
+        itemprop = {}
+        for pname, value in self.wmeta.properties.items():
+            if pname in TKMenuitem.properties:
+                itemprop[pname] = value
+        
+        code_bag, kw_properties, complex_properties = \
+            self._code_process_properties(itemprop, self.code_identifier())
+        for pname in complex_properties:
+            lines.extend(code_bag[pname])
+
+        pbag = []
+        prop = 'menu={0}'.format(self.code_identifier())
+        pbag.append(prop)
+        for pname in kw_properties:
+            line = "{0}={1}".format(pname, code_bag[pname])
+            pbag.append(line)
+        props = ''
+        if pbag:
+            props = ', {0}'.format(', '.join(pbag))
+        
+        # creation
+        line = "{0} = tk.Menu({1}{2})".format(self.code_identifier(),
+                                              masterid, mprops)
+        lines.append(line)
+        line = "{0}.add(tk.CASCADE{1})".format(masterid, props)
+        lines.append(line)
+        
+        return lines
+    
+    def code_configure(self, targetid=None):
+        return tuple()
+
 
 register_widget('tk.Menuitem.Submenu', TKMenuitemSubmenu,
                 'Menuitem.Submenu', ('Menu', 'Pygubu Helpers', 'tk', 'ttk'))
@@ -627,20 +770,23 @@ class TKLabelwidgetBO(BuilderObject):
     def layout(self, target=None, configure_gridrc=True):
         pass
     
-    def code_generator(self, masterid):
-        '''Create code generation class'''
-        
-        class LabelWidgetCG(CodeGeneratorBase):
-            def child_master(self):
-                return self.masterid
-            
-            def add_child(self, childid, childmeta):
-                line = '{0}.configure(labelwidget={1})'
-                line = line.format(self.masterid, childid)
-                return (line,)
-            
-        return LabelWidgetCG(self, masterid)
+    #
+    # code generation functions
+    #
+    def code_realize(self, boparent, code_identifier=None):
+        self._code_identifier = boparent.code_child_master()
+        return tuple()
     
+    def code_configure(self, targetid=None):
+        return tuple()
+    
+    def code_layout(self, targetid=None):
+        return tuple()
+    
+    def code_child_add(self, childid):
+        line = '{0}.configure(labelwidget={1})'
+        line = line.format(self.code_child_master(), childid)
+        return (line,)
 
 
 register_widget('pygubu.builder.widgets.Labelwidget', TKLabelwidgetBO,

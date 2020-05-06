@@ -291,6 +291,48 @@ class TTKTreeviewBO(TTKWidgetBO):
         if self._headings is None:
             self._headings = OrderedDict()
         self._headings[col_id] = attrs
+    
+    #
+    # Code generation methods
+    #
+    def code_configure(self, targetid=None):
+        if targetid is None:
+            targetid = self.code_identifier()
+        lines = []
+        if self._columns:
+            columns = list(self._columns.keys())
+            if '#0' in columns:
+                columns.remove('#0')
+            displaycolumns = self._dcolumns
+            line = '{0}_cols = {1}'.format(targetid, repr(columns))
+            lines.append(line)
+            line = '{0}_dcols = {1}'.format(targetid, repr(displaycolumns))
+            lines.append(line)
+            line = '{0}.configure(columns={0}_cols, displaycolumns={0}_dcols)'
+            line = line.format(targetid)
+            lines.append(line)
+            for col in self._columns:
+                code_bag, kwp, _ = self._code_process_properties(
+                    self._columns[col], targetid)
+                bag = []
+                for pname in kwp:
+                    s = '{0}={1}'.format(pname, code_bag[pname])
+                    bag.append(s)
+                kwargs = ','.join(bag)
+                line = "{0}.column('{1}', {2})".format(targetid, col, kwargs)
+                lines.append(line)
+        if self._headings:
+            for col in self._headings:
+                code_bag, kwp, _ = self._code_process_properties(
+                    self._headings[col], targetid)
+                bag = []
+                for pname in kwp:
+                    s = '{0}={1}'.format(pname, code_bag[pname])
+                    bag.append(s)
+                kwargs = ','.join(bag)
+                line = "{0}.heading('{1}', {2})".format(targetid, col, kwargs)
+                lines.append(line)
+        return lines
 
 
 register_widget('ttk.Treeview', TTKTreeviewBO,
@@ -338,6 +380,31 @@ class TTKNotebookTab(TTKWidgetBO):
 
     def add_child(self, bobject):
         self.widget.add(bobject.widget, **self.wmeta.properties)
+        
+    #
+    # Code generation methods
+    #
+    def code_realize(self, boparent, code_identifier=None):
+        self._code_identifier = boparent.code_child_master()
+        return tuple()
+    
+    def code_configure(self, targetid=None):
+        return tuple()
+    
+    def code_child_add(self, childid):
+        targetid = self.code_identifier()
+        code_bag, kw, _ = self._code_process_properties(self.wmeta.properties,
+                                                 targetid)
+        kwbag = []
+        for pname in kw:
+            arg = '{0}={1}'.format(pname, code_bag[pname])
+            kwbag.append(arg)
+        kwargs = ''
+        if kwbag:
+            kwargs = ', {0}'.format(', '.join(kwbag))
+        line = '{0}.add({1}{2})'.format(targetid, childid, kwargs)
+        return [line]
+
 
 register_widget('ttk.Notebook.Tab', TTKNotebookTab,
                 'Notebook.Tab', ('Pygubu Helpers', 'ttk'))
@@ -358,9 +425,11 @@ class TTKTreeviewColBO(TTKWidgetBO):
 
     def realize(self, parent):
         self.widget = parent.get_child_master()
-
         col_props = dict(self.wmeta.properties)  # copy properties
-
+        self._setup_column(parent, col_props)
+        return self.widget
+    
+    def _setup_column(self, parent, col_props):
         tree_column = col_props.pop('tree_column', 'false')
         tree_column = tree_column.lower()
         tree_column = True if tree_column == 'true' else False
@@ -386,7 +455,6 @@ class TTKTreeviewColBO(TTKWidgetBO):
             'minwidth': col_props.pop('minwidth', '20')
         }
         parent.set_column(column_id, cprops, is_visible)
-        return self.widget
 
     def configure(self):
         pass
@@ -400,6 +468,19 @@ class TTKTreeviewColBO(TTKWidgetBO):
         tree_column = True if tree_column == 'true' else False
         column_id = '#0' if tree_column else self.wmeta.identifier
         self.widget.heading(column_id, command=callback)
+    
+    #
+    # Code generation methods
+    #
+    def code_realize(self, boparent, code_identifier=None):
+        self._code_identifier = boparent.code_child_master()
+        col_props = dict(self.wmeta.properties)  # copy properties
+        self._setup_column(boparent, col_props)
+        return tuple()
+    
+    def code_configure(self, targetid=None):
+        return tuple()
+
 
 register_widget('ttk.Treeview.Column', TTKTreeviewColBO,
                 'Treeview.Column', ('Pygubu Helpers', 'ttk'))

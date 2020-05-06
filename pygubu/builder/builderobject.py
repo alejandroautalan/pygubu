@@ -1,7 +1,9 @@
 # encoding: utf8
 from __future__ import unicode_literals
 import logging
-from collections import namedtuple
+import itertools
+from collections import namedtuple, defaultdict
+
 try:
     import tkinter as tk
 except:
@@ -14,6 +16,44 @@ __all__ = [
 
 logger = logging.getLogger(__name__)
 
+#
+# Utility functions
+#
+zip_longest = getattr(itertools, 'zip_longest', None)
+if zip_longest is None:
+    def zip_longest(*args, **kw):
+        # zip_longest('ABCD', 'xy', fillvalue='-') --> Ax By C- D-
+        fillvalue = kw.get('fillvalue', None)
+        iterators = [iter(it) for it in args]
+        num_active = len(iterators)
+        if not num_active:
+            return
+        while True:
+            values = []
+            for i, it in enumerate(iterators):
+                try:
+                    value = next(it)
+                except StopIteration:
+                    num_active -= 1
+                    if not num_active:
+                        return
+                    iterators[i] = itertools.repeat(fillvalue)
+                    value = fillvalue
+                values.append(value)
+            yield tuple(values)
+    itertools.zip_longest = zip_longest
+
+
+def grouper(iterable, n, fillvalue=None):
+    "Collect data into fixed-length chunks or blocks"
+    # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
+    args = [iter(iterable)] * n
+    return itertools.zip_longest(*args, fillvalue=fillvalue)
+
+
+#
+# BuilderObject
+#
 
 WidgetDescription = namedtuple('WidgetDescription',
                               ['classname', 'builder', 'label', 'tags'])
@@ -76,6 +116,7 @@ class BuilderObject(object):
         self.widget = None
         self.builder = builder
         self.wmeta = wmeta
+        self._code_identifier = None
 
     def realize(self, parent):
         args = self._get_init_args()
@@ -238,9 +279,151 @@ class BuilderObject(object):
         else:
             return None
 
-    def code_generator(self, masterid):
-        '''Return a CodeGeneratorBase instance for this builder'''
-        return None
+    #
+    # Code generation methods
+    #
+    def code_realize(self, boparent, code_identifier=None):
+        if self._code_identifier is None:
+            self._code_identifier = self.wmeta.identifier
+        lines = []
+        master = boparent.code_child_master()
+        init_args = self._get_init_args()
+        bag = []
+        for pname, value in init_args.items():
+            s = "{0}='{1}'".format(pname, value)
+            bag.append(s)
+        kwargs = ''
+        if bag:
+            kwargs = ', {0}'.format(', '.join(bag))
+        s = "{0} = {1}({2}{3})".format(self.code_identifier(),
+                                       self._code_class_name(), master, kwargs)
+        lines.append(s)
+        return lines
+    
+    def code_identifier(self):
+        if self._code_identifier is None:
+            return self.wmeta.identifier
+        return self._code_identifier
+    
+    def code_child_master(self):
+        return self.code_identifier()
+    
+    def code_child_add(self, childid):
+        return []
+    
+    def code_configure(self, targetid=None):
+        if targetid is None:
+            targetid = self.code_identifier()
+        code_bag, kwproperties, complex_properties = \
+            self._code_process_properties(self.wmeta.properties, targetid)
+        lines = []
+        prop_stmt = "{0}.config({1})"
+        arg_stmt = "{0}={1}"
+        for g in grouper(sorted(kwproperties), 4):
+            args_bag = []
+            for p in g:
+                if p is not None:
+                    args_bag.append(arg_stmt.format(p, code_bag[p]))
+            args = ', '.join(args_bag)
+            line = prop_stmt.format(targetid, args)
+            lines.append(line)
+        for pname in complex_properties:
+            lines.extend(code_bag[pname])
+        
+        return lines
+    
+    def code_layout(self, targetid=None):
+        if targetid is None:
+            targetid = self.code_identifier()
+        if self.layout_required:
+            lines = []
+            layout_stmt = "{0}.{1}({2})"
+            arg_stmt = "{0}='{1}'"
+            layout = self.wmeta.layout_properties
+            args_bag = []
+            for p, v in sorted(layout.items()):
+                if p not in ('propagate', ):
+                    args_bag.append(arg_stmt.format(p, v))
+            args = ', '.join(args_bag)
+            
+            manager = self.wmeta.manager
+            line = layout_stmt.format(targetid, manager, args)
+            lines.append(line)
+            
+            pvalue = str(layout.get('propagate', '')).lower()
+            if 'propagate' in layout and  pvalue == 'false':
+                line = '{0}.propagate({1})'.format(targetid, pvalue)
+                lines.append(line)
+            
+            lrow_stmt = "{0}.rowconfigure({1}, {2})"
+            lcol_stmt = "{0}.columnconfigure({1}, {2})"
+            rowbag = defaultdict(list)
+            colbag = defaultdict(list)
+            for type_, num, pname, value in self.wmeta.gridrc_properties:
+                if type_ == 'row':
+                    arg = lrow_stmt.format(pname, value)
+                    rowbag[num].append(arg)
+                else:
+                    arg = lcol_stmt.format(pname, value)
+                    colbag[num].append(arg)
+            for k, bag in rowbag:
+                args = ', '.join(bag)
+                line = lrow_stmt.format(targetid, k, args)
+                lines.append(line)
+            for k, bag in colbag:
+                args = ', '.join(bag)
+                line = lcol_stmt.format(targetid, k, args)
+                lines.append(line)
+            return lines
+        else:
+            return []
+    
+    def _code_class_name(self):
+        cname = None
+        # try here ?
+        cname = self.builder.code_classname_for(self)
+        if cname is None:
+            if self.class_ is not None:
+                prefix = self.class_.__module__
+                name = self.class_.__name__
+                cname = '{0}.{1}'.format(prefix, name)
+            else:
+                cname = 'ClassNameNotDefined'
+        return cname
+    
+    def _code_process_properties(self, properties, targetid):
+        code_bag = {}
+        for pname, value in properties.items():
+            if (pname not in self.ro_properties and
+                pname not in self.command_properties):
+                self._code_set_property(targetid, pname, value, code_bag)
+        
+        # properties
+        # determine kw properties or complex properties
+        kwproperties = []
+        complex_properties = []
+        for pname, value in code_bag.items():
+            if isinstance(value, str):
+                kwproperties.append(pname)
+            else:
+                complex_properties.append(pname)
+        
+        return (code_bag, kwproperties, complex_properties)
+    
+    def _code_set_property(self, targetid, pname, value, code_bag):
+        if pname in self.OPTIONS_CUSTOM:
+            line = "# TODO - {0}: code for custom option '{1}' not implemented."
+            line = line.format(targetid, pname)
+            code_bag[pname] = [line]
+        else:
+            propvalue = "'{}'".format(value)
+            if pname in self.tkvar_properties:
+                propvalue = ['# TODO: set tkvar property']
+            elif pname in self.tkimage_properties:
+                propvalue = ['# TODO: set image property']
+            elif pname == 'takefocus':
+                propvalue = str(tk.getboolean(value))
+            code_bag[pname] = propvalue
 
 
 #
@@ -267,6 +450,26 @@ class EntryBaseBO(BuilderObject):
             else:
                 callback = self.widget.register(command)
         return callback
+    
+    #
+    # Code generation methods
+    #
+    def _code_set_property(self, targetid, pname, value, code_bag):
+        if pname == 'text':
+            state_value = ''
+            if 'state' in self.wmeta.properties:
+                state_value = self.wmeta.properties['state']
+            lines = [
+                "_text_ = '''{0}'''".format(value),
+                "{0}.delete('0', 'end')".format(targetid),
+                "{0}.insert('0', _text_)".format(targetid),
+                ]
+            code_bag[pname] = lines
+        elif pname in ('validatecommand_args', 'invalidcommand_args'):
+            pass
+        else:
+            super(EntryBaseBO, self)._code_set_property(targetid, pname,
+                                                        value, code_bag)
 
 
 class PanedWindowBO(BuilderObject):
@@ -310,52 +513,29 @@ class PanedWindowPaneBO(BuilderObject):
     def add_child(self, bobject):
         self.widget.add(bobject.widget, **self.wmeta.properties)
     
-    def code_generator(self, masterid):
-        '''Create code generation class'''
-        
-        class PanedWindowPaneCGBase(CodeGeneratorBase):
-            def child_master(self):
-                return self.masterid
-            
-            def add_child(self, childid, childmeta):
-                config = []
-                for pname, val in self.builder.wmeta.properties.items():
-                    line = "{}='{}'".format(pname, val)
-                    config.append(line)
-                pconfig = ', '.join(config)
-                lines = []
-                line = '# Pane {0}'.format(self.identifier)
-                lines.append(line)
-                if config:
-                    line = '{0}.add({1}, {2})'.format(self.masterid, childid, pconfig)
-                else:
-                    line = '{0}.add({1})'.format(self.masterid, childid)
-                lines.append(line)
-                return lines
-            
-        return PanedWindowPaneCGBase(self, masterid)
-
-
-
-class CodeGeneratorBase(object):
+    #
+    # code generation functions
+    #
+    def code_realize(self, boparent, code_identifier=None):
+        self._code_identifier = boparent.code_child_master()
+        return tuple()
     
-    def __init__(self, builder, masterid):
-        super(CodeGeneratorBase, self).__init__()
-        self.builder = builder
-        self.masterid = masterid
-        self.identifier = builder.wmeta.identifier
+    def code_configure(self, targetid=None):
+        return tuple()
     
-    def create(self):
-        pass
+    def code_layout(self, targetid=None):
+        return tuple()
     
-    def configure(self):
-        pass
-    
-    def layout(self):
-        pass
-
-    def add_child(self, childid, childmeta):
-        pass
-    
-    def child_master(self):
-        return self.identifier
+    def code_child_add(self, childid):
+        config = []
+        masterid = self.code_child_master()
+        for pname, val in self.wmeta.properties.items():
+            line = "{}='{}'".format(pname, val)
+            config.append(line)
+        kw = ''
+        lines = []
+        if config:
+            kw = ', {0}'.format(', '.join(config))
+        line = '{0}.add({1}{2})'.format(masterid, childid, kw)
+        lines.append(line)
+        return lines
