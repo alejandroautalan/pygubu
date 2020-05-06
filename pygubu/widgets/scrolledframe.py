@@ -9,11 +9,15 @@ except:
     import ttk
 
 
-from pygubu.widgets.tkscrolledframe import (ScrolledFrameBase,
-                                            ScrolledFrameFactory)
+from pygubu.widgets.tkscrolledframe import ScrolledFrameBase
 
 
-ScrolledFrame = ScrolledFrameFactory('ScrolledFrame',
+class TTKScrolledFrameFactory(type):
+    def __new__(cls, clsname, superclasses, attrs):
+        return type.__new__(cls, clsname, superclasses, attrs)
+
+
+ScrolledFrame = TTKScrolledFrameFactory('ScrolledFrame',
                                        (ScrolledFrameBase, ttk.Frame, object),
-                                       {'_framecls':tk.Frame,
+                                       {'_framecls':ttk.Frame,
                                         '_sbarcls': ttk.Scrollbar}) 
