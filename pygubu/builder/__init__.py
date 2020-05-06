@@ -11,6 +11,7 @@ except:
     import Tkinter as tkinter
 
 from pygubu.builder.builderobject import BuilderObject, CLASS_MAP
+from pygubu.builder.widgetmeta import WidgetMeta
 from pygubu.stockimage import StockImage, StockImageException
 from .uidefinition import UIDefinition
 
@@ -138,7 +139,8 @@ class Builder(object):
         else:
             wmeta = self.uidefinition.get_widget(name)
             if wmeta is not None:
-                root = BuilderObject(self, dict())
+                rmeta = WidgetMeta('root', 'root')
+                root = BuilderObject(self, rmeta)
                 root.widget = master
                 bobject = self._realize(root, wmeta)
                 widget = bobject.widget
