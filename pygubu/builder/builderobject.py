@@ -230,27 +230,33 @@ class BuilderObject(object):
 
     def connect_commands(self, cmd_bag):
         notconnected = []
-
+        commands = {}
+        for cmd in self.command_properties:
+            cmd_name = self.wmeta.properties.get(cmd, None)
+            if cmd_name is not None:
+                cmd_name = cmd_name.strip()
+                if cmd_name:
+                    commands[cmd]= cmd_name
+                else:
+                    msg = "{0}: invalid callback name for property '{1}'."
+                    msg = msg.format(self.wmeta.identifier, cmd)
+                    logger.warning(msg)
+        
         if isinstance(cmd_bag, dict):
-            for cmd in self.command_properties:
-                cmd_name = self.wmeta.properties.get(cmd, None)
-                if cmd_name is not None:
-                    if cmd_name in cmd_bag:
-                        callback = self._create_callback(cmd,
-                                                         cmd_bag[cmd_name])
-                        self._connect_command(cmd, callback)
-                    else:
-                        notconnected.append(cmd_name)
+            for cmd, cmd_name in commands.items():
+                if cmd_name in cmd_bag:
+                    callback = self._create_callback(cmd, cmd_bag[cmd_name])
+                    self._connect_command(cmd, callback)
+                else:
+                    notconnected.append(cmd_name)
         else:
-            for cmd in self.command_properties:
-                cmd_name = self.wmeta.properties.get(cmd, None)
-                if cmd_name is not None:
-                    if hasattr(cmd_bag, cmd_name):
-                        callback = self._create_callback(cmd,
-                            getattr(cmd_bag, cmd_name))
-                        self._connect_command(cmd, callback)
-                    else:
-                        notconnected.append(cmd_name)
+            for cmd, cmd_name in commands.items():
+                if hasattr(cmd_bag, cmd_name):
+                    callback = self._create_callback(
+                        cmd, getattr(cmd_bag, cmd_name))
+                    self._connect_command(cmd, callback)
+                else:
+                    notconnected.append(cmd_name)
         if notconnected:
             return notconnected
         else:
