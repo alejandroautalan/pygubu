@@ -30,7 +30,7 @@ class UIDefinition(object):
         super(UIDefinition, self).__init__()
         self.tree = None
         self.root = None
-        self.version = 0
+        self.version = ''
         self.author = ''
         self.wmetaclass = wmetaclass
         if wmetaclass is None:
@@ -39,7 +39,8 @@ class UIDefinition(object):
         self.__create()
     
     def xmlnode_to_widget(self, element):
-        meta = self.wmetaclass(element.get('class'), element.get('id'))
+        elemid = element.get('id')
+        meta = self.wmetaclass(element.get('class'), elemid)
     
         # properties
         properties = element.findall('./property')
@@ -84,9 +85,48 @@ class UIDefinition(object):
             else:
                 for p in props:
                     meta.layout_properties[p.get('name')] = p.text
+        if self.version == '':
+            # try to load old version grid rc info
+            # Gridrc info was in the parent, or
+            # in the widget itself if has no parent.
+            xpath = ".//*[@id='{0}']/../..".format(elemid)
+            parent = self.root.find(xpath)
+            if parent is None:
+                if layout_elem is not None:
+                    self.__load_old_gridrc_layout(layout_elem, meta)
+            else:
+                layout_elem = parent.find('./layout')
+                if layout_elem is not None:
+                    self.__load_old_gridrc_layout(layout_elem, meta)
+        
         return meta
     
+    def __load_old_gridrc_layout(self, element, meta):
+        '''Load old grid rc information.'''
+        
+        rows = element.findall('./rows/row')
+        for row in rows:
+            rid = row.get('id')
+            props = row.findall('./property')
+            for p in props:
+                rpname = p.get('name')
+                rpvalue = p.text
+                line = GridRCLine('row', rid, rpname, rpvalue)
+                meta.gridrc_properties.append(line)
+        columns = element.findall('./columns/column')
+        for col in columns:
+            cid = col.get('id')
+            props = col.findall('./property')
+            for p in props:
+                cpname = p.get('name')
+                cpvalue = p.text
+                line = GridRCLine('col', cid, cpname, cpvalue)
+                meta.gridrc_properties.append(line)
+        
+    
     def widget_to_xmlnode(self, wmeta):
+        '''Returns xml representation of widget'''
+        
         node = ET.Element('object')
     
         node.set('class', wmeta.classname)
