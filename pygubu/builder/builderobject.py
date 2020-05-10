@@ -202,8 +202,9 @@ class BuilderObject(object):
     def _grid_layout(self, target):
         properties = dict(self.wmeta.layout_properties)
         propagate = properties.pop('propagate', 'true')
+        propagate = propagate.lower()
         target.grid(**properties)
-        if propagate.lower != 'true':
+        if propagate != 'true':
             target.grid_propagate(0)
 
     def _gridrc_config(self, target):
@@ -355,22 +356,21 @@ class BuilderObject(object):
                 line = '{0}.propagate({1})'.format(targetid, pvalue)
                 lines.append(line)
             
-            lrow_stmt = "{0}.rowconfigure({1}, {2})"
-            lcol_stmt = "{0}.columnconfigure({1}, {2})"
+            lrow_stmt = "{0}.rowconfigure('{1}', {2})"
+            lcol_stmt = "{0}.columnconfigure('{1}', {2})"
             rowbag = defaultdict(list)
             colbag = defaultdict(list)
             for type_, num, pname, value in self.wmeta.gridrc_properties:
+                arg = "{0}='{1}'".format(pname, value)
                 if type_ == 'row':
-                    arg = lrow_stmt.format(pname, value)
                     rowbag[num].append(arg)
                 else:
-                    arg = lcol_stmt.format(pname, value)
                     colbag[num].append(arg)
-            for k, bag in rowbag:
+            for k, bag in rowbag.items():
                 args = ', '.join(bag)
                 line = lrow_stmt.format(targetid, k, args)
                 lines.append(line)
-            for k, bag in colbag:
+            for k, bag in colbag.items():
                 args = ', '.join(bag)
                 line = lcol_stmt.format(targetid, k, args)
                 lines.append(line)
