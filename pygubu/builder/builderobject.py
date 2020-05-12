@@ -424,12 +424,53 @@ class BuilderObject(object):
         else:
             propvalue = "'{}'".format(value)
             if pname in self.tkvar_properties:
-                propvalue = ['# TODO: set tkvar property']
+                varvalue = None
+                if 'text' in self.wmeta.properties and pname == 'textvariable':
+                    varvalue = self.wmeta.properties['text']
+                elif 'value' in self.wmeta.properties and pname == 'variable':
+                    varvalue = self.wmeta.properties['value']
+                propvalue = self.builder.code_create_variable(value, varvalue)
             elif pname in self.tkimage_properties:
                 propvalue = ['# TODO: set image property']
             elif pname == 'takefocus':
                 propvalue = str(tk.getboolean(value))
             code_bag[pname] = propvalue
+    
+    def code_connect_commands(self):
+        commands = {}
+        for cmd in self.command_properties:
+            cmd_name = self.wmeta.properties.get(cmd, None)
+            if cmd_name is not None:
+                cmd_name = cmd_name.strip()
+                if cmd_name:
+                    commands[cmd]= cmd_name
+                else:
+                    msg = "{0}: invalid callback name for property '{1}'."
+                    msg = msg.format(self.wmeta.identifier, cmd)
+                    logger.warning(msg)
+        lines = []
+        for cmd, cmd_name in commands.items():
+            callback = self.builder.code_create_callback(cmd_name, 'command')
+            cmd_code = self._code_connect_command(cmd, callback)
+            if cmd_code:
+                lines.extend(cmd_code)
+        return lines
+    
+    def _code_connect_command(self, cmd, cbname):
+        target = self.code_identifier()
+        line = '{0}.configure({1}={2})'.format(target, cmd, cbname)
+        return (line, )
+    
+    def code_connect_bindings(self):
+        lines = []
+        target = self.code_identifier()
+        for bind in self.wmeta.bindings:
+            cb_name = self.builder.code_create_callback(bind.handler, 'sequence')
+            add_arg = '+' if bind.add else ''
+            line = "{0}.bind('{1}', {2}, add='{3}')"
+            line = line.format(target, bind.sequence, cb_name, add_arg)
+            lines.append(line)
+        return lines
 
 
 #

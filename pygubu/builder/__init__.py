@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 class Builder(object):
     """Allows to build a tk interface from xml definition."""
+    TK_VARIABLE_TYPES = ('string', 'int', 'boolean', 'double')
 
     def __init__(self, translator=None):
         super(Builder, self).__init__()
@@ -81,23 +82,25 @@ class Builder(object):
                 if keyword in self.tkvariables:
                     setattr(container, keyword, self.tkvariables[keyword])
 
+    def _process_variable_description(self, name_or_desc):
+        vname = name_or_desc
+        vtype = 'string'  # default type if not defined
+        if ':' in name_or_desc:
+            vtype, vname = name_or_desc.split(':')
+            #  Fix incorrect order bug #33
+            if vtype not in self.TK_VARIABLE_TYPES:
+                #  Swap order
+                vtype, vname = vname, vtype
+                if vtype not in self.TK_VARIABLE_TYPES:
+                    msg = 'Undefined variable type in "{0}"'.format(vname)
+                    raise Exception(msg)
+        return (vname, vtype)
+
     def create_variable(self, varname, vtype=None):
         """Create a tk variable.
         If the variable was created previously return that instance.
         """
-
-        var_types = ('string', 'int', 'boolean', 'double')
-        vname = varname
-        var = None
-        type_from_name = 'string'  # default type
-        if ':' in varname:
-            type_from_name, vname = varname.split(':')
-            #  Fix incorrect order bug #33
-            if type_from_name not in (var_types):
-                #  Swap order
-                type_from_name, vname = vname, type_from_name
-                if type_from_name not in (var_types):
-                    raise Exception('Undefined variable type in "{0}"'.format(varname))
+        vname, type_from_name = self._process_variable_description(varname)
 
         if vname in self.tkvariables:
             var = self.tkvariables[vname]
@@ -223,3 +226,12 @@ class Builder(object):
             return notconnected
         else:
             return None
+    
+    def code_create_variable(self, name_or_desc, value, vtype=None):
+        raise NotImplementedError()
+    
+    def code_classname_for(self, bobject):
+        raise NotImplementedError()
+    
+    def code_create_callback(self, name, cbtype):
+        raise NotImplementedError()
