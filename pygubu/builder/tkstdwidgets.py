@@ -573,12 +573,36 @@ class TKMenuitem(BuilderObject):
     def code_configure(self, targetid=None):
         return tuple()
     
+    def _code_process_properties(self, properties, targetid):
+        code_bag = {}
+        for pname, value in properties.items():
+            if (pname not in self.ro_properties):
+                self._code_set_property(targetid, pname, value, code_bag)
+        
+        # properties
+        # determine kw properties or complex properties
+        kwproperties = []
+        complex_properties = []
+        for pname, value in code_bag.items():
+            if isinstance(value, str):
+                kwproperties.append(pname)
+            else:
+                complex_properties.append(pname)
+        
+        return (code_bag, kwproperties, complex_properties)
+    
     def _code_set_property(self, targetid, pname, value, code_bag):
         if pname == 'command_id_arg':
-            pass
+            if value:
+                line = "#TODO: setup command_id_arg '{0}' for menuitem."
+                line = line.format(value)
+                code_bag[pname] = (line, )
         else:
             super(TKMenuitem, self)._code_set_property(targetid, pname, value,
                                                        code_bag)
+    
+    def code_connect_commands(self):
+        return tuple()
 
 
 class TKMenuitemSubmenu(TKMenuitem):
@@ -687,7 +711,7 @@ class TKMenuitemSubmenu(TKMenuitem):
 
 
 register_widget('tk.Menuitem.Submenu', TKMenuitemSubmenu,
-                'Menuitem.Submenu', ('Menu', 'Pygubu Helpers', 'tk', 'ttk'))
+                'Menuitem.Submenu', ('Menu', 'tk', 'ttk'))
 
 
 class TKMenuitemCommand(TKMenuitem):
@@ -695,7 +719,7 @@ class TKMenuitemCommand(TKMenuitem):
     itemtype = tk.COMMAND
 
 register_widget('tk.Menuitem.Command', TKMenuitemCommand,
-                'Menuitem.Command', ('Menu', 'Pygubu Helpers', 'tk', 'ttk'))
+                'Menuitem.Command', ('Menu', 'tk', 'ttk'))
 
 
 class TKMenuitemCheckbutton(TKMenuitem):
@@ -709,7 +733,7 @@ class TKMenuitemCheckbutton(TKMenuitem):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
 register_widget('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton,
-                'Menuitem.Checkbutton', ('Menu', 'Pygubu Helpers', 'tk', 'ttk'))
+                'Menuitem.Checkbutton', ('Menu', 'tk', 'ttk'))
 
 
 class TKMenuitemRadiobutton(TKMenuitem):
@@ -723,7 +747,7 @@ class TKMenuitemRadiobutton(TKMenuitem):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
 register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
-                'Menuitem.Radiobutton', ('Menu', 'Pygubu Helpers', 'tk', 'ttk'))
+                'Menuitem.Radiobutton', ('Menu', 'tk', 'ttk'))
 
 
 class TKMenuitemSeparator(TKMenuitem):
@@ -736,7 +760,7 @@ class TKMenuitemSeparator(TKMenuitem):
     command_properties = tuple()
 
 register_widget('tk.Menuitem.Separator', TKMenuitemSeparator,
-                'Menuitem.Separator', ('Menu', 'Pygubu Helpers', 'tk', 'ttk'))
+                'Menuitem.Separator', ('Menu', 'tk', 'ttk'))
 
 
 class TKPanedWindowPane(PanedWindowPaneBO):

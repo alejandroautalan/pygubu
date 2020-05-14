@@ -359,7 +359,8 @@ class BuilderObject(object):
             
             pvalue = str(layout.get('propagate', '')).lower()
             if 'propagate' in layout and  pvalue == 'false':
-                line = '{0}.propagate({1})'.format(targetid, pvalue)
+                line = '{0}.{1}_propagate({2})'
+                line = line.format(targetid, manager, 0)
                 lines.append(line)
             
             lrow_stmt = "{0}.rowconfigure('{1}', {2})"
@@ -430,6 +431,10 @@ class BuilderObject(object):
                 elif 'value' in self.wmeta.properties and pname == 'variable':
                     varvalue = self.wmeta.properties['value']
                 propvalue = self.builder.code_create_variable(value, varvalue)
+            elif pname in self.command_properties:
+                cmd_name = value.strip()
+                callback = self.builder.code_create_callback(cmd_name, 'command')
+                propvalue = callback
             elif pname in self.tkimage_properties:
                 propvalue = ['# TODO: set image property']
             elif pname == 'takefocus':
