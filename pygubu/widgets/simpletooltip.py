@@ -38,8 +38,8 @@ class ToolTip(object):
         label = tk.Label(tw, text=self.text, justify=tk.LEFT,
                       background="#ffffe0", foreground="black",
                       relief=tk.SOLID, borderwidth=1,
-                      font=("tahoma", "8", "normal"))
-        label.pack(ipadx=1)
+                      font=("tahoma", "9", "normal"))
+        label.pack(ipadx=2)
 
     def hidetip(self):
         tw = self.tipwindow
