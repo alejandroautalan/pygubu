@@ -1,5 +1,10 @@
 # encoding: utf8
 from __future__ import unicode_literals
+try:
+    import tkinter as tk
+except:
+    import Tkinter as tk
+
 from pygubu.builder.builderobject import *
 from pygubu.builder.tkstdwidgets import TKToplevel
 from pygubu.widgets.dialog import Dialog
@@ -29,6 +34,19 @@ class DialogBO(TKToplevel):
 
     def get_child_master(self):
         return self.widget.toplevel
+    
+    #
+    # Code generation methods
+    #
+    def code_child_master(self):
+        return '{0}.toplevel'.format(self.code_identifier())
+    
+    def _code_set_property(self, targetid, pname, value, code_bag):
+        if pname == 'modal':
+            code_bag[pname] = "'{0}'".format(value)
+        else:
+            super(DialogBO, self)._code_set_property(targetid, pname,
+                                                     value, code_bag)
 
 
 register_widget('pygubu.builder.widgets.dialog', DialogBO,
