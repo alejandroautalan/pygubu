@@ -134,7 +134,7 @@ class ScrollbarHelperBase(object):
 
 class ScrollbarHelperFactory(type):
     def __new__(cls, clsname, superclasses, attrs):
-        return type.__new__(cls, clsname, superclasses, attrs)
+        return type.__new__(cls, str(clsname), superclasses, attrs)
 
 
 

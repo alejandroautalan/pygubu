@@ -162,6 +162,9 @@ class Builder(object):
             try:
                 importlib.import_module(modulename)
             except ImportError as e:
+                msg = 'Failed to import module as fullname:{0}'.format(modulename)
+                logger.warning(msg)
+                logger.exception(e)
                 # A single module can contain various widgets
                 # try to import the first part of the path
                 if '.' in modulename:

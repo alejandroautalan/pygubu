@@ -8,7 +8,7 @@ echo " tk version :$($python3bin -c 'import tkinter; print(tkinter.TkVersion)')"
 cd tests; $python3bin -m unittest; cd ..;
 
 
-python2bin=$(which python)
+python2bin=$(which python2)
 echo " ============="
 echo " Default Python 2: $python2bin"
 echo " version: $($python2bin --version)"

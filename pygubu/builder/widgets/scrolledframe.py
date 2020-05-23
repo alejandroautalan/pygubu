@@ -1,7 +1,11 @@
 # encoding: utf8
 from __future__ import unicode_literals
 
-import tkinter as tk
+try:
+    import tkinter as tk
+except:
+    import Tkinter as tk
+
 from pygubu.builder.builderobject import *
 from pygubu.widgets.scrolledframe import ScrolledFrame
 

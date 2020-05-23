@@ -5,23 +5,25 @@ try:
     import tkinter as tk
 except:
     import Tkinter as tk
+
 from pygubu import ApplicationLevelBindManager as BindManager
 from pygubu.binding import remove_binding
 
 
-class ScrolledFrameBase(object):
+class TkScrolledFrame(tk.Frame):
     VERTICAL = 'vertical'
     HORIZONTAL = 'horizontal'
     BOTH = 'both'
-    _framecls = None
-    _sbarcls = None
+    _framecls = tk.Frame
+    _sbarcls = tk.Scrollbar
 
     def __init__(self, master=None, **kw):
         self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
         self.usemousewheel = tk.getboolean(kw.pop('usemousewheel', False))
         self._bindingids = []
 
-        super(ScrolledFrameBase, self).__init__(master, **kw)
+        #super(ScrolledFrameBase, self).__init__(master, **kw)
+        self._framecls.__init__(self, master, **kw)
 
         self._clipper = self._framecls(self, width=200, height=200)
         self.innerframe = innerframe = self._framecls(self._clipper)
@@ -243,7 +245,8 @@ class ScrolledFrameBase(object):
             self.usemousewheel = tk.getboolean(args[key])
             del args[key]
             self._configure_mousewheel()
-        super(ScrolledFrameBase, self).configure(args)
+        #super(ScrolledFrameBase, self).configure(args)
+        self._framecls.configure(self, args)
 
     config = configure
 
@@ -251,7 +254,8 @@ class ScrolledFrameBase(object):
         option = 'usemousewheel'
         if key == option:
             return self.usemousewheel
-        return super(ScrolledFrameBase, self).cget(key)
+        #return super(ScrolledFrameBase, self).cget(key)
+        return self._framecls.cget(self, key)
 
     __getitem__ = cget
 
@@ -291,12 +295,12 @@ class ScrolledFrameBase(object):
                 remove_binding(widget, bid)
 
 
-class TkScrolledFrameFactory(type):
-    def __new__(cls, clsname, superclasses, attrs):
-        return type.__new__(cls, clsname, superclasses, attrs)
+#class TkScrolledFrameFactory(type):
+#    def __new__(cls, clsname, superclasses, attrs):
+#        return type.__new__(cls, str(clsname), superclasses, attrs)
 
 
-TkScrolledFrame = TkScrolledFrameFactory('TkScrolledFrame',
-                                       (ScrolledFrameBase, tk.Frame, object),
-                                       {'_framecls':tk.Frame,
-                                        '_sbarcls': tk.Scrollbar})
+#TkScrolledFrame = TkScrolledFrameFactory('TkScrolledFrame',
+#                                       (ScrolledFrameBase, tk.Frame, object),
+#                                       {'_framecls':tk.Frame,
+#                                        '_sbarcls': tk.Scrollbar})
