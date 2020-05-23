@@ -51,6 +51,12 @@ def grouper(iterable, n, fillvalue=None):
     return itertools.zip_longest(*args, fillvalue=fillvalue)
 
 
+# Python 2 issue:
+try:
+    isinstance(basestring, type)
+except:
+    basestring = str
+
 #
 # BuilderObject
 #
@@ -411,7 +417,7 @@ class BuilderObject(object):
         kwproperties = []
         complex_properties = []
         for pname, value in code_bag.items():
-            if isinstance(value, str):
+            if isinstance(value, str) or isinstance(value, basestring):
                 kwproperties.append(pname)
             else:
                 complex_properties.append(pname)
