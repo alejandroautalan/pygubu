@@ -92,11 +92,16 @@ class Dialog(object):
     # interface to toplevel methods used by gui builder
     #
     def configure(self, cnf=None, **kw):
+        if 'modal' in kw:
+            value = kw.pop('modal')
+            self.set_modal(tk.getboolean(value))
         self.toplevel.configure(cnf, **kw)
     
     config = configure
 
     def cget(self, key):
+        if key == 'modal':
+            return self.is_modal
         return self.toplevel.cget(key)
 
     __getitem__ = cget
