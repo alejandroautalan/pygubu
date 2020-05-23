@@ -231,7 +231,8 @@ class EditableTreeview(ttk.Treeview):
         cb.bind('<FocusOut>', lambda e: self.__update_value(col, item))
         self._inplace_widgets_show[col] = True
 
-    def inplace_combobox(self, col, item, values, readonly=True):
+    def inplace_combobox(self, col, item, values, readonly=True,
+                         update_values=False):
         state = 'readonly' if readonly else 'normal'
         if col not in self._inplace_vars:
             self._inplace_vars[col] = tk.StringVar()
@@ -240,6 +241,8 @@ class EditableTreeview(ttk.Treeview):
         if col not in self._inplace_widgets:
             self._inplace_widgets[col] = ttk.Combobox(self,
                 textvariable=svar, values=values, state=state)
+        if update_values:
+            self._inplace_widgets[col].configure(values=values)
         cb = self._inplace_widgets[col]
         cb.bind('<Unmap>', lambda e: self.__update_value(col, item))
         cb.bind('<FocusOut>', lambda e: self.__update_value(col, item))
@@ -259,9 +262,12 @@ class EditableTreeview(ttk.Treeview):
         self._inplace_widgets_show[col] = True
 
 
-    def inplace_custom(self, col, item, widget):
+    def inplace_custom(self, col, item, widget, stringvar=None):
         if col not in self._inplace_vars:
-            self._inplace_vars[col] = tk.StringVar()
+            if stringvar is None:
+                self._inplace_vars[col] = tk.StringVar()
+            else:
+                self._inplace_vars[col] = stringvar
         svar = self._inplace_vars[col]
         svar.set(self.__get_value(col, item))
         self._inplace_widgets[col] = widget
