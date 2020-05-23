@@ -8,6 +8,7 @@ from pygubu.widgets.editabletreeview import EditableTreeview
 
 class EditableTreeviewBO(TTKTreeviewBO):
     class_ = EditableTreeview
+    virtual_events = ('<<TreeviewInplaceEdit>>', '<<TreeviewCellEdited>>')
 
 
 classid = 'pygubu.builder.widgets.editabletreeview'

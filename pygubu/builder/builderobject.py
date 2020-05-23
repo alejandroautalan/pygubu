@@ -104,6 +104,7 @@ class BuilderObject(object):
     tkvar_properties = ('listvariable', 'textvariable', 'variable')
     tkimage_properties = ('image', 'selectimage')
     tkfont_properties = ('font',)
+    virtual_events = tuple()
 
     @classmethod
     def factory(cls, builder, wdata):

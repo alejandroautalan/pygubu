@@ -212,6 +212,7 @@ class TTKPanedwindow(TTKWidgetBO, PanedWindowBO):
     allowed_children = ('ttk.Panedwindow.Pane',)
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
     ro_properties = ('class_', 'orient')
+    virtual_events = ('<<EnteredChild>>',)
 
 register_widget('ttk.Panedwindow', TTKPanedwindow,
                 'Panedwindow', ('Containers', 'ttk'))
@@ -223,6 +224,7 @@ class TTKNotebook(TTKWidgetBO):
     container = True
     allowed_children = ('ttk.Notebook.Tab',)
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
+    virtual_events = ('<<NotebookTabChanged>>',)
 
 register_widget('ttk.Notebook', TTKNotebook,
                 'Notebook', ('Containers', 'ttk'))
@@ -254,6 +256,8 @@ class TTKTreeviewBO(TTKWidgetBO):
     container = False
     allowed_children = ('ttk.Treeview.Column',)
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+    virtual_events = ('<<TreeviewSelect>>', '<<TreeviewOpen>>',
+                      '<<TreeviewClose>>')
 
     def __init__(self, builder, wdescr):
         super(TTKTreeviewBO, self).__init__(builder, wdescr)
@@ -497,6 +501,7 @@ class TTKSpinboxBO(TTKWidgetBO, EntryBaseBO):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     command_properties = ('validatecommand', 'invalidcommand',
                           'xscrollcommand', 'command')
+    virtual_events = ('<<Increment>>', '<<Decrement>>')
 
 
 if tk.TkVersion >= 8.6:
