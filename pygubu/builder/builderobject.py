@@ -82,10 +82,10 @@ CUSTOM_PROPERTIES = {}
 def register_property(name, description):
     if name in CUSTOM_PROPERTIES:
         CUSTOM_PROPERTIES[name].update(description)
-        logger.debug('Updating registered property {0}'.format(name))
+        logger.debug('Updating registered property {0}', name)
     else:
         CUSTOM_PROPERTIES[name] = description
-        logger.debug('Registered property {0}'.format(name))
+        logger.debug('Registered property {0}', name)
 
 
 #
@@ -151,8 +151,7 @@ class BuilderObject(object):
     def _set_property(self, target_widget, pname, value):
         if pname not in self.__class__.properties:
             msg = "Attempt to set an unknown property '{0}' on class '{1}'"
-            msg = msg.format(pname, repr(self.class_))
-            logger.warning(msg)
+            logger.warning(msg, pname, repr(self.class_))
         else:
             propvalue = value
             if pname in self.tkvar_properties:
@@ -171,8 +170,7 @@ class BuilderObject(object):
                 target_widget[pname] = propvalue
             except tk.TclError as e:
                 msg = "Failed to set property '{0}' on class '{1}'. TclError: {2}"
-                msg = msg.format(pname, repr(self.class_), str(e))
-                logger.error(msg)
+                logger.error(msg, pname, repr(self.class_), str(e))
 
     def layout(self, target=None, configure_gridrc=True):
         if self.layout_required:
@@ -246,8 +244,7 @@ class BuilderObject(object):
                     commands[cmd]= cmd_name
                 else:
                     msg = "{0}: invalid callback name for property '{1}'."
-                    msg = msg.format(self.wmeta.identifier, cmd)
-                    logger.warning(msg)
+                    logger.warning(msg, self.wmeta.identifier, cmd)
         
         if isinstance(cmd_bag, dict):
             for cmd, cmd_name in commands.items():
@@ -443,7 +440,7 @@ class BuilderObject(object):
                 callback = self.builder.code_create_callback(cmd_name, 'command')
                 propvalue = callback
             elif pname in self.tkimage_properties:
-                propvalue = ['# TODO: set image property']
+                propvalue = self.builder.code_create_image(value)
             elif pname == 'takefocus':
                 propvalue = str(tk.getboolean(value))
             code_bag[pname] = propvalue
@@ -458,8 +455,7 @@ class BuilderObject(object):
                     commands[cmd]= cmd_name
                 else:
                     msg = "{0}: invalid callback name for property '{1}'."
-                    msg = msg.format(self.wmeta.identifier, cmd)
-                    logger.warning(msg)
+                    logger.warning(msg, self.wmeta.identifier, cmd)
         lines = []
         for cmd, cmd_name in commands.items():
             callback = self.builder.code_create_callback(cmd_name, 'command')

@@ -48,8 +48,8 @@ class Builder(object):
             if ipath is not None:
                 StockImage.register(name, ipath)
             else:
-                msg = "Image '{0}' not found in resource paths.".format(name)
-                logger.warning(msg)
+                msg = "Image '{0}' not found in resource paths."
+                logger.warning(msg, name)
         try:
             image = StockImage.get(name)
         except StockImageException:
@@ -162,8 +162,8 @@ class Builder(object):
             try:
                 importlib.import_module(modulename)
             except ImportError as e:
-                msg = 'Failed to import module as fullname:{0}'.format(modulename)
-                logger.warning(msg)
+                msg = 'Failed to import module as fullname:{0}'
+                logger.warning(msg, modulename)
                 logger.exception(e)
                 # A single module can contain various widgets
                 # try to import the first part of the path
@@ -183,9 +183,9 @@ class Builder(object):
             self._import_class(wmeta.classname)
 
         if wmeta.classname in CLASS_MAP:
-            self._pre_process_data(wmeta)
             bclass = CLASS_MAP[wmeta.classname].builder
             parent = bclass.factory(self, wmeta)
+            self._pre_realize(parent)
             parent.realize(master)
 
             self.objects[wmeta.identifier] = parent
@@ -196,18 +196,25 @@ class Builder(object):
                 parent.add_child(child)
             parent.configure()
             parent.layout()
+            
+            self._post_realize(parent)
+            
             return parent
         else:
             msg = 'Class "{0}" not mapped'.format(wmeta.classname)
             raise Exception(msg)
 
-    def _pre_process_data(self, wmeta):
+    def _pre_realize(self, bobject):
+        wmeta = bobject.wmeta
         cname = wmeta.classname
-        wmeta.layout_required = CLASS_MAP[cname].builder.layout_required
+        wmeta.layout_required = bobject.layout_required
         has_layout = len(wmeta.layout_properties) > 1
         if wmeta.layout_required and not has_layout:
             logger.warning('No layout information for: (%s, %s).',
                            cname, wmeta.identifier)
+    
+    def _post_realize(self, bobject):
+        pass
 
     def connect_callbacks(self, callbacks_bag):
         """Connect callbacks specified in callbacks_bag with callbacks
@@ -224,13 +231,16 @@ class Builder(object):
                 notconnected.extend(missing)
         if notconnected:
             notconnected = list(set(notconnected))
-            msg = 'Missing callbacks for commands: {}'.format(notconnected)
-            logger.warning(msg)
+            msg = 'Missing callbacks for commands: {0}'
+            logger.warning(msg, notconnected)
             return notconnected
         else:
             return None
     
     def code_create_variable(self, name_or_desc, value, vtype=None):
+        raise NotImplementedError()
+    
+    def code_create_image(self, filename):
         raise NotImplementedError()
     
     def code_classname_for(self, bobject):
