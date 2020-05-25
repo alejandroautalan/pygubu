@@ -23,7 +23,7 @@ def remove_binding(widget, seq, index=None, funcid=None):
             widget.unbind(seq, _funcid(binding))
             b.remove(binding)
         except IndexError:
-            logger.info('Binding #%d not defined.' % index)
+            logger.info('Binding #%d not defined.', index)
             return
 
     elif funcid:
@@ -35,7 +35,7 @@ def remove_binding(widget, seq, index=None, funcid=None):
                 widget.unbind(seq, funcid)
                 break
         if not binding:
-            logger.info( 'Binding "%s" not defined.' % funcid)
+            logger.info( 'Binding "%s" not defined.', funcid)
             return
     else:
         raise ValueError('No index or function id defined.')

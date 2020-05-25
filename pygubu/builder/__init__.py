@@ -48,7 +48,7 @@ class Builder(object):
             if ipath is not None:
                 StockImage.register(name, ipath)
             else:
-                msg = "Image '{0}' not found in resource paths."
+                msg = "Image '%s' not found in resource paths."
                 logger.warning(msg, name)
         try:
             image = StockImage.get(name)
@@ -162,7 +162,7 @@ class Builder(object):
             try:
                 importlib.import_module(modulename)
             except ImportError as e:
-                msg = 'Failed to import module as fullname:{0}'
+                msg = 'Failed to import module as fullname: %s'
                 logger.warning(msg, modulename)
                 logger.exception(e)
                 # A single module can contain various widgets
@@ -208,9 +208,9 @@ class Builder(object):
         wmeta = bobject.wmeta
         cname = wmeta.classname
         wmeta.layout_required = bobject.layout_required
-        has_layout = len(wmeta.layout_properties) > 1
+        has_layout = (len(wmeta.layout_properties) > 1)
         if wmeta.layout_required and not has_layout:
-            logger.warning('No layout information for: (%s, %s).',
+            logger.debug('No layout information for: (%s, %s).',
                            cname, wmeta.identifier)
     
     def _post_realize(self, bobject):
@@ -231,7 +231,7 @@ class Builder(object):
                 notconnected.extend(missing)
         if notconnected:
             notconnected = list(set(notconnected))
-            msg = 'Missing callbacks for commands: {0}'
+            msg = 'Missing callbacks for commands: %s'
             logger.warning(msg, notconnected)
             return notconnected
         else:

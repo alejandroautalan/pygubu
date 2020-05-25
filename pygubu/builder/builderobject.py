@@ -82,10 +82,10 @@ CUSTOM_PROPERTIES = {}
 def register_property(name, description):
     if name in CUSTOM_PROPERTIES:
         CUSTOM_PROPERTIES[name].update(description)
-        logger.debug('Updating registered property {0}', name)
+        logger.debug('Updating registered property %s', name)
     else:
         CUSTOM_PROPERTIES[name] = description
-        logger.debug('Registered property {0}', name)
+        logger.debug('Registered property %s', name)
 
 
 #
@@ -150,7 +150,7 @@ class BuilderObject(object):
 
     def _set_property(self, target_widget, pname, value):
         if pname not in self.__class__.properties:
-            msg = "Attempt to set an unknown property '{0}' on class '{1}'"
+            msg = "Attempt to set an unknown property '%s' on class '%s'"
             logger.warning(msg, pname, repr(self.class_))
         else:
             propvalue = value
@@ -169,8 +169,9 @@ class BuilderObject(object):
             try:
                 target_widget[pname] = propvalue
             except tk.TclError as e:
-                msg = "Failed to set property '{0}' on class '{1}'. TclError: {2}"
-                logger.error(msg, pname, repr(self.class_), str(e))
+                msg = "Failed to set property '{0}' on class '{1}'. TclError:"
+                logger.error(msg, pname, repr(self.class_))
+                logger.exception(e)
 
     def layout(self, target=None, configure_gridrc=True):
         if self.layout_required:
@@ -243,7 +244,7 @@ class BuilderObject(object):
                 if cmd_name:
                     commands[cmd]= cmd_name
                 else:
-                    msg = "{0}: invalid callback name for property '{1}'."
+                    msg = "%s: invalid callback name for property '%s'."
                     logger.warning(msg, self.wmeta.identifier, cmd)
         
         if isinstance(cmd_bag, dict):
@@ -454,7 +455,7 @@ class BuilderObject(object):
                 if cmd_name:
                     commands[cmd]= cmd_name
                 else:
-                    msg = "{0}: invalid callback name for property '{1}'."
+                    msg = "%s: invalid callback name for property '%s'."
                     logger.warning(msg, self.wmeta.identifier, cmd)
         lines = []
         for cmd, cmd_name in commands.items():

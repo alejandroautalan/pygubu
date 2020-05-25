@@ -64,16 +64,16 @@ class ScrollbarHelperBase(object):
                 self.vsb.configure(command=cwidget.yview)
                 cwidget.configure(yscrollcommand=lambda f, l: _autoscroll(self.vsb, f, l))
             else:
-                msg = "widget {} has no attribute 'yview'".format(str(cwidget))
-                logger.info(msg)
+                msg = "widget %s has no attribute 'yview'"
+                logger.info(msg, str(cwidget))
 
         if self.scrolltype in (self.BOTH, self.HORIZONTAL):
             if hasattr(cwidget, 'xview'):
                 self.hsb.configure(command=cwidget.xview)
                 cwidget.configure(xscrollcommand=lambda f, l: _autoscroll(self.hsb, f, l))
             else:
-                msg = "widget {} has no attribute 'xview'".format(str(cwidget))
-                logger.info(msg)
+                msg = "widget % has no attribute 'xview'"
+                logger.info(msg, str(cwidget))
         self._configure_mousewheel()
 
     def configure(self, cnf=None, **kw):
