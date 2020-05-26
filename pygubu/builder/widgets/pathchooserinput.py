@@ -7,6 +7,15 @@ class PathChooserInputBuilder(BuilderObject):
     class_ = PathChooserInput
     OPTIONS_CUSTOM = ('type', 'path', 'image', 'textvariable', 'state')
     properties = OPTIONS_CUSTOM
+    virtual_events = ('<<PathChooserPathChanged>>',)
+    
+    def _code_set_property(self, targetid, pname, value, code_bag):
+        if pname == 'type':
+            code_bag[pname] = "'{0}'".format(value)
+        else:
+            super(PathChooserInputBuilder, self)._code_set_property(
+                targetid, pname, value, code_bag)
+
 
 register_widget('pygubu.builder.widgets.pathchooserinput', PathChooserInputBuilder,
                 'PathChooserInput', ('ttk', 'Pygubu Widgets'))

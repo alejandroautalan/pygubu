@@ -1,21 +1,4 @@
 # encoding: utf8
-#
-# Copyright 2012-2013 Alejandro Autalán
-#
-# This program is free software: you can redistribute it and/or modify it
-# under the terms of the GNU General Public License version 3, as published
-# by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranties of
-# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
-# PURPOSE.  See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-# For further info, check  https://github.com/alejandroautalan/pygubu
-
 from __future__ import unicode_literals
 import functools
 
@@ -248,7 +231,8 @@ class EditableTreeview(ttk.Treeview):
         cb.bind('<FocusOut>', lambda e: self.__update_value(col, item))
         self._inplace_widgets_show[col] = True
 
-    def inplace_combobox(self, col, item, values, readonly=True):
+    def inplace_combobox(self, col, item, values, readonly=True,
+                         update_values=False):
         state = 'readonly' if readonly else 'normal'
         if col not in self._inplace_vars:
             self._inplace_vars[col] = tk.StringVar()
@@ -257,6 +241,8 @@ class EditableTreeview(ttk.Treeview):
         if col not in self._inplace_widgets:
             self._inplace_widgets[col] = ttk.Combobox(self,
                 textvariable=svar, values=values, state=state)
+        if update_values:
+            self._inplace_widgets[col].configure(values=values)
         cb = self._inplace_widgets[col]
         cb.bind('<Unmap>', lambda e: self.__update_value(col, item))
         cb.bind('<FocusOut>', lambda e: self.__update_value(col, item))
@@ -276,9 +262,12 @@ class EditableTreeview(ttk.Treeview):
         self._inplace_widgets_show[col] = True
 
 
-    def inplace_custom(self, col, item, widget):
+    def inplace_custom(self, col, item, widget, stringvar=None):
         if col not in self._inplace_vars:
-            self._inplace_vars[col] = tk.StringVar()
+            if stringvar is None:
+                self._inplace_vars[col] = tk.StringVar()
+            else:
+                self._inplace_vars[col] = stringvar
         svar = self._inplace_vars[col]
         svar.set(self.__get_value(col, item))
         self._inplace_widgets[col] = widget

@@ -12,6 +12,7 @@ class CalendarFrameBuilder(BuilderObject):
                       'calendarfg', 'calendarbg', 'headerfg', 'headerbg',
                       'selectbg', 'selectfg', 'state', 'markbg', 'markfg')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
+    virtual_events = ('<<CalendarFrameDateSelected>>',)
 
 register_widget('pygubu.builder.widgets.calendarframe', CalendarFrameBuilder,
                 'CalendarFrame', ('ttk', 'Pygubu Widgets'))

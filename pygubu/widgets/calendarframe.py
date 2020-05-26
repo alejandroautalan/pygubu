@@ -166,7 +166,7 @@ class CalendarFrame(ttk.Frame):
         if key in ('locale', 'firstweekday', 'calendarfg', 'calendarbg',
                    'headerfg', 'headerbg', 'selectbg', 'selectfg',
                    'markbg', 'markfg', 'state'):
-           return self.__options[key]
+            return self.__options[key]
         option = 'year'
         if key == option:
             return self._date.year
@@ -178,70 +178,56 @@ class CalendarFrame(ttk.Frame):
     __getitem__ = cget
     
     def __build_ui(self):
-        # BUILD UI
-        # mainframe widget
-        mainframe = self
-        mainframe.configure(height='200', padding='2', width='200')
-        # frame2 widget
-        frame2 = ttk.Frame(mainframe)
-        frame2.configure(height='200', width='200')
-        # bpmonth widget
-        bpmonth = ttk.Button(frame2)
-        bpmonth.configure(style='Toolbutton', text='L')
-        bpmonth.grid(column='0', row='0')
-        # bnmonth widget
-        bnmonth = ttk.Button(frame2)
-        bnmonth.configure(style='Toolbutton', text='R')
-        bnmonth.grid(column='1', row='0')
-        # lmonth widget
-        lmonth = ttk.Label(frame2)
-        lmonth.configure(anchor='center', text='Enero')
-        lmonth.grid(column='2', ipadx='5', row='0', sticky='ew')
-        # btoday widget
-        btoday = ttk.Button(frame2)
-        btoday.configure(style='Toolbutton')
-        btoday.grid(column='3', row='0', sticky='ew')
-        # lyear widget
-        lyear = ttk.Label(frame2)
-        lyear.configure(anchor='center', text='2015')
-        lyear.grid(column='4', ipadx='5', row='0', sticky='ew')
-        # bpyear widget
-        bpyear = ttk.Button(frame2)
-        bpyear.configure(style='Toolbutton', text='L')
-        bpyear.grid(column='5', row='0')
-        # bnyear widget
-        bnyear = ttk.Button(frame2)
-        bnyear.configure(style='Toolbutton', text='R')
-        bnyear.grid(column='6', row='0')
-        frame2.grid(column='0', row='0', sticky='ew')
-        frame2.columnconfigure(3, minsize='20', weight='1')
-        # canvas widget
-        canvas = tk.Canvas(mainframe)
-        canvas.configure(background='#ffffff', borderwidth='0', height='160', highlightthickness='0')
-        canvas.configure(width='240')
-        canvas.grid(column='0', row='1', sticky='nsew')
-        mainframe.grid(column='0', row='0', sticky='nsew')
-        mainframe.rowconfigure(0, weight='0')
-        mainframe.rowconfigure(1, weight='1')
-        mainframe.columnconfigure(0, weight='1')
+        ## BUILD UI
+        
+        self.configure(height='200', width='200')
+        self._topframe = ttk.Frame(self)
+        self._topframe.configure(height='200', width='200')
+        self.bpmonth = ttk.Button(self._topframe)
+        self.bpmonth.configure(style='Toolbutton', text='L')
+        self.bpmonth.pack(side='left')
+        self.bnmonth = ttk.Button(self._topframe)
+        self.bnmonth.configure(style='Toolbutton', text='R')
+        self.bnmonth.pack(side='left')
+        self._lmonth = ttk.Label(self._topframe)
+        self._lmonth.configure(anchor='center', text='January')
+        self._lmonth.pack(side='left')
+        self.btoday = ttk.Button(self._topframe)
+        self.btoday.configure(style='Toolbutton', text='Today')
+        self.btoday.pack(expand='true', fill='x', side='left')
+        self._lyear = ttk.Label(self._topframe)
+        self._lyear.configure(text='2020')
+        self._lyear.pack(side='left')
+        self.bpyear = ttk.Button(self._topframe)
+        self.bpyear.configure(style='Toolbutton', text='L')
+        self.bpyear.pack(side='left')
+        self.bnyear = ttk.Button(self._topframe)
+        self.bnyear.configure(style='Toolbutton', text='R')
+        self.bnyear.pack(side='left')
+        self._topframe.pack(anchor='n', fill='x', side='top')
+        self._canvas = tk.Canvas(self)
+        self._canvas.configure(background='#ffffff', borderwidth='0', height='160', highlightthickness='0')
+        self._canvas.configure(width='240')
+        self._canvas.pack(anchor='center', expand='true', fill='both', side='top')
+        
         
         self.__img_prev = imgp = tk.PhotoImage(data=imgp_data)
         self.__img_next = imgn = tk.PhotoImage(data=imgn_data)
-        self._lmonth = lmonth
-        self._lyear = lyear
+        #self._lmonth = lmonth
+        #self._lyear = lyear
         callback = lambda event=None: self._change_date('month', -1)
-        bpmonth.configure(image=imgp, command=callback)
+        self.bpmonth.configure(image=imgp, command=callback)
         callback = lambda event=None: self._change_date('month', 1)
-        bnmonth.configure(image=imgn, command=callback)
+        self.bnmonth.configure(image=imgn, command=callback)
         callback = lambda event=None: self._change_date('year', -1)
-        bpyear.configure(image=imgp, command=callback)
+        self.bpyear.configure(image=imgp, command=callback)
         callback = lambda event=None: self._change_date('year', 1)
-        bnyear.configure(image=imgn, command=callback)
-        btoday.configure(command=self._go_today)
-        canvas.bind('<Configure>', self._on_canvas_configure)
-        self._topframe = frame2
-        self._canvas = canvas
-        self._draw_calendar(canvas)
+        self.bnyear.configure(image=imgn, command=callback)
+        self.btoday.configure(command=self._go_today)
+        self._canvas.bind('<Configure>', self._on_canvas_configure)
+        #self._topframe = frame2
+        #self._canvas = canvas
+        self._draw_calendar(self._canvas)
         self._canvas.tag_bind('cell', '<Button-1>', self._on_cell_clicked)
         
     def _reconfigure_calendar(self):

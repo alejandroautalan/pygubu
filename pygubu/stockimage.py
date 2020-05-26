@@ -1,20 +1,4 @@
 # encoding: utf8
-#
-# Copyright 2012-2013 Alejandro Autalán
-#
-# This program is free software: you can redistribute it and/or modify it
-# under the terms of the GNU General Public License version 3, as published
-# by the Free Software Foundation.
-#
-# This program is distributed in the hope that it will be useful, but
-# WITHOUT ANY WARRANTY; without even the implied warranties of
-# MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR
-# PURPOSE.  See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-
 from __future__ import unicode_literals
 
 __all__ = ['StockImage', 'StockImageException', 'TK_IMAGE_FORMATS']
@@ -87,27 +71,27 @@ When image is used, the class maintains it on memory for tkinter"""
         """Register a image file using key"""
 
         if key in cls._stock:
-            logger.info('Warning, replacing resource ' + str(key))
+            logger.info('Warning, replacing resource %s', key)
         cls._stock[key] = {'type': 'custom', 'filename': filename}
-        logger.info('%s registered as %s' % (filename, key))
+        logger.info('%s registered as %s', filename, key)
 
     @classmethod
     def register_from_data(cls, key, format, data):
         """Register a image data using key"""
 
         if key in cls._stock:
-            logger.info('Warning, replacing resource ' + str(key))
+            logger.info('Warning, replacing resource %s', key)
         cls._stock[key] = {'type': 'data', 'data': data, 'format': format }
-        logger.info('%s registered as %s' % ('data', key))
+        logger.info('%s registered as %s', 'data', key)
 
     @classmethod
     def register_created(cls, key, image):
         """Register an already created image using key"""
 
         if key in cls._stock:
-            logger.info('Warning, replacing resource ' + str(key))
+            logger.info('Warning, replacing resource {0}', key)
         cls._stock[key] = {'type': 'created', 'image': image}
-        logger.info('%s registered as %s' % ('data', key))
+        logger.info('%s registered as %s', 'data', key)
 
     @classmethod
     def is_registered(cls, key):
@@ -155,13 +139,12 @@ When image is used, the class maintains it on memory for tkinter"""
                     aux = Image.open(fpath)
                     img = ImageTk.PhotoImage(aux)
                 except Exception as e:
-                    msg = 'Error loading image {0}, try installing Pillow module.'
-                    msg = msg.format(fpath)
-                    logger.error(msg)
+                    msg = 'Error loading image %s, try installing Pillow module.'
+                    logger.error(msg, fpath)
                     img = cls.get('img_not_supported')
                 
         cls._cached[rkey] = img
-        logger.info('Loaded resource %s.' % rkey)
+        logger.info('Loaded resource %s.', rkey)
         return img
 
     @classmethod
@@ -171,7 +154,7 @@ When image is used, the class maintains it on memory for tkinter"""
         """
 
         if rkey in cls._cached:
-            logger.info('Resource %s is in cache.' % rkey)
+            logger.info('Resource %s is in cache.', rkey)
             return cls._cached[rkey]
         if rkey in cls._stock:
             img = cls._load_image(rkey)

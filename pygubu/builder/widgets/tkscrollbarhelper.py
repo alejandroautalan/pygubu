@@ -7,7 +7,7 @@ from pygubu.widgets.tkscrollbarhelper import TkScrollbarHelper
 
 class TKSBHelperBO(BuilderObject):
     class_ = TkScrollbarHelper
-    container = False
+    container = True
     maxchildren = 1
     allowed_children = ('tk.Entry', 'ttk.Entry', 'tk.Text', 'tk.Canvas',
                         'tk.Listbox', 'ttk.Treeview')
@@ -20,10 +20,25 @@ class TKSBHelperBO(BuilderObject):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     ro_properties = ('class_', 'scrolltype')
     allow_bindings = False
+    
+    def get_child_master(self):
+        return self.widget.container
 
     def add_child(self, bobject):
         cwidget = bobject.widget
         self.widget.add_child(cwidget)
+    
+    #
+    # Code generation methods
+    #
+    def code_child_master(self):
+        return '{0}.container'.format(self.code_identifier())
+    
+    def code_child_add(self, childid):
+        lines = []
+        line = '{0}.add_child({1})'.format(self.code_identifier(), childid)
+        lines.append(line)
+        return lines
 
 
 register_widget('pygubu.builder.widgets.tkscrollbarhelper', TKSBHelperBO,

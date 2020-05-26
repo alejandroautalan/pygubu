@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.0">
+  <object class="pygubu.builder.widgets.tkscrolledframe" id="scrolledframe">
+    <property name="scrolltype">both</property>
+    <property name="usemousewheel">true</property>
+    <layout manager="grid">
+      <property name="propagate">True</property>
+    </layout>
+    <child>
+      <object class="tk.Canvas" id="canvas_1">
+        <layout manager="pack">
+          <property name="propagate">True</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Canvas" id="canvas_2">
+        <layout manager="pack">
+          <property name="propagate">True</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Canvas" id="canvas_3">
+        <layout manager="pack">
+          <property name="propagate">True</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>

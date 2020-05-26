@@ -1,6 +1,6 @@
 # encoding: utf8
 from __future__ import unicode_literals
-from pygubu.builder.builderobject import *
+from pygubu.builder.builderobject import BuilderObject, register_widget
 from pygubu.widgets.scrollbarhelper import ScrollbarHelper
 
 
@@ -17,10 +17,24 @@ class TTKSBHelperBO(BuilderObject):
     ro_properties = ('class_', 'scrolltype')
     allow_bindings = False
 
-
+    def get_child_master(self):
+        return self.widget.container
+    
     def add_child(self, bobject):
         cwidget = bobject.widget
         self.widget.add_child(cwidget)
+    
+    #
+    # Code generation methods
+    #
+    def code_child_master(self):
+        return '{0}.container'.format(self.code_identifier())
+    
+    def code_child_add(self, childid):
+        lines = []
+        line = '{0}.add_child({1})'.format(self.code_identifier(), childid)
+        lines.append(line)
+        return lines
 
 
 register_widget('pygubu.builder.widgets.scrollbarhelper', TTKSBHelperBO,
