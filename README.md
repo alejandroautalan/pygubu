@@ -25,8 +25,8 @@ Usage
 
 Since version 0.10 the project was splitted in two main modules:
 
-- The pygubu core (this project), that load and build user interfaces defined in xml.
-- The interface editor (pygubu-designer), that helps you create the xml definition graphically
+- The **pygubu core** (this project), that load and build user interfaces defined in xml.
+- The **interface editor** [pygubu-designer](https://github.com/alejandroautalan/pygubu-designer), that helps you create the xml definition graphically
 
 Start creating your tkinter application xml UI definition using the pygubu-designer editor.
 
