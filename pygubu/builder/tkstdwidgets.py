@@ -88,7 +88,7 @@ class TKToplevel(BuilderObject):
         elif pname in ('maxsize', 'minsize'):
             if '|' in value:
                 w, h = value.split('|')
-                line = '{0}{1}({2}, {3})'.format(targetid, pname, w, h)
+                line = '{0}.{1}({2}, {3})'.format(targetid, pname, w, h)
                 code_bag[pname] = (line, )
         else:
             super(TKToplevel, self)._code_set_property(targetid, pname,
