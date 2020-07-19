@@ -16,6 +16,24 @@ class PathChooserInput(ttk.Frame):
     
     Generates <<PathChooserPathChanged>> event when the path is changed.
     
+    Dialog options:
+      initialdir: str
+      filetypes: iterable
+      title: str
+      mustexist: str
+    
+    Usage Example:
+        # Choose File:
+        pcifile = PathChooserInput(framex)
+        pcifile.config(initialdir='/home', title='Choose a file:', type='file')
+        pcifile.config(filetypes=[('text files-', '.txt'), ('uifiles', '.ui')])
+        pcifile.pack(fill='x', side='top')
+        
+        # Choose directory:
+        pcidir = PathChooserInput(framex)
+        pcidir.config(initialdir='/usr/local', mustexist='true',
+                      title='Choose a directory:', type='directory')
+        pcidir.pack(fill='x', side='top')
     """
 
     FILE = 'file'
@@ -26,6 +44,12 @@ class PathChooserInput(ttk.Frame):
         self._choose = self.FILE
         self._oldvalue = ''
         self._state = 'normal'
+        self._fdoptions = {
+            'filetypes': tuple(),
+            'initialdir': None,
+            'mustexist': False,
+            'title': None,
+            }
         # subwidgets
         self.entry = o = ttk.Entry(self, state=self._state)
         o.grid(row=0, column=0, sticky='ew')
@@ -72,6 +96,11 @@ class PathChooserInput(ttk.Frame):
             else:
                 self.folder_button.config(state=value)
             del args[key]
+        # dialog options
+        for key in tuple(args.keys()):
+            if key in self._fdoptions:
+                self._fdoptions[key] = args[key]
+                args.pop(key)
         ttk.Frame.configure(self, args)
 
     config = configure
@@ -92,6 +121,9 @@ class PathChooserInput(ttk.Frame):
         option = 'state'
         if key == option:
             return self.entry.cget(option)
+        # dialog options
+        if key in self._fdoptions:
+            return self._fdoptions[key]
         return ttk.Frame.cget(self, key)
 
     __getitem__ = cget
@@ -117,10 +149,15 @@ class PathChooserInput(ttk.Frame):
 
     def __on_folder_btn_pressed(self):
         fname = None
+        fdoptions = self._fdoptions.copy()
+        if fdoptions['initialdir'] is None:
+            fdoptions['initialdir'] = self.cget('path')
         if self._choose == self.FILE:
-            fname = filedialog.askopenfilename(initialdir=self.cget('path'))
+            fdoptions.pop('mustexist')
+            fname = filedialog.askopenfilename(**fdoptions)
         else:
-            fname = filedialog.askdirectory(initialdir=self.cget('path'))
+            fdoptions.pop('filetypes')
+            fname = filedialog.askdirectory(**fdoptions)
         if fname:
             self.configure(path=fname)
 
