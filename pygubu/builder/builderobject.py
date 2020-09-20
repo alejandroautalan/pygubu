@@ -295,8 +295,8 @@ class BuilderObject(object):
     # Code generation methods
     #
     def code_realize(self, boparent, code_identifier=None):
-        if self._code_identifier is None:
-            self._code_identifier = self.wmeta.identifier
+        if code_identifier is not None:
+            self._code_identifier = code_identifier
         lines = []
         master = boparent.code_child_master()
         init_args = self._get_init_args()
