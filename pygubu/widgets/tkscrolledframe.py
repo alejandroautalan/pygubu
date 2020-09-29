@@ -25,10 +25,11 @@ class TkScrolledFrame(tk.Frame):
         #super(ScrolledFrameBase, self).__init__(master, **kw)
         self._framecls.__init__(self, master, **kw)
 
-        self._clipper = self._framecls(self, width=200, height=200)
+        self._container = self._framecls(self, width=200, height=200)
+        self._clipper = self._framecls(self._container, width=200, height=200)
         self.innerframe = innerframe = self._framecls(self._clipper)
-        self.vsb = vsb = self._sbarcls(self)
-        self.hsb = hsb = self._sbarcls(self, orient="horizontal")
+        self.vsb = vsb = self._sbarcls(self._container)
+        self.hsb = hsb = self._sbarcls(self._container, orient="horizontal")
 
         # variables
         self.hsbOn = 0
@@ -48,11 +49,13 @@ class TkScrolledFrame(tk.Frame):
         self.hsb.config(command=self.xview)
 
         #grid
+        self._container.pack(expand=True, fill='both')
         self._clipper.grid(row=0, column=0, sticky=tk.NSEW)
         #self.vsb.grid(row=0, column=1, sticky=tk.NS)
         #self.hsb.grid(row=1, column=0, sticky=tk.EW)
-        self.rowconfigure(0, weight=1)
-        self.columnconfigure(0, weight=1)
+        
+        self._container.rowconfigure(0, weight=1)
+        self._container.columnconfigure(0, weight=1)
 
         # Whenever the clipping window or scrolled frame change size,
         # update the scrollbars.

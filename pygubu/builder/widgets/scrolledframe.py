@@ -33,9 +33,9 @@ class TTKScrolledFrameBO(BuilderObject):
         else:
             super(TTKScrolledFrameBO, self)._set_property(target_widget, pname, value)
     
-    def layout(self, target=None, configure_gridrc=True):
-        super(TTKScrolledFrameBO, self).layout(target, False)
-        self._gridrc_config(self.widget.innerframe)
+    #def layout(self, target=None, configure_gridrc=True):
+    #    super(TTKScrolledFrameBO, self).layout(target, False)
+    #    self._gridrc_config(self.widget.innerframe)
     
     #
     # Code generation methods
