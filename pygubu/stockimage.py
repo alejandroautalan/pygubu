@@ -18,10 +18,20 @@ class StockImageException(Exception):
     pass
 
 
-TK_IMAGE_FORMATS = ('.gif', '.pgm', '.ppm')
+BITMAP_TEMPLATE = '@{0}'
+TK_BITMAP_FORMATS = ['.xbm']
+TK_PHOTO_FORMATS = ['.gif', '.pgm', '.ppm']
+
+
+if os.name == 'nt':
+    TK_BITMAP_FORMATS.append('.ico')
+    BITMAP_TEMPLATE = '{0}'
 
 if tk.TkVersion >= 8.6:
-    TK_IMAGE_FORMATS = ('.png',) + TK_IMAGE_FORMATS
+    TK_PHOTO_FORMATS.append('.png')
+
+
+TK_IMAGE_FORMATS = TK_PHOTO_FORMATS + TK_BITMAP_FORMATS
 
 
 _img_notsupported = '''\
@@ -118,7 +128,7 @@ When image is used, the class maintains it on memory for tkinter"""
     @classmethod
     def _load_image(cls, rkey):
         """Load image from file or return the cached instance."""
-
+        
         v = cls._stock[rkey]
         img = None
         itype = v['type']
@@ -131,8 +141,12 @@ When image is used, the class maintains it on memory for tkinter"""
             fpath = v['filename']
             fname = os.path.basename(fpath)
             name, file_ext = os.path.splitext(fname)
-            if file_ext in cls._formats:
+            file_ext = str(file_ext).lower()
+            
+            if file_ext in TK_PHOTO_FORMATS:
                 img = tk.PhotoImage(file=fpath)
+            elif file_ext in TK_BITMAP_FORMATS:
+                img = tk.BitmapImage(file=fpath)
             else:
                 try:
                     from PIL import Image, ImageTk
@@ -161,3 +175,21 @@ When image is used, the class maintains it on memory for tkinter"""
             return img
         else:
             raise StockImageException('StockImage: %s not registered.' % rkey)
+    
+    @classmethod
+    def as_iconbitmap(cls, rkey):
+        """Get image path for use in iconbitmap property
+        """
+        img = None
+        if rkey in cls._stock:
+            data = cls._stock[rkey]
+            if data['type'] not in ('stock', 'data', 'image'):
+                fpath = data['filename']
+                fname = os.path.basename(fpath)
+                name, file_ext = os.path.splitext(fname)
+                file_ext = str(file_ext).lower()
+                
+                if file_ext in TK_BITMAP_FORMATS:
+                    img = BITMAP_TEMPLATE.format(fpath)
+        return img
+                

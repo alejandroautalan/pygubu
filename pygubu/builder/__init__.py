@@ -43,19 +43,35 @@ class Builder(object):
         """Return tk image corresponding to name which is taken form path."""
         image = ''
         name = os.path.basename(path)
-        if not StockImage.is_registered(name):
-            ipath = self.__find_image(path)
-            if ipath is not None:
-                StockImage.register(name, ipath)
-            else:
-                msg = "Image '%s' not found in resource paths."
-                logger.warning(msg, name)
+        self.__load_image(path)
         try:
             image = StockImage.get(name)
         except StockImageException:
             # TODO: notify something here.
             pass
         return image
+    
+    def get_iconbitmap(self, path):
+        """Return path to use as iconbitmap property."""
+        image = None
+        name = os.path.basename(path)
+        self.__load_image(path)
+        try:
+            image = StockImage.as_iconbitmap(name)
+        except StockImageException:
+            # TODO: notify something here.
+            pass
+        return image
+    
+    def __load_image(self, path):
+        name = os.path.basename(path)
+        if not StockImage.is_registered(name):
+            ipath = self.__find_image(path)
+            if ipath is not None:
+                StockImage.register(name, ipath)
+            else:
+                msg = "Image '%s' not found in resource paths."
+                logger.warning(msg, name)        
 
     def __find_image(self, relpath):
         image_path = None
@@ -241,6 +257,9 @@ class Builder(object):
         raise NotImplementedError()
     
     def code_create_image(self, filename):
+        raise NotImplementedError()
+    
+    def code_create_iconbitmap(self, filename):
         raise NotImplementedError()
     
     def code_classname_for(self, bobject):

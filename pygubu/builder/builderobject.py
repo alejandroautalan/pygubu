@@ -108,7 +108,7 @@ class BuilderObject(object):
     command_properties = tuple()
     allow_bindings = True
     tkvar_properties = ('listvariable', 'textvariable', 'variable')
-    tkimage_properties = ('image', 'selectimage')
+    tkimage_properties = ('image', 'selectimage', 'iconphoto')
     tkfont_properties = ('font',)
     virtual_events = tuple()
 
@@ -137,7 +137,9 @@ class BuilderObject(object):
         args = {}
         for rop in self.ro_properties:
             if rop in self.wmeta.properties:
-                args[rop] = self.wmeta.properties[rop]
+                pvalue = self._process_property_value(
+                    rop, self.wmeta.properties[rop])
+                args[rop] = pvalue
         return args
 
     def configure(self, target=None):
@@ -146,7 +148,11 @@ class BuilderObject(object):
         for pname, value in self.wmeta.properties.items():
             if (pname not in self.ro_properties and
                 pname not in self.command_properties):
-                self._set_property(target, pname, value)
+                pvalue = self._process_property_value(pname, value)
+                self._set_property(target, pname, pvalue)
+                
+    def _process_property_value(self, pname, value):
+        return value
 
     def _set_property(self, target_widget, pname, value):
         if pname not in self.__class__.properties:
@@ -167,6 +173,7 @@ class BuilderObject(object):
                     propvalue = tk.getboolean(value)
 
             try:
+                logger.debug('setting property %s = %s', pname, propvalue)
                 target_widget[pname] = propvalue
             except tk.TclError as e:
                 msg = "Failed to set property '{0}' on class '{1}'. TclError:"
@@ -180,6 +187,7 @@ class BuilderObject(object):
     
             # Check manager
             manager = self.wmeta.manager
+            logger.debug('Applying %s layout to %s', manager, self.wmeta.identifier)
             if manager == 'grid':
                 self._grid_layout(target)
             elif manager == 'pack':
@@ -190,6 +198,7 @@ class BuilderObject(object):
                 msg = 'Invalid layout manager: {0}'.format(manager)
                 raise Exception(msg)
         if configure_gridrc:
+            logger.debug('Configurying grid-rc')
             parent = target.nametowidget(target.winfo_parent())
             self._gridrc_config(parent)
 
