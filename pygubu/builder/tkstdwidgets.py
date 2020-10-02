@@ -29,7 +29,7 @@ class TKToplevel(BuilderObject):
     OPTIONS_SPECIFIC = ('background',  'class_', 'container',
                         'height', 'width')
     OPTIONS_CUSTOM = ('title', 'geometry', 'overrideredirect', 'minsize',
-                      'maxsize', 'resizable')
+                      'maxsize', 'resizable', 'iconbitmap', 'iconphoto')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     RESIZABLE = {
         'both': (True, True),
@@ -71,6 +71,12 @@ class TKToplevel(BuilderObject):
             if '|' in value:
                 w, h = value.split('|')
                 target_widget.minsize(w, h)
+        elif pname == 'iconphoto':
+            icon = self.builder.get_image(value)
+            target_widget.iconphoto(True, icon)
+        elif pname == 'iconbitmap':
+            icon = self.builder.get_iconbitmap(value)
+            target_widget.iconbitmap(icon)
         else:
             super(TKToplevel, self)._set_property(target_widget, pname, value)
     
@@ -78,7 +84,7 @@ class TKToplevel(BuilderObject):
     # Code generation methods
     #
     def _code_set_property(self, targetid, pname, value, code_bag):
-        if pname in ('geometry', 'title', 'overrideredirect'):
+        if pname in ('geometry', 'overrideredirect', 'title'):
             line = "{0}.{1}('{2}')".format(targetid, pname, value)
             code_bag[pname] = (line, )
         elif pname == 'resizable':
@@ -90,6 +96,14 @@ class TKToplevel(BuilderObject):
                 w, h = value.split('|')
                 line = '{0}.{1}({2}, {3})'.format(targetid, pname, w, h)
                 code_bag[pname] = (line, )
+        elif pname == 'iconbitmap':
+            bitmap = self.builder.code_create_iconbitmap(value)
+            line = "{0}.iconbitmap('{1}')".format(targetid, bitmap)
+            code_bag[pname] = (line, )
+        elif pname == 'iconphoto':
+            image = self.builder.code_create_image(value)
+            line = "{0}.iconphoto(True, {1})".format(targetid, image)
+            code_bag[pname] = (line, )            
         else:
             super(TKToplevel, self)._code_set_property(targetid, pname,
                                                    value, code_bag)
