@@ -12,3 +12,4 @@ pygubu.egg-info/
 myvenv*/
 pygubu-core.wpr
 pygubu-core.wpu
+*.kdev4
