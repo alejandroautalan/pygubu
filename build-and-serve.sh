@@ -1,3 +1,4 @@
+rm ../sharedfolder/*.whl
 python3 setup.py bdist_wheel
 cp dist/*.whl ../sharedfolder
 cd ..
