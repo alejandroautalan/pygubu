@@ -22,7 +22,7 @@ class TKToplevel(BuilderObject):
     container = True
     layout_required = False
     allowed_parents = ('root',)
-    maxchildren = 1
+    maxchildren = 2  # A menu and a frame
     OPTIONS_STANDARD = ('borderwidth', 'cursor', 'highlightbackground',
                         'highlightcolor', 'highlightthickness',
                         'padx', 'pady', 'relief', 'takefocus')
@@ -30,6 +30,7 @@ class TKToplevel(BuilderObject):
                         'height', 'width')
     OPTIONS_CUSTOM = ('title', 'geometry', 'overrideredirect', 'minsize',
                       'maxsize', 'resizable', 'iconbitmap', 'iconphoto')
+    ro_properties = ('container', )
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     RESIZABLE = {
         'both': (True, True),
@@ -121,7 +122,7 @@ class TKFrame(BuilderObject):
     class_ = tk.Frame
     container = True
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
-    ro_properties = ('class_',)
+    ro_properties = ('class_', 'container')
 
 register_widget('tk.Frame', TKFrame, 'Frame', ('Containers', 'tk'))
 
@@ -473,7 +474,8 @@ register_widget('tk.Canvas', TKCanvas,
 
 class TKMenu(BuilderObject):
     layout_required = False
-    allowed_parents = ('root', 'tk.Menubutton', 'ttk.Menubutton')
+    allowed_parents = ('root', 'tk.Menubutton', 'ttk.Menubutton',
+                       'pygubu.builder.widgets.toplevelmenu')
     allowed_children = (
         'tk.Menuitem.Submenu', 'tk.Menuitem.Checkbutton',
         'tk.Menuitem.Command', 'tk.Menuitem.Radiobutton',
@@ -492,7 +494,8 @@ class TKMenu(BuilderObject):
     def layout(self):
         pass
 
-register_widget('tk.Menu', TKMenu, 'Menu', ('Menu', 'Containers', 'tk', 'ttk'))
+register_widget('tk.Menu', TKMenu, 'Menu', ('Menu', 'tk', 'ttk'))
+
 
 #
 # Helpers for Standard tk widgets
@@ -829,3 +832,45 @@ class TKLabelwidgetBO(BuilderObject):
 
 register_widget('pygubu.builder.widgets.Labelwidget', TKLabelwidgetBO,
                 'Labelwidget', ('Pygubu Helpers', 'tk', 'ttk'))
+
+
+
+class ToplevelMenuHelperBO(BuilderObject):
+    class_ = None
+    container = True
+    allowed_parents = ('tk.Toplevel',)
+    maxchildren = 1
+    layout_required = False
+    allow_bindings = False
+
+    def realize(self, parent):
+        self.widget = parent.get_child_master()
+        return self.widget
+
+    def add_child(self, bobject):
+        self.widget.configure(menu=bobject.widget)
+    
+    def layout(self, target=None, configure_gridrc=True):
+        pass
+    
+    #
+    # code generation functions
+    #
+    def code_realize(self, boparent, code_identifier=None):
+        self._code_identifier = boparent.code_child_master()
+        return tuple()
+    
+    def code_configure(self, targetid=None):
+        return tuple()
+    
+    def code_layout(self, targetid=None):
+        return tuple()
+    
+    def code_child_add(self, childid):
+        line = '{0}.configure(menu={1})'
+        line = line.format(self.code_child_master(), childid)
+        return (line,)
+
+
+register_widget('pygubu.builder.widgets.toplevelmenu', ToplevelMenuHelperBO,
+                'ToplevelMenu', ('Menu', 'Pygubu Helpers', 'tk', 'ttk'))
