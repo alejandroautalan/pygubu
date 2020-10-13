@@ -11,6 +11,7 @@ class CalendarFrameBuilder(BuilderObject):
     OPTIONS_CUSTOM = ('firstweekday', 'year', 'month',
                       'calendarfg', 'calendarbg', 'headerfg', 'headerbg',
                       'selectbg', 'selectfg', 'state', 'markbg', 'markfg')
+    ro_properties = TTKFrame.ro_properties
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     virtual_events = ('<<CalendarFrameDateSelected>>',)
 
