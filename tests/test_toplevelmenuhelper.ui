@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.0">
+  <object class="tk.Toplevel" id="toplevel">
+    <property name="geometry">320x240</property>
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <child>
+      <object class="ttk.Frame" id="fcontainer">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">true</property>
+          <property name="propagate">True</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="label_1">
+            <property name="text" translatable="yes">Toplevel Menu Helper Test</property>
+            <layout manager="pack">
+              <property name="propagate">True</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="pygubu.builder.widgets.toplevelmenu" id="topmenuhelper">
+        <child>
+          <object class="tk.Menu" id="topmenu">
+            <property name="tearoff">false</property>
+            <child>
+              <object class="tk.Menuitem.Submenu" id="submenu_1">
+                <property name="label" translatable="yes">Topmenu</property>
+                <property name="tearoff">false</property>
+                <child>
+                  <object class="tk.Menuitem.Command" id="command_1">
+                    <property name="command_id_arg">false</property>
+                    <property name="label" translatable="yes">command 1</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="tk.Menuitem.Command" id="command_2">
+                    <property name="command_id_arg">false</property>
+                    <property name="label" translatable="yes">command 2</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
