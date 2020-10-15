@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.0">
+  <object class="tk.Frame" id="mainframe">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout manager="grid">
+      <property name="propagate">True</property>
+    </layout>
+    <child>
+      <object class="ttk.Frame" id="frame_1">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="propagate">True</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="pygubu.builder.widgets.tkinterscrolledtext" id="scrolledtext_1">
+            <property name="height">10</property>
+            <property name="text" translatable="yes">scrolledtext_1</property>
+            <layout manager="pack">
+              <property name="propagate">True</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="frame_2">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="propagate">True</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="pygubu.builder.widgets.tkinterscrolledtext" id="tkinterscrolledtext_1">
+            <property name="height">10</property>
+            <property name="text" translatable="yes">tkinterscrolledtext_1</property>
+            <layout manager="grid">
+              <property name="propagate">True</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
