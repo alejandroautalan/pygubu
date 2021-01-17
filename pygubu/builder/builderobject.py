@@ -10,9 +10,9 @@ except:
     import Tkinter as tk
 
 __all__ = [
-    'BuilderObject', 'EntryBaseBO', 'PanedWindowBO', 'PanedWindowPaneBO',
-    'WidgetDescription', 'CLASS_MAP', 'CUSTOM_PROPERTIES',
-    'register_widget', 'register_property']
+    'BuilderObject', 'EntryBaseBO', 'ButtonBaseBO', 'PanedWindowBO',
+    'PanedWindowPaneBO', 'WidgetDescription', 'CLASS_MAP',
+    'CUSTOM_PROPERTIES', 'register_widget', 'register_property']
 
 logger = logging.getLogger(__name__)
 
@@ -338,7 +338,7 @@ class BuilderObject(object):
         code_bag, kwproperties, complex_properties = \
             self._code_process_properties(self.wmeta.properties, targetid)
         lines = []
-        prop_stmt = "{0}.config({1})"
+        prop_stmt = "{0}.configure({1})"
         arg_stmt = "{0}={1}"
         for g in grouper(sorted(kwproperties), 4):
             args_bag = []
@@ -468,11 +468,14 @@ class BuilderObject(object):
                     logger.warning(msg, self.wmeta.identifier, cmd)
         lines = []
         for cmd, cmd_name in commands.items():
-            callback = self.builder.code_create_callback(cmd_name, 'command')
+            callback = self._code_define_callback(cmd, cmd_name)
             cmd_code = self._code_connect_command(cmd, callback)
             if cmd_code:
                 lines.extend(cmd_code)
         return lines
+    
+    def _code_define_callback(self, cmdprop, cmdname):
+        return self.builder.code_create_callback(cmdname, 'command')
     
     def _code_connect_command(self, cmd, cbname):
         target = self.code_identifier()
@@ -535,6 +538,51 @@ class EntryBaseBO(BuilderObject):
         else:
             super(EntryBaseBO, self)._code_set_property(targetid, pname,
                                                         value, code_bag)
+
+class ButtonBaseBO(BuilderObject):
+    OPTIONS_CUSTOM = ('idtocommand', )
+    
+    def _set_property(self, target_widget, pname, value):
+        if pname != 'idtocommand':
+            super(ButtonBaseBO, self)._set_property(target_widget, pname, value)
+    
+    def _code_set_property(self, targetid, pname, value, code_bag):
+        if pname != 'idtocommand':
+            super(ButtonBaseBO, self)._code_set_property(targetid, pname, value, code_bag)
+    
+    def _pass_widgetid_to_callback(self):
+        include_id = self.wmeta.properties.get('idtocommand', 'false').lower()
+        return include_id == 'true'
+        
+    def _create_callback(self, cpname, callback):
+        command = callback
+        if self._pass_widgetid_to_callback():
+            def button_callback(button_id=self.wmeta.identifier):
+                callback(button_id)
+            command = button_callback
+        return command
+    
+    # CODE generation methods:
+     
+    def _code_define_callback(self, cmdprop, cmdname):
+        args = None
+        if self._pass_widgetid_to_callback():
+            args = ('widgetid',)
+        return self.builder.code_create_callback(cmdname, 'command', args)
+
+    def _code_connect_command(self, cmd, cbname):
+        lines = []
+        target = self.code_identifier()
+        if self._pass_widgetid_to_callback():
+            newcb = '_wcmd'
+            wid = self.wmeta.identifier
+            line = '{0} = lambda widgetid="{1}": {2}(widgetid)'
+            line = line.format(newcb, wid, cbname)
+            cbname = newcb
+            lines.append(line)
+        line = '{0}.configure({1}={2})'.format(target, cmd, cbname)
+        lines.append(line)
+        return lines
 
 
 class PanedWindowBO(BuilderObject):

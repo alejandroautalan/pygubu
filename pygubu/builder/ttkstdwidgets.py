@@ -48,42 +48,45 @@ class TTKLabel(TTKWidgetBO):
 register_widget('ttk.Label', TTKLabel, 'Label', ('Control & Display', 'ttk'))
 
 
-class TTKButton(TTKWidgetBO):
+class TTKButton(ButtonBaseBO, TTKWidgetBO):
     OPTIONS_STANDARD = (TTKWidgetBO.OPTIONS_STANDARD +
                         TTKWidgetBO.OPTIONS_LABEL +
                         TTKWidgetBO.OPTIONS_COMPATIBILITY)
     OPTIONS_SPECIFIC = ('command', 'default')
     class_ = ttk.Button
     container = False
-    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
+                    + ButtonBaseBO.OPTIONS_CUSTOM
     command_properties = ('command',)
 
 register_widget('ttk.Button', TTKButton,
                 'Button', ('Control & Display', 'ttk'))
 
 
-class TTKCheckbutton(TTKWidgetBO):
+class TTKCheckbutton(ButtonBaseBO, TTKWidgetBO):
     OPTIONS_STANDARD = (TTKWidgetBO.OPTIONS_STANDARD +
                         TTKWidgetBO.OPTIONS_LABEL +
                         TTKWidgetBO.OPTIONS_COMPATIBILITY)
     OPTIONS_SPECIFIC = ('command', 'offvalue', 'onvalue', 'variable')
     class_ = ttk.Checkbutton
     container = False
-    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
+                    + ButtonBaseBO.OPTIONS_CUSTOM
     command_properties = ('command',)
 
 register_widget('ttk.Checkbutton', TTKCheckbutton,
                 'Checkbutton', ('Control & Display', 'ttk'))
 
 
-class TTKRadiobutton(TTKWidgetBO):
+class TTKRadiobutton(ButtonBaseBO, TTKWidgetBO):
     OPTIONS_STANDARD = (TTKWidgetBO.OPTIONS_STANDARD +
                         TTKWidgetBO.OPTIONS_LABEL +
                         TTKWidgetBO.OPTIONS_COMPATIBILITY)
     OPTIONS_SPECIFIC = ('command', 'value', 'variable')
     class_ = ttk.Radiobutton
     container = False
-    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
+                    + ButtonBaseBO.OPTIONS_CUSTOM
     ro_properties = ('class_',)
     command_properties = ('command',)
 
