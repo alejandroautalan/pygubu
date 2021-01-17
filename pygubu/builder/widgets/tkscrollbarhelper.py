@@ -39,6 +39,12 @@ class TKSBHelperBO(BuilderObject):
         line = '{0}.add_child({1})'.format(self.code_identifier(), childid)
         lines.append(line)
         return lines
+    
+    def _code_set_property(self, targetid, pname, value, code_bag):
+        if pname == 'usemousewheel':
+            code_bag[pname] = '{0}'.format(value)
+        else:
+            super(TKSBHelperBO, self)._code_set_property(targetid, pname, value, code_bag)
 
 
 register_widget('pygubu.builder.widgets.tkscrollbarhelper', TKSBHelperBO,
