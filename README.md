@@ -30,7 +30,7 @@ Since version 0.10 the project was splitted in two main modules:
 
 Start creating your tkinter application xml UI definition using the pygubu-designer editor.
 
-The following is a UI definition example called [helloworld.ui](examples/helloworld/helloworld.ui):
+The following is a UI definition example called [helloworld.ui](https://github.com/alejandroautalan/pygubu-designer/blob/master/examples/helloworld/helloworld.ui):
 
 
 ```xml
@@ -81,7 +81,7 @@ The following is a UI definition example called [helloworld.ui](examples/hellowo
 </interface>
 ```
 
-Then, you should create your _application script_ as shown below ([helloworld.py](examples/helloworld/helloworld.py)):
+Then, you should create your _application script_ as shown below ([helloworld.py](https://github.com/alejandroautalan/pygubu-designer/blob/master/examples/helloworld/helloworld.py)):
 
 ```python
 # helloworld.py
