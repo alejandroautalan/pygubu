@@ -449,9 +449,13 @@ class TTKTreeviewColBO(TTKWidgetBO):
         col_props.pop('command', '')
         hprops = {
             'anchor': col_props.pop('heading_anchor', tk.W),
-            'image': col_props.pop('image', ''),
             'text': col_props.pop('text', '')
         }
+        # Only add image if has value. Fix code generation
+        imgvalue = col_props.pop('image', None)
+        if imgvalue:
+            hprops['image'] = imgvalue
+        
         parent.set_heading(column_id, hprops)
 
         #configure column properties
