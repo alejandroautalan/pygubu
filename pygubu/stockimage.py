@@ -132,6 +132,7 @@ When image is used, the class maintains it on memory for tkinter"""
         v = cls._stock[rkey]
         img = None
         itype = v['type']
+        from_ = itype
         if itype in ('stock', 'data'):
             img = tk.PhotoImage(format=v['format'], data=v['data'])
         elif itype == 'created':
@@ -139,6 +140,7 @@ When image is used, the class maintains it on memory for tkinter"""
         else:
             # custom
             fpath = v['filename']
+            from_ = fpath
             fname = os.path.basename(fpath)
             name, file_ext = os.path.splitext(fname)
             file_ext = str(file_ext).lower()
@@ -158,7 +160,7 @@ When image is used, the class maintains it on memory for tkinter"""
                     img = cls.get('img_not_supported')
                 
         cls._cached[rkey] = img
-        logger.info('Loaded resource %s.', rkey)
+        logger.info('Loaded resource %s from %s.', rkey, from_)
         return img
 
     @classmethod
