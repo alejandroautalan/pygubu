@@ -693,16 +693,17 @@ class TKMenuitemSubmenu(TKMenuitem):
                         'hidemargin', 'image', 'label',
                         'tearoff', 'tearoffcommand',
                         'underline', 'postcommand')
-    OPTIONS_CUSTOM = tuple()
+    OPTIONS_CUSTOM = ('specialmenu', )
     properties = tuple(set(OPTIONS_STANDARD + OPTIONS_SPECIFIC +
                            OPTIONS_CUSTOM))
+    #ro_properties = ('specialmenu', )
     command_properties = ('postcommand', 'tearoffcommand')
 
     def realize(self, parent):
         master = parent.get_child_master()
         menu_properties = dict(
             (k, v) for k, v in self.wmeta.properties.items()
-            if k in TKMenu.properties)
+            if k in TKMenu.properties or k == 'specialmenu')
         self._setup_item_properties(menu_properties)
 
         item_properties = dict(
@@ -714,6 +715,13 @@ class TKMenuitemSubmenu(TKMenuitem):
         item_properties['menu'] = submenu
         master.add(tk.CASCADE, **item_properties)
         return self.widget
+    
+    def _setup_item_properties(self, itemprops):
+        super(TKMenuitemSubmenu, self)._setup_item_properties(itemprops)
+        pname = 'specialmenu'
+        if pname in itemprops:
+            specialmenu = itemprops.pop(pname)
+            itemprops['name'] = specialmenu
 
     def configure(self):
         pass
@@ -741,6 +749,8 @@ class TKMenuitemSubmenu(TKMenuitem):
         for pname, value in self.wmeta.properties.items():
             if pname in TKMenu.properties:
                 menuprop[pname] = value
+            if pname == 'specialmenu':
+                menuprop['name'] = value
         
         code_bag, kw_properties, complex_properties = \
             self._code_process_properties(menuprop,
