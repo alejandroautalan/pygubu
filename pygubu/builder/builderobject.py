@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 import logging
 import itertools
+import json
 from collections import namedtuple, defaultdict
 
 try:
@@ -10,8 +11,8 @@ except:
     import Tkinter as tk
 
 __all__ = [
-    'BuilderObject', 'EntryBaseBO', 'ButtonBaseBO', 'PanedWindowBO',
-    'PanedWindowPaneBO', 'WidgetDescription', 'CLASS_MAP',
+    'BuilderObject', 'EntryBaseBO', 'PanedWindowBO',
+    'PanedWindowPaneBO', 'WidgetDescription', 'CLASS_MAP', 'CB_TYPES',
     'CUSTOM_PROPERTIES', 'register_widget', 'register_property']
 
 logger = logging.getLogger(__name__)
@@ -87,6 +88,16 @@ def register_property(name, description):
         CUSTOM_PROPERTIES[name] = description
         logger.debug('Registered property %s', name)
 
+
+class CB_TYPES:
+    '''Callback types'''
+    SIMPLE = 'simple'
+    WITH_WID = 'with_wid'
+    ENTRY_VALIDATE = 'entry_validate'
+    SCROLL = 'scroll'
+    SCROLLSET = 'scrollset'
+    SCALE = 'scale'
+    BIND_EVENT = 'bind_event'
 
 #
 # Base class
@@ -236,39 +247,55 @@ class BuilderObject(object):
     def add_child(self, bobject):
         pass
 
-    def _create_callback(self, cpname, command):
-        return command
+    def _create_callback(self, cmd, command):
+        callback = command
+        cmd_type = cmd['cbtype']
+        if cmd_type == CB_TYPES.WITH_WID:
+            def widget_callback(button_id=self.wmeta.identifier):
+                command(button_id)
+            callback = widget_callback
+        if cmd_type == CB_TYPES.ENTRY_VALIDATE:
+            args = cmd['args']
+            if args:
+                args = args.split(' ')
+                callback = (self.widget.register(command),) + tuple(args)
+            else:
+                callback = self.widget.register(command)
+        return callback
 
-    def _connect_command(self, cpname, callback):
-        prop = {cpname: callback}
+    def _connect_command(self, cmd_pname, callback):
+        prop = {cmd_pname: callback}
         self.widget.configure(**prop)
 
     def connect_commands(self, cmd_bag):
         notconnected = []
         commands = {}
-        for cmd in self.command_properties:
-            cmd_name = self.wmeta.properties.get(cmd, None)
-            if cmd_name is not None:
-                cmd_name = cmd_name.strip()
+        for cmd_pname in self.command_properties:
+            cmd = self.wmeta.properties.get(cmd_pname, None)
+            if cmd is not None:
+                cmd = json.loads(cmd)
+                cmd_name = (cmd['value']).strip()
                 if cmd_name:
-                    commands[cmd]= cmd_name
+                    commands[cmd_pname]= cmd
                 else:
-                    msg = "%s: invalid callback name for property '%s'."
-                    logger.warning(msg, self.wmeta.identifier, cmd)
+                    msg = "%s: invalid value for property '%s'."
+                    logger.warning(msg, self.wmeta.identifier, cmd_pname)
         
         if isinstance(cmd_bag, dict):
-            for cmd, cmd_name in commands.items():
+            for cmd_pname, cmd in commands.items():
+                cmd_name = cmd['value']
                 if cmd_name in cmd_bag:
                     callback = self._create_callback(cmd, cmd_bag[cmd_name])
-                    self._connect_command(cmd, callback)
+                    self._connect_command(cmd_pname, callback)
                 else:
                     notconnected.append(cmd_name)
         else:
-            for cmd, cmd_name in commands.items():
+            for cmd_pname, cmd in commands.items():
+                cmd_name = cmd['value']
                 if hasattr(cmd_bag, cmd_name):
                     callback = self._create_callback(
                         cmd, getattr(cmd_bag, cmd_name))
-                    self._connect_command(cmd, callback)
+                    self._connect_command(cmd_pname, callback)
                 else:
                     notconnected.append(cmd_name)
         if notconnected:
@@ -447,7 +474,8 @@ class BuilderObject(object):
                 propvalue = self.builder.code_create_variable(value, varvalue)
             elif pname in self.command_properties:
                 cmd_name = value.strip()
-                callback = self.builder.code_create_callback(cmd_name, 'command')
+                callback = self.builder.code_create_callback(
+                    targetid, cmd_name, CB_TYPES.SIMPLE)
                 propvalue = callback
             elif pname in self.tkimage_properties:
                 propvalue = self.builder.code_create_image(value)
@@ -457,25 +485,40 @@ class BuilderObject(object):
     
     def code_connect_commands(self):
         commands = {}
-        for cmd in self.command_properties:
-            cmd_name = self.wmeta.properties.get(cmd, None)
-            if cmd_name is not None:
-                cmd_name = cmd_name.strip()
+        for cmd_pname in self.command_properties:
+            cmd = self.wmeta.properties.get(cmd_pname, None)
+            if cmd is not None:
+                print('on_code_connect_commands', cmd)
+                cmd = json.loads(cmd)
+                cmd_name = (cmd['value']).strip()
                 if cmd_name:
-                    commands[cmd]= cmd_name
+                    commands[cmd_pname]= cmd
                 else:
                     msg = "%s: invalid callback name for property '%s'."
-                    logger.warning(msg, self.wmeta.identifier, cmd)
+                    logger.warning(msg, self.wmeta.identifier, cmd_pname)
         lines = []
-        for cmd, cmd_name in commands.items():
-            callback = self._code_define_callback(cmd, cmd_name)
-            cmd_code = self._code_connect_command(cmd, callback)
+        for cmd_pname, cmd in commands.items():
+            callback = self._code_define_callback(cmd_pname, cmd)
+            cmd_code = self._code_connect_command(cmd_pname, callback)
             if cmd_code:
                 lines.extend(cmd_code)
         return lines
     
-    def _code_define_callback(self, cmdprop, cmdname):
-        return self.builder.code_create_callback(cmdname, 'command')
+    def _code_define_callback(self, cmd_pname, cmd):
+        cmdname = cmd['value']
+        cmdtype = cmd['cbtype']
+        print('_code_define_callback', cmd)
+        wid = self.code_identifier()
+        args = None
+        if cmdtype == CB_TYPES.WITH_WID:
+            args = ('widget_id', )
+        if cmdtype == CB_TYPES.SCALE:
+            args = ('scale_value', )
+        if cmdtype == CB_TYPES.SCROLLSET:
+            args = ('first', 'last')
+        if cmdtype == CB_TYPES.SCROLL:
+            args = ('mode', 'value', 'units')
+        return self.builder.code_create_callback(wid, cmdname, cmdtype, args)
     
     def _code_connect_command(self, cmd, cbname):
         target = self.code_identifier()
@@ -486,7 +529,8 @@ class BuilderObject(object):
         lines = []
         target = self.code_identifier()
         for bind in self.wmeta.bindings:
-            cb_name = self.builder.code_create_callback(bind.handler, 'sequence')
+            cb_name = self.builder.code_create_callback(
+                target, bind.handler, CB_TYPES.BIND_EVENT)
             add_arg = '+' if bind.add else ''
             line = "{0}.bind('{1}', {2}, add='{3}')"
             line = line.format(target, bind.sequence, cb_name, add_arg)
@@ -501,88 +545,37 @@ class EntryBaseBO(BuilderObject):
     """Base class for tk.Entry and ttk.Entry builder objects"""
     def _set_property(self, target_widget, pname, value):
         if pname == 'text':
+            wstate = str(target_widget['state'])
+            if wstate != 'normal':
+                # change state temporarily
+                target_widget['state'] = 'normal'
             target_widget.delete('0', tk.END)
             target_widget.insert('0', value)
-        elif pname in ('validatecommand_args', 'invalidcommand_args'):
-            pass
+            target_widget['state'] = wstate
         else:
             super(EntryBaseBO, self)._set_property(target_widget, pname, value)
-
-    def _create_callback(self, cpname, command):
-        callback = command
-        if cpname in ('validatecommand', 'invalidcommand'):
-            args = self.wmeta.properties.get(cpname + '_args', '')
-            if args:
-                args = args.split(' ')
-                callback = (self.widget.register(command),) + tuple(args)
-            else:
-                callback = self.widget.register(command)
-        return callback
     
     #
     # Code generation methods
     #
     def _code_set_property(self, targetid, pname, value, code_bag):
         if pname == 'text':
-            state_value = ''
-            if 'state' in self.wmeta.properties:
-                state_value = self.wmeta.properties['state']
             lines = [
                 "_text_ = '''{0}'''".format(value),
                 "{0}.delete('0', 'end')".format(targetid),
                 "{0}.insert('0', _text_)".format(targetid),
                 ]
+            if 'state' in self.wmeta.properties:
+                state_value = self.wmeta.properties['state']
+                if state_value != 'normal':
+                    line = "{0}['state'] = 'normal'".format(targetid)
+                    lines.insert(1, line)
+                    line = "{0}['state'] = '{1}'".format(targetid, state_value)
+                    lines.append(line)
             code_bag[pname] = lines
-        elif pname in ('validatecommand_args', 'invalidcommand_args'):
-            pass
         else:
             super(EntryBaseBO, self)._code_set_property(targetid, pname,
                                                         value, code_bag)
-
-class ButtonBaseBO(BuilderObject):
-    OPTIONS_CUSTOM = ('idtocommand', )
-    
-    def _set_property(self, target_widget, pname, value):
-        if pname != 'idtocommand':
-            super(ButtonBaseBO, self)._set_property(target_widget, pname, value)
-    
-    def _code_set_property(self, targetid, pname, value, code_bag):
-        if pname != 'idtocommand':
-            super(ButtonBaseBO, self)._code_set_property(targetid, pname, value, code_bag)
-    
-    def _pass_widgetid_to_callback(self):
-        include_id = self.wmeta.properties.get('idtocommand', 'false').lower()
-        return include_id == 'true'
-        
-    def _create_callback(self, cpname, callback):
-        command = callback
-        if self._pass_widgetid_to_callback():
-            def button_callback(button_id=self.wmeta.identifier):
-                callback(button_id)
-            command = button_callback
-        return command
-    
-    # CODE generation methods:
-     
-    def _code_define_callback(self, cmdprop, cmdname):
-        args = None
-        if self._pass_widgetid_to_callback():
-            args = ('widgetid',)
-        return self.builder.code_create_callback(cmdname, 'command', args)
-
-    def _code_connect_command(self, cmd, cbname):
-        lines = []
-        target = self.code_identifier()
-        if self._pass_widgetid_to_callback():
-            newcb = '_wcmd'
-            wid = self.wmeta.identifier
-            line = '{0} = lambda widgetid="{1}": {2}(widgetid)'
-            line = line.format(newcb, wid, cbname)
-            cbname = newcb
-            lines.append(line)
-        line = '{0}.configure({1}={2})'.format(target, cmd, cbname)
-        lines.append(line)
-        return lines
 
 
 class PanedWindowBO(BuilderObject):

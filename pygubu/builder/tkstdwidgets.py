@@ -8,7 +8,7 @@ except:
     import Tkinter as tk
 
 from .builderobject import (BuilderObject, register_widget, EntryBaseBO,
-        ButtonBaseBO, PanedWindowBO, PanedWindowPaneBO)
+        PanedWindowBO, PanedWindowPaneBO)
 
 logger = logging.getLogger(__name__)
 
@@ -172,7 +172,7 @@ class TKEntry(EntryBaseBO):
         'disabledbackground', 'disabledforeground', 'invalidcommand',
         'readonlybackground', 'show', 'state',
         'validate', 'validatecommand', 'width')
-    OPTIONS_CUSTOM = ('text', 'validatecommand_args', 'invalidcommand_args')
+    OPTIONS_CUSTOM = ('text',)
     class_ = tk.Entry
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
@@ -182,7 +182,7 @@ class TKEntry(EntryBaseBO):
 register_widget('tk.Entry', TKEntry, 'Entry', ('Control & Display', 'tk'))
 
 
-class TKButton(ButtonBaseBO):
+class TKButton(BuilderObject):
     class_ = tk.Button
     container = False
     OPTIONS_STANDARD = (
@@ -197,13 +197,13 @@ class TKButton(ButtonBaseBO):
         'command', 'default', 'height', 'overrelief',
         'state', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
-                    + ButtonBaseBO.OPTIONS_CUSTOM
+                    + BuilderObject.OPTIONS_CUSTOM
     command_properties = ('command',)
 
 register_widget('tk.Button', TKButton, 'Button', ('Control & Display', 'tk'))
 
 
-class TKCheckbutton(ButtonBaseBO):
+class TKCheckbutton(BuilderObject):
     class_ = tk.Checkbutton
     container = False
     OPTIONS_STANDARD = (
@@ -218,14 +218,14 @@ class TKCheckbutton(ButtonBaseBO):
         'offvalue', 'onvalue', 'overrelief', 'selectcolor', 'selectimage',
         'state', 'tristateimage', 'tristatevalue', 'variable', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
-                    + ButtonBaseBO.OPTIONS_CUSTOM
+                    + BuilderObject.OPTIONS_CUSTOM
     command_properties = ('command',)
 
 register_widget('tk.Checkbutton', TKCheckbutton,
                 'Checkbutton', ('Control & Display', 'tk'))
 
 
-class TKRadiobutton(ButtonBaseBO):
+class TKRadiobutton(BuilderObject):
     class_ = tk.Radiobutton
     container = False
     OPTIONS_STANDARD = (
@@ -241,7 +241,7 @@ class TKRadiobutton(ButtonBaseBO):
         'state', 'tristateimage', 'tristatevalue', 'value',
         'variable', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
-                    + ButtonBaseBO.OPTIONS_CUSTOM
+                    + BuilderObject.OPTIONS_CUSTOM
     command_properties = ('command',)
 
 register_widget('tk.Radiobutton', TKRadiobutton,
@@ -528,8 +528,7 @@ class TKMenuitem(BuilderObject):
                         'bitmap', 'compound', 'foreground',  'state')
     OPTIONS_SPECIFIC = ('accelerator', 'columnbreak', 'command',
                         'font', 'hidemargin', 'image', 'label', 'underline')
-    OPTIONS_CUSTOM = ('command_id_arg',)
-    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + BuilderObject.OPTIONS_CUSTOM
     command_properties = ('command',)
     allow_bindings = False
 
@@ -550,9 +549,6 @@ class TKMenuitem(BuilderObject):
         return self.widget
 
     def _setup_item_properties(self, itemprops):
-        pname = 'command_id_arg'
-        if pname in itemprops:
-            itemprops.pop(pname)
         for pname in itemprops:
             if pname == 'variable':
                 varname = itemprops[pname]
@@ -566,16 +562,6 @@ class TKMenuitem(BuilderObject):
 
     def layout(self):
         pass
-
-    def _create_callback(self, cpname, callback):
-        command = callback
-        include_id = self.wmeta.properties.get('command_id_arg', 'false')
-        include_id = include_id.lower()
-        if include_id != 'false':
-            def item_callback(item_id=self.wmeta.identifier):
-                callback(item_id)
-            command = item_callback
-        return command
 
     def _connect_command(self, cpname, callback):
         self.widget.entryconfigure(self.__index, command=callback)

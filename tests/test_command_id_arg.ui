@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.0">
+  <object class="ttk.Frame" id="mainwindow">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout manager="grid">
+      <property name="propagate">True</property>
+    </layout>
+    <child>
+      <object class="ttk.Menubutton" id="menubutton_1">
+        <property name="text" translatable="yes">menubutton_1</property>
+        <layout manager="pack">
+          <property name="propagate">True</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="tk.Menu" id="menu1">
+            <property name="tearoff">false</property>
+            <child>
+              <object class="tk.Menuitem.Command" id="menu_item_1">
+                <property name="command">menu_item_clicked</property>
+                <property name="command_id_arg">true</property>
+                <property name="label" translatable="yes">command1</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
