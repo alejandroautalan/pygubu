@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.1">
+  <object class="ttk.Frame" id="mainwindow">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout manager="grid">
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="ttk.Button" id="button1">
+        <property name="command" type="command" cbtype="simple">button1_clicked</property>
+        <property name="text" translatable="yes">button1</property>
+        <layout manager="pack">
+          <property name="propagate">True</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Button" id="button2">
+        <property name="command" type="command" cbtype="with_wid">on_button_clicked</property>
+        <property name="text" translatable="yes">button2</property>
+        <layout manager="pack">
+          <property name="propagate">True</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>

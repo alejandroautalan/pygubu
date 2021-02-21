@@ -48,7 +48,7 @@ class TTKLabel(TTKWidgetBO):
 register_widget('ttk.Label', TTKLabel, 'Label', ('Control & Display', 'ttk'))
 
 
-class TTKButton(ButtonBaseBO, TTKWidgetBO):
+class TTKButton(TTKWidgetBO):
     OPTIONS_STANDARD = (TTKWidgetBO.OPTIONS_STANDARD +
                         TTKWidgetBO.OPTIONS_LABEL +
                         TTKWidgetBO.OPTIONS_COMPATIBILITY)
@@ -56,14 +56,14 @@ class TTKButton(ButtonBaseBO, TTKWidgetBO):
     class_ = ttk.Button
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
-                    + ButtonBaseBO.OPTIONS_CUSTOM
+                    + TTKWidgetBO.OPTIONS_CUSTOM
     command_properties = ('command',)
 
 register_widget('ttk.Button', TTKButton,
                 'Button', ('Control & Display', 'ttk'))
 
 
-class TTKCheckbutton(ButtonBaseBO, TTKWidgetBO):
+class TTKCheckbutton(TTKWidgetBO):
     OPTIONS_STANDARD = (TTKWidgetBO.OPTIONS_STANDARD +
                         TTKWidgetBO.OPTIONS_LABEL +
                         TTKWidgetBO.OPTIONS_COMPATIBILITY)
@@ -71,14 +71,14 @@ class TTKCheckbutton(ButtonBaseBO, TTKWidgetBO):
     class_ = ttk.Checkbutton
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
-                    + ButtonBaseBO.OPTIONS_CUSTOM
+                    + TTKWidgetBO.OPTIONS_CUSTOM
     command_properties = ('command',)
 
 register_widget('ttk.Checkbutton', TTKCheckbutton,
                 'Checkbutton', ('Control & Display', 'ttk'))
 
 
-class TTKRadiobutton(ButtonBaseBO, TTKWidgetBO):
+class TTKRadiobutton(TTKWidgetBO):
     OPTIONS_STANDARD = (TTKWidgetBO.OPTIONS_STANDARD +
                         TTKWidgetBO.OPTIONS_LABEL +
                         TTKWidgetBO.OPTIONS_COMPATIBILITY)
@@ -86,7 +86,7 @@ class TTKRadiobutton(ButtonBaseBO, TTKWidgetBO):
     class_ = ttk.Radiobutton
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
-                    + ButtonBaseBO.OPTIONS_CUSTOM
+                    + TTKWidgetBO.OPTIONS_CUSTOM
     ro_properties = ('class_',)
     command_properties = ('command',)
 
@@ -99,30 +99,12 @@ class TTKCombobox(TTKWidgetBO):
                         'postcommand', 'state', 'textvariable', 'values',
                         'width', 'validate', 'validatecommand',
                         'invalidcommand', 'xscrollcommand')
-    OPTIONS_CUSTOM = ('validatecommand_args', 'invalidcommand_args')
     class_ = ttk.Combobox
     container = False
     properties = (TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC +
-                  OPTIONS_CUSTOM)
+                  TTKWidgetBO.OPTIONS_CUSTOM)
     command_properties = ('postcommand', 'validatecommand',
                           'invalidcommand', 'xscrollcommand')
-
-    def _set_property(self, target_widget, pname, value):
-        if pname in ('validatecommand_args', 'invalidcommand_args'):
-            pass
-        else:
-            super(TTKCombobox, self)._set_property(target_widget, pname, value)
-
-    def _create_callback(self, cpname, command):
-        callback = command
-        if cpname in ('validatecommand', 'invalidcommand'):
-            args = self.wmeta.properties.get(cpname + '_args', '')
-            if args:
-                args = args.split(' ')
-                callback = (self.widget.register(command),) + tuple(args)
-            else:
-                callback = self.widget.register(command)
-        return callback
 
 register_widget('ttk.Combobox', TTKCombobox, 'Combobox',
                 ('Control & Display', 'ttk'))
@@ -154,7 +136,7 @@ class TTKEntry(TTKWidgetBO, EntryBaseBO):
     OPTIONS_SPECIFIC = ('exportselection', 'font', 'invalidcommand',
                         'justify', 'show', 'state', 'textvariable',
                         'validate', 'validatecommand', 'width')
-    OPTIONS_CUSTOM = ('text', 'validatecommand_args', 'invalidcommand_args')
+    OPTIONS_CUSTOM = ('text',)
     class_ = ttk.Entry
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM

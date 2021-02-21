@@ -1,5 +1,7 @@
+# encoding: UTF-8
 from __future__ import unicode_literals, print_function
 import sys
+import json
 import operator
 import xml.etree.ElementTree as ET
 from pygubu.builder.builderobject import CLASS_MAP
@@ -22,21 +24,82 @@ def indent(elem, level=0):
         if level and (not elem.tail or not elem.tail.strip()):
             elem.tail = i
 
+try:
+    JSONDecodeError = json.decoder.JSONDecodeError
+except AttributeError:  # Python 2
+    JSONDecodeError = ValueError
+
 
 class UIDefinition(object):
     TRANSLATABLE_PROPERTIES = ['label', 'text', 'title']
+    TK_COMMAND_PROPERTIES =(
+        'command', 'validatecommand', 'invalidcommand', 'postcommand',
+        'xscrollcommand', 'yscrollcommand', 'tearoffcommand',
+    )
     
     def __init__(self, wmetaclass=None, translator=None):
         super(UIDefinition, self).__init__()
         self.tree = None
         self.root = None
-        self.version = ''
+        self._latest_version = '1.1'
+        self.version = self._latest_version
         self.author = ''
+        self._ignore_properties = (
+            'command_id_arg', 'idtocommand',
+            'validatecommand_args', 'invalidcommand_args',
+        )
         self.wmetaclass = wmetaclass
         if wmetaclass is None:
             self.wmetaclass = WidgetMeta
         self.translator = translator
         self.__create()
+    
+    def _prop_from_xml(self, pnode, element):
+        pname = pnode.get('name')
+        pvalue = pnode.text
+        
+        if pname in self._ignore_properties:
+            return (None, None)
+        
+        if self.translator is not None and pnode.get('translatable'):
+            pvalue = self.translator(pvalue)
+        
+        # if node has a type property, send value as a json string
+        jvalue = {}
+        if pnode.get('type'):
+            for attr, attrval in pnode.items():
+                jvalue[attr] = attrval
+            jvalue['value'] = pnode.text
+            pvalue = json.dumps(jvalue)
+        # Process old ui versions
+        if self.version < '1.1':
+            if pname in self.TK_COMMAND_PROPERTIES:
+                cmd = {
+                    'type': 'command',
+                    'value': pnode.text,
+                    'cbtype': 'simple',
+                    'args': '',
+                }
+                # get old format value
+                xpath = "./property[@name='{0}']"
+                for oldp in ('command_id_arg', 'idtocommand'):
+                    dpath = xpath.format(oldp)
+                    node = element.find(dpath)
+                    if node is not None:
+                        nvalue = node.text.lower()
+                        if nvalue == 'true':
+                            cmd['cbtype'] = 'with_wid'
+                
+                if pname in ('validatecommand', 'invalidcommand'):
+                    cmd['cbtype'] = 'entry_validate'
+                    # get old format args
+                    pargs = '{0}_args'.format(pname)
+                    dpath = xpath.format(pargs)
+                    node = element.find(dpath)
+                    if node is not None:
+                        cmd['args'] = node.text
+                pvalue = json.dumps(cmd)
+        return (pname, pvalue)
     
     def xmlnode_to_widget(self, element):
         elemid = element.get('id')
@@ -46,11 +109,10 @@ class UIDefinition(object):
         properties = element.findall('./property')
         pdict = {}
         for p in properties:
-            pvalue = p.text
-            if self.translator is not None and p.get('translatable'):
-                pvalue = self.translator(pvalue)
-            pdict[p.get('name')] = pvalue
-    
+            pname, pvalue = self._prop_from_xml(p, element)
+            if pname is not None:
+                pdict[pname] = pvalue
+        
         meta.properties = pdict
     
         # Bindings
@@ -123,6 +185,26 @@ class UIDefinition(object):
                 line = GridRCLine('col', cid, cpname, cpvalue)
                 meta.gridrc_properties.append(line)
         
+    def _prop_to_xml(self, pname, pvalue):
+        pnode = ET.Element('property')
+        pnode.set('name', pname)
+        pnode.text = pvalue
+        if pname in self.TRANSLATABLE_PROPERTIES:
+            pnode.set('translatable', 'yes')
+        # if pvalue is a json do special
+        try:
+            dv = json.loads(pvalue)
+            if isinstance(dv, dict):
+                if 'value' not in dv:
+                    raise Exception('Invalid json value for property')
+                for k, attrval in dv.items():
+                    if k != 'value':
+                        pnode.set(k, str(attrval))
+                pnode.text = dv['value']
+        except JSONDecodeError:
+            pass
+        
+        return pnode
     
     def widget_to_xmlnode(self, wmeta):
         '''Returns xml representation of widget'''
@@ -134,11 +216,7 @@ class UIDefinition(object):
     
         pkeys = sorted(wmeta.properties.keys())
         for pkey in pkeys:
-            pnode = ET.Element('property')
-            pnode.set('name', pkey)
-            pnode.text = wmeta.properties[pkey]
-            if pkey in self.TRANSLATABLE_PROPERTIES:
-                pnode.set('translatable', 'yes')
+            pnode = self._prop_to_xml(pkey, wmeta.properties[pkey])
             node.append(pnode)
     
         # bindings:
@@ -177,16 +255,20 @@ class UIDefinition(object):
         return node    
         
     def __create(self):
+        # Version 1.0: start of schema versioning, implements multiple layout managers
+        # Version 1.1: remove idtocommand and command_id_arg properties
         self.root = root = ET.Element('interface')
-        root.set('version', '1.0')
+        root.set('version', self._latest_version)
         if self.author:
             root.set('author', self.author)
         self.tree = ET.ElementTree(root)
     
-    def _tree_load(self, tree):
+    def _tree_load(self, tree, default_version=None):
+        if default_version is None:
+            default_version = ''
         self.tree = tree
         self.root = tree.getroot()
-        self.version = self.root.get('version', '')
+        self.version = self.root.get('version', default_version)
         self.author = self.root.get('author', '')
     
     def load_file(self, file_or_filename):
@@ -196,11 +278,12 @@ class UIDefinition(object):
             etree = ET.parse(file_or_filename)
         except ET.ParseError:
             parser = ET.XMLParser(encoding='UTF-8')
-            etree = ET.parse(file_or_filename, parser)        
+            etree = ET.parse(file_or_filename, parser)
         self._tree_load(etree)
     
-    def load_from_string(self, source):
-        self._tree_load(ET.ElementTree(ET.fromstring(source)))
+    def load_from_string(self, source, version=None):
+        tree = ET.ElementTree(ET.fromstring(source))
+        self._tree_load(tree, version)
     
     def get_xmlnode(self, identifier):
         xpath = ".//object[@id='{0}']".format(identifier)

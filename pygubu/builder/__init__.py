@@ -10,7 +10,7 @@ try:
 except:
     import Tkinter as tkinter
 
-from pygubu.builder.builderobject import BuilderObject, CLASS_MAP
+from pygubu.builder.builderobject import BuilderObject, CLASS_MAP, CB_TYPES
 from pygubu.builder.widgetmeta import WidgetMeta
 from pygubu.stockimage import StockImage, StockImageException
 from .uidefinition import UIDefinition
@@ -265,5 +265,5 @@ class Builder(object):
     def code_classname_for(self, bobject):
         raise NotImplementedError()
     
-    def code_create_callback(self, name, cbtype):
+    def code_create_callback(self, widgetid, cbname, cbtype, args=None):
         raise NotImplementedError()
