@@ -10,7 +10,7 @@ from pygubu.builder.builderobject import BuilderObject, register_widget
 from pygubu.binding import remove_binding, ApplicationLevelBindManager
 
 
-__version__ = '0.10.4'
+__version__ = '0.10.5'
 
 
 def register_property(name, description):
