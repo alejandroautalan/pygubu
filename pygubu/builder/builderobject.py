@@ -488,7 +488,7 @@ class BuilderObject(object):
         for cmd_pname in self.command_properties:
             cmd = self.wmeta.properties.get(cmd_pname, None)
             if cmd is not None:
-                print('on_code_connect_commands', cmd)
+                #print('on_code_connect_commands', cmd)
                 cmd = json.loads(cmd)
                 cmd_name = (cmd['value']).strip()
                 if cmd_name:
@@ -507,7 +507,7 @@ class BuilderObject(object):
     def _code_define_callback(self, cmd_pname, cmd):
         cmdname = cmd['value']
         cmdtype = cmd['cbtype']
-        print('_code_define_callback', cmd)
+        #print('_code_define_callback', cmd)
         wid = self.code_identifier()
         args = None
         if cmdtype == CB_TYPES.WITH_WID:
