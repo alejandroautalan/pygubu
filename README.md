@@ -138,7 +138,7 @@ The following are some good tkinter (and tk) references:
 - [Tcl/Tk 8.5 Manual](http://www.tcl.tk/man/tcl8.5/)
 
 
-You can also see the [examples](examples) directory or watch [this introductory video tutorial](http://youtu.be/wuzV9P8geDg).
+You can also see the [examples](https://github.com/alejandroautalan/pygubu-designer/tree/master/examples) directory or watch [this introductory video tutorial](http://youtu.be/wuzV9P8geDg).
 
 
 History
