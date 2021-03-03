@@ -1,6 +1,10 @@
 # encoding: utf8
 
 from __future__ import unicode_literals
+try:
+    import tkinter as tk
+except:
+    import Tkinter as tk
 from pygubu.builder.builderobject import *
 from pygubu.widgets.tkscrollbarhelper import TkScrollbarHelper
 
@@ -42,7 +46,7 @@ class TKSBHelperBO(BuilderObject):
     
     def _code_set_property(self, targetid, pname, value, code_bag):
         if pname == 'usemousewheel':
-            code_bag[pname] = '{0}'.format(value)
+            code_bag[pname] = '{0}'.format(tk.getboolean(value))
         else:
             super(TKSBHelperBO, self)._code_set_property(targetid, pname, value, code_bag)
 
