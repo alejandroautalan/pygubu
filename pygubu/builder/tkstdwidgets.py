@@ -255,7 +255,7 @@ class TKListbox(BuilderObject):
         'background', 'borderwidth', 'cursor',
         'disabledforeground', 'exportselection', 'font',
         'foreground',  'highlightbackground', 'highlightcolor',
-        'highlightthickness',  'relief',
+        'highlightthickness', 'justify', 'relief',
         'selectbackground', 'selectborderwidth', 'selectforeground',
         'setgrid', 'takefocus',  'xscrollcommand', 'yscrollcommand')
     OPTIONS_SPECIFIC = ('activestyle', 'height', 'listvariable',
