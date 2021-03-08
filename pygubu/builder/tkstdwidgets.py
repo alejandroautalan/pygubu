@@ -835,7 +835,7 @@ register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
 class TKMenuitemSeparator(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.SEPARATOR
-    OPTIONS_STANDARD = tuple()
+    OPTIONS_STANDARD = ('background',)
     OPTIONS_SPECIFIC = tuple()
     OPTIONS_CUSTOM = tuple()
     properties = tuple()
