@@ -582,7 +582,6 @@ class PanedWindowBO(BuilderObject):
     """Base class for tk.PanedWindow and ttk.Panedwindow builder objects"""
     class_ = None
     container = True
-    allow_container_layout = False
     properties = []
     ro_properties = ('orient', )
 
@@ -601,7 +600,6 @@ class PanedWindowBO(BuilderObject):
 class PanedWindowPaneBO(BuilderObject):
     class_ = None
     container = True
-    allow_container_layout = False
     properties = []
     layout_required = False
     allow_bindings = False
