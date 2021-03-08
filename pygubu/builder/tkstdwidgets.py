@@ -280,7 +280,7 @@ class TKText(BuilderObject):
         'xscrollcommand', 'yscrollcommand',)
     OPTIONS_SPECIFIC = (
         'autoseparators', 'blockcursor', 'endline', 'height',
-        'inactiveselectbackgroud', 'insertunfocussed', 'maxundo',
+        'inactiveselectbackground', 'insertunfocussed', 'maxundo',
         'spacing1', 'spacing2', 'spacing3', 'startline',
         'state', 'tabs', 'tabstyle', 'undo', 'width', 'wrap')
     OPTIONS_CUSTOM = ('text',)
