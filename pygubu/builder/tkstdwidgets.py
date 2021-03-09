@@ -255,7 +255,7 @@ class TKListbox(BuilderObject):
         'background', 'borderwidth', 'cursor',
         'disabledforeground', 'exportselection', 'font',
         'foreground',  'highlightbackground', 'highlightcolor',
-        'highlightthickness',  'relief',
+        'highlightthickness', 'justify', 'relief',
         'selectbackground', 'selectborderwidth', 'selectforeground',
         'setgrid', 'takefocus',  'xscrollcommand', 'yscrollcommand')
     OPTIONS_SPECIFIC = ('activestyle', 'height', 'listvariable',
@@ -280,7 +280,7 @@ class TKText(BuilderObject):
         'xscrollcommand', 'yscrollcommand',)
     OPTIONS_SPECIFIC = (
         'autoseparators', 'blockcursor', 'endline', 'height',
-        'inactiveselectbackgroud', 'insertunfocussed', 'maxundo',
+        'inactiveselectbackground', 'insertunfocussed', 'maxundo',
         'spacing1', 'spacing2', 'spacing3', 'startline',
         'state', 'tabs', 'tabstyle', 'undo', 'width', 'wrap')
     OPTIONS_CUSTOM = ('text',)
@@ -835,7 +835,7 @@ register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
 class TKMenuitemSeparator(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.SEPARATOR
-    OPTIONS_STANDARD = tuple()
+    OPTIONS_STANDARD = ('background',)
     OPTIONS_SPECIFIC = tuple()
     OPTIONS_CUSTOM = tuple()
     properties = tuple()
