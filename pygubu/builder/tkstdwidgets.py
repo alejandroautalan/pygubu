@@ -255,7 +255,7 @@ class TKListbox(BuilderObject):
         'background', 'borderwidth', 'cursor',
         'disabledforeground', 'exportselection', 'font',
         'foreground',  'highlightbackground', 'highlightcolor',
-        'highlightthickness',  'relief',
+        'highlightthickness', 'justify', 'relief',
         'selectbackground', 'selectborderwidth', 'selectforeground',
         'setgrid', 'takefocus',  'xscrollcommand', 'yscrollcommand')
     OPTIONS_SPECIFIC = ('activestyle', 'height', 'listvariable',
@@ -280,7 +280,7 @@ class TKText(BuilderObject):
         'xscrollcommand', 'yscrollcommand',)
     OPTIONS_SPECIFIC = (
         'autoseparators', 'blockcursor', 'endline', 'height',
-        'inactiveselectbackgroud', 'insertunfocussed', 'maxundo',
+        'inactiveselectbackground', 'insertunfocussed', 'maxundo',
         'spacing1', 'spacing2', 'spacing3', 'startline',
         'state', 'tabs', 'tabstyle', 'undo', 'width', 'wrap')
     OPTIONS_CUSTOM = ('text',)
@@ -835,7 +835,7 @@ register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
 class TKMenuitemSeparator(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.SEPARATOR
-    OPTIONS_STANDARD = tuple()
+    OPTIONS_STANDARD = ('background',)
     OPTIONS_SPECIFIC = tuple()
     OPTIONS_CUSTOM = tuple()
     properties = tuple()
@@ -939,3 +939,100 @@ class ToplevelMenuHelperBO(BuilderObject):
 
 register_widget('pygubu.builder.widgets.toplevelmenu', ToplevelMenuHelperBO,
                 'ToplevelMenu', ('Menu', 'Pygubu Helpers', 'tk', 'ttk'))
+
+
+class TKOptionMenu(BuilderObject):
+    class_ = tk.OptionMenu
+    OPTIONS_STANDARD = tuple()
+    OPTIONS_SPECIFIC = ('command', 'variable', 'value', 'values')
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+    command_properties = ('command',)
+    ro_properties = ('variable', 'value', 'values')
+    
+    def realize(self, parent):
+        args = self._get_init_args()
+        master = parent.get_child_master()
+        variable = args.pop('variable', None)
+        value = args.pop('value', None)
+        varname = '{0}__var'.format(self.wmeta.identifier)
+        if variable is None:
+            variable = varname
+        variable = self.builder.create_variable(variable)
+        if value is not None:
+            variable.set(value)
+        values = args.pop('values', '')
+        if values is not None:
+            values = values.split(',')
+        
+        class _cb_proxy(object):
+            def __init__(self):
+                super(_cb_proxy, self).__init__()
+                self.callback = None
+            def __call__(self, arg1):
+                if self.callback is not None:
+                    self.callback(arg1)
+        
+        cb_proxy = _cb_proxy()
+        self.widget = self.class_(master, variable, value, *values,
+                                  command=cb_proxy)
+        self.widget._cb_proxy = cb_proxy
+        return self.widget
+    
+    def _connect_command(self, cmd_pname, callback):
+        if cmd_pname == 'command':
+            self.widget._cb_proxy.callback = callback
+    
+    #
+    # Code generation methods
+    #
+    def code_realize(self, boparent, code_identifier=None):
+        import json
+        if code_identifier is not None:
+            self._code_identifier = code_identifier
+        lines = []
+        master = boparent.code_child_master()
+        init_args = self._get_init_args()
+        command_arg = None
+        variable_arg = None
+        value_arg = None
+        pname = 'command'
+        if pname in self.wmeta.properties:
+            value = json.loads(self.wmeta.properties[pname])
+            cmdname = value['value']
+            cmdtype = value['type']
+            args = ('option', )
+            pvalue = self.builder.code_create_callback(
+                    self.code_identifier(), cmdname, cmdtype, args)
+            command_arg = "{1}".format(pname, pvalue)
+        pname = 'value'
+        if pname in init_args:
+            pvalue = init_args[pname]
+            value_arg = "'{1}'".format(pname, pvalue)
+        pname = 'variable'
+        varname = '__tkvar'
+        if pname in init_args:
+            varname = init_args[pname]
+        var_value = init_args.get('value', '')
+        pvalue = self.builder.code_create_variable(varname, var_value)
+        variable_arg = "{1}".format(pname, pvalue)
+        pname = 'values'
+        om_values = []
+        if pname in init_args:
+            value = init_args[pname]
+            om_values = value.split(',')
+        line = "__values = {0}".format(om_values)
+        lines.append(line)
+        s = "{0} = {1}({2}, {3}, {4}, *__values, command={5})".format(
+            self.code_identifier(), self._code_class_name(), master,
+            variable_arg, value_arg, command_arg)
+        lines.append(s)
+        return lines
+    
+    def code_configure(self, targetid=None):
+        return []
+    
+    def code_connect_commands(self):
+        return []
+
+register_widget('tk.OptionMenu', TKOptionMenu,
+                'OptionMenu', ('Control & Display', 'tk',))
