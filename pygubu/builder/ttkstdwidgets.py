@@ -40,7 +40,7 @@ class TTKLabel(TTKWidgetBO):
         TTKWidgetBO.OPTIONS_LABEL + ('borderwidth',)
     OPTIONS_SPECIFIC = (
         'anchor', 'background', 'font', 'foreground', 'justify',
-        'padding', 'relief', 'wraplength')
+        'padding', 'relief', 'state', 'wraplength')
     class_ = ttk.Label
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
@@ -160,7 +160,7 @@ register_widget('ttk.Progressbar', TTKProgressbar,
 
 class TTKScale(TTKWidgetBO):
     OPTIONS_SPECIFIC = ('command', 'from_', 'length', 'orient',
-                        'to', 'value', 'variable')
+                        'state', 'to', 'value', 'variable')
     class_ = ttk.Scale
     container = False
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC

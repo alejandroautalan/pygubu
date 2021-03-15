@@ -489,7 +489,7 @@ class TKMenu(BuilderObject):
                         'activeforeground',  'background', 'borderwidth',
                         'cursor', 'disabledforeground', 'font', 'foreground',
                         'relief', 'takefocus')
-    OPTIONS_SPECIFIC = ('postcommand',  'tearoff', 'tearoffcommand', 'title')
+    OPTIONS_SPECIFIC = ('postcommand', 'selectcolor', 'tearoff', 'tearoffcommand', 'title')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('postcommand', 'tearoffcommand')
     allow_bindings = False
@@ -677,7 +677,7 @@ class TKMenuitemSubmenu(TKMenuitem):
                         'relief', 'takefocus', 'state')
     OPTIONS_SPECIFIC = ('accelerator', 'columnbreak',
                         'hidemargin', 'image', 'label',
-                        'tearoff', 'tearoffcommand',
+                        'selectcolor', 'tearoff', 'tearoffcommand',
                         'underline', 'postcommand')
     OPTIONS_CUSTOM = ('specialmenu', )
     properties = tuple(set(OPTIONS_STANDARD + OPTIONS_SPECIFIC +
@@ -810,7 +810,7 @@ class TKMenuitemCheckbutton(TKMenuitem):
     OPTIONS_STANDARD = TKMenuitem.OPTIONS_STANDARD
     OPTIONS_SPECIFIC = \
         TKMenuitem.OPTIONS_SPECIFIC + \
-        ('indicatoron', 'selectcolor', 'selectimage', 'variable')
+        ('indicatoron', 'onvalue', 'offvalue', 'selectcolor', 'selectimage', 'variable')
     OPTIONS_CUSTOM = TKMenuitem.OPTIONS_CUSTOM
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
@@ -824,7 +824,7 @@ class TKMenuitemRadiobutton(TKMenuitem):
     OPTIONS_STANDARD = TKMenuitem.OPTIONS_STANDARD
     OPTIONS_SPECIFIC = \
         TKMenuitem.OPTIONS_SPECIFIC + \
-        ('onvalue', 'offvalue', 'value', 'variable')
+        ('indicatoron', 'selectcolor', 'selectimage', 'value', 'variable')
     OPTIONS_CUSTOM = TKMenuitem.OPTIONS_CUSTOM
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
