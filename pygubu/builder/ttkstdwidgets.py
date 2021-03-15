@@ -40,7 +40,7 @@ class TTKLabel(TTKWidgetBO):
         TTKWidgetBO.OPTIONS_LABEL + ('borderwidth',)
     OPTIONS_SPECIFIC = (
         'anchor', 'background', 'font', 'foreground', 'justify',
-        'padding', 'relief', 'wraplength')
+        'padding', 'relief', 'state', 'wraplength')
     class_ = ttk.Label
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
