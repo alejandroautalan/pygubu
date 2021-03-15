@@ -810,7 +810,7 @@ class TKMenuitemCheckbutton(TKMenuitem):
     OPTIONS_STANDARD = TKMenuitem.OPTIONS_STANDARD
     OPTIONS_SPECIFIC = \
         TKMenuitem.OPTIONS_SPECIFIC + \
-        ('indicatoron', 'selectcolor', 'selectimage', 'variable')
+        ('indicatoron', 'onvalue', 'offvalue', 'selectcolor', 'selectimage', 'variable')
     OPTIONS_CUSTOM = TKMenuitem.OPTIONS_CUSTOM
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
@@ -824,7 +824,7 @@ class TKMenuitemRadiobutton(TKMenuitem):
     OPTIONS_STANDARD = TKMenuitem.OPTIONS_STANDARD
     OPTIONS_SPECIFIC = \
         TKMenuitem.OPTIONS_SPECIFIC + \
-        ('onvalue', 'offvalue', 'value', 'variable')
+        ('value', 'variable')
     OPTIONS_CUSTOM = TKMenuitem.OPTIONS_CUSTOM
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
