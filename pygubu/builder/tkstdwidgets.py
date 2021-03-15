@@ -824,7 +824,7 @@ class TKMenuitemRadiobutton(TKMenuitem):
     OPTIONS_STANDARD = TKMenuitem.OPTIONS_STANDARD
     OPTIONS_SPECIFIC = \
         TKMenuitem.OPTIONS_SPECIFIC + \
-        ('value', 'variable')
+        ('indicatoron', 'selectcolor', 'selectimage', 'value', 'variable')
     OPTIONS_CUSTOM = TKMenuitem.OPTIONS_CUSTOM
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
