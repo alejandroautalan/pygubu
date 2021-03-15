@@ -160,7 +160,7 @@ register_widget('ttk.Progressbar', TTKProgressbar,
 
 class TTKScale(TTKWidgetBO):
     OPTIONS_SPECIFIC = ('command', 'from_', 'length', 'orient',
-                        'to', 'value', 'variable')
+                        'state', 'to', 'value', 'variable')
     class_ = ttk.Scale
     container = False
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
