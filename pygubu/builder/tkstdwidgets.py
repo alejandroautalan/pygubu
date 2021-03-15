@@ -677,7 +677,7 @@ class TKMenuitemSubmenu(TKMenuitem):
                         'relief', 'takefocus', 'state')
     OPTIONS_SPECIFIC = ('accelerator', 'columnbreak',
                         'hidemargin', 'image', 'label',
-                        'tearoff', 'tearoffcommand',
+                        'selectcolor', 'tearoff', 'tearoffcommand',
                         'underline', 'postcommand')
     OPTIONS_CUSTOM = ('specialmenu', )
     properties = tuple(set(OPTIONS_STANDARD + OPTIONS_SPECIFIC +
