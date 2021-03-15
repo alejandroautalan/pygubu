@@ -489,7 +489,7 @@ class TKMenu(BuilderObject):
                         'activeforeground',  'background', 'borderwidth',
                         'cursor', 'disabledforeground', 'font', 'foreground',
                         'relief', 'takefocus')
-    OPTIONS_SPECIFIC = ('postcommand',  'tearoff', 'tearoffcommand', 'title')
+    OPTIONS_SPECIFIC = ('postcommand', 'selectcolor', 'tearoff', 'tearoffcommand', 'title')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('postcommand', 'tearoffcommand')
     allow_bindings = False
