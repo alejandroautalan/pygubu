@@ -17,16 +17,19 @@ register_widget('pygubu.builder.widgets.combobox', ComboboxBuilder, 'Combobox',
 
 props = {
     'keyvariable': {
-        'editor': 'tkvarentry'
+        'editor': 'tkvarentry',
+        'help': 'Tk variable associated to the key value.'
         },
     'state': {
         'editor': 'choice',
         'pygubu.builder.widgets.combobox': {
             'params': {
                 'values': ('', 'normal', 'disabled'),
-                'state': 'readonly'}},
-        }
+                'state': 'readonly'},
+            'help': 'Combobox state.'
+        },
     }
+}
 
 for p in props:
     register_property(p, props[p])

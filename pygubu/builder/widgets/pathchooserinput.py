@@ -28,33 +28,41 @@ props = {
         'editor': 'choice',
         'params': {
             'values': (PathChooserInput.FILE, PathChooserInput.DIR), 'state': 'readonly'},
-        'default': PathChooserInput.FILE
+        'default': PathChooserInput.FILE,
+        'help': 'Dialog type',
         },
     'path': {
-        'editor': 'entry'
+        'editor': 'entry',
+        'help': 'Initial path value.',
         },
     'image': {
-        'editor': 'imageentry'
+        'editor': 'imageentry',
+        'help': 'Image for the button.',
         },
     'textvariable': {
-        'editor': 'tkvarentry'
+        'editor': 'tkvarentry',
+        'help': 'Tk variable associated to the path property.',
         },
     'state': {
         'editor': 'choice',
         'pygubu.builder.widgets.pathchooserinput': {
             'params': {
                 'values': ('', 'normal', 'disabled', 'readonly'),
-                'state': 'readonly'}},
+                'state': 'readonly'},
+            'help': 'Path entry state.',
+            },
         },
     'mustexist': {
         'editor': 'dynamic',
         'params': {
             'mode': 'choice',
             'values': ('', 'false', 'true'), 'state': 'readonly'},
+        'help': 'Dialog option. Determines if path must exist for directory dialog.'
         },
     'initialdir': {
         'editor': 'dynamic',
         'params': {'mode': 'entry'},
+        'help': 'Dialog option. Sets initial directory.'
         },
     }
 
