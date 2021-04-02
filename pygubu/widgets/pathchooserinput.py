@@ -145,11 +145,12 @@ class PathChooserInput(ttk.Frame):
             self._generate_changed_event()
     
     def __on_focus_out(self, event):
-         self._generate_changed_event()
+        self._generate_changed_event()
 
     def __on_folder_btn_pressed(self):
         fname = None
         fdoptions = self._fdoptions.copy()
+        fdoptions['parent'] = self.winfo_toplevel()
         if fdoptions['initialdir'] is None:
             fdoptions['initialdir'] = self.cget('path')
         if self._choose == self.FILE:
