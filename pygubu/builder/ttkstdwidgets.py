@@ -105,6 +105,7 @@ class TTKCombobox(TTKWidgetBO):
                   TTKWidgetBO.OPTIONS_CUSTOM)
     command_properties = ('postcommand', 'validatecommand',
                           'invalidcommand', 'xscrollcommand')
+    virtual_events = ('<<ComboboxSelected>>')
 
 register_widget('ttk.Combobox', TTKCombobox, 'Combobox',
                 ('Control & Display', 'ttk'))
