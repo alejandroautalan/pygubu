@@ -336,6 +336,7 @@ class TKPanedWindow(PanedWindowBO):
         'background', 'borderwidth', 'cursor', 'orient', 'relief',)
     OPTIONS_SPECIFIC = (
         'handlepad', 'handlesize', 'height', 'opaqueresize',
+        'proxybackground', 'proxyborderwidth', 'proxyrelief',
         'sashcursor', 'sashpad', 'sashrelief', 'sashwidth', 'showhandle',
         'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
