@@ -19,34 +19,51 @@ class PathChooserInputBuilder(BuilderObject):
             super(PathChooserInputBuilder, self)._code_set_property(
                 targetid, pname, value, code_bag)
 
-
-register_widget('pygubu.builder.widgets.pathchooserinput', PathChooserInputBuilder,
+_builder_id = 'pygubu.builder.widgets.pathchooserinput'
+register_widget(_builder_id, PathChooserInputBuilder,
                 'PathChooserInput', ('ttk', 'Pygubu Widgets'))
 
 props = {
     'type': {
-        'editor': 'choice',
-        'params': {
-            'values': (PathChooserInput.FILE, PathChooserInput.DIR), 'state': 'readonly'},
-        'default': PathChooserInput.FILE,
-        'help': 'Dialog type',
+        'editor': 'dynamic',
+        _builder_id : {
+            'params': {
+                'mode': 'choice',
+                'values': (PathChooserInput.FILE, PathChooserInput.DIR),
+                'state': 'readonly'},
+            'default': PathChooserInput.FILE,
+            'help': 'Dialog type',
+            }
         },
     'path': {
-        'editor': 'entry',
-        'help': 'Initial path value.',
+        'editor': 'dynamic',
+        _builder_id : {
+            'params': {
+                'mode': 'entry'},
+            'help': 'Initial path value.',
+            }
         },
     'image': {
-        'editor': 'imageentry',
-        'help': 'Image for the button.',
+        'editor': 'dynamic',
+        _builder_id : {
+            'params': {
+                'mode': 'imageentry'},
+            'help': 'Image for the button.',
+            }
         },
     'textvariable': {
-        'editor': 'tkvarentry',
-        'help': 'Tk variable associated to the path property.',
+        'editor': 'dynamic',
+        _builder_id : {
+            'params': {
+                'mode': 'tkvarentry'},
+            'help': 'Tk variable associated to the path property.',
+            }
         },
     'state': {
-        'editor': 'choice',
-        'pygubu.builder.widgets.pathchooserinput': {
+        'editor': 'dynamic',
+        _builder_id : {
             'params': {
+                'mode': 'choice',
                 'values': ('', 'normal', 'disabled', 'readonly'),
                 'state': 'readonly'},
             'help': 'Path entry state.',
@@ -54,17 +71,29 @@ props = {
         },
     'mustexist': {
         'editor': 'dynamic',
-        'params': {
-            'mode': 'choice',
-            'values': ('', 'false', 'true'), 'state': 'readonly'},
-        'help': 'Dialog option. Determines if path must exist for directory dialog.'
+        _builder_id : {
+            'params': {
+                'mode': 'choice',
+                'values': ('', 'false', 'true'),
+                'state': 'readonly'},
+            'help': 'Dialog option. Determines if path must exist for directory dialog.'
+            }
         },
     'initialdir': {
         'editor': 'dynamic',
-        'params': {'mode': 'entry'},
-        'help': 'Dialog option. Sets initial directory.'
+        _builder_id : {
+            'params': {'mode': 'entry'},
+            'help': 'Dialog option. Sets initial directory.'
+            }
         },
-    }
+    'title': {
+        'editor': 'dynamic',
+        _builder_id : {
+            'params': {'mode': 'entry'},
+            'help': 'Dialog option. Sets dialog title.'
+            }
+        },
+}
 
 for p in props:
     register_property(p, props[p])

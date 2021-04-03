@@ -48,15 +48,20 @@ class DialogBO(TKToplevel):
             super(DialogBO, self)._code_set_property(targetid, pname,
                                                      value, code_bag)
 
-
-register_widget('pygubu.builder.widgets.dialog', DialogBO,
+_builder_id = 'pygubu.builder.widgets.dialog'
+register_widget(_builder_id, DialogBO,
                 'Dialog', ('Pygubu Widgets', 'ttk'))
 
 
 modal_prop = {
-    'editor': 'choice',
-    'params': {
-        'values': ('true', 'false'), 'state': 'readonly'},
-    'default': 'false'}
+    'editor': 'dynamic',
+    _builder_id: {
+        'params': {
+            'mode': 'choice',
+            'values': ('true', 'false'), 'state': 'readonly'},
+        'default': 'false',
+        'help': 'Determines if dialog is run in normal or modal mode.'
+    }
+}
 
 register_property('modal', modal_prop)

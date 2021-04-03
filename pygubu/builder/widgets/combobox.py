@@ -12,18 +12,24 @@ class ComboboxBuilder(TTKCombobox):
     tkvar_properties = TTKCombobox.tkvar_properties + ('keyvariable',)
     class_ = Combobox
 
-register_widget('pygubu.builder.widgets.combobox', ComboboxBuilder, 'Combobox',
+_builder_id = 'pygubu.builder.widgets.combobox'
+register_widget(_builder_id, ComboboxBuilder, 'Combobox',
                 ('ttk', 'Pygubu Widgets'))
 
 props = {
     'keyvariable': {
-        'editor': 'tkvarentry',
-        'help': 'Tk variable associated to the key value.'
+        'editor': 'dynamic',
+        _builder_id: {
+            'params': {
+                'mode': 'tkvarentry'},
+            'help': 'Tk variable associated to the key value.'
+            }
         },
     'state': {
-        'editor': 'choice',
-        'pygubu.builder.widgets.combobox': {
+        'editor': 'dynamic',
+        _builder_id: {
             'params': {
+                'mode': 'choice',
                 'values': ('', 'normal', 'disabled'),
                 'state': 'readonly'},
             'help': 'Combobox state.'
