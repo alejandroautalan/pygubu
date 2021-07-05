@@ -87,7 +87,7 @@ class CalendarFrame(ttk.Frame):
             'markbg': 'white',
             'markfg': 'blue',
         }
-        # remove custom options from kw before initializating ttk.Frame
+        # remove custom options from kw before initialization ttk.Frame
         for k, v in options.items():
             options[k] = kw.pop(k, v)
 

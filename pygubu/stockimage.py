@@ -116,7 +116,7 @@ When image is used, the class maintains it on memory for tkinter"""
         :param str prefix: Additionaly a prefix for the key can be provided,
             so the resulting key will be prefix + filename
         :param iterable ext: list of file extensions to load. Defaults to
-            tk suported image extensions. Example ('.jpg', '.png')
+            tk supported image extensions. Example ('.jpg', '.png')
         """
 
         for filename in os.listdir(dir_path):
