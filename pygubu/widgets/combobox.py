@@ -23,7 +23,7 @@ class Combobox(ttk.Combobox, object):
             'keyvariable': None,
             'textvariable': None,
         }
-        # remove custom options from kw before initializating
+        # remove custom options from kw before initialization
         for k, v in options.items():
             options[k] = kw.pop(k, v)
         
