@@ -1036,4 +1036,4 @@ class TKOptionMenu(BuilderObject):
         return []
 
 register_widget('tk.OptionMenu', TKOptionMenu,
-                'OptionMenu', ('Control & Display', 'tk',))
+                'OptionMenu', ('Control & Display', 'tk', 'ttk'))
