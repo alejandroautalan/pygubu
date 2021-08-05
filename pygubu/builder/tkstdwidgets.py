@@ -442,15 +442,16 @@ class TKSpinbox(BuilderObject):
     command_properties = ('command', 'invalidcommand', 'validatecommand',
                           'xscrollcommand')
 
-    def configure(self):
+    def _set_property(self, target_widget, pname, value):
         # hack to configure 'from_' and 'to' and avoid exception
-        if 'from_' in self.wmeta.properties:
-            from_ = float(self.wmeta.properties['from_'])
+        if pname == 'from_':
+            from_ = float(value)
             to = float(self.wmeta.properties.get('to', 0))
             if from_ > to:
                 to = from_ + 1
-                self.wmeta.properties['to'] = str(to)
-        super(TKSpinbox, self).configure()
+            target_widget.configure(from_=from_, to=to)
+        else:
+            super(TKSpinbox, self)._set_property(target_widget, pname, value)
 
 register_widget('tk.Spinbox', TKSpinbox,
                 'Spinbox', ('Control & Display', 'tk'))
