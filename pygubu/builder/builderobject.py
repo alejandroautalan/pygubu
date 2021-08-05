@@ -187,7 +187,7 @@ class BuilderObject(object):
                 logger.debug('setting property %s = %s', pname, propvalue)
                 target_widget[pname] = propvalue
             except tk.TclError as e:
-                msg = "Failed to set property '{0}' on class '{1}'. TclError:"
+                msg = "Failed to set property '%s' on class '%s'. TclError:"
                 logger.error(msg, pname, repr(self.class_))
                 logger.exception(e)
 
