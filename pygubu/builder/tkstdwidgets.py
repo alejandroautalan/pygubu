@@ -22,7 +22,7 @@ class TKToplevel(BuilderObject):
     container = True
     layout_required = False
     allowed_parents = ('root',)
-    maxchildren = 2  # A menu and a frame
+    #maxchildren = 2  # A menu and a frame
     OPTIONS_STANDARD = ('borderwidth', 'cursor', 'highlightbackground',
                         'highlightcolor', 'highlightthickness',
                         'padx', 'pady', 'relief', 'takefocus')
@@ -49,13 +49,8 @@ class TKToplevel(BuilderObject):
         return self.widget
     
     def layout(self, target=None):
-        # we marked this widget as not allowed to edit layout, and
-        # by default the toplevel is configured to expand bot sides.
-        if target is None:
-            target = self.widget
-        #self._grid_rc_layout(target)
-        target.columnconfigure(0, weight=1)
-        target.rowconfigure(0, weight=1)
+        # we marked this widget as not allowed to edit layoutu
+        pass
 
     def _set_property(self, target_widget, pname, value):
         method_props = ('geometry', 'overrideredirect', 'title')
