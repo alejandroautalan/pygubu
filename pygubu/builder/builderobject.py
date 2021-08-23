@@ -380,9 +380,11 @@ class BuilderObject(object):
         
         return lines
     
-    def code_layout(self, targetid=None):
+    def code_layout(self, targetid=None, parentid=None):
         if targetid is None:
             targetid = self.code_identifier()
+        if parentid is None:
+            parentid = targetid
         if self.layout_required:
             lines = []
             layout_stmt = "{0}.{1}({2})"
@@ -416,11 +418,11 @@ class BuilderObject(object):
                     colbag[num].append(arg)
             for k, bag in rowbag.items():
                 args = ', '.join(bag)
-                line = lrow_stmt.format(targetid, k, args)
+                line = lrow_stmt.format(parentid, k, args)
                 lines.append(line)
             for k, bag in colbag.items():
                 args = ', '.join(bag)
-                line = lcol_stmt.format(targetid, k, args)
+                line = lcol_stmt.format(parentid, k, args)
                 lines.append(line)
             return lines
         else:
