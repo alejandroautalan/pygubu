@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 try:
     import tkinter as tk
     import tkinter.ttk as ttk
-except:
+except BaseException:
     import Tkinter as tk
     import ttk
 
@@ -39,10 +39,8 @@ class AccordionFrame(ttk.Frame):
         if AccordionFrame.IMAGES is None:
             AccordionFrame.IMAGES = [
                 tk.PhotoImage(data=img_down),
-                tk.PhotoImage(data=img_right),]
+                tk.PhotoImage(data=img_right), ]
         self.__images = AccordionFrame.IMAGES
-
-
 
     def add_group(self, gid, label=None, expanded=True):
 
@@ -50,14 +48,14 @@ class AccordionFrame(ttk.Frame):
         if label is None:
             glabel = str(gid)
 
-        #button creation
+        # button creation
         btn = ttk.Button(self, text=glabel, style='Toolbutton',
-            image=self.__images[0], compound='left')
+                         image=self.__images[0], compound='left')
         btn.grid(sticky=tk.EW)
         btn.dd_show = True
-        btn.configure(command=lambda:self.__button_clicked(gid))
+        btn.configure(command=lambda: self.__button_clicked(gid))
 
-        #frame creation
+        # frame creation
         frame = ttk.Frame(self, width=100, height=100)
         frame.grid(sticky=tk.NSEW)
         frame.rowconfigure(0, weight=1)
@@ -66,23 +64,20 @@ class AccordionFrame(ttk.Frame):
         if not expanded:
             self.after_idle(lambda: self.__button_clicked(gid))
 
-        #store button, and frame
+        # store button, and frame
         self.__groups[gid] = (btn, frame)
 
         return frame
 
-
     def get_group(self, gid):
         return self.__groups[gid][1]
-
 
     def group_toogle(self, gid):
         self.__button_clicked(gid)
 
-
     def __button_clicked(self, gid):
         btn, frame = self.__groups[gid]
-        if btn.dd_show == True:
+        if btn.dd_show:
             btn.dd_show = False
             btn.configure(image=self.__images[1])
             frame.grid_remove()
@@ -92,23 +87,21 @@ class AccordionFrame(ttk.Frame):
             frame.grid()
         self.event_generate('<<AccordionGroupToggle>>')
 
-
     def set_images(self, img_open, img_close):
         if self.__images == AccordionFrame.IMAGES:
             self.__images = [
                 tk.PhotoImage(file=img_open),
-                tk.PhotoImage(file=img_close),]
+                tk.PhotoImage(file=img_close), ]
         else:
             self.__images[0].configure(file=img_open)
             self.__images[1].configure(file=img_close)
-
 
     @classmethod
     def set_gimages(cls, img_open, img_close):
         if cls.IMAGES is None:
             cls.IMAGES = [
                 tk.PhotoImage(file=img_open),
-                tk.PhotoImage(file=img_close),]
+                tk.PhotoImage(file=img_close), ]
         else:
             cls.IMAGES[0].configure(file=img_open)
             cls.IMAGES[1].configure(file=img_close)

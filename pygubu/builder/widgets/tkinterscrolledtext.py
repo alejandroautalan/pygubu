@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 try:
     import tkinter as tk
     from tkinter.scrolledtext import ScrolledText
-except:
+except BaseException:
     import Tkinter as tk
     from ScrolledText import ScrolledText
 

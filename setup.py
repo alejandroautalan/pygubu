@@ -11,13 +11,13 @@ import pygubu
 
 try:
     from setuptools import setup
-except:
+except BaseException:
     from distutils.core import setup
 
 VERSION = pygubu.__version__
 
 long_description = \
-"""
+    """
 Welcome to pygubu a GUI designer for tkinter
 ============================================
 
@@ -49,8 +49,8 @@ path and execute:
 Usage
 -----
 
-Create an UI definition using pygubu-designer and save it to a file. Then, 
-create your aplication script as shown below. Note that 'mainwindow' 
+Create an UI definition using pygubu-designer and save it to a file. Then,
+create your aplication script as shown below. Note that 'mainwindow'
 is the name of your Toplevel widget.
 
 ::
@@ -58,21 +58,21 @@ is the name of your Toplevel widget.
     # helloworld.py
     import tkinter as tk
     import pygubu
-    
-    
+
+
     class HelloWorldApp:
-        
+
         def __init__(self):
-    
+
             #1: Create a builder
             self.builder = builder = pygubu.Builder()
-    
+
             #2: Load an ui file
             builder.add_from_file('helloworld.ui')
-    
+
             #3: Create the mainwindow
             self.mainwindow = builder.get_object('mainwindow')
-            
+
         def run(self):
             self.mainwindow.mainloop()
 
