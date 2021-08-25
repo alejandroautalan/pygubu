@@ -3,7 +3,7 @@ from __future__ import unicode_literals
 
 try:
     import tkinter as tk
-except:
+except ImportError:
     import Tkinter as tk
 
 from pygubu import ApplicationLevelBindManager as BindManager
@@ -36,24 +36,24 @@ class TkScrolledFrame(tk.Frame):
         self.vsbOn = 0
         self.hsbNeeded = 0
         self.vsbNeeded = 0
-        self._jfraction=0.05
+        self._jfraction = 0.05
         self._scrollTimer = None
         self._scrollRecurse = 0
         self._startX = 0
         self._startY = 0
 
-        #configure scroll
+        # configure scroll
         self.hsb.set(0.0, 1.0)
         self.vsb.set(0.0, 1.0)
         self.vsb.config(command=self.yview)
         self.hsb.config(command=self.xview)
 
-        #grid
+        # grid
         self._container.pack(expand=True, fill='both')
         self._clipper.grid(row=0, column=0, sticky=tk.NSEW)
         #self.vsb.grid(row=0, column=1, sticky=tk.NS)
         #self.hsb.grid(row=1, column=0, sticky=tk.EW)
-        
+
         self._container.rowconfigure(0, weight=1)
         self._container.columnconfigure(0, weight=1)
 
@@ -74,15 +74,15 @@ class TkScrolledFrame(tk.Frame):
     # Called when the user clicks in the horizontal scrollbar.
     # Calculates new position of frame then calls reposition() to
     # update the frame and the scrollbar.
-    def xview(self, mode = None, value = None, units = None):
-        if type(value) == str:
+    def xview(self, mode=None, value=None, units=None):
+        if isinstance(value, str):
             value = float(value)
         if mode is None:
             return self.hsb.get()
         elif mode == 'moveto':
             frameWidth = self.innerframe.winfo_reqwidth()
             self._startX = value * float(frameWidth)
-        else: # mode == 'scroll'
+        else:  # mode == 'scroll'
             clipperWidth = self._clipper.winfo_width()
             if units == 'units':
                 jump = int(clipperWidth * self._jfraction)
@@ -95,16 +95,16 @@ class TkScrolledFrame(tk.Frame):
     # Called when the user clicks in the vertical scrollbar.
     # Calculates new position of frame then calls reposition() to
     # update the frame and the scrollbar.
-    def yview(self, mode = None, value = None, units = None):
+    def yview(self, mode=None, value=None, units=None):
 
-        if type(value) == str:
+        if isinstance(value, str):
             value = float(value)
         if mode is None:
             return self.vsb.get()
         elif mode == 'moveto':
             frameHeight = self.innerframe.winfo_reqheight()
             self._startY = value * float(frameHeight)
-        else: # mode == 'scroll'
+        else:  # mode == 'scroll'
             clipperHeight = self._clipper.winfo_height()
             if units == 'units':
                 jump = int(clipperHeight * self._jfraction)
@@ -127,11 +127,11 @@ class TkScrolledFrame(tk.Frame):
 
             self._startX = 0
             endScrollX = 1.0
-            #use expand by default
+            # use expand by default
             relwidth = 1
         else:
             # The scrolled frame is larger than the clipping window.
-            #use expand by default
+            # use expand by default
             if self._startX + clipperWidth > frameWidth:
                 self._startX = frameWidth - clipperWidth
                 endScrollX = 1.0
@@ -142,7 +142,7 @@ class TkScrolledFrame(tk.Frame):
             relwidth = ''
 
         # Position frame relative to clipper.
-        self.innerframe.place(x = -self._startX, relwidth = relwidth)
+        self.innerframe.place(x=-self._startX, relwidth=relwidth)
         return (self._startX / float(frameWidth), endScrollX)
 
     def _getyview(self):
@@ -166,11 +166,12 @@ class TkScrolledFrame(tk.Frame):
             else:
                 if self._startY < 0:
                     self._startY = 0
-                endScrollY = (self._startY + clipperHeight) / float(frameHeight)
+                endScrollY = (self._startY + clipperHeight) / \
+                    float(frameHeight)
             relheight = ''
 
         # Position frame relative to clipper.
-        self.innerframe.place(y = -self._startY, relheight = relheight)
+        self.innerframe.place(y=-self._startY, relheight=relheight)
         return (self._startY / float(frameHeight), endScrollY)
 
     # According to the relative geometries of the frame and the
@@ -204,7 +205,7 @@ class TkScrolledFrame(tk.Frame):
         # continuous mapping and unmapping of the scrollbars.
         if (self.hsbNeeded != self.hsbOn and
             self.vsbNeeded != self.vsbOn and
-            self.vsbOn != self.hsbOn):
+                self.vsbOn != self.hsbOn):
             if self.hsbOn:
                 self._toggleHorizScrollbar()
             else:
@@ -221,7 +222,7 @@ class TkScrolledFrame(tk.Frame):
 
         self.hsbOn = not self.hsbOn
 
-        #interior = self #.origInterior
+        # interior = self #.origInterior
         if self.hsbOn:
             self.hsb.grid(row=1, column=0, sticky=tk.EW)
             #interior.grid_rowconfigure(3, minsize = self['scrollmargin'])
@@ -233,7 +234,7 @@ class TkScrolledFrame(tk.Frame):
 
         self.vsbOn = not self.vsbOn
 
-        #interior = self#.origInterior
+        # interior = self#.origInterior
         if self.vsbOn:
             self.vsb.grid(row=0, column=1, sticky=tk.NS)
             #interior.grid_columnconfigure(3, minsize = self['scrollmargin'])
@@ -257,7 +258,7 @@ class TkScrolledFrame(tk.Frame):
         option = 'usemousewheel'
         if key == option:
             return self.usemousewheel
-        #return super(ScrolledFrameBase, self).cget(key)
+        # return super(ScrolledFrameBase, self).cget(key)
         return self._framecls.cget(self, key)
 
     __getitem__ = cget
@@ -267,16 +268,19 @@ class TkScrolledFrame(tk.Frame):
             BindManager.init_mousewheel_binding(self)
 
             if self.hsb and not hasattr(self.hsb, 'on_mousewheel'):
-                self.hsb.on_mousewheel = BindManager.make_onmousewheel_cb(self, 'x', 2)
+                self.hsb.on_mousewheel = BindManager.make_onmousewheel_cb(
+                    self, 'x', 2)
             if self.vsb and not hasattr(self.vsb, 'on_mousewheel'):
-                self.vsb.on_mousewheel = BindManager.make_onmousewheel_cb(self, 'y', 2)
+                self.vsb.on_mousewheel = BindManager.make_onmousewheel_cb(
+                    self, 'y', 2)
 
             main_sb = self.vsb or self.hsb
             if main_sb:
                 self.on_mousewheel = main_sb.on_mousewheel
-                bid = self.bind('<Enter>',
-                                lambda event: BindManager.mousewheel_bind(self),
-                                add='+')
+                bid = self.bind(
+                    '<Enter>',
+                    lambda event: BindManager.mousewheel_bind(self),
+                    add='+')
                 self._bindingids.append((self, bid))
                 bid = self.bind('<Leave>',
                                 lambda event: BindManager.mousewheel_unbind(),
@@ -284,26 +288,29 @@ class TkScrolledFrame(tk.Frame):
                 self._bindingids.append((self, bid))
             for s in (self.vsb, self.hsb):
                 if s:
-                    bid = s.bind('<Enter>',
-                                 lambda event, scrollbar=s: BindManager.mousewheel_bind(scrollbar),
-                                 add='+')
+                    bid = s.bind(
+                        '<Enter>',
+                        lambda event,
+                        scrollbar=s: BindManager.mousewheel_bind(scrollbar),
+                        add='+')
                     self._bindingids.append((s, bid))
                     if s != main_sb:
-                        bid = s.bind('<Leave>',
-                                     lambda event: BindManager.mousewheel_unbind(),
-                                     add='+')
+                        bid = s.bind(
+                            '<Leave>',
+                            lambda event: BindManager.mousewheel_unbind(),
+                            add='+')
                         self._bindingids.append((s, bid))
         else:
             for widget, bid in self._bindingids:
                 remove_binding(widget, bid)
 
 
-#class TkScrolledFrameFactory(type):
+# class TkScrolledFrameFactory(type):
 #    def __new__(cls, clsname, superclasses, attrs):
 #        return type.__new__(cls, str(clsname), superclasses, attrs)
 
 
-#TkScrolledFrame = TkScrolledFrameFactory('TkScrolledFrame',
+# TkScrolledFrame = TkScrolledFrameFactory('TkScrolledFrame',
 #                                       (ScrolledFrameBase, tk.Frame, object),
 #                                       {'_framecls':tk.Frame,
 #                                        '_sbarcls': tk.Scrollbar})

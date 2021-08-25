@@ -1,18 +1,20 @@
 # encoding: utf8
 from __future__ import unicode_literals
 
-import os
 import importlib
 import logging
+import os
 import xml.etree.ElementTree as ET
+
 try:
     import tkinter
-except:
+except ImportError:
     import Tkinter as tkinter
 
-from pygubu.builder.builderobject import BuilderObject, CLASS_MAP, CB_TYPES
+from pygubu.builder.builderobject import CB_TYPES, CLASS_MAP, BuilderObject
 from pygubu.builder.widgetmeta import WidgetMeta
 from pygubu.stockimage import StockImage, StockImageException
+
 from .uidefinition import UIDefinition
 
 logger = logging.getLogger(__name__)
@@ -50,7 +52,7 @@ class Builder(object):
             # TODO: notify something here.
             pass
         return image
-    
+
     def get_iconbitmap(self, path):
         """Return path to use as iconbitmap property."""
         image = None
@@ -62,7 +64,7 @@ class Builder(object):
             # TODO: notify something here.
             pass
         return image
-    
+
     def __load_image(self, path):
         name = os.path.basename(path)
         if not StockImage.is_registered(name):
@@ -71,7 +73,7 @@ class Builder(object):
                 StockImage.register(name, ipath)
             else:
                 msg = "Image '%s' not found in resource paths."
-                logger.warning(msg, name)        
+                logger.warning(msg, name)
 
     def __find_image(self, relpath):
         image_path = None
@@ -87,7 +89,7 @@ class Builder(object):
     def get_variable(self, varname):
         """Return a tk variable created with 'create_variable' method."""
         return self.tkvariables[varname]
-        
+
     def import_variables(self, container, varnames=None):
         """Helper method to avoid call get_variable for every variable."""
         if varnames is None:
@@ -194,7 +196,7 @@ class Builder(object):
 
     def _realize(self, master, wmeta):
         """Builds a widget from widget metadata using master as parent."""
-        
+
         if wmeta.classname not in CLASS_MAP:
             self._import_class(wmeta.classname)
 
@@ -207,14 +209,14 @@ class Builder(object):
             self.objects[wmeta.identifier] = parent
 
             for childmeta in \
-                self.uidefinition.widget_children(wmeta.identifier):
+                    self.uidefinition.widget_children(wmeta.identifier):
                 child = self._realize(parent, childmeta)
                 parent.add_child(child)
             parent.configure()
             parent.layout()
-            
+
             self._post_realize(parent)
-            
+
             return parent
         else:
             msg = 'Class "{0}" not mapped'.format(wmeta.classname)
@@ -227,8 +229,8 @@ class Builder(object):
         has_layout = (len(wmeta.layout_properties) > 1)
         if wmeta.layout_required and not has_layout:
             logger.debug('No layout information for: (%s, %s).',
-                           cname, wmeta.identifier)
-    
+                         cname, wmeta.identifier)
+
     def _post_realize(self, bobject):
         pass
 
@@ -252,18 +254,18 @@ class Builder(object):
             return notconnected
         else:
             return None
-    
+
     def code_create_variable(self, name_or_desc, value, vtype=None):
         raise NotImplementedError()
-    
+
     def code_create_image(self, filename):
         raise NotImplementedError()
-    
+
     def code_create_iconbitmap(self, filename):
         raise NotImplementedError()
-    
+
     def code_classname_for(self, bobject):
         raise NotImplementedError()
-    
+
     def code_create_callback(self, widgetid, cbname, cbtype, args=None):
         raise NotImplementedError()

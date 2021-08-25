@@ -1,14 +1,15 @@
 # encoding: utf8
 from __future__ import unicode_literals
+
 import logging
 
 try:
     import tkinter as tk
-except:
+except ImportError:
     import Tkinter as tk
 
-from .builderobject import (BuilderObject, register_widget, EntryBaseBO,
-        PanedWindowBO, PanedWindowPaneBO)
+from .builderobject import (BuilderObject, EntryBaseBO, PanedWindowBO,
+                            PanedWindowPaneBO, register_widget)
 
 logger = logging.getLogger(__name__)
 
@@ -22,11 +23,11 @@ class TKToplevel(BuilderObject):
     container = True
     layout_required = False
     allowed_parents = ('root',)
-    #maxchildren = 2  # A menu and a frame
+    # maxchildren = 2  # A menu and a frame
     OPTIONS_STANDARD = ('borderwidth', 'cursor', 'highlightbackground',
                         'highlightcolor', 'highlightthickness',
                         'padx', 'pady', 'relief', 'takefocus')
-    OPTIONS_SPECIFIC = ('background',  'class_', 'container',
+    OPTIONS_SPECIFIC = ('background', 'class_', 'container',
                         'height', 'width')
     OPTIONS_CUSTOM = ('title', 'geometry', 'overrideredirect', 'minsize',
                       'maxsize', 'resizable', 'iconbitmap', 'iconphoto')
@@ -37,7 +38,7 @@ class TKToplevel(BuilderObject):
         'horizontally': (True, False),
         'vertically': (False, True),
         'none': (False, False)
-        }
+    }
 
     def realize(self, parent):
         args = self._get_init_args()
@@ -47,7 +48,7 @@ class TKToplevel(BuilderObject):
         else:
             self.widget = self.class_(master, **args)
         return self.widget
-    
+
     def layout(self, target=None):
         # we marked this widget as not allowed to edit layoutu
         pass
@@ -75,7 +76,7 @@ class TKToplevel(BuilderObject):
             target_widget.iconbitmap(icon)
         else:
             super(TKToplevel, self)._set_property(target_widget, pname, value)
-    
+
     #
     # Code generation methods
     #
@@ -99,10 +100,11 @@ class TKToplevel(BuilderObject):
         elif pname == 'iconphoto':
             image = self.builder.code_create_image(value)
             line = "{0}.iconphoto(True, {1})".format(targetid, image)
-            code_bag[pname] = (line, )            
+            code_bag[pname] = (line, )
         else:
             super(TKToplevel, self)._code_set_property(targetid, pname,
-                                                   value, code_bag)
+                                                       value, code_bag)
+
 
 register_widget('tk.Toplevel', TKToplevel,
                 'Toplevel', ('Containers', 'tk', 'ttk'))
@@ -112,12 +114,13 @@ class TKFrame(BuilderObject):
     OPTIONS_STANDARD = ('borderwidth', 'cursor', 'highlightbackground',
                         'highlightcolor', 'highlightthickness',
                         'padx', 'pady', 'relief', 'takefocus')
-    OPTIONS_SPECIFIC = ('background',  'class_', 'container',
+    OPTIONS_SPECIFIC = ('background', 'class_', 'container',
                         'height', 'width')
     class_ = tk.Frame
     container = True
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     ro_properties = ('class_', 'container')
+
 
 register_widget('tk.Frame', TKFrame, 'Frame', ('Containers', 'tk'))
 
@@ -136,6 +139,7 @@ class TKLabel(BuilderObject):
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
+
 register_widget('tk.Label', TKLabel, 'Label', ('Control & Display', 'tk'))
 
 
@@ -150,6 +154,7 @@ class TKLabelFrame(BuilderObject):
                         'labelanchor', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     ro_properties = ('class_',)
+
 
 register_widget('tk.LabelFrame', TKLabelFrame,
                 'LabelFrame', ('Containers', 'tk'))
@@ -174,6 +179,7 @@ class TKEntry(EntryBaseBO):
     command_properties = ('validatecommand', 'invalidcommand',
                           'xscrollcommand')
 
+
 register_widget('tk.Entry', TKEntry, 'Entry', ('Control & Display', 'tk'))
 
 
@@ -185,15 +191,16 @@ class TKButton(BuilderObject):
         'background', 'bitmap', 'borderwidth', 'compound', 'cursor',
         'disabledforeground', 'font', 'foreground',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'image', 'justify',  'padx', 'pady', 'relief',
-        'repeatdelay', 'repeatinterval',  'takefocus', 'text',
-        'textvariable', 'underline',  'wraplength')
+        'image', 'justify', 'padx', 'pady', 'relief',
+        'repeatdelay', 'repeatinterval', 'takefocus', 'text',
+        'textvariable', 'underline', 'wraplength')
     OPTIONS_SPECIFIC = (
         'command', 'default', 'height', 'overrelief',
         'state', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
-                    + BuilderObject.OPTIONS_CUSTOM
+        + BuilderObject.OPTIONS_CUSTOM
     command_properties = ('command',)
+
 
 register_widget('tk.Button', TKButton, 'Button', ('Control & Display', 'tk'))
 
@@ -206,15 +213,16 @@ class TKCheckbutton(BuilderObject):
         'background', 'bitmap', 'borderwidth', 'compound', 'cursor',
         'disabledforeground', 'font', 'foreground',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'image', 'justify',  'padx', 'pady', 'relief',
-        'takefocus', 'text', 'textvariable', 'underline',  'wraplength')
+        'image', 'justify', 'padx', 'pady', 'relief',
+        'takefocus', 'text', 'textvariable', 'underline', 'wraplength')
     OPTIONS_SPECIFIC = (
         'command', 'height', 'indicatoron', 'overrelief', 'offrelief',
         'offvalue', 'onvalue', 'overrelief', 'selectcolor', 'selectimage',
         'state', 'tristateimage', 'tristatevalue', 'variable', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
-                    + BuilderObject.OPTIONS_CUSTOM
+        + BuilderObject.OPTIONS_CUSTOM
     command_properties = ('command',)
+
 
 register_widget('tk.Checkbutton', TKCheckbutton,
                 'Checkbutton', ('Control & Display', 'tk'))
@@ -228,16 +236,17 @@ class TKRadiobutton(BuilderObject):
         'background', 'bitmap', 'borderwidth', 'compound', 'cursor',
         'disabledforeground', 'font', 'foreground',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
-        'image', 'justify',  'padx', 'pady', 'relief',
-        'takefocus', 'text', 'textvariable', 'underline',  'wraplength')
+        'image', 'justify', 'padx', 'pady', 'relief',
+        'takefocus', 'text', 'textvariable', 'underline', 'wraplength')
     OPTIONS_SPECIFIC = (
         'command', 'height', 'indicatoron', 'overrelief', 'offrelief',
         'overrelief', 'selectcolor', 'selectimage',
         'state', 'tristateimage', 'tristatevalue', 'value',
         'variable', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
-                    + BuilderObject.OPTIONS_CUSTOM
+        + BuilderObject.OPTIONS_CUSTOM
     command_properties = ('command',)
+
 
 register_widget('tk.Radiobutton', TKRadiobutton,
                 'Radiobutton', ('Control & Display', 'tk'))
@@ -249,14 +258,15 @@ class TKListbox(BuilderObject):
     OPTIONS_STANDARD = (
         'background', 'borderwidth', 'cursor',
         'disabledforeground', 'exportselection', 'font',
-        'foreground',  'highlightbackground', 'highlightcolor',
+        'foreground', 'highlightbackground', 'highlightcolor',
         'highlightthickness', 'justify', 'relief',
         'selectbackground', 'selectborderwidth', 'selectforeground',
-        'setgrid', 'takefocus',  'xscrollcommand', 'yscrollcommand')
+        'setgrid', 'takefocus', 'xscrollcommand', 'yscrollcommand')
     OPTIONS_SPECIFIC = ('activestyle', 'height', 'listvariable',
                         'selectmode', 'state', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('xscrollcommand', 'yscrollcommand')
+
 
 register_widget('tk.Listbox', TKListbox,
                 'Listbox', ('Control & Display', 'tk'))
@@ -293,7 +303,7 @@ class TKText(BuilderObject):
                 target_widget.insert('0.0', value)
         else:
             super(TKText, self)._set_property(target_widget, pname, value)
-    
+
     #
     # Code generation methods
     #
@@ -336,6 +346,7 @@ class TKPanedWindow(PanedWindowBO):
         'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
+
 register_widget('tk.PanedWindow', TKPanedWindow,
                 'PanedWindow', ('Containers', 'tk'))
 
@@ -350,7 +361,7 @@ class TKMenubutton(BuilderObject):
         'highlightbackground', 'highlightcolor',
         'highlightthickness', 'image', 'justify', 'padx', 'pady',
         'relief', 'takefocus', 'text', 'textvariable',
-        'underline',  'wraplength')
+        'underline', 'wraplength')
     OPTIONS_SPECIFIC = (
         'direction', 'height', 'indicatoron', 'state', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
@@ -359,6 +370,7 @@ class TKMenubutton(BuilderObject):
 
     def add_child(self, bobject):
         self.widget.configure(menu=bobject.widget)
+
 
 register_widget('tk.Menubutton', TKMenubutton,
                 'Menubutton', ('Menu', 'Control & Display', 'tk',))
@@ -370,10 +382,11 @@ class TKMessage(BuilderObject):
     OPTIONS_STANDARD = (
         'anchor', 'background', 'borderwidth', 'cursor',
         'font', 'foreground', 'highlightbackground', 'highlightcolor',
-        'highlightthickness',  'padx', 'pady', 'relief',
+        'highlightthickness', 'padx', 'pady', 'relief',
         'takefocus', 'text', 'textvariable')
     OPTIONS_SPECIFIC = ('aspect', 'justify', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+
 
 register_widget('tk.Message', TKMessage,
                 'Message', ('Control & Display', 'tk', 'ttk'))
@@ -384,16 +397,17 @@ class TKScale(BuilderObject):
     container = False
     OPTIONS_STANDARD = (
         'activebackground', 'background', 'borderwidth',
-        'cursor',  'font', 'foreground',
+        'cursor', 'font', 'foreground',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
         'orient', 'relief', 'repeatdelay', 'repeatinterval',
-        'takefocus',  'troughcolor')
+        'takefocus', 'troughcolor')
     OPTIONS_SPECIFIC = (
         'bigincrement', 'command', 'digits', 'from_', 'label', 'length',
         'resolution', 'showvalue', 'sliderlength', 'sliderrelief',
         'state', 'tickinterval', 'to', 'variable', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
+
 
 register_widget('tk.Scale', TKScale, 'Scale', ('Control & Display', 'tk'))
 
@@ -402,7 +416,7 @@ class TKScrollbar(BuilderObject):
     class_ = tk.Scrollbar
     container = False
     OPTIONS_STANDARD = (
-        'activebackground',  'background', 'borderwidth', 'cursor',
+        'activebackground', 'background', 'borderwidth', 'cursor',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
         'jump', 'orient', 'relief', 'repeatdelay', 'repeatinterval',
         'takefocus', 'troughcolor')
@@ -410,6 +424,7 @@ class TKScrollbar(BuilderObject):
         'activerelief', 'command', 'elementborderwidth', 'width')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
+
 
 register_widget('tk.Scrollbar', TKScrollbar,
                 'Scrollbar', ('Control & Display', 'tk'))
@@ -448,6 +463,7 @@ class TKSpinbox(BuilderObject):
         else:
             super(TKSpinbox, self)._set_property(target_widget, pname, value)
 
+
 register_widget('tk.Spinbox', TKSpinbox,
                 'Spinbox', ('Control & Display', 'tk'))
 
@@ -459,7 +475,7 @@ class TKCanvas(BuilderObject):
         'background', 'borderwidth', 'cursor', 'highlightbackground',
         'highlightcolor', 'highlightthickness',
         'insertbackground', 'insertborderwidth', 'insertofftime',
-        'insertontime', 'insertwidth', 'relief',  'selectbackground',
+        'insertontime', 'insertwidth', 'relief', 'selectbackground',
         'selectborderwidth', 'selectforeground', 'takefocus',
         'xscrollcommand', 'yscrollcommand')
     OPTIONS_SPECIFIC = (
@@ -467,6 +483,7 @@ class TKCanvas(BuilderObject):
         'width', 'xscrollincrement', 'yscrollincrement')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('xscrollcommand', 'yscrollcommand')
+
 
 register_widget('tk.Canvas', TKCanvas,
                 'Canvas', ('Control & Display', 'tk', 'ttk'))
@@ -483,17 +500,22 @@ class TKMenu(BuilderObject):
     class_ = tk.Menu
     container = True
     OPTIONS_STANDARD = ('activebackground', 'activeborderwidth',
-                        'activeforeground',  'background', 'borderwidth',
+                        'activeforeground', 'background', 'borderwidth',
                         'cursor', 'disabledforeground', 'font', 'foreground',
                         'relief', 'takefocus')
-    OPTIONS_SPECIFIC = ('postcommand', 'selectcolor', 'tearoff', 'tearoffcommand', 'title')
+    OPTIONS_SPECIFIC = (
+        'postcommand',
+        'selectcolor',
+        'tearoff',
+        'tearoffcommand',
+        'title')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('postcommand', 'tearoffcommand')
     allow_bindings = False
 
     def layout(self):
         pass
-        
+
     def code_realize(self, boparent, code_identifier=None):
         start = -1
         tearoff_conf = self.wmeta.properties.get('tearoff', 'true')
@@ -501,12 +523,13 @@ class TKMenu(BuilderObject):
             start = 0
         self.code_item_index = start
         return super(TKMenu, self).code_realize(boparent, code_identifier)
-        
+
     def _code_define_callback(self, cmdprop, cmdname):
         args = None
         if cmdprop == ('tearoffcommand'):
             args = ('menu', 'tearoff')
         return self.builder.code_create_callback(cmdname, 'command', args)
+
 
 register_widget('tk.Menu', TKMenu, 'Menu', ('Menu', 'tk', 'ttk'))
 
@@ -522,7 +545,7 @@ class TKMenuitem(BuilderObject):
     itemtype = None
     layout_required = False
     OPTIONS_STANDARD = ('activebackground', 'activeforeground', 'background',
-                        'bitmap', 'compound', 'foreground',  'state')
+                        'bitmap', 'compound', 'foreground', 'state')
     OPTIONS_SPECIFIC = ('accelerator', 'columnbreak', 'command',
                         'font', 'hidemargin', 'image', 'label', 'underline')
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + BuilderObject.OPTIONS_CUSTOM
@@ -562,13 +585,13 @@ class TKMenuitem(BuilderObject):
 
     def _connect_command(self, cpname, callback):
         self.widget.entryconfigure(self.__index, command=callback)
-    
+
     #
     # code generation functions
     #
     def _code_get_item_name(self):
         return 'mi_{0}'.format(self.wmeta.identifier)
-    
+
     def code_realize(self, boparent, code_identifier=None):
         boparent.code_item_index += 1
         self._code_item_index = boparent.code_item_index
@@ -580,9 +603,9 @@ class TKMenuitem(BuilderObject):
         lines = []
         # item index
         itemname = self._code_get_item_name()
-        line  = "{0} = {1}".format(itemname, self._code_item_index)
+        line = "{0} = {1}".format(itemname, self._code_item_index)
         lines.append(line)
-        
+
         pbag = []
         for pname in kwproperties:
             line = "{0}={1}".format(pname, code_bag[pname])
@@ -596,17 +619,17 @@ class TKMenuitem(BuilderObject):
         for pname in complex_properties:
             lines.extend(code_bag[pname])
         return lines
-    
+
     def code_configure(self, targetid=None):
         return tuple()
-    
+
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
             if (pname not in self.ro_properties
-              and pname not in self.command_properties):
+                    and pname not in self.command_properties):
                 self._code_set_property(targetid, pname, value, code_bag)
-        
+
         # properties
         # determine kw properties or complex properties
         kwproperties = []
@@ -616,9 +639,9 @@ class TKMenuitem(BuilderObject):
                 kwproperties.append(pname)
             else:
                 complex_properties.append(pname)
-        
+
         return (code_bag, kwproperties, complex_properties)
-    
+
     def _code_set_property(self, targetid, pname, value, code_bag):
         if pname == 'command_id_arg':
             # pass, property for command configuration
@@ -626,11 +649,12 @@ class TKMenuitem(BuilderObject):
         else:
             super(TKMenuitem, self)._code_set_property(targetid, pname, value,
                                                        code_bag)
-    
+
     def _pass_widgetid_to_callback(self):
-        include_id = self.wmeta.properties.get('command_id_arg', 'false').lower()
+        include_id = self.wmeta.properties.get(
+            'command_id_arg', 'false').lower()
         return include_id == 'true'
-    
+
     def _code_define_callback(self, cmdprop, cmdname):
         args = None
         if self._pass_widgetid_to_callback():
@@ -652,7 +676,7 @@ class TKMenuitem(BuilderObject):
         line = line.format(target, itemname, cmd, cbname)
         lines.append(line)
         return lines
-    
+
     def _code_connect_command(self, cmd, cbname):
         if self.itemtype != 'submenu':
             return self._code_connect_item_command(cmd, cbname)
@@ -668,7 +692,7 @@ class TKMenuitemSubmenu(TKMenuitem):
         'tk.Menuitem.Command', 'tk.Menuitem.Radiobutton',
         'tk.Menuitem.Separator')
     OPTIONS_STANDARD = ('activebackground', 'activeborderwidth',
-                        'activeforeground',  'background', 'borderwidth',
+                        'activeforeground', 'background', 'borderwidth',
                         'bitmap', 'compound',
                         'cursor', 'disabledforeground', 'font', 'foreground',
                         'relief', 'takefocus', 'state')
@@ -698,7 +722,7 @@ class TKMenuitemSubmenu(TKMenuitem):
         item_properties['menu'] = submenu
         master.add(tk.CASCADE, **item_properties)
         return self.widget
-    
+
     def _setup_item_properties(self, itemprops):
         super(TKMenuitemSubmenu, self)._setup_item_properties(itemprops)
         pname = 'specialmenu'
@@ -711,7 +735,7 @@ class TKMenuitemSubmenu(TKMenuitem):
 
     def layout(self):
         pass
-    
+
     #
     # code generation functions
     #
@@ -721,10 +745,10 @@ class TKMenuitemSubmenu(TKMenuitem):
         if tearoff_conf in ('1', 'true'):
             start = 0
         self.code_item_index = start
-        
+
         if self._code_identifier is None:
             self._code_identifier = self.wmeta.identifier
-        
+
         masterid = boparent.code_child_master()
         lines = []
         # menu properties
@@ -734,13 +758,13 @@ class TKMenuitemSubmenu(TKMenuitem):
                 menuprop[pname] = value
             if pname == 'specialmenu':
                 menuprop['name'] = value
-        
+
         code_bag, kw_properties, complex_properties = \
             self._code_process_properties(menuprop,
                                           self.code_identifier())
         for pname in complex_properties:
             lines.extend(code_bag[pname])
-            
+
         mpbag = []
         for pname in kw_properties:
             line = "{0}={1}".format(pname, code_bag[pname])
@@ -748,13 +772,13 @@ class TKMenuitemSubmenu(TKMenuitem):
         mprops = ''
         if mpbag:
             mprops = ', ' + ', '.join(mpbag)
-        
+
         # item properties
         itemprop = {}
         for pname, value in self.wmeta.properties.items():
             if pname in TKMenuitem.properties:
                 itemprop[pname] = value
-        
+
         code_bag, kw_properties, complex_properties = \
             self._code_process_properties(itemprop, self.code_identifier())
         for pname in complex_properties:
@@ -769,19 +793,19 @@ class TKMenuitemSubmenu(TKMenuitem):
         props = ''
         if pbag:
             props = ', {0}'.format(', '.join(pbag))
-        
+
         # creation
         line = "{0} = tk.Menu({1}{2})".format(self.code_identifier(),
                                               masterid, mprops)
         lines.append(line)
         line = "{0}.add(tk.CASCADE{1})".format(masterid, props)
         lines.append(line)
-        
+
         return lines
-    
+
     def code_configure(self, targetid=None):
         return tuple()
-    
+
     def _code_define_callback(self, cmdprop, cmdname):
         args = None
         if cmdprop == ('tearoffcommand'):
@@ -797,6 +821,7 @@ class TKMenuitemCommand(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.COMMAND
 
+
 register_widget('tk.Menuitem.Command', TKMenuitemCommand,
                 'Menuitem.Command', ('Menu', 'tk', 'ttk'))
 
@@ -805,11 +830,11 @@ class TKMenuitemCheckbutton(TKMenuitem):
     allowed_parents = ('tk.Menu', 'tk.Menuitem.Submenu')
     itemtype = tk.CHECKBUTTON
     OPTIONS_STANDARD = TKMenuitem.OPTIONS_STANDARD
-    OPTIONS_SPECIFIC = \
-        TKMenuitem.OPTIONS_SPECIFIC + \
+    OPTIONS_SPECIFIC = TKMenuitem.OPTIONS_SPECIFIC + \
         ('indicatoron', 'onvalue', 'offvalue', 'selectcolor', 'selectimage', 'variable')
     OPTIONS_CUSTOM = TKMenuitem.OPTIONS_CUSTOM
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
+
 
 register_widget('tk.Menuitem.Checkbutton', TKMenuitemCheckbutton,
                 'Menuitem.Checkbutton', ('Menu', 'tk', 'ttk'))
@@ -825,6 +850,7 @@ class TKMenuitemRadiobutton(TKMenuitem):
     OPTIONS_CUSTOM = TKMenuitem.OPTIONS_CUSTOM
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
+
 register_widget('tk.Menuitem.Radiobutton', TKMenuitemRadiobutton,
                 'Menuitem.Radiobutton', ('Menu', 'tk', 'ttk'))
 
@@ -838,6 +864,7 @@ class TKMenuitemSeparator(TKMenuitem):
     properties = tuple()
     command_properties = tuple()
 
+
 register_widget('tk.Menuitem.Separator', TKMenuitemSeparator,
                 'Menuitem.Separator', ('Menu', 'tk', 'ttk'))
 
@@ -850,6 +877,7 @@ class TKPanedWindowPane(PanedWindowPaneBO):
     OPTIONS_SPECIFIC = ('height', 'hide', 'minsize',
                         'padx', 'pady', 'sticky', 'stretch', 'width')
     properties = OPTIONS_SPECIFIC
+
 
 register_widget('tk.PanedWindow.Pane', TKPanedWindowPane,
                 'PanedWindow.Pane', ('Pygubu Helpers', 'tk'))
@@ -869,23 +897,23 @@ class TKLabelwidgetBO(BuilderObject):
 
     def add_child(self, bobject):
         self.widget.configure(labelwidget=bobject.widget)
-    
+
     def layout(self, target=None, configure_gridrc=True):
         pass
-    
+
     #
     # code generation functions
     #
     def code_realize(self, boparent, code_identifier=None):
         self._code_identifier = boparent.code_child_master()
         return tuple()
-    
+
     def code_configure(self, targetid=None):
         return tuple()
-    
+
     def code_layout(self, targetid=None):
         return tuple()
-    
+
     def code_child_add(self, childid):
         line = '{0}.configure(labelwidget={1})'
         line = line.format(self.code_child_master(), childid)
@@ -894,7 +922,6 @@ class TKLabelwidgetBO(BuilderObject):
 
 register_widget('pygubu.builder.widgets.Labelwidget', TKLabelwidgetBO,
                 'Labelwidget', ('Pygubu Helpers', 'tk', 'ttk'))
-
 
 
 class ToplevelMenuHelperBO(BuilderObject):
@@ -911,23 +938,23 @@ class ToplevelMenuHelperBO(BuilderObject):
 
     def add_child(self, bobject):
         self.widget.configure(menu=bobject.widget)
-    
+
     def layout(self, target=None, configure_gridrc=True):
         pass
-    
+
     #
     # code generation functions
     #
     def code_realize(self, boparent, code_identifier=None):
         self._code_identifier = boparent.code_child_master()
         return tuple()
-    
+
     def code_configure(self, targetid=None):
         return tuple()
-    
+
     def code_layout(self, targetid=None):
         return tuple()
-    
+
     def code_child_add(self, childid):
         line = '{0}.configure(menu={1})'
         line = line.format(self.code_child_master(), childid)
@@ -945,7 +972,7 @@ class TKOptionMenu(BuilderObject):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
     ro_properties = ('variable', 'value', 'values')
-    
+
     def realize(self, parent):
         args = self._get_init_args()
         master = parent.get_child_master()
@@ -960,25 +987,26 @@ class TKOptionMenu(BuilderObject):
         values = args.pop('values', '')
         if values is not None:
             values = values.split(',')
-        
+
         class _cb_proxy(object):
             def __init__(self):
                 super(_cb_proxy, self).__init__()
                 self.callback = None
+
             def __call__(self, arg1):
                 if self.callback is not None:
                     self.callback(arg1)
-        
+
         cb_proxy = _cb_proxy()
         self.widget = self.class_(master, variable, value, *values,
                                   command=cb_proxy)
         self.widget._cb_proxy = cb_proxy
         return self.widget
-    
+
     def _connect_command(self, cmd_pname, callback):
         if cmd_pname == 'command':
             self.widget._cb_proxy.callback = callback
-    
+
     #
     # Code generation methods
     #
@@ -999,7 +1027,7 @@ class TKOptionMenu(BuilderObject):
             cmdtype = value['type']
             args = ('option', )
             pvalue = self.builder.code_create_callback(
-                    self.code_identifier(), cmdname, cmdtype, args)
+                self.code_identifier(), cmdname, cmdtype, args)
             command_arg = "{1}".format(pname, pvalue)
         pname = 'value'
         if pname in init_args:
@@ -1024,12 +1052,13 @@ class TKOptionMenu(BuilderObject):
             variable_arg, value_arg, command_arg)
         lines.append(s)
         return lines
-    
+
     def code_configure(self, targetid=None):
         return []
-    
+
     def code_connect_commands(self):
         return []
+
 
 register_widget('tk.OptionMenu', TKOptionMenu,
                 'OptionMenu', ('Control & Display', 'tk', 'ttk'))

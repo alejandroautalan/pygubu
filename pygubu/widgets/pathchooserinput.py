@@ -5,30 +5,30 @@ try:
     import tkinter as tk
     import tkinter.ttk as ttk
     from tkinter import filedialog
-except:
+except ImportError:
+    import tkFileDialog as filedialog
     import Tkinter as tk
     import ttk
-    import tkFileDialog as filedialog
 
 
 class PathChooserInput(ttk.Frame):
     """ Allows to choose a file or directory.
-    
+
     Generates <<PathChooserPathChanged>> event when the path is changed.
-    
+
     Dialog options:
       initialdir: str
       filetypes: iterable
       title: str
       mustexist: str
-    
+
     Usage Example:
         # Choose File:
         pcifile = PathChooserInput(framex)
         pcifile.config(initialdir='/home', title='Choose a file:', type='file')
         pcifile.config(filetypes=[('text files-', '.txt'), ('uifiles', '.ui')])
         pcifile.pack(fill='x', side='top')
-        
+
         # Choose directory:
         pcidir = PathChooserInput(framex)
         pcidir.config(initialdir='/usr/local', mustexist='true',
@@ -49,22 +49,22 @@ class PathChooserInput(ttk.Frame):
             'initialdir': None,
             'mustexist': False,
             'title': None,
-            }
+        }
         # subwidgets
         self.entry = o = ttk.Entry(self, state=self._state)
         o.grid(row=0, column=0, sticky='ew')
         o.bind('<KeyPress>', self.__on_enter_key_pressed)
         o.bind('<FocusOut>', self.__on_focus_out)
         self.folder_button = o = ttk.Button(
-                self,
-                text='▶',
-                command=self.__on_folder_btn_pressed,
-                width=4,
-                state=self._state)
+            self,
+            text='▶',
+            command=self.__on_folder_btn_pressed,
+            width=4,
+            state=self._state)
         o.grid(row=0, column=1, padx=2)
 
         #self.rowconfigure(0, weight = 0)
-        self.columnconfigure(0, weight = 1)
+        self.columnconfigure(0, weight=1)
 
     def configure(self, cnf=None, **kw):
         args = tk._cnfmerge((cnf, kw))
@@ -127,13 +127,13 @@ class PathChooserInput(ttk.Frame):
         return ttk.Frame.cget(self, key)
 
     __getitem__ = cget
-        
+
     def _is_changed(self):
-#        print(repr(self._oldvalue), ':', repr(self.entry.get()))
+        #        print(repr(self._oldvalue), ':', repr(self.entry.get()))
         if self._oldvalue != self.entry.get():
             return True
         return False
-    
+
     def _generate_changed_event(self):
         if self._is_changed():
             self._oldvalue = self.entry.get()
@@ -141,9 +141,9 @@ class PathChooserInput(ttk.Frame):
 
     def __on_enter_key_pressed(self, event):
         key = event.keysym
-        if key in  ('Return','KP_Enter'):
+        if key in ('Return', 'KP_Enter'):
             self._generate_changed_event()
-    
+
     def __on_focus_out(self, event):
         self._generate_changed_event()
 
@@ -161,4 +161,3 @@ class PathChooserInput(ttk.Frame):
             fname = filedialog.askdirectory(**fdoptions)
         if fname:
             self.configure(path=fname)
-

@@ -1,8 +1,9 @@
 # encoding: utf8
 try:
     import ttk
-except:
+except ImportError:
     import tkinter.ttk as ttk
+
 
 class Spinbox(ttk.Entry):
 

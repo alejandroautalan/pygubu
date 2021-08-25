@@ -2,7 +2,7 @@
 try:
     import tkinter as tk
     from tkinter import ttk
-except:
+except ImportError:
     import Tkinter as tk
     import ttk
 
@@ -10,6 +10,7 @@ except:
 """A frame widget that autoarrange children when is resized.
 Usefull for frames with several children of same size.
 """
+
 
 class AutoArrangeFrame(ttk.Frame):
 
@@ -21,7 +22,7 @@ class AutoArrangeFrame(ttk.Frame):
 
     def __arrange(self):
         self.__cb = None
-        
+
         self.__recurse_check += 1
         self.update_idletasks()
         self.__recurse_check += -1
@@ -66,11 +67,9 @@ class AutoArrangeFrame(ttk.Frame):
                 child.grid_remove()
                 child.grid(row=r, column=c)
 
-
     def __on_configure(self, event):
         if self.__cb is None:
             self.__cb = self.after_idle(self.__arrange)
-
 
 
 if __name__ == '__main__':

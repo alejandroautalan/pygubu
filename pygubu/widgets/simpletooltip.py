@@ -4,7 +4,7 @@ __all__ = ['ToolTip']
 try:
     import tkinter as tk
     from tkinter import ttk
-except:
+except ImportError:
     import Tkinter as tk
     import ttk
 
@@ -12,8 +12,8 @@ except:
 class ToolTip(object):
 
     def __init__(self, widget, text=None, font=None,
-                background=None, foreground=None,
-                justify=None, wraplength=None):
+                 background=None, foreground=None,
+                 justify=None, wraplength=None):
         self.widget = widget
         self.tipwindow = None
         self.id = None
@@ -24,14 +24,14 @@ class ToolTip(object):
         self.foreground = foreground if foreground is not None else "black"
         self.justify = justify if justify is not None else tk.LEFT
         self.wraplength = wraplength if wraplength is not None else 300
-    
-    def inside_wbbox(self, rx , ry):
+
+    def inside_wbbox(self, rx, ry):
         bbox = self._calc_bbox(self.widget, True)
         inside = False
         if (bbox[0] <= rx <= bbox[2]) and (bbox[1] <= ry <= bbox[3]):
             inside = True
         return inside
-        
+
     def _calc_bbox(self, widget, screen=False):
         rx = widget.winfo_x()
         ry = widget.winfo_y()
@@ -41,16 +41,16 @@ class ToolTip(object):
         x2 = rx + widget.winfo_width()
         y2 = ry + widget.winfo_height()
         return (rx, ry, x2, y2)
-    
+
     def _calc_final_pos(self, ttwidth, ttheight):
         rx, ry, rcx, rcy = self._calc_bbox(self.widget, True)
-        w = rcx-rx
-        h = rcy-ry
+        w = rcx - rx
+        h = rcy - ry
         sh = self.widget.winfo_screenheight()
         sw = self.widget.winfo_screenwidth()
         x = y = 0
         #final_region = None
-        regions = ('se-al','se-ar', 'sw-al', 'sw-ar',
+        regions = ('se-al', 'se-ar', 'sw-al', 'sw-ar',
                    'nw-al', 'nw-ar', 'ne-al', 'ne-ar')
         for region in regions:
             if region == 'ne-al':
@@ -98,10 +98,16 @@ class ToolTip(object):
                        "help", "noActivates")
         except tk.TclError:
             pass
-        label = tk.Label(tw, text=self.text, justify=self.justify,
-                      background=self.background, foreground=self.foreground,
-                      relief=tk.SOLID, borderwidth=1,
-                      font=self.font, wraplength=self.wraplength)
+        label = tk.Label(
+            tw,
+            text=self.text,
+            justify=self.justify,
+            background=self.background,
+            foreground=self.foreground,
+            relief=tk.SOLID,
+            borderwidth=1,
+            font=self.font,
+            wraplength=self.wraplength)
         label.pack(ipadx=2)
         x, y = self._calc_final_pos(
             label.winfo_reqwidth(), label.winfo_reqheight())
@@ -113,10 +119,13 @@ class ToolTip(object):
         if tw:
             tw.destroy()
 
+
 def create(widget, text):
     toolTip = ToolTip(widget, text)
+
     def enter(event):
         toolTip.showtip()
+
     def leave(event):
         toolTip.hidetip()
     widget.bind('<Enter>', enter)

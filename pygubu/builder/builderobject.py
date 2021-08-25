@@ -1,13 +1,14 @@
 # encoding: utf8
 from __future__ import unicode_literals
-import logging
+
 import itertools
 import json
-from collections import namedtuple, defaultdict
+import logging
+from collections import defaultdict, namedtuple
 
 try:
     import tkinter as tk
-except:
+except ImportError:
     import Tkinter as tk
 
 __all__ = [
@@ -55,7 +56,7 @@ def grouper(iterable, n, fillvalue=None):
 # Python 2 issue:
 try:
     isinstance(basestring, type)
-except:
+except BaseException:
     basestring = str
 
 #
@@ -63,7 +64,7 @@ except:
 #
 
 WidgetDescription = namedtuple('WidgetDescription',
-                              ['classname', 'builder', 'label', 'tags'])
+                               ['classname', 'builder', 'label', 'tags'])
 
 CLASS_MAP = {}
 
@@ -102,6 +103,8 @@ class CB_TYPES:
 #
 # Base class
 #
+
+
 class BuilderObject(object):
     """Base class for Widgets created with Builder"""
 
@@ -158,10 +161,10 @@ class BuilderObject(object):
             target = self.widget
         for pname, value in self.wmeta.properties.items():
             if (pname not in self.ro_properties and
-                pname not in self.command_properties):
+                    pname not in self.command_properties):
                 pvalue = self._process_property_value(pname, value)
                 self._set_property(target, pname, pvalue)
-                
+
     def _process_property_value(self, pname, value):
         return value
 
@@ -195,10 +198,13 @@ class BuilderObject(object):
         if self.layout_required:
             if target is None:
                 target = self.widget
-    
+
             # Check manager
             manager = self.wmeta.manager
-            logger.debug('Applying %s layout to %s', manager, self.wmeta.identifier)
+            logger.debug(
+                'Applying %s layout to %s',
+                manager,
+                self.wmeta.identifier)
             if manager == 'grid':
                 self._grid_layout(target)
             elif manager == 'pack':
@@ -220,11 +226,11 @@ class BuilderObject(object):
         target.pack(**properties)
         if propagate.lower() != 'true':
             target.pack_propagate(0)
-    
+
     def _place_layout(self, target):
         # Do place
         target.place(**self.wmeta.layout_properties)
-    
+
     def _grid_layout(self, target):
         properties = dict(self.wmeta.layout_properties)
         propagate = properties.pop('propagate', 'true')
@@ -276,11 +282,11 @@ class BuilderObject(object):
                 cmd = json.loads(cmd)
                 cmd_name = (cmd['value']).strip()
                 if cmd_name:
-                    commands[cmd_pname]= cmd
+                    commands[cmd_pname] = cmd
                 else:
                     msg = "%s: invalid value for property '%s'."
                     logger.warning(msg, self.wmeta.identifier, cmd_pname)
-        
+
         if isinstance(cmd_bag, dict):
             for cmd_pname, cmd in commands.items():
                 cmd_name = cmd['value']
@@ -347,18 +353,18 @@ class BuilderObject(object):
                                        self._code_class_name(), master, kwargs)
         lines.append(s)
         return lines
-    
+
     def code_identifier(self):
         if self._code_identifier is None:
             return self.wmeta.identifier
         return self._code_identifier
-    
+
     def code_child_master(self):
         return self.code_identifier()
-    
+
     def code_child_add(self, childid):
         return []
-    
+
     def code_configure(self, targetid=None):
         if targetid is None:
             targetid = self.code_identifier()
@@ -377,9 +383,9 @@ class BuilderObject(object):
             lines.append(line)
         for pname in complex_properties:
             lines.extend(code_bag[pname])
-        
+
         return lines
-    
+
     def code_layout(self, targetid=None, parentid=None):
         if targetid is None:
             targetid = self.code_identifier()
@@ -395,17 +401,17 @@ class BuilderObject(object):
                 if p not in ('propagate', ):
                     args_bag.append(arg_stmt.format(p, v))
             args = ', '.join(args_bag)
-            
+
             manager = self.wmeta.manager
             line = layout_stmt.format(targetid, manager, args)
             lines.append(line)
-            
+
             pvalue = str(layout.get('propagate', '')).lower()
-            if 'propagate' in layout and  pvalue == 'false':
+            if 'propagate' in layout and pvalue == 'false':
                 line = '{0}.{1}_propagate({2})'
                 line = line.format(targetid, manager, 0)
                 lines.append(line)
-            
+
             lrow_stmt = "{0}.rowconfigure('{1}', {2})"
             lcol_stmt = "{0}.columnconfigure('{1}', {2})"
             rowbag = defaultdict(list)
@@ -427,7 +433,7 @@ class BuilderObject(object):
             return lines
         else:
             return []
-    
+
     def _code_class_name(self):
         cname = None
         # try here ?
@@ -440,14 +446,14 @@ class BuilderObject(object):
             else:
                 cname = 'ClassNameNotDefined'
         return cname
-    
+
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
             if (pname not in self.ro_properties and
-                pname not in self.command_properties):
+                    pname not in self.command_properties):
                 self._code_set_property(targetid, pname, value, code_bag)
-        
+
         # properties
         # determine kw properties or complex properties
         kwproperties = []
@@ -457,9 +463,9 @@ class BuilderObject(object):
                 kwproperties.append(pname)
             else:
                 complex_properties.append(pname)
-        
+
         return (code_bag, kwproperties, complex_properties)
-    
+
     def _code_set_property(self, targetid, pname, value, code_bag):
         if pname in self.OPTIONS_CUSTOM:
             line = "# TODO - {0}: code for custom option '{1}' not implemented."
@@ -484,7 +490,7 @@ class BuilderObject(object):
             elif pname == 'takefocus':
                 propvalue = str(tk.getboolean(value))
             code_bag[pname] = propvalue
-    
+
     def code_connect_commands(self):
         commands = {}
         for cmd_pname in self.command_properties:
@@ -494,7 +500,7 @@ class BuilderObject(object):
                 cmd = json.loads(cmd)
                 cmd_name = (cmd['value']).strip()
                 if cmd_name:
-                    commands[cmd_pname]= cmd
+                    commands[cmd_pname] = cmd
                 else:
                     msg = "%s: invalid callback name for property '%s'."
                     logger.warning(msg, self.wmeta.identifier, cmd_pname)
@@ -505,7 +511,7 @@ class BuilderObject(object):
             if cmd_code:
                 lines.extend(cmd_code)
         return lines
-    
+
     def _code_define_callback(self, cmd_pname, cmd):
         cmdname = cmd['value']
         cmdtype = cmd['cbtype']
@@ -521,12 +527,12 @@ class BuilderObject(object):
         if cmdtype == CB_TYPES.SCROLL:
             args = ('mode', 'value', 'units')
         return self.builder.code_create_callback(wid, cmdname, cmdtype, args)
-    
+
     def _code_connect_command(self, cmd, cbname):
         target = self.code_identifier()
         line = '{0}.configure({1}={2})'.format(target, cmd, cbname)
         return (line, )
-    
+
     def code_connect_bindings(self):
         lines = []
         target = self.code_identifier()
@@ -545,6 +551,7 @@ class BuilderObject(object):
 #
 class EntryBaseBO(BuilderObject):
     """Base class for tk.Entry and ttk.Entry builder objects"""
+
     def _set_property(self, target_widget, pname, value):
         if pname == 'text':
             wstate = str(target_widget['state'])
@@ -556,7 +563,7 @@ class EntryBaseBO(BuilderObject):
             target_widget['state'] = wstate
         else:
             super(EntryBaseBO, self)._set_property(target_widget, pname, value)
-    
+
     #
     # Code generation methods
     #
@@ -566,7 +573,7 @@ class EntryBaseBO(BuilderObject):
                 "_text_ = '''{0}'''".format(value),
                 "{0}.delete('0', 'end')".format(targetid),
                 "{0}.insert('0', _text_)".format(targetid),
-                ]
+            ]
             if 'state' in self.wmeta.properties:
                 state_value = self.wmeta.properties['state']
                 if state_value != 'normal':
@@ -618,20 +625,20 @@ class PanedWindowPaneBO(BuilderObject):
 
     def add_child(self, bobject):
         self.widget.add(bobject.widget, **self.wmeta.properties)
-    
+
     #
     # code generation functions
     #
     def code_realize(self, boparent, code_identifier=None):
         self._code_identifier = boparent.code_child_master()
         return tuple()
-    
+
     def code_configure(self, targetid=None):
         return tuple()
-    
+
     def code_layout(self, targetid=None):
         return tuple()
-    
+
     def code_child_add(self, childid):
         config = []
         masterid = self.code_child_master()

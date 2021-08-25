@@ -1,11 +1,12 @@
 # encoding: utf8
 from __future__ import unicode_literals
+
 from collections import OrderedDict
 
 try:
     import tkinter as tk
     import tkinter.ttk as ttk
-except:
+except ImportError:
     import Tkinter as tk
     import ttk
 
@@ -31,6 +32,7 @@ class TTKFrame(TTKWidgetBO):
     container = True
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
+
 register_widget('ttk.Frame', TTKFrame, 'Frame', ('Containers', 'ttk'))
 
 
@@ -45,6 +47,7 @@ class TTKLabel(TTKWidgetBO):
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
+
 register_widget('ttk.Label', TTKLabel, 'Label', ('Control & Display', 'ttk'))
 
 
@@ -56,8 +59,9 @@ class TTKButton(TTKWidgetBO):
     class_ = ttk.Button
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
-                    + TTKWidgetBO.OPTIONS_CUSTOM
+        + TTKWidgetBO.OPTIONS_CUSTOM
     command_properties = ('command',)
+
 
 register_widget('ttk.Button', TTKButton,
                 'Button', ('Control & Display', 'ttk'))
@@ -71,8 +75,9 @@ class TTKCheckbutton(TTKWidgetBO):
     class_ = ttk.Checkbutton
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
-                    + TTKWidgetBO.OPTIONS_CUSTOM
+        + TTKWidgetBO.OPTIONS_CUSTOM
     command_properties = ('command',)
+
 
 register_widget('ttk.Checkbutton', TTKCheckbutton,
                 'Checkbutton', ('Control & Display', 'ttk'))
@@ -86,9 +91,10 @@ class TTKRadiobutton(TTKWidgetBO):
     class_ = ttk.Radiobutton
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC \
-                    + TTKWidgetBO.OPTIONS_CUSTOM
+        + TTKWidgetBO.OPTIONS_CUSTOM
     ro_properties = ('class_',)
     command_properties = ('command',)
+
 
 register_widget('ttk.Radiobutton', TTKRadiobutton,
                 'Radiobutton', ('Control & Display', 'ttk'))
@@ -107,6 +113,7 @@ class TTKCombobox(TTKWidgetBO):
                           'invalidcommand', 'xscrollcommand')
     virtual_events = ('<<ComboboxSelected>>')
 
+
 register_widget('ttk.Combobox', TTKCombobox, 'Combobox',
                 ('Control & Display', 'ttk'))
 
@@ -118,6 +125,7 @@ class TTKScrollbar(TTKWidgetBO):
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
 
+
 register_widget('ttk.Scrollbar', TTKScrollbar,
                 'Scrollbar', ('Control & Display', 'ttk'))
 
@@ -127,6 +135,7 @@ class TTKSizegrip(TTKWidgetBO):
     container = False
     properties = (TTKWidgetBO.OPTIONS_STANDARD +
                   TTKWidgetBO.OPTIONS_SPECIFIC)
+
 
 register_widget('ttk.Sizegrip', TTKSizegrip,
                 'Sizegrip', ('Control & Display', 'ttk'))
@@ -155,6 +164,7 @@ class TTKProgressbar(TTKWidgetBO):
     container = False
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
+
 register_widget('ttk.Progressbar', TTKProgressbar,
                 'Progressbar', ('Control & Display', 'ttk'))
 
@@ -167,6 +177,7 @@ class TTKScale(TTKWidgetBO):
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
     command_properties = ('command',)
 
+
 register_widget('ttk.Scale', TTKScale, 'Scale', ('Control & Display', 'ttk'))
 
 
@@ -175,6 +186,7 @@ class TTKSeparator(TTKWidgetBO):
     class_ = ttk.Separator
     container = False
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
+
 
 register_widget('ttk.Separator', TTKSeparator,
                 'Separator', ('Control & Display', 'ttk'))
@@ -188,6 +200,7 @@ class TTKLabelframe(TTKWidgetBO):
     container = True
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
+
 register_widget('ttk.Labelframe', TTKLabelframe,
                 'Labelframe', ('Containers', 'ttk'))
 
@@ -200,6 +213,7 @@ class TTKPanedwindow(TTKWidgetBO, PanedWindowBO):
     ro_properties = ('class_', 'orient')
     virtual_events = ('<<EnteredChild>>',)
 
+
 register_widget('ttk.Panedwindow', TTKPanedwindow,
                 'Panedwindow', ('Containers', 'ttk'))
 
@@ -211,6 +225,7 @@ class TTKNotebook(TTKWidgetBO):
     allowed_children = ('ttk.Notebook.Tab',)
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
     virtual_events = ('<<NotebookTabChanged>>',)
+
 
 register_widget('ttk.Notebook', TTKNotebook,
                 'Notebook', ('Containers', 'ttk'))
@@ -229,6 +244,7 @@ class TTKMenubuttonBO(TTKWidgetBO):
 
     def add_child(self, bobject):
         self.widget.configure(menu=bobject.widget)
+
 
 register_widget('ttk.Menubutton', TTKMenubuttonBO,
                 'Menubutton', ('Menu', 'Control & Display', 'ttk',))
@@ -281,7 +297,7 @@ class TTKTreeviewBO(TTKWidgetBO):
         if self._headings is None:
             self._headings = OrderedDict()
         self._headings[col_id] = attrs
-    
+
     #
     # Code generation methods
     #
@@ -342,6 +358,7 @@ class TTKPanedwindowPane(TTKWidgetBO, PanedWindowPaneBO):
     maxchildren = 1
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
+
 register_widget('ttk.Panedwindow.Pane', TTKPanedwindowPane,
                 'Panedwindow.Pane', ('Pygubu Helpers', 'ttk'))
 
@@ -370,21 +387,21 @@ class TTKNotebookTab(TTKWidgetBO):
 
     def add_child(self, bobject):
         self.widget.add(bobject.widget, **self.wmeta.properties)
-        
+
     #
     # Code generation methods
     #
     def code_realize(self, boparent, code_identifier=None):
         self._code_identifier = boparent.code_child_master()
         return tuple()
-    
+
     def code_configure(self, targetid=None):
         return tuple()
-    
+
     def code_child_add(self, childid):
         targetid = self.code_identifier()
         code_bag, kw, _ = self._code_process_properties(self.wmeta.properties,
-                                                 targetid)
+                                                        targetid)
         kwbag = []
         for pname in kw:
             arg = '{0}={1}'.format(pname, code_bag[pname])
@@ -418,7 +435,7 @@ class TTKTreeviewColBO(TTKWidgetBO):
         col_props = dict(self.wmeta.properties)  # copy properties
         self._setup_column(parent, col_props)
         return self.widget
-    
+
     def _setup_column(self, parent, col_props):
         tree_column = col_props.pop('tree_column', 'false')
         tree_column = tree_column.lower()
@@ -428,7 +445,7 @@ class TTKTreeviewColBO(TTKWidgetBO):
         visible = visible.lower()
         is_visible = True if visible == 'true' else False
 
-        #configure heading properties
+        # configure heading properties
         col_props.pop('command', '')
         hprops = {
             'anchor': col_props.pop('heading_anchor', tk.W),
@@ -438,10 +455,10 @@ class TTKTreeviewColBO(TTKWidgetBO):
         imgvalue = col_props.pop('image', None)
         if imgvalue:
             hprops['image'] = imgvalue
-        
+
         parent.set_heading(column_id, hprops)
 
-        #configure column properties
+        # configure column properties
         cprops = {
             'anchor': col_props.pop('column_anchor', ''),
             'stretch': col_props.pop('stretch', '1'),
@@ -462,7 +479,7 @@ class TTKTreeviewColBO(TTKWidgetBO):
         tree_column = True if tree_column == 'true' else False
         column_id = '#0' if tree_column else self.wmeta.identifier
         self.widget.heading(column_id, command=callback)
-    
+
     #
     # Code generation methods
     #
@@ -471,7 +488,7 @@ class TTKTreeviewColBO(TTKWidgetBO):
         col_props = dict(self.wmeta.properties)  # copy properties
         self._setup_column(boparent, col_props)
         return tuple()
-    
+
     def code_configure(self, targetid=None):
         return tuple()
 

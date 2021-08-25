@@ -3,20 +3,22 @@ from __future__ import unicode_literals
 
 __all__ = ['CalendarFrame']
 
-import locale
 import calendar
+import locale
+
 try:
     import tkinter as tk
     import tkinter.ttk as ttk
-except:
+except ImportError:
     import Tkinter as tk
     import ttk
 
 
 imgp_data = ('R0lGODlhDAAMAIABAAAAAP///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEK'
-            +'AAEALAAAAAAMAAwAAAIVjI+JoMsdgIRyqmoTfrfCmDWh+DUFADs=')
+             + 'AAEALAAAAAAMAAwAAAIVjI+JoMsdgIRyqmoTfrfCmDWh+DUFADs=')
 imgn_data = ('R0lGODlhDAAMAIABAAAAAP///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEK'
-            +'AAEALAAAAAAMAAwAAAIUjI8ZoAnczINtUmdrVpu/uFwcSBYAOw==')
+             + 'AAEALAAAAAAMAAwAAAIUjI8ZoAnczINtUmdrVpu/uFwcSBYAOw==')
+
 
 def get_calendar(locale, fwday):
     # instantiate proper calendar class
@@ -25,10 +27,12 @@ def get_calendar(locale, fwday):
     else:
         return calendar.LocaleTextCalendar(fwday, locale)
 
+
 def i2rc(i, coldim):
     c = i % coldim
     f = (i - c) // coldim
     return (f, c)
+
 
 def rowmajor(rows, cols):
     size = rows * cols
@@ -36,6 +40,7 @@ def rowmajor(rows, cols):
         c = i % cols
         f = (i - c) // cols
         yield (i, f, c)
+
 
 def matrix_coords(rows, cols, rowh, colw, ox=0, oy=0):
     "Generate coords for a matrix of rects"
@@ -49,7 +54,7 @@ def matrix_coords(rows, cols, rowh, colw, ox=0, oy=0):
 
 class CalendarFrame(ttk.Frame):
     """ Allows to choose a date in a calendar.
-    
+
     WIDGET-SPECIFIC OPTIONS
             locale, firstweekday, year, month
             calendarfg, calendarbg,
@@ -79,7 +84,7 @@ class CalendarFrame(ttk.Frame):
             'locale': sysloc,
             'calendarfg': 'black',
             'calendarbg': 'white',
-            'headerfg': 'black',            
+            'headerfg': 'black',
             'headerbg': 'grey90',
             'selectbg': '#8000FF',
             'selectfg': 'white',
@@ -99,13 +104,13 @@ class CalendarFrame(ttk.Frame):
         self._weeks = self._cal.monthdayscalendar(options['year'],
                                                   options['month'])
         self._selection = None
-        
+
         # Canvas variables
         self._rheader = None
-        self._theader = [ 0 for x in range(0, 7)]
-        self._recmat = [ 0 for x in rowmajor(6, 7) ]
-        self._txtmat = [0 for x in rowmajor(6, 7) ]
-        
+        self._theader = [0 for x in range(0, 7)]
+        self._recmat = [0 for x in rowmajor(6, 7)]
+        self._txtmat = [0 for x in rowmajor(6, 7)]
+
         # button bar variables
         self.__img_prev = None
         self.__img_next = None
@@ -113,10 +118,10 @@ class CalendarFrame(ttk.Frame):
         self._lyear = None
 
         ttk.Frame.__init__(self, master, **kw)
-        
-        #build ui
+
+        # build ui
         self.__build_ui()
-    
+
     def configure(self, cnf=None, **kw):
         args = tk._cnfmerge((cnf, kw))
         color_change = False
@@ -133,7 +138,7 @@ class CalendarFrame(ttk.Frame):
             for w in self._topframe.winfo_children():
                 if w.winfo_class() == 'TButton':
                     w.config(state=value)
-        
+
         calendar_change = False
         key = 'locale'
         if key in args:
@@ -147,7 +152,7 @@ class CalendarFrame(ttk.Frame):
             calendar_change = True
         if calendar_change:
             self._reconfigure_calendar()
-        
+
         date_change = False
         for key in ('year', 'month'):
             if key in args:
@@ -155,7 +160,7 @@ class CalendarFrame(ttk.Frame):
                 date_change = True
         if date_change:
             self._reconfigure_date()
-        
+
         if color_change or calendar_change or date_change:
             self._redraw_calendar()
         ttk.Frame.configure(self, args)
@@ -174,12 +179,12 @@ class CalendarFrame(ttk.Frame):
         if key == option:
             return self._date.month
         return ttk.Frame.cget(self, key)
-    
+
     __getitem__ = cget
-    
+
     def __build_ui(self):
-        ## BUILD UI
-        
+        # BUILD UI
+
         self.configure(height='200', width='200')
         self._topframe = ttk.Frame(self)
         self._topframe.configure(height='200', width='200')
@@ -206,22 +211,29 @@ class CalendarFrame(ttk.Frame):
         self.bnyear.pack(side='left')
         self._topframe.pack(anchor='n', fill='x', side='top')
         self._canvas = tk.Canvas(self)
-        self._canvas.configure(background='#ffffff', borderwidth='0', height='160', highlightthickness='0')
+        self._canvas.configure(
+            background='#ffffff',
+            borderwidth='0',
+            height='160',
+            highlightthickness='0')
         self._canvas.configure(width='240')
-        self._canvas.pack(anchor='center', expand='true', fill='both', side='top')
-        
-        
+        self._canvas.pack(
+            anchor='center',
+            expand='true',
+            fill='both',
+            side='top')
+
         self.__img_prev = imgp = tk.PhotoImage(data=imgp_data)
         self.__img_next = imgn = tk.PhotoImage(data=imgn_data)
         #self._lmonth = lmonth
         #self._lyear = lyear
-        callback = lambda event=None: self._change_date('month', -1)
+        def callback(event=None): return self._change_date('month', -1)
         self.bpmonth.configure(image=imgp, command=callback)
-        callback = lambda event=None: self._change_date('month', 1)
+        def callback(event=None): return self._change_date('month', 1)
         self.bnmonth.configure(image=imgn, command=callback)
-        callback = lambda event=None: self._change_date('year', -1)
+        def callback(event=None): return self._change_date('year', -1)
         self.bpyear.configure(image=imgp, command=callback)
-        callback = lambda event=None: self._change_date('year', 1)
+        def callback(event=None): return self._change_date('year', 1)
         self.bnyear.configure(image=imgn, command=callback)
         self.btoday.configure(command=self._go_today)
         self._canvas.bind('<Configure>', self._on_canvas_configure)
@@ -229,29 +241,29 @@ class CalendarFrame(ttk.Frame):
         #self._canvas = canvas
         self._draw_calendar(self._canvas)
         self._canvas.tag_bind('cell', '<Button-1>', self._on_cell_clicked)
-        
+
     def _reconfigure_calendar(self):
         options = self.__options
         self._date = self.datetime(options['year'], options['month'], 1)
         self._cal = get_calendar(options['locale'], options['firstweekday'])
         self._weeks = self._cal.monthdayscalendar(options['year'],
                                                   options['month'])
-    
+
     def _reconfigure_date(self):
         options = self.__options
         self._date = self.datetime(options['year'], options['month'], 1)
         self._weeks = self._cal.monthdayscalendar(options['year'],
                                                   options['month'])
-        self._selection = None # Forget current selected day
+        self._selection = None  # Forget current selected day
         self._redraw_calendar()
-    
+
     def _go_today(self, event=None):
         options = self.__options
         today = self.datetime.now()
         options['year'] = today.year
         options['month'] = today.month
         self._reconfigure_date()
-        
+
     def _change_date(self, element, direction):
         options = self.__options
         newdate = None
@@ -268,7 +280,7 @@ class CalendarFrame(ttk.Frame):
         options['year'] = newdate.year
         options['month'] = newdate.month
         self._reconfigure_date()
-    
+
     def _on_cell_clicked(self, event=None):
         item = self._canvas.find_withtag('current')
         idx = self._recmat.index(item[0])
@@ -279,7 +291,7 @@ class CalendarFrame(ttk.Frame):
             day = weeks[f][c]
             if day != 0:
                 self.select_day(day, self._date.month, self._date.year)
-    
+
     def _mark_days(self):
         options = self.__options
         year = self._date.year
@@ -287,7 +299,7 @@ class CalendarFrame(ttk.Frame):
         weeks = self._weeks
         now = self.datetime.now()
         today = (now.year, now.month, now.day)
-        for i, f, c in rowmajor(6,7):
+        for i, f, c in rowmajor(6, 7):
             day = 0
             clear = True
             if f < len(weeks):
@@ -324,11 +336,11 @@ class CalendarFrame(ttk.Frame):
                 self._canvas.itemconfigure(self._txtmat[i],
                                            fill=options['calendarfg'])
         self.__markdays_cb = None
-    
+
     def _call_mark_days(self):
         if self.__markdays_cb is None:
             self.__markdays_cb = self.after_idle(self._mark_days)
-        
+
     def _remark_date(self, day, month=None, year=None, highlight=True):
         key = (year, month, day)
         if highlight:
@@ -337,7 +349,7 @@ class CalendarFrame(ttk.Frame):
             if key in self._marked_days:
                 self._marked_days.remove(key)
         self._call_mark_days()
-        
+
     def mark_day(self, day, month=None, year=None):
         """Marks the specified month day with a visual marker
         (typically by making the number bold).
@@ -346,10 +358,10 @@ class CalendarFrame(ttk.Frame):
         You can be more specific setting month and year parameters.
         """
         self._remark_date(day, month, year, highlight=True)
-    
+
     def unmark_day(self, day, month=None, year=None):
         self._remark_date(day, month, year, highlight=False)
-    
+
     def clear_marks(self):
         """Clears all marked days"""
         self._marked_days.clear()
@@ -363,7 +375,7 @@ class CalendarFrame(ttk.Frame):
                                          withyear=False)
         self._lmonth.configure(text=name.title())
         self._lyear.configure(text=str(self._date.year))
-        
+
         # Update calendar
         ch = canvas.winfo_height()
         cw = canvas.winfo_width()
@@ -391,7 +403,7 @@ class CalendarFrame(ttk.Frame):
             else:
                 self._theader[i] = canvas.create_text(x, oy, text=cols[i],
                                                       fill=options['headerbg'])
-        
+
         # background matrix
         oy = rowh
         ox = 0
@@ -403,13 +415,19 @@ class CalendarFrame(ttk.Frame):
                 canvas.coords(rec, x, y, x1, y1)
                 canvas.itemconfigure(rec, fill=options['calendarbg'])
             else:
-                rec = canvas.create_rectangle(x, y, x1, y1, width=1,
-                                          fill=options['calendarbg'],
-                                          outline=options['calendarbg'],
-                                          activeoutline=options['selectbg'],
-                                          activewidth=1, tags='cell')
+                rec = canvas.create_rectangle(
+                    x,
+                    y,
+                    x1,
+                    y1,
+                    width=1,
+                    fill=options['calendarbg'],
+                    outline=options['calendarbg'],
+                    activeoutline=options['selectbg'],
+                    activewidth=1,
+                    tags='cell')
                 self._recmat[i] = rec
-        
+
         # text matrix
         weeks = self._weeks
         xoffset = colw / 2.0
@@ -434,12 +452,12 @@ class CalendarFrame(ttk.Frame):
                                                      state=tk.DISABLED)
         # Mark days
         self._mark_days()
-    
+
     def _redraw_calendar(self):
         self._draw_calendar(self._canvas, redraw=True)
         # after idle callback trick
         self.__redraw_cb = None
-    
+
     def _on_canvas_configure(self, event=None):
         if self.__redraw_cb is None:
             self.__redraw_cb = self.after_idle(self._redraw_calendar)
@@ -452,7 +470,7 @@ class CalendarFrame(ttk.Frame):
 
         year, month = self._date.year, self._date.month
         return self.datetime(year, month, self._selection[2])
-    
+
     def select_day(self, day, month=None, year=None):
         options = self.__options
         options['month'] = month = self._date.month if month is None else month
@@ -465,15 +483,15 @@ class CalendarFrame(ttk.Frame):
 
 if __name__ == '__main__':
     import random
-    
+
     locale.setlocale(locale.LC_ALL, locale.getdefaultlocale())
     root = tk.Tk()
     c = CalendarFrame(root)
     c.grid()
-    
+
     # select day
     c.select_day(1)
-    
+
     root.rowconfigure(0, weight=1)
     root.columnconfigure(0, weight=1)
     root.mainloop()
