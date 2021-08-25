@@ -8,7 +8,7 @@ import os
 
 try:
     import tkinter as tk
-except BaseException:
+except ImportError:
     import Tkinter as tk
 
 

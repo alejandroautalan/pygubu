@@ -1,7 +1,7 @@
 # encoding: utf8
 try:
     import ttk
-except BaseException:
+except ImportError:
     import tkinter.ttk as ttk
 
 

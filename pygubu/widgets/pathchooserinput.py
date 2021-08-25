@@ -5,7 +5,7 @@ try:
     import tkinter as tk
     import tkinter.ttk as ttk
     from tkinter import filedialog
-except BaseException:
+except ImportError:
     import tkFileDialog as filedialog
     import Tkinter as tk
     import ttk

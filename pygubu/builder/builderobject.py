@@ -8,7 +8,7 @@ from collections import defaultdict, namedtuple
 
 try:
     import tkinter as tk
-except BaseException:
+except ImportError:
     import Tkinter as tk
 
 __all__ = [
