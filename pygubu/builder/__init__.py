@@ -8,7 +8,7 @@ import xml.etree.ElementTree as ET
 
 try:
     import tkinter
-except BaseException:
+except ImportError:
     import Tkinter as tkinter
 
 from pygubu.builder.builderobject import CB_TYPES, CLASS_MAP, BuilderObject

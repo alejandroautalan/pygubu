@@ -11,7 +11,7 @@ import pygubu
 
 try:
     from setuptools import setup
-except BaseException:
+except ImportError:
     from distutils.core import setup
 
 VERSION = pygubu.__version__

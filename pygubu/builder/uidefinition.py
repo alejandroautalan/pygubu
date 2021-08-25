@@ -204,7 +204,7 @@ class UIDefinition(object):
                     if k != 'value':
                         pnode.set(k, str(attrval))
                 pnode.text = dv['value']
-        except BaseException:
+        except (JSONDecodeError, TypeError):
             pass
 
         return pnode

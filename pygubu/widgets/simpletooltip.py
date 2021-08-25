@@ -4,7 +4,7 @@ __all__ = ['ToolTip']
 try:
     import tkinter as tk
     from tkinter import ttk
-except BaseException:
+except ImportError:
     import Tkinter as tk
     import ttk
 
