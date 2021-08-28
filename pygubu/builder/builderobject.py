@@ -160,8 +160,8 @@ class BuilderObject(object):
         if target is None:
             target = self.widget
         for pname, value in self.wmeta.properties.items():
-            if (pname not in self.ro_properties and
-                    pname not in self.command_properties):
+            if (pname not in self.ro_properties
+                    and pname not in self.command_properties):
                 pvalue = self._process_property_value(pname, value)
                 self._set_property(target, pname, pvalue)
 
@@ -450,8 +450,8 @@ class BuilderObject(object):
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
-            if (pname not in self.ro_properties and
-                    pname not in self.command_properties):
+            if (pname not in self.ro_properties
+                    and pname not in self.command_properties):
                 self._code_set_property(targetid, pname, value, code_bag)
 
         # properties
@@ -474,12 +474,7 @@ class BuilderObject(object):
         else:
             propvalue = "'{}'".format(value)
             if pname in self.tkvar_properties:
-                varvalue = None
-                if 'text' in self.wmeta.properties and pname == 'textvariable':
-                    varvalue = self.wmeta.properties['text']
-                elif 'value' in self.wmeta.properties and pname == 'variable':
-                    varvalue = self.wmeta.properties['value']
-                propvalue = self.builder.code_create_variable(value, varvalue)
+                propvalue = self._code_set_tkvariable_property(pname, value)
             elif pname in self.command_properties:
                 cmd_name = value.strip()
                 callback = self.builder.code_create_callback(
@@ -490,6 +485,17 @@ class BuilderObject(object):
             elif pname == 'takefocus':
                 propvalue = str(tk.getboolean(value))
             code_bag[pname] = propvalue
+
+    def _code_set_tkvariable_property(self, pname, value):
+        '''Create code for tk variable property.
+        Can be used from subclases for custom tk variable properties.'''
+        varvalue = None
+        if 'text' in self.wmeta.properties and pname == 'textvariable':
+            varvalue = self.wmeta.properties['text']
+        elif 'value' in self.wmeta.properties and pname == 'variable':
+            varvalue = self.wmeta.properties['value']
+        propvalue = self.builder.code_create_variable(value, varvalue)
+        return propvalue
 
     def code_connect_commands(self):
         commands = {}
