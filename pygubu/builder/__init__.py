@@ -182,7 +182,7 @@ class Builder(object):
                 logger.debug('Module %s loaded.', modulename)
             except (ModuleNotFoundError, ImportError) as e:
                 msg = 'Failed to import module as fullname: %s'
-                logger.warning(msg, modulename)
+                logger.debug(msg, modulename)
                 # A single module can contain various widgets
                 # try to import the first part of the path
                 if '.' in modulename:
