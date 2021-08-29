@@ -179,18 +179,20 @@ class Builder(object):
             # Import module as full path
             try:
                 importlib.import_module(modulename)
-            except ImportError as e:
+                logger.debug('Module %s loaded.', modulename)
+            except (ModuleNotFoundError, ImportError) as e:
                 msg = 'Failed to import module as fullname: %s'
                 logger.warning(msg, modulename)
-                logger.exception(e)
                 # A single module can contain various widgets
                 # try to import the first part of the path
                 if '.' in modulename:
                     first, last = modulename.rsplit('.', 1)
                     try:
                         importlib.import_module(first)
-                    except ImportError as e:
+                        logger.debug('Module %s loaded.', first)
+                    except (ModuleNotFoundError, ImportError) as e:
                         importlib.import_module(last)
+                        logger.debug('Module %s loaded.', last)
                 else:
                     raise e
 
