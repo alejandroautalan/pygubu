@@ -644,7 +644,7 @@ class PanedWindowPaneBO(BuilderObject):
     def code_configure(self, targetid=None):
         return tuple()
 
-    def code_layout(self, targetid=None):
+    def code_layout(self, targetid=None, parentid=None):
         return tuple()
 
     def code_child_add(self, childid):
