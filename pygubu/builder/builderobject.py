@@ -160,8 +160,8 @@ class BuilderObject(object):
         if target is None:
             target = self.widget
         for pname, value in self.wmeta.properties.items():
-            if (pname not in self.ro_properties
-                    and pname not in self.command_properties):
+            if (pname not in self.ro_properties and
+                    pname not in self.command_properties):
                 pvalue = self._process_property_value(pname, value)
                 self._set_property(target, pname, pvalue)
 
@@ -450,8 +450,8 @@ class BuilderObject(object):
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
-            if (pname not in self.ro_properties
-                    and pname not in self.command_properties):
+            if (pname not in self.ro_properties and
+                    pname not in self.command_properties):
                 self._code_set_property(targetid, pname, value, code_bag)
 
         # properties
@@ -568,7 +568,8 @@ class EntryBaseBO(BuilderObject):
             target_widget.insert('0', value)
             target_widget['state'] = wstate
         else:
-            super(EntryBaseBO, self)._set_property(target_widget, pname, value)
+            super(EntryBaseBO, self)._set_property(
+                target_widget, pname, value)
 
     #
     # Code generation methods
@@ -585,7 +586,8 @@ class EntryBaseBO(BuilderObject):
                 if state_value != 'normal':
                     line = "{0}['state'] = 'normal'".format(targetid)
                     lines.insert(1, line)
-                    line = "{0}['state'] = '{1}'".format(targetid, state_value)
+                    line = "{0}['state'] = '{1}'".format(
+                        targetid, state_value)
                     lines.append(line)
             code_bag[pname] = lines
         else:

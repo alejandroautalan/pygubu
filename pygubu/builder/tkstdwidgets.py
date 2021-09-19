@@ -626,8 +626,8 @@ class TKMenuitem(BuilderObject):
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
-            if (pname not in self.ro_properties
-                    and pname not in self.command_properties):
+            if (pname not in self.ro_properties and
+                    pname not in self.command_properties):
                 self._code_set_property(targetid, pname, value, code_bag)
 
         # properties
@@ -701,8 +701,8 @@ class TKMenuitemSubmenu(TKMenuitem):
                         'selectcolor', 'tearoff', 'tearoffcommand',
                         'underline', 'postcommand')
     OPTIONS_CUSTOM = ('specialmenu', )
-    properties = tuple(set(OPTIONS_STANDARD + OPTIONS_SPECIFIC +
-                           OPTIONS_CUSTOM))
+    properties = tuple(set(OPTIONS_STANDARD + OPTIONS_SPECIFIC
+                           + OPTIONS_CUSTOM))
     #ro_properties = ('specialmenu', )
     command_properties = ('postcommand', 'tearoffcommand')
 
@@ -831,7 +831,8 @@ class TKMenuitemCheckbutton(TKMenuitem):
     itemtype = tk.CHECKBUTTON
     OPTIONS_STANDARD = TKMenuitem.OPTIONS_STANDARD
     OPTIONS_SPECIFIC = TKMenuitem.OPTIONS_SPECIFIC + \
-        ('indicatoron', 'onvalue', 'offvalue', 'selectcolor', 'selectimage', 'variable')
+        ('indicatoron', 'onvalue', 'offvalue',
+         'selectcolor', 'selectimage', 'variable')
     OPTIONS_CUSTOM = TKMenuitem.OPTIONS_CUSTOM
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
 
