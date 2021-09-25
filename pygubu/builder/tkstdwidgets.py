@@ -9,7 +9,7 @@ except ImportError:
     import Tkinter as tk
 
 from .builderobject import (BuilderObject, EntryBaseBO, PanedWindowBO,
-                            PanedWindowPaneBO, register_widget)
+                            PanedWindowPaneBO, register_widget, CB_TYPES)
 
 logger = logging.getLogger(__name__)
 
@@ -524,11 +524,11 @@ class TKMenu(BuilderObject):
         self.code_item_index = start
         return super(TKMenu, self).code_realize(boparent, code_identifier)
 
-    def _code_define_callback(self, cmdprop, cmdname):
+    def _code_define_callback_args(self, cmd_pname, cmd):
         args = None
-        if cmdprop == ('tearoffcommand'):
+        if cmd_pname == 'tearoffcommand':
             args = ('menu', 'tearoff')
-        return self.builder.code_create_callback(cmdname, 'command', args)
+        return args
 
 
 register_widget('tk.Menu', TKMenu, 'Menu', ('Menu', 'tk', 'ttk'))
@@ -557,6 +557,11 @@ class TKMenuitem(BuilderObject):
         itemproperties = dict(self.wmeta.properties)
         self._setup_item_properties(itemproperties)
         master.add(self.itemtype, **itemproperties)
+        self._setup_item_index(parent)
+        return self.widget
+
+    def _setup_item_index(self, parent):
+        master = parent.get_child_master()
         index = master.index(tk.END)
         # TODO: index of items is shifted if tearoff is changed
         # for now check tearoff config and recalculate index.
@@ -566,7 +571,6 @@ class TKMenuitem(BuilderObject):
         if has_tearoff and tearoff_conf in ('0', 'false'):
             offset = 1
         self.__index = index - offset
-        return self.widget
 
     def _setup_item_properties(self, itemprops):
         for pname in itemprops:
@@ -590,7 +594,7 @@ class TKMenuitem(BuilderObject):
     # code generation functions
     #
     def _code_get_item_name(self):
-        return 'mi_{0}'.format(self.wmeta.identifier)
+        return 'self.mi_{0}'.format(self.wmeta.identifier)
 
     def code_realize(self, boparent, code_identifier=None):
         boparent.code_item_index += 1
@@ -626,8 +630,8 @@ class TKMenuitem(BuilderObject):
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
-            if (pname not in self.ro_properties and
-                    pname not in self.command_properties):
+            if (pname not in self.ro_properties
+                    and pname not in self.command_properties):
                 self._code_set_property(targetid, pname, value, code_bag)
 
         # properties
@@ -655,16 +659,19 @@ class TKMenuitem(BuilderObject):
             'command_id_arg', 'false').lower()
         return include_id == 'true'
 
-    def _code_define_callback(self, cmdprop, cmdname):
+    def _code_define_callback_args(self, cmd_pname, cmd):
+        cmdtype = cmd['cbtype']
         args = None
-        if self._pass_widgetid_to_callback():
+        if (cmdtype == CB_TYPES.WITH_WID or
+                self._pass_widgetid_to_callback()):
             args = ('itemid',)
-        return self.builder.code_create_callback(cmdname, 'command', args)
+        return args
 
-    def _code_connect_item_command(self, cmd, cbname):
+    def _code_connect_item_command(self, cmd_pname, cmd, cbname):
         lines = []
         target = self.code_identifier()
-        if self._pass_widgetid_to_callback():
+        args = self._code_define_callback_args(cmd_pname, cmd)
+        if args is not None and 'itemid' in args:
             newcb = '_wcmd'
             wid = self.wmeta.identifier
             line = '{0} = lambda itemid="{1}": {2}(itemid)'
@@ -673,15 +680,16 @@ class TKMenuitem(BuilderObject):
             lines.append(line)
         itemname = self._code_get_item_name()
         line = '{0}.entryconfigure({1}, {2}={3})'
-        line = line.format(target, itemname, cmd, cbname)
+        line = line.format(target, itemname, cmd_pname, cbname)
         lines.append(line)
         return lines
 
-    def _code_connect_command(self, cmd, cbname):
+    def _code_connect_command(self, cmd_pname, cmd, cbname):
         if self.itemtype != 'submenu':
-            return self._code_connect_item_command(cmd, cbname)
+            return self._code_connect_item_command(cmd_pname, cmd, cbname)
         else:
-            return super(TKMenuitem, self)._code_connect_command(cmd, cbname)
+            return super(TKMenuitem, self)._code_connect_command(
+                cmd_pname, cmd, cbname)
 
 
 class TKMenuitemSubmenu(TKMenuitem):
@@ -701,13 +709,15 @@ class TKMenuitemSubmenu(TKMenuitem):
                         'selectcolor', 'tearoff', 'tearoffcommand',
                         'underline', 'postcommand')
     OPTIONS_CUSTOM = ('specialmenu', )
-    properties = tuple(set(OPTIONS_STANDARD + OPTIONS_SPECIFIC
-                           + OPTIONS_CUSTOM))
+    properties = tuple(set(OPTIONS_STANDARD + OPTIONS_SPECIFIC +
+                           OPTIONS_CUSTOM))
     #ro_properties = ('specialmenu', )
     command_properties = ('postcommand', 'tearoffcommand')
 
     def realize(self, parent):
         master = parent.get_child_master()
+        self._setup_item_index(parent)
+
         menu_properties = dict(
             (k, v) for k, v in self.wmeta.properties.items()
             if k in TKMenu.properties or k == 'specialmenu')
@@ -736,6 +746,11 @@ class TKMenuitemSubmenu(TKMenuitem):
     def layout(self):
         pass
 
+    def _connect_command(self, cpname, callback):
+        # suported commands: tearoffcommand, postcommand
+        kwargs = {cpname: callback}
+        self.widget.configure(**kwargs)
+
     #
     # code generation functions
     #
@@ -745,10 +760,7 @@ class TKMenuitemSubmenu(TKMenuitem):
         if tearoff_conf in ('1', 'true'):
             start = 0
         self.code_item_index = start
-
-        if self._code_identifier is None:
-            self._code_identifier = self.wmeta.identifier
-
+        self._code_identifier = code_identifier
         masterid = boparent.code_child_master()
         lines = []
         # menu properties
@@ -806,11 +818,11 @@ class TKMenuitemSubmenu(TKMenuitem):
     def code_configure(self, targetid=None):
         return tuple()
 
-    def _code_define_callback(self, cmdprop, cmdname):
+    def _code_define_callback_args(self, cmd_pname, cmd):
         args = None
-        if cmdprop == ('tearoffcommand'):
+        if cmd_pname == 'tearoffcommand':
             args = ('menu', 'tearoff')
-        return self.builder.code_create_callback(cmdname, 'command', args)
+        return args
 
 
 register_widget('tk.Menuitem.Submenu', TKMenuitemSubmenu,

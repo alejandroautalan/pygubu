@@ -513,16 +513,13 @@ class BuilderObject(object):
         lines = []
         for cmd_pname, cmd in commands.items():
             callback = self._code_define_callback(cmd_pname, cmd)
-            cmd_code = self._code_connect_command(cmd_pname, callback)
+            cmd_code = self._code_connect_command(cmd_pname, cmd, callback)
             if cmd_code:
                 lines.extend(cmd_code)
         return lines
 
-    def _code_define_callback(self, cmd_pname, cmd):
-        cmdname = cmd['value']
+    def _code_define_callback_args(self, cmd_pname, cmd):
         cmdtype = cmd['cbtype']
-        #print('_code_define_callback', cmd)
-        wid = self.code_identifier()
         args = None
         if cmdtype == CB_TYPES.WITH_WID:
             args = ('widget_id', )
@@ -532,12 +529,27 @@ class BuilderObject(object):
             args = ('first', 'last')
         if cmdtype == CB_TYPES.SCROLL:
             args = ('mode', 'value', 'units')
+        return args
+
+    def _code_define_callback(self, cmd_pname, cmd):
+        cmdname = cmd['value']
+        cmdtype = cmd['cbtype']
+        args = self._code_define_callback_args(cmd_pname, cmd)
+        wid = self.code_identifier()
         return self.builder.code_create_callback(wid, cmdname, cmdtype, args)
 
-    def _code_connect_command(self, cmd, cbname):
+    def _code_connect_command(self, cmd_pname, cmd, cbname):
         target = self.code_identifier()
-        line = '{0}.configure({1}={2})'.format(target, cmd, cbname)
-        return (line, )
+        args = self._code_define_callback_args(cmd_pname, cmd)
+        lines = []
+        if args is not None and 'widget_id' in args:
+            wid = self.wmeta.identifier
+            fdef = "_wcmd = lambda wid='{0}': {1}(wid)".format(wid, cbname)
+            cbname = '_wcmd'
+            lines.append(fdef)
+        line = '{0}.configure({1}={2})'.format(target, cmd_pname, cbname)
+        lines.append(line)
+        return lines
 
     def code_connect_bindings(self):
         lines = []
