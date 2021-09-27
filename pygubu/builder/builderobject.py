@@ -132,6 +132,20 @@ class BuilderObject(object):
         wdata.layout_required = clsobj.layout_required
         return clsobj
 
+    @classmethod
+    def add_allowed_parent(cls, builder_uid):
+        if cls.allowed_parents is None:
+            cls.allowed_parents = (builder_uid,)
+        else:
+            cls.allowed_parents = cls.allowed_parents + (builder_uid,)
+
+    @classmethod
+    def add_allowed_child(cls, builder_uid):
+        if cls.allowed_children is None:
+            cls.allowed_children = (builder_uid,)
+        else:
+            cls.allowed_children = cls.allowed_children + (builder_uid,)
+
     def __init__(self, builder, wmeta):
         super(BuilderObject, self).__init__()
         self.widget = None
