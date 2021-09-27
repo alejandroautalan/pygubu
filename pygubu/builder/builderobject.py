@@ -14,7 +14,9 @@ except ImportError:
 __all__ = [
     'BuilderObject', 'EntryBaseBO', 'PanedWindowBO',
     'PanedWindowPaneBO', 'WidgetDescription', 'CLASS_MAP', 'CB_TYPES',
-    'CUSTOM_PROPERTIES', 'register_widget', 'register_property']
+    'CUSTOM_PROPERTIES', 'register_widget', 'register_property',
+    'register_custom_property'
+]
 
 logger = logging.getLogger(__name__)
 
@@ -88,6 +90,29 @@ def register_property(name, description):
     else:
         CUSTOM_PROPERTIES[name] = description
         logger.debug('Registered property %s', name)
+
+
+def register_custom_property(
+        builder_uid, prop_name,
+        editor, default_value=None, help=None,
+        **editor_params):
+    '''Helper function to register a custom property.
+    All custom properties are created using internal dynamic editor.
+    '''
+    description = {
+        'editor': 'dynamic',
+        builder_uid: {
+            'params': {
+                'mode': editor,
+            }
+        }
+    }
+    description[builder_uid]['params'].update(editor_params)
+    if default_value is not None:
+        description[builder_uid]['default'] = default_value
+    if help is not None:
+        description[builder_uid]['help'] = help
+    register_property(prop_name, description)
 
 
 class CB_TYPES:

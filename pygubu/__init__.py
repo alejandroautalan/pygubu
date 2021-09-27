@@ -7,19 +7,17 @@ __all__ = [
     'BuilderObject',
     'register_widget',
     'register_property',
+    'register_custom_property',
     'remove_binding',
     'ApplicationLevelBindManager']
 
-import pygubu.builder.builderobject
 from pygubu.binding import ApplicationLevelBindManager, remove_binding
 from pygubu.builder import Builder
-from pygubu.builder.builderobject import BuilderObject, register_widget
+from pygubu.builder.builderobject import (BuilderObject, register_widget,
+                                          register_property,
+                                          register_custom_property)
 
 __version__ = '0.16'
-
-
-def register_property(name, description):
-    return pygubu.builder.builderobject.register_property(name, description)
 
 
 class TkApplication:
