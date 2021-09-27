@@ -417,7 +417,7 @@ register_widget('ttk.Notebook.Tab', TTKNotebookTab,
                 'Notebook.Tab', ('Pygubu Helpers', 'ttk'))
 
 
-class TTKTreeviewColBO(TTKWidgetBO):
+class TTKTreeviewColumnBO(TTKWidgetBO):
     OPTIONS_STANDARD = tuple()
     OPTIONS_SPECIFIC = ('text', 'image', 'command', 'heading_anchor',
                         'column_anchor', 'minwidth', 'stretch', 'width')
@@ -436,35 +436,45 @@ class TTKTreeviewColBO(TTKWidgetBO):
         self._setup_column(parent, col_props)
         return self.widget
 
+    def _get_heading_properties(self, props):
+        text = props.pop('text', None)
+        if text is None:
+            text = self.wmeta.identifier
+        hprops = {
+            'anchor': props.pop('heading_anchor', tk.W),
+            'text': text
+        }
+        # Only add image if has value. Fix code generation
+        imgvalue = props.pop('image', None)
+        if imgvalue:
+            hprops['image'] = self._process_property_value('image', imgvalue)
+        return hprops
+
+    def _get_column_properties(self, props):
+        cprops = {
+            'anchor': props.pop('column_anchor', ''),
+            'stretch': props.pop('stretch', '1'),
+            'width': props.pop('width', '200'),
+            'minwidth': props.pop('minwidth', '20')
+        }
+        return cprops
+
     def _setup_column(self, parent, col_props):
         tree_column = col_props.pop('tree_column', 'false')
         tree_column = tree_column.lower()
         tree_column = True if tree_column == 'true' else False
         column_id = '#0' if tree_column else self.wmeta.identifier
-        visible = col_props.pop('visible', 'false')
+        visible = col_props.pop('visible', 'true')
         visible = visible.lower()
         is_visible = True if visible == 'true' else False
 
         # configure heading properties
         col_props.pop('command', '')
-        hprops = {
-            'anchor': col_props.pop('heading_anchor', tk.W),
-            'text': col_props.pop('text', '')
-        }
-        # Only add image if has value. Fix code generation
-        imgvalue = col_props.pop('image', None)
-        if imgvalue:
-            hprops['image'] = imgvalue
-
+        hprops = self._get_heading_properties(col_props)
         parent.set_heading(column_id, hprops)
 
         # configure column properties
-        cprops = {
-            'anchor': col_props.pop('column_anchor', ''),
-            'stretch': col_props.pop('stretch', '1'),
-            'width': col_props.pop('width', '200'),
-            'minwidth': col_props.pop('minwidth', '20')
-        }
+        cprops = self._get_column_properties(col_props)
         parent.set_column(column_id, cprops, is_visible)
 
     def configure(self):
@@ -493,7 +503,7 @@ class TTKTreeviewColBO(TTKWidgetBO):
         return tuple()
 
 
-register_widget('ttk.Treeview.Column', TTKTreeviewColBO,
+register_widget('ttk.Treeview.Column', TTKTreeviewColumnBO,
                 'Treeview.Column', ('Pygubu Helpers', 'ttk'))
 
 
@@ -501,7 +511,7 @@ class TTKSpinboxBO(TTKWidgetBO, EntryBaseBO):
     OPTIONS_STANDARD = TTKEntry.OPTIONS_STANDARD
     OPTIONS_SPECIFIC = (TTKEntry.OPTIONS_SPECIFIC +
                         ('from_', 'to', 'increment', 'values',
-                         'wrap', 'format', 'command'))
+                           'wrap', 'format', 'command'))
     OPTIONS_CUSTOM = TTKEntry.OPTIONS_CUSTOM
     class_ = None
     container = False

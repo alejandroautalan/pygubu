@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 from pygubu.builder.builderobject import *
-from pygubu.builder.ttkstdwidgets import TTKTreeviewBO, TTKTreeviewColBO
+from pygubu.builder.ttkstdwidgets import TTKTreeviewBO, TTKTreeviewColumnBO
 from pygubu.builder.widgets.scrollbarhelper import TTKSBHelperBO
 from pygubu.widgets.editabletreeview import EditableTreeview
 
@@ -13,9 +13,9 @@ class EditableTreeviewBO(TTKTreeviewBO):
 
 
 classid = 'pygubu.builder.widgets.editabletreeview'
-if classid not in TTKTreeviewColBO.allowed_parents:
-    TTKTreeviewColBO.allowed_parents = \
-        TTKTreeviewColBO.allowed_parents + (classid, )
+if classid not in TTKTreeviewColumnBO.allowed_parents:
+    TTKTreeviewColumnBO.allowed_parents = \
+        TTKTreeviewColumnBO.allowed_parents + (classid, )
 if classid not in TTKSBHelperBO.allowed_children:
     TTKSBHelperBO.allowed_children = \
         TTKSBHelperBO.allowed_children + (classid, )
