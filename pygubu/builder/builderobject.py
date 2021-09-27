@@ -176,30 +176,29 @@ class BuilderObject(object):
         for pname, value in self.wmeta.properties.items():
             if (pname not in self.ro_properties and
                     pname not in self.command_properties):
-                pvalue = self._process_property_value(pname, value)
-                self._set_property(target, pname, pvalue)
+                self._set_property(target, pname, value)
 
     def _process_property_value(self, pname, value):
-        return value
+        propvalue = value
+        if pname in self.tkvar_properties:
+            propvalue = self.builder.create_variable(value)
+            if 'text' in self.wmeta.properties and pname == 'textvariable':
+                propvalue.set(self.wmeta.properties['text'])
+            elif 'value' in self.wmeta.properties and pname == 'variable':
+                propvalue.set(self.wmeta.properties['value'])
+        elif pname in self.tkimage_properties:
+            propvalue = self.builder.get_image(value)
+        elif pname == 'takefocus':
+            if value:
+                propvalue = tk.getboolean(value)
+        return propvalue
 
     def _set_property(self, target_widget, pname, value):
         if pname not in self.__class__.properties:
             msg = "Attempt to set an unknown property '%s' on class '%s'"
             logger.warning(msg, pname, repr(self.class_))
         else:
-            propvalue = value
-            if pname in self.tkvar_properties:
-                propvalue = self.builder.create_variable(value)
-                if 'text' in self.wmeta.properties and pname == 'textvariable':
-                    propvalue.set(self.wmeta.properties['text'])
-                elif 'value' in self.wmeta.properties and pname == 'variable':
-                    propvalue.set(self.wmeta.properties['value'])
-            elif pname in self.tkimage_properties:
-                propvalue = self.builder.get_image(value)
-            elif pname == 'takefocus':
-                if value:
-                    propvalue = tk.getboolean(value)
-
+            propvalue = self._process_property_value(pname, value)
             try:
                 logger.debug('setting property %s = %s', pname, propvalue)
                 target_widget[pname] = propvalue
