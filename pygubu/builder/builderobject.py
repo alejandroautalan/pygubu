@@ -199,8 +199,8 @@ class BuilderObject(object):
         if target is None:
             target = self.widget
         for pname, value in self.wmeta.properties.items():
-            if (pname not in self.ro_properties and
-                    pname not in self.command_properties):
+            if (pname not in self.ro_properties
+                    and pname not in self.command_properties):
                 self._set_property(target, pname, value)
 
     def _process_property_value(self, pname, value):
@@ -488,8 +488,8 @@ class BuilderObject(object):
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
-            if (pname not in self.ro_properties and
-                    pname not in self.command_properties):
+            if (pname not in self.ro_properties
+                    and pname not in self.command_properties):
                 self._code_set_property(targetid, pname, value, code_bag)
 
         # properties
