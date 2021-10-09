@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.1">
+  <object class="tk.Menu" id="mainmenu">
+    <property name="background">#d9cc93</property>
+    <property name="borderwidth">2</property>
+    <property name="font">Helvetica 12</property>
+    <property name="foreground">#080060</property>
+    <property name="relief">flat</property>
+    <property name="tearoff">false</property>
+    <child>
+      <object class="tk.Menuitem.Submenu" id="menu1">
+        <property name="bitmap">info</property>
+        <property name="compound">left</property>
+        <property name="label" translatable="yes">Submenu_1</property>
+        <property name="postcommand" type="command" cbtype="simple">on_menu_post</property>
+        <property name="tearoff">true</property>
+        <property name="tearoffcommand" type="command" cbtype="simple">on_menu_tearoff</property>
+        <child>
+          <object class="tk.Menuitem.Command" id="mbtn1">
+            <property name="command" type="command" cbtype="simple">button1_cb</property>
+            <property name="label" translatable="yes">Command_1</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Checkbutton" id="mchb1">
+            <property name="command" type="command" cbtype="with_wid">chkbutton_cb</property>
+            <property name="label" translatable="yes">Checkbutton_1</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Radiobutton" id="mrb1">
+            <property name="label" translatable="yes">Radiobutton_1</property>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Menuitem.Separator" id="msep1" />
+        </child>
+        <child>
+          <object class="tk.Menuitem.Command" id="mbtn2">
+            <property name="image">example.gif</property>
+            <property name="label" translatable="yes">Command_2</property>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
