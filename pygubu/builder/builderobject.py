@@ -567,6 +567,11 @@ class BuilderObject(object):
             args = ('first', 'last')
         if cmdtype == CB_TYPES.SCROLL:
             args = ('mode', 'value', 'units')
+        if cmdtype == CB_TYPES.ENTRY_VALIDATE:
+            cb_args = cmd['args']
+            if cb_args:
+                cb_args = cb_args.replace('%', '')
+                args = cb_args.split()
         return args
 
     def _code_define_callback(self, cmd_pname, cmd):
@@ -580,11 +585,22 @@ class BuilderObject(object):
         target = self.code_identifier()
         args = self._code_define_callback_args(cmd_pname, cmd)
         lines = []
-        if args is not None and 'widget_id' in args:
-            wid = self.wmeta.identifier
-            fdef = "_wcmd = lambda wid='{0}': {1}(wid)".format(wid, cbname)
-            cbname = '_wcmd'
-            lines.append(fdef)
+        cmdtype = cmd['cbtype']
+        if args is not None:
+            if cmdtype == CB_TYPES.WITH_WID:
+                wid = self.wmeta.identifier
+                fdef = "_wcmd = lambda wid='{0}': {1}(wid)".format(
+                    wid, cbname)
+                cbname = '_wcmd'
+                lines.append(fdef)
+            if cmdtype == CB_TYPES.ENTRY_VALIDATE:
+                original_cb = cbname
+                tk_args = ["'%{0}'".format(a) for a in args]
+                tk_args = ','.join(tk_args)
+                fdef = "_validatecmd = ({0}.register({1}), {2})"
+                fdef = fdef.format(target, original_cb, tk_args)
+                cbname = '_validatecmd'
+                lines.append(fdef)
         line = '{0}.configure({1}={2})'.format(target, cmd_pname, cbname)
         lines.append(line)
         return lines
