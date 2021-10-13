@@ -374,15 +374,25 @@ class BuilderObject(object):
     #
     # Code generation methods
     #
+    def _code_get_init_args(self, code_identifier):
+        """Creates dict with properties marked as readonly"""
+        args = {}
+        for rop in self.ro_properties:
+            if rop in self.wmeta.properties:
+                pvalue = self._code_process_property_value(
+                    code_identifier, rop, self.wmeta.properties[rop])
+                args[rop] = pvalue
+        return args
+
     def code_realize(self, boparent, code_identifier=None):
         if code_identifier is not None:
             self._code_identifier = code_identifier
         lines = []
         master = boparent.code_child_master()
-        init_args = self._get_init_args()
+        init_args = self._code_get_init_args(self.code_identifier())
         bag = []
         for pname, value in init_args.items():
-            s = "{0}='{1}'".format(pname, value)
+            s = "{0}={1}".format(pname, value)
             bag.append(s)
         kwargs = ''
         if bag:
@@ -504,25 +514,22 @@ class BuilderObject(object):
 
         return (code_bag, kwproperties, complex_properties)
 
+    def _code_process_property_value(self, targetid, pname, value):
+        propvalue = "'{}'".format(value)
+        if pname in self.tkvar_properties:
+            propvalue = self._code_set_tkvariable_property(pname, value)
+        elif pname in self.command_properties:
+            cmd = json.loads(value)
+            propvalue = self._code_define_callback(pname, cmd)
+        elif pname in self.tkimage_properties:
+            propvalue = self.builder.code_create_image(value)
+        elif pname == 'takefocus':
+            propvalue = str(tk.getboolean(value))
+        return propvalue
+
     def _code_set_property(self, targetid, pname, value, code_bag):
-        if pname in self.OPTIONS_CUSTOM:
-            line = "# TODO - {0}: code for custom option '{1}' not implemented."
-            line = line.format(targetid, pname)
-            code_bag[pname] = [line]
-        else:
-            propvalue = "'{}'".format(value)
-            if pname in self.tkvar_properties:
-                propvalue = self._code_set_tkvariable_property(pname, value)
-            elif pname in self.command_properties:
-                cmd_name = value.strip()
-                callback = self.builder.code_create_callback(
-                    targetid, cmd_name, CB_TYPES.SIMPLE)
-                propvalue = callback
-            elif pname in self.tkimage_properties:
-                propvalue = self.builder.code_create_image(value)
-            elif pname == 'takefocus':
-                propvalue = str(tk.getboolean(value))
-            code_bag[pname] = propvalue
+        code_bag[pname] = self._code_process_property_value(
+            targetid, pname, value)
 
     def _code_set_tkvariable_property(self, pname, value):
         '''Create code for tk variable property.
