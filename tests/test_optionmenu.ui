@@ -22,5 +22,17 @@
         </layout>
       </object>
     </child>
+    <child>
+      <object class="tk.OptionMenu" id="optionmenu2">
+        <property name="command" type="command" cbtype="simple">om_command</property>
+        <property name="value">option1</property>
+        <property name="values">option1,option2,option3</property>
+        <layout manager="grid">
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">1</property>
+        </layout>
+      </object>
+    </child>
   </object>
 </interface>

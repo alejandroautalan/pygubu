@@ -991,10 +991,9 @@ class TKOptionMenu(BuilderObject):
         master = parent.get_child_master()
         variable = args.pop('variable', None)
         value = args.pop('value', None)
-        varname = '{0}__var'.format(self.wmeta.identifier)
         if variable is None:
-            variable = varname
-        variable = self.builder.create_variable(variable)
+            varname = '{0}__var'.format(self.wmeta.identifier)
+            variable = self.builder.create_variable(varname)
         if value is not None:
             variable.set(value)
         values = args.pop('values', '')
@@ -1011,7 +1010,7 @@ class TKOptionMenu(BuilderObject):
                     self.callback(arg1)
 
         cb_proxy = _cb_proxy()
-        self.widget = self.class_(master, variable, value, *values,
+        self.widget = self.class_(master, variable, *values,
                                   command=cb_proxy)
         self.widget._cb_proxy = cb_proxy
         return self.widget
