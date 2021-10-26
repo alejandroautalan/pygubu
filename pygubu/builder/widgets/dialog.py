@@ -54,16 +54,8 @@ _builder_id = 'pygubu.builder.widgets.dialog'
 register_widget(_builder_id, DialogBO,
                 'Dialog', ('Pygubu Widgets', 'ttk'))
 
-
-modal_prop = {
-    'editor': 'dynamic',
-    _builder_id: {
-        'params': {
-            'mode': 'choice',
-            'values': ('true', 'false'), 'state': 'readonly'},
-        'default': 'false',
-        'help': 'Determines if dialog is run in normal or modal mode.'
-    }
-}
-
-register_property('modal', modal_prop)
+_help = 'Determines if dialog is run in normal or modal mode.'
+register_custom_property(_builder_id, 'modal', 'choice',
+                         values=('true', 'false'),
+                         state='readonly',
+                         help=_help)

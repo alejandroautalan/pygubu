@@ -1,5 +1,5 @@
 # encoding: utf8
-from pygubu import BuilderObject, register_property, register_widget
+from pygubu import BuilderObject, register_custom_property, register_widget
 from pygubu.builder.ttkstdwidgets import TTKFrame
 from pygubu.widgets.calendarframe import CalendarFrame
 
@@ -20,102 +20,27 @@ _builder_id = 'pygubu.builder.widgets.calendarframe'
 register_widget(_builder_id, CalendarFrameBuilder,
                 'CalendarFrame', ('ttk', 'Pygubu Widgets'))
 
-props = {
-    'state': {
-        'editor': 'dynamic',
-        _builder_id: {
-            'params': {
-                'mode': 'choice',
-                'values': ('', 'normal', 'disabled'),
-                'state': 'readonly'}},
-    },
-    'firstweekday': {
-        'editor': 'dynamic',
-        _builder_id: {
-            'params': {
-                'mode': 'choice',
-                'values': ('0', '6'), 'state': 'readonly'},
-            'default': '6',
-        }
-    },
-    'year': {
-        'editor': 'dynamic',
-        _builder_id: {
-            'params': {
-                'mode': 'entry'}
-        }
-    },
-    'month': {
-        'editor': 'dynamic',
-        _builder_id: {
-            'params': {
-                'mode': 'choice',
-                'values': ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-                           '11', '12'), 'state': 'readonly'},
-            'default': '1'
-        }
-    },
-    # Better to change locale by code.
-    #    'locale': {
-    #        'editor': 'entry'
-    #        },
-    'calendarfg': {
-        'editor': 'dynamic',
-        _builder_id: {
-            'params': {
-                'mode': 'colorentry'},
-        }
-    },
-    'calendarbg': {
-        'editor': 'dynamic',
-        _builder_id: {
-            'params': {
-                'mode': 'colorentry'}
-        }
-    },
-    'headerfg': {
-        'editor': 'dynamic',
-        _builder_id: {
-            'params': {
-                'mode': 'colorentry'}
-        }
-    },
-    'headerbg': {
-        'editor': 'dynamic',
-        _builder_id: {
-            'params': {
-                'mode': 'colorentry'}
-        }
-    },
-    'selectbg': {
-        'editor': 'dynamic',
-        _builder_id: {
-            'params': {
-                'mode': 'colorentry'}
-        }
-    },
-    'selectfg': {
-        'editor': 'dynamic',
-        _builder_id: {
-            'params': {
-                'mode': 'colorentry'}
-        }
-    },
-    'markbg': {
-        'editor': 'dynamic',
-        _builder_id: {
-            'params': {
-                'mode': 'colorentry'}
-        }
-    },
-    'markfg': {
-        'editor': 'dynamic',
-        _builder_id: {
-            'params': {
-                'mode': 'colorentry'}
-        }
-    }
-}
-
-for p in props:
-    register_property(p, props[p])
+register_custom_property(_builder_id, 'state', 'choice',
+                         values=('', 'normal', 'disabled'),
+                         state='readonly'
+                         )
+register_custom_property(_builder_id, 'firstweekday', 'choice',
+                         values=('0', '6'),
+                         state='readonly',
+                         default_value='6'
+                         )
+register_custom_property(_builder_id, 'year', 'entry')
+register_custom_property(_builder_id, 'month', 'choice',
+                         values=('1', '2', '3', '4', '5', '6',
+                                 '7', '8', '9', '10', '11', '12'),
+                         state='readonly',
+                         default_value='1'
+                         )
+register_custom_property(_builder_id, 'calendarfg', 'colorentry')
+register_custom_property(_builder_id, 'calendarbg', 'colorentry')
+register_custom_property(_builder_id, 'headerfg', 'colorentry')
+register_custom_property(_builder_id, 'headerbg', 'colorentry')
+register_custom_property(_builder_id, 'selectbg', 'colorentry')
+register_custom_property(_builder_id, 'selectfg', 'colorentry')
+register_custom_property(_builder_id, 'markbg', 'colorentry')
+register_custom_property(_builder_id, 'markfg', 'colorentry')
