@@ -562,7 +562,7 @@ class TKMenuitem(BuilderObject):
 
     def _setup_item_index(self, parent):
         master = parent.get_child_master()
-        index = master.index(tk.END)
+        index = master.index(tk.END) or 0
         # TODO: index of items is shifted if tearoff is changed
         # for now check tearoff config and recalculate index.
         has_tearoff = True if master.type(0) == 'tearoff' else False
