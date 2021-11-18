@@ -8,6 +8,7 @@ Needed packages to run (using Debian/Ubuntu package names):
     python3-tk
 """
 import os
+from io import open
 
 import pygubu
 
