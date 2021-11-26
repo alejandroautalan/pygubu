@@ -77,11 +77,27 @@ class WidgetMeta(object):
                 index = i
                 break
         if index is None:
+            # We're setting the grid rc property on this widget for the first time.
+            
             line = GridRCLine(rctype, rcid, pname, value)
             self.gridrc_properties.append(line)
         else:
-            line = GridRCLine(rctype, rcid, pname, value)
-            self.gridrc_properties[index] = line
+            # We're updating an existing grid rc property value.
+
+            # Prevent code such as weight='0', uniform='' from showing up 
+            # in the generated code - it would be redundant.
+            if (pname in ('minsize', 'pad', 'weight') and value == '0') \
+               or (pname == 'uniform' and not value):
+                
+                # We found a redundant value 
+                # '0' or a blank string if it's for the property: uniform
+                
+                # Remove the gridrc property
+                self.gridrc_properties.pop(index)
+            else:
+                # Update the gridrc property
+                line = GridRCLine(rctype, rcid, pname, value)
+                self.gridrc_properties[index] = line
 
     def __repr__(self):
         tpl = '''<WidgetMeta classname: {0} identifier: {1}>'''
