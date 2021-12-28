@@ -228,9 +228,9 @@ class BuilderObject(object):
                 logger.debug('setting property %s = %s', pname, propvalue)
                 target_widget[pname] = propvalue
             except tk.TclError as e:
-                msg = "Failed to set property '%s' on class '%s'. TclError:"
-                logger.error(msg, pname, repr(self.class_))
-                logger.exception(e)
+                msg = "Failed to set property '%s' on class '%s'. TclError: %s"
+                logger.error(msg, pname, repr(self.class_), str(e))
+                # logger.exception(e)
 
     def layout(self, target=None, configure_gridrc=True):
         if self.layout_required:
