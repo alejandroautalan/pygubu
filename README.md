@@ -132,9 +132,9 @@ Visit the pygubu [wiki](https://github.com/alejandroautalan/pygubu/wiki) for mor
 The following are some good tkinter (and tk) references:
 
 - [TkDocs](http://www.tkdocs.com)
-- [Graphical User Interfaces with Tk](http://docs.python.org/3.5/library/tk.html)
-- [Tkinter 8.5 reference: a GUI for Python](https://web.archive.org/web/20181211092656/http://infohost.nmt.edu/~shipman/soft/tkinter/web/index.html)
-- [An Introduction to Tkinter](http://effbot.org/tkinterbook/)
+- [Graphical User Interfaces with Tk](https://docs.python.org/3/library/tk.html)
+- [Tkinter 8.5 reference: a GUI for Python](https://tkdocs.com/shipman)
+- [An Introduction to Tkinter](http://effbot.org/tkinterbook) [(archive)](http://web.archive.org/web/20200504141939/http://www.effbot.org/tkinterbook)
 - [Tcl/Tk 8.5 Manual](http://www.tcl.tk/man/tcl8.5/)
 
 
