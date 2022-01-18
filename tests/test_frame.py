@@ -1,5 +1,7 @@
 # encoding: utf8
 from __future__ import print_function
+import support
+import pygubu
 import os
 import sys
 import unittest
@@ -12,64 +14,22 @@ except:
 
 
 pygubu_basedir = os.path.abspath(os.path.dirname(
-                    os.path.dirname(os.path.realpath(sys.argv[0]))))
+    os.path.dirname(os.path.realpath(sys.argv[0]))))
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
-
-import pygubu
-import support
 
 
 class TestFrame(unittest.TestCase):
 
     def setUp(self):
         support.root_deiconify()
-        xmldata = """<?xml version="1.0" ?>
-<interface>
-    <object class="ttk.Frame" id="mainwindow">
-        <property name="height">250</property>
-        <property name="padding">10</property>
-        <property name="width">250</property>
-        <property name="class_">MyCustomFrame</property>
-        <property name="relief">sunken</property>
-        <property name="style">MyFrameStyle.TFrame</property>
-        <property name="takefocus">1</property>
-        <property name="cursor">cross</property>
-        <bind add="" handler="on_button_click" sequence="&lt;Button-1&gt;"/>
-        <bind add="True" handler="on_button_click2" sequence="&lt;Button-1&gt;"/>
-        <layout>
-            <property name="row">0</property>
-            <property name="column">0</property>
-            <property name="sticky">nesw</property>
-            <property name="pady">10</property>
-            <property name="padx">5</property>
-            <property name="propagate">False</property>
-            <property name="ipady">4</property>
-            <property name="ipadx">2</property>
-            <property name="rowspan">1</property>
-            <property name="columnspan">2</property>
-        </layout>
-        <child>
-            <object class="ttk.Label" id="label">
-            <property name="text">label</property>
-                <layout>
-                    <property name="column">0</property>
-                    <property name="propagate">True</property>
-                    <property name="row">1</property>
-                </layout>
-            </object>
-        </child>
-    </object>
-</interface>
-"""
+        xmldata = 'test_frame.ui'
         self.builder = builder = pygubu.Builder()
-        builder.add_from_string(xmldata)
+        builder.add_from_file(xmldata)
         self.widget = builder.get_object('mainwindow')
-
 
     def tearDown(self):
         support.root_withdraw()
-
 
     def test_class(self):
         self.assertIsInstance(self.widget, ttk.Frame)
@@ -134,6 +94,7 @@ class TestFrame(unittest.TestCase):
             value = str(ginfo[k])
             self.assertEqual(value, ev)
 
+        # FIX TEST: since interface v1.1 propagate is applied to parent? NO!
         propagate = self.widget.grid_propagate()
         self.assertEqual(None, propagate)
         self.widget.destroy()
@@ -155,7 +116,7 @@ class TestFrame(unittest.TestCase):
         cbdic = {
             'on_button_click': on_button_click,
             'on_button_click2': on_button_click2
-            }
+        }
         self.builder.connect_callbacks(cbdic)
 
         support.simulate_mouse_click(self.widget, 5, 5)
@@ -170,6 +131,7 @@ class TestFrame(unittest.TestCase):
         class AnObject:
             def on_button_click(self, event):
                 success.append(1)
+
             def on_button_click2(self, event):
                 success.append(1)
 
@@ -187,13 +149,14 @@ class TestFrame(unittest.TestCase):
 
         def on_button_click(event):
             success.append(1)
+
         def on_button_click2(event):
             success.append(1)
 
         cbdic = {
             'on_button_click': on_button_click,
             'on_button_click2': on_button_click2
-            }
+        }
         self.builder.connect_callbacks(cbdic)
 
         support.simulate_mouse_click(self.widget, 5, 5)
