@@ -46,10 +46,6 @@ class TKScrolledFrameBO(BuilderObject):
                 pname,
                 value)
 
-    # def layout(self, target=None, configure_gridrc=True):
-    #    super(TKScrolledFrameBO, self).layout(target, False)
-    #    self._gridrc_config(self.widget.innerframe)
-
     #
     # Code generation methods
     #

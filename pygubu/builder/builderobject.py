@@ -232,7 +232,7 @@ class BuilderObject(object):
                 logger.error(msg, pname, repr(self.class_), str(e))
                 # logger.exception(e)
 
-    def layout(self, target=None, configure_gridrc=True):
+    def layout(self, target=None):
         if self.layout_required:
             if target is None:
                 target = self.widget
@@ -243,39 +243,39 @@ class BuilderObject(object):
                 'Applying %s layout to %s',
                 manager,
                 self.wmeta.identifier)
+            properties = self.wmeta.layout_properties
             if manager == 'grid':
-                self._grid_layout(target)
+                target.grid(**properties)
             elif manager == 'pack':
-                self._pack_layout(target)
+                target.pack(**properties)
             elif manager == 'place':
-                self._place_layout(target)
+                target.place(**self.wmeta.layout_properties)
             else:
                 msg = 'Invalid layout manager: {0}'.format(manager)
                 raise Exception(msg)
-        if configure_gridrc:
-            logger.debug('Configurying grid-rc')
-            parent = target.nametowidget(target.winfo_parent())
-            self._gridrc_config(parent)
+        self._container_layout()
 
-    def _pack_layout(self, target):
-        properties = dict(self.wmeta.layout_properties)
-        propagate = properties.pop('propagate', 'true')
-        # Do pack
-        target.pack(**properties)
-        if propagate.lower() != 'true':
-            target.pack_propagate(0)
+    def _container_layout(self):
+        target = self.widget
+        properties = self.wmeta.container_properties
+        propagate = properties.get('propagate', 'true')
+        propagate = tk.getboolean(propagate)
+        anchor = properties.get('anchor', None)
 
-    def _place_layout(self, target):
-        # Do place
-        target.place(**self.wmeta.layout_properties)
-
-    def _grid_layout(self, target):
-        properties = dict(self.wmeta.layout_properties)
-        propagate = properties.pop('propagate', 'true')
-        propagate = propagate.lower()
-        target.grid(**properties)
-        if propagate != 'true':
-            target.grid_propagate(0)
+        container_manager = self.wmeta.container_manager
+        if container_manager == 'grid':
+            if anchor:
+                target.grid_anchor(anchor)
+            if not propagate:
+                target.grid_propagate(0)
+            self._gridrc_config(target)
+        elif container_manager == 'place':
+            if anchor:
+                target.place_anchor(anchor)
+            if not propagate:
+                target.place_propagate(0)
+        elif container_manager is None:
+            raise Exception('Container Manager is none :(')
 
     def _gridrc_config(self, target):
         # configure grid row/col properties:

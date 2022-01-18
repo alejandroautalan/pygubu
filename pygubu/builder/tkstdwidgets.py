@@ -911,7 +911,7 @@ class TKLabelwidgetBO(BuilderObject):
     def add_child(self, bobject):
         self.widget.configure(labelwidget=bobject.widget)
 
-    def layout(self, target=None, configure_gridrc=True):
+    def layout(self, target=None):
         pass
 
     #
@@ -952,7 +952,7 @@ class ToplevelMenuHelperBO(BuilderObject):
     def add_child(self, bobject):
         self.widget.configure(menu=bobject.widget)
 
-    def layout(self, target=None, configure_gridrc=True):
+    def layout(self, target=None):
         pass
 
     #
