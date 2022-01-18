@@ -44,7 +44,7 @@ class UIDefinition(object):
         super(UIDefinition, self).__init__()
         self.tree = None
         self.root = None
-        self._latest_version = '1.1'
+        self._latest_version = '1.2'
         self.version = self._latest_version
         self.author = ''
         self._ignore_properties = (
@@ -128,6 +128,48 @@ class UIDefinition(object):
             bindings.append(binding)
         meta.bindings = bindings
 
+        #
+        # Load widget layout configuration
+        #
+        if self.version > '1.1':
+            # new 1.2 version
+            # layout properties
+            # use grid layout by default
+            manager = 'grid'
+            layout_elem = element.find('./layout')
+            if layout_elem is not None:
+                manager = layout_elem.get('manager', 'grid')
+                meta.manager = manager
+                props = layout_elem.findall('./property')
+                for p in props:
+                    meta.layout_properties[p.get('name')] = p.text
+        else:
+            self.__load_layout_upto_v1_1(element, meta)
+
+        #
+        # Load widget as container layout configuration
+        #
+        clayout_node = element.find('./containerlayout')
+        if clayout_node is not None:
+            cmanager = clayout_node.get('manager', None)
+            meta.container_manager = cmanager
+            props = clayout_node.findall('./property')
+            for p in props:
+                ptype = p.get('type', None)
+                pname = p.get('name')
+                if ptype is None:
+                    # its a regular container property
+                    meta.container_properties[pname] = p.text
+                else:
+                    # GRID RC PROPERTY
+                    line = GridRCLine(ptype, p.get('id'), pname, p.text)
+                    meta.gridrc_properties.append(line)
+
+        return meta
+
+    def __load_layout_upto_v1_1(self, element, meta):
+        '''Load layout info up to version 1.1'''
+        elemid = element.get('id')
         # layout properties
         # use grid layout by default
         manager = 'grid'
@@ -136,20 +178,44 @@ class UIDefinition(object):
             manager = layout_elem.get('manager', 'grid')
             meta.manager = manager
             props = layout_elem.findall('./property')
-            if manager == 'grid':
-                for p in props:
-                    ptype = p.get('type', None)
-                    if ptype is None:
-                        meta.layout_properties[p.get('name')] = p.text
-                    else:
-                        rcid = p.get('id')
-                        rcname = p.get('name')
-                        rcvalue = p.text
-                        line = GridRCLine(ptype, rcid, rcname, rcvalue)
-                        meta.gridrc_properties.append(line)
-            else:
-                for p in props:
-                    meta.layout_properties[p.get('name')] = p.text
+            for p in props:
+                ptype = p.get('type', None)
+                pname = p.get('name')
+                if ptype is not None:
+                    # Its a grid rc, ignore it. Allready loaded in parent.
+                    continue
+                if pname == 'propagate':
+                    meta.container_properties[pname] = p.text
+                else:
+                    meta.layout_properties[pname] = p.text
+
+        # Try to setup:
+        #   - container_manager
+        #   - gridrc properties. gridrc properties are on the children.
+        clmanager = 'grid'
+        child_layouts = element.findall('./child/object/layout')
+        rclines_loaded = set()
+        if child_layouts is not None:
+            for layout_node in child_layouts:
+                manager = layout_node.get('manager', 'grid')
+                if manager != 'place':
+                    clmanager = manager
+                props = layout_node.findall('./property')
+                if props is not None:
+                    for p in props:
+                        ptype = p.get('type', None)
+                        if ptype is not None:
+                            rcid = p.get('id')
+                            rcname = p.get('name')
+                            key = (ptype, rcid, rcname)
+                            if key not in rclines_loaded:
+                                rcvalue = p.text
+                                line = GridRCLine(
+                                    ptype, rcid, rcname, rcvalue)
+                                meta.gridrc_properties.append(line)
+                                rclines_loaded.add(key)
+        meta.container_manager = clmanager
+
         if self.version == '':
             # try to load old version grid rc info
             # Gridrc info was in the parent, or
@@ -163,8 +229,6 @@ class UIDefinition(object):
                 layout_elem = parent.find('./layout')
                 if layout_elem is not None:
                     self.__load_old_gridrc_layout(layout_elem, meta)
-
-        return meta
 
     def __load_old_gridrc_layout(self, element, meta):
         '''Load old grid rc information.'''

@@ -24,6 +24,8 @@ class WidgetMeta(object):
         self._manager = manager if manager is not None else 'grid'
         self.layout_required = True
         self.layout_properties = {}
+        self.container_manager = self._manager
+        self.container_properties = {}
         self.gridrc_properties = []
         self.properties_defaults = properties_defaults if properties_defaults \
             is not None else {}
@@ -78,20 +80,20 @@ class WidgetMeta(object):
                 break
         if index is None:
             # We're setting the grid rc property on this widget for the first time.
-            
+
             line = GridRCLine(rctype, rcid, pname, value)
             self.gridrc_properties.append(line)
         else:
             # We're updating an existing grid rc property value.
 
-            # Prevent code such as weight='0', uniform='' from showing up 
+            # Prevent code such as weight='0', uniform='' from showing up
             # in the generated code - it would be redundant.
             if (pname in ('minsize', 'pad', 'weight') and value == '0') \
                or (pname == 'uniform' and not value):
-                
-                # We found a redundant value 
+
+                # We found a redundant value
                 # '0' or a blank string if it's for the property: uniform
-                
+
                 # Remove the gridrc property
                 self.gridrc_properties.pop(index)
             else:
