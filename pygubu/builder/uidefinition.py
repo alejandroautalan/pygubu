@@ -295,8 +295,8 @@ class UIDefinition(object):
             node.append(bind)
 
         # layout:
-        # if self.layout_required:
-        if CLASS_MAP[wmeta.classname].builder.layout_required:
+        layout_required = CLASS_MAP[wmeta.classname].builder.layout_required
+        if layout_required:
             # create layout node
             layout_node = ET.Element('layout')
             layout_node.set('manager', wmeta.manager)
@@ -307,6 +307,23 @@ class UIDefinition(object):
                 pnode.set('name', prop)
                 pnode.text = wmeta.layout_properties[prop]
                 layout_node.append(pnode)
+            # Append node layout
+            node.append(layout_node)
+
+        # Container layout properties
+        container_layout_required = (
+            layout_required and wmeta.container_properties)
+        if container_layout_required:
+            # create layout node
+            clnode = ET.Element('layout')
+            clnode.set('manager', wmeta.container_manager)
+
+            keys = sorted(wmeta.container_properties)
+            for prop in keys:
+                pnode = ET.Element('property')
+                pnode.set('name', prop)
+                pnode.text = wmeta.container_properties[prop]
+                clnode.append(pnode)
 
             lines = sorted(wmeta.gridrc_properties,
                            key=operator.itemgetter(0, 1, 2))
@@ -316,9 +333,10 @@ class UIDefinition(object):
                 p.set('id', line.rcid)
                 p.set('name', line.pname)
                 p.text = line.pvalue
-                layout_node.append(p)
-            # Append node layout
-            node.append(layout_node)
+                clnode.append(p)
+            # Append container layout node
+            node.append(clnode)
+
         return node
 
     def __create(self):
