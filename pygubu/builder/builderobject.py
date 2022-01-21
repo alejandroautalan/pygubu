@@ -269,11 +269,9 @@ class BuilderObject(object):
             if not propagate:
                 target.grid_propagate(0)
             self._gridrc_config(target)
-        elif container_manager == 'place':
-            if anchor:
-                target.place_anchor(anchor)
+        elif container_manager == 'pack':
             if not propagate:
-                target.place_propagate(0)
+                target.pack_propagate(0)
         elif container_manager is None:
             raise Exception('Container Manager is none :(')
 
