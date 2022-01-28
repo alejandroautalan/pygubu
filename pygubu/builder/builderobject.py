@@ -1,15 +1,9 @@
 # encoding: utf8
-from __future__ import unicode_literals
-
+import tkinter as tk
 import itertools
 import json
 import logging
 from collections import defaultdict, namedtuple
-
-try:
-    import tkinter as tk
-except ImportError:
-    import Tkinter as tk
 
 __all__ = [
     'BuilderObject', 'EntryBaseBO', 'PanedWindowBO',
@@ -23,29 +17,6 @@ logger = logging.getLogger(__name__)
 #
 # Utility functions
 #
-zip_longest = getattr(itertools, 'zip_longest', None)
-if zip_longest is None:
-    def zip_longest(*args, **kw):
-        # zip_longest('ABCD', 'xy', fillvalue='-') --> Ax By C- D-
-        fillvalue = kw.get('fillvalue', None)
-        iterators = [iter(it) for it in args]
-        num_active = len(iterators)
-        if not num_active:
-            return
-        while True:
-            values = []
-            for i, it in enumerate(iterators):
-                try:
-                    value = next(it)
-                except StopIteration:
-                    num_active -= 1
-                    if not num_active:
-                        return
-                    iterators[i] = itertools.repeat(fillvalue)
-                    value = fillvalue
-                values.append(value)
-            yield tuple(values)
-    itertools.zip_longest = zip_longest
 
 
 def grouper(iterable, n, fillvalue=None):
@@ -54,12 +25,6 @@ def grouper(iterable, n, fillvalue=None):
     args = [iter(iterable)] * n
     return itertools.zip_longest(*args, fillvalue=fillvalue)
 
-
-# Python 2 issue:
-try:
-    isinstance(basestring, type)
-except BaseException:
-    basestring = str
 
 #
 # BuilderObject
@@ -200,8 +165,8 @@ class BuilderObject(object):
         if target is None:
             target = self.widget
         for pname, value in self.wmeta.properties.items():
-            if (pname not in self.ro_properties and
-                    pname not in self.command_properties):
+            if (pname not in self.ro_properties
+                    and pname not in self.command_properties):
                 self._set_property(target, pname, value)
 
     def _process_property_value(self, pname, value):
@@ -495,8 +460,8 @@ class BuilderObject(object):
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
-            if (pname not in self.ro_properties and
-                    pname not in self.command_properties):
+            if (pname not in self.ro_properties
+                    and pname not in self.command_properties):
                 self._code_set_property(targetid, pname, value, code_bag)
 
         # properties
@@ -504,7 +469,7 @@ class BuilderObject(object):
         kwproperties = []
         complex_properties = []
         for pname, value in code_bag.items():
-            if isinstance(value, str) or isinstance(value, basestring):
+            if isinstance(value, str) or isinstance(value, str):
                 kwproperties.append(pname)
             else:
                 complex_properties.append(pname)

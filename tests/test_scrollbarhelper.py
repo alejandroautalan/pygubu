@@ -2,16 +2,12 @@
 import os
 import sys
 import unittest
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-except:
-    import Tkinter as tk
-    import ttk
+import tkinter as tk
+import tkinter.ttk as ttk
 
 
 pygubu_basedir = os.path.abspath(os.path.dirname(
-                    os.path.dirname(os.path.realpath(sys.argv[0]))))
+    os.path.dirname(os.path.realpath(sys.argv[0]))))
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
@@ -55,23 +51,21 @@ class TestScrollbarHelper(unittest.TestCase):
         builder.add_from_string(xmldata)
         self.widget = builder.get_object('scrollbarhelper')
 
-
     def tearDown(self):
         support.root_withdraw()
 
-
     def test_class(self):
         self.assertIsInstance(self.widget,
-            pygubu.widgets.scrollbarhelper.ScrollbarHelper)
+                              pygubu.widgets.scrollbarhelper.ScrollbarHelper)
         self.widget.destroy()
 
     def test_padding(self):
         expected_value = ('5', '5', '5', '5')
         tclobj = self.widget.cget('padding')
-        padding = (str(tclobj[0]), str(tclobj[1]), str(tclobj[2]), str(tclobj[3]))
+        padding = (str(tclobj[0]), str(tclobj[1]),
+                   str(tclobj[2]), str(tclobj[3]))
         self.assertEqual(expected_value, padding)
         self.widget.destroy()
-
 
 
 class TestTkScrollbarHelper(unittest.TestCase):
@@ -108,14 +102,12 @@ class TestTkScrollbarHelper(unittest.TestCase):
         builder.add_from_string(xmldata)
         self.widget = builder.get_object('scrollbarhelper')
 
-
     def tearDown(self):
         support.root_withdraw()
 
-
     def test_class(self):
         self.assertIsInstance(self.widget,
-            pygubu.widgets.tkscrollbarhelper.TkScrollbarHelper)
+                              pygubu.widgets.tkscrollbarhelper.TkScrollbarHelper)
         self.widget.destroy()
 
     def test_padx(self):

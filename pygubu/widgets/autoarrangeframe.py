@@ -1,10 +1,6 @@
 # encoding: UTF-8
-try:
-    import tkinter as tk
-    from tkinter import ttk
-except ImportError:
-    import Tkinter as tk
-    import ttk
+import tkinter as tk
+from tkinter import ttk
 
 
 """A frame widget that autoarrange children when is resized.

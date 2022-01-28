@@ -2,16 +2,12 @@
 import os
 import sys
 import unittest
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-except:
-    import Tkinter as tk
-    import ttk
+import tkinter as tk
+import tkinter.ttk as ttk
 
 
 pygubu_basedir = os.path.abspath(os.path.dirname(
-                    os.path.dirname(os.path.realpath(sys.argv[0]))))
+    os.path.dirname(os.path.realpath(sys.argv[0]))))
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
@@ -89,7 +85,6 @@ class TestTreeview(unittest.TestCase):
         self.widget = builder.get_object('treeview')
         self.widget.wait_visibility()
 
-
     def tearDown(self):
         support.root_withdraw()
 
@@ -119,7 +114,7 @@ class TestTreeview(unittest.TestCase):
         heading = {
             'text': 'Tree',
             'anchor': 'w',
-            }
+        }
         for k, v in heading.items():
             self.assertEqual(v, wh[k])
         self.widget.destroy()
@@ -131,7 +126,7 @@ class TestTreeview(unittest.TestCase):
             'stretch': 1,
             'width': 200,
             'minwidth': 200,
-            }
+        }
 
         for k, v in column.items():
             self.assertEqual(v, wc[k])
@@ -143,12 +138,12 @@ class TestTreeview(unittest.TestCase):
         def on_treecolumn_click():
             success.append(1)
 
-        cbdic = { 'on_treecolumn_click': on_treecolumn_click }
+        cbdic = {'on_treecolumn_click': on_treecolumn_click}
         self.builder.connect_callbacks(cbdic)
 
         x, y = self.widget.winfo_x(), self.widget.winfo_y()
-        self.widget.event_generate('<ButtonPress-1>', x=x+5, y=y+5)
-        self.widget.event_generate('<ButtonRelease-1>', x=x+5, y=y+5)
+        self.widget.event_generate('<ButtonPress-1>', x=x + 5, y=y + 5)
+        self.widget.event_generate('<ButtonRelease-1>', x=x + 5, y=y + 5)
         self.widget.update()
 
         self.assertTrue(success)
@@ -165,13 +160,12 @@ class TestTreeview(unittest.TestCase):
         self.builder.connect_callbacks(cbobj)
 
         x, y = self.widget.winfo_x(), self.widget.winfo_y()
-        self.widget.event_generate('<ButtonPress-1>', x=x+5, y=y+5)
-        self.widget.event_generate('<ButtonRelease-1>', x=x+5, y=y+5)
+        self.widget.event_generate('<ButtonPress-1>', x=x + 5, y=y + 5)
+        self.widget.event_generate('<ButtonRelease-1>', x=x + 5, y=y + 5)
         self.widget.update()
 
         self.assertTrue(success)
         self.widget.destroy()
-
 
 
 if __name__ == '__main__':

@@ -1,16 +1,11 @@
 # encoding: utf8
-from __future__ import unicode_literals
-
 from collections import OrderedDict
+import tkinter as tk
+import tkinter.ttk as ttk
 
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-except ImportError:
-    import Tkinter as tk
-    import ttk
-
-from .builderobject import *
+from .builderobject import (
+    BuilderObject, register_widget,
+    EntryBaseBO, PanedWindowBO, PanedWindowPaneBO)
 
 
 #

@@ -1,15 +1,8 @@
 # encoding: utf8
-from __future__ import unicode_literals
+import tkinter as tk
+from tkinter.scrolledtext import ScrolledText
 
-try:
-    import tkinter as tk
-    from tkinter.scrolledtext import ScrolledText
-except ImportError:
-    import Tkinter as tk
-    from ScrolledText import ScrolledText
-
-
-from pygubu.builder.builderobject import BuilderObject, register_widget
+from pygubu.builder.builderobject import register_widget
 from pygubu.builder.tkstdwidgets import TKText
 
 

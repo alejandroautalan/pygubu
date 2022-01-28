@@ -1,5 +1,3 @@
-from __future__ import unicode_literals
-
 __all__ = ['remove_binding', 'ApplicationLevelBindManager']
 
 import logging

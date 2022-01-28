@@ -2,22 +2,17 @@
 import os
 import sys
 import unittest
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-except:
-    import Tkinter as tk
-    import ttk
+import tkinter as tk
+import tkinter.ttk as ttk
 
 
 pygubu_basedir = os.path.abspath(os.path.dirname(
-                    os.path.dirname(os.path.realpath(sys.argv[0]))))
+    os.path.dirname(os.path.realpath(sys.argv[0]))))
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
 import pygubu
 import support
-
 
 
 class TestToplevelMenuHelper(unittest.TestCase):
@@ -37,7 +32,7 @@ class TestToplevelMenuHelper(unittest.TestCase):
     def test_class(self):
         self.assertIsInstance(self.menu, tk.Menu)
         self.widget.destroy()
-        
+
     def test_class_topmenu(self):
         menu1 = self.widget.nametowidget(self.widget.cget('menu'))
         self.assertEqual(menu1, self.menu)

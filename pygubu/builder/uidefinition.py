@@ -421,8 +421,6 @@ class UIDefinition(object):
 
     def __str__(self):
         encoding = 'unicode'
-        if sys.version_info < (3, 0):
-            encoding = 'utf-8'
         return ET.tostring(self.root, encoding=encoding)
 
     def __repr__(self):

@@ -1,23 +1,16 @@
 # encoding: utf8
-from __future__ import unicode_literals
-
 __all__ = ['CalendarFrame']
 
 import calendar
 import locale
-
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-except ImportError:
-    import Tkinter as tk
-    import ttk
+import tkinter as tk
+import tkinter.ttk as ttk
 
 
-imgp_data = ('R0lGODlhDAAMAIABAAAAAP///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEK'
-             + 'AAEALAAAAAAMAAwAAAIVjI+JoMsdgIRyqmoTfrfCmDWh+DUFADs=')
-imgn_data = ('R0lGODlhDAAMAIABAAAAAP///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEK'
-             + 'AAEALAAAAAAMAAwAAAIUjI8ZoAnczINtUmdrVpu/uFwcSBYAOw==')
+imgp_data = ('R0lGODlhDAAMAIABAAAAAP///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEK' +
+             'AAEALAAAAAAMAAwAAAIVjI+JoMsdgIRyqmoTfrfCmDWh+DUFADs=')
+imgn_data = ('R0lGODlhDAAMAIABAAAAAP///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEK' +
+             'AAEALAAAAAAMAAwAAAIUjI8ZoAnczINtUmdrVpu/uFwcSBYAOw==')
 
 
 def get_calendar(locale, fwday):
@@ -305,9 +298,9 @@ class CalendarFrame(ttk.Frame):
             if f < len(weeks):
                 day = weeks[f][c]
                 key = (year, month, day)
-                if ((None, None, day) in self._marked_days or
-                   (None, month, day) in self._marked_days or
-                   key in self._marked_days):
+                if ((None, None, day) in self._marked_days
+                   or (None, month, day) in self._marked_days
+                        or key in self._marked_days):
                     self._canvas.itemconfigure(self._recmat[i],
                                                fill=options['markbg'],
                                                outline=options['markbg'])

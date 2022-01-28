@@ -1,22 +1,17 @@
 # encoding: utf8
+import support
+import pygubu
 import os
 import sys
 import unittest
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-except:
-    import Tkinter as tk
-    import ttk
+import tkinter as tk
+import tkinter.ttk as ttk
 
 
 pygubu_basedir = os.path.abspath(os.path.dirname(
-                    os.path.dirname(os.path.realpath(sys.argv[0]))))
+    os.path.dirname(os.path.realpath(sys.argv[0]))))
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
-
-import pygubu
-import support
 
 
 class TestEntry(unittest.TestCase):
@@ -159,7 +154,6 @@ class TestEntry(unittest.TestCase):
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
-
 
 
 if __name__ == '__main__':

@@ -1,6 +1,4 @@
 # encoding: UTF-8
-from __future__ import print_function, unicode_literals
-
 import xml.etree.ElementTree as ET
 from collections import namedtuple
 
