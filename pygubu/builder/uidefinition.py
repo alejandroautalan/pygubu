@@ -343,8 +343,7 @@ class UIDefinition(object):
 
         # Container layout properties
         container_layout_required = (
-            layout_required
-            and (wmeta.container_properties or wmeta.gridrc_properties)
+            wmeta.container_properties or wmeta.gridrc_properties
         )
         if container_layout_required:
             # create layout node
