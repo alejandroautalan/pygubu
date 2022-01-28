@@ -4,7 +4,7 @@ import logging
 import os
 import tkinter
 
-from pygubu.builder.builderobject import CLASS_MAP, BuilderObject
+from pygubu.builder.builderobject import CB_TYPES, CLASS_MAP, BuilderObject
 from pygubu.builder.widgetmeta import WidgetMeta
 from pygubu.stockimage import StockImage, StockImageException
 
