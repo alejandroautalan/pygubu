@@ -138,6 +138,7 @@ class BuilderObject(object):
     OPTIONS_CUSTOM = tuple()
     class_ = None
     container = False
+    container_layout = False
     allowed_parents = None
     allowed_children = None
     maxchildren = None
@@ -199,8 +200,8 @@ class BuilderObject(object):
         if target is None:
             target = self.widget
         for pname, value in self.wmeta.properties.items():
-            if (pname not in self.ro_properties
-                    and pname not in self.command_properties):
+            if (pname not in self.ro_properties and
+                    pname not in self.command_properties):
                 self._set_property(target, pname, value)
 
     def _process_property_value(self, pname, value):
@@ -233,10 +234,9 @@ class BuilderObject(object):
                 # logger.exception(e)
 
     def layout(self, target=None):
+        if target is None:
+            target = self.widget
         if self.layout_required:
-            if target is None:
-                target = self.widget
-
             # Check manager
             manager = self.wmeta.manager
             logger.debug(
@@ -253,27 +253,26 @@ class BuilderObject(object):
             else:
                 msg = 'Invalid layout manager: {0}'.format(manager)
                 raise Exception(msg)
-        self._container_layout()
 
-    def _container_layout(self):
-        target = self.widget
-        properties = self.wmeta.container_properties
-        propagate = properties.get('propagate', 'true')
-        propagate = tk.getboolean(propagate)
-        anchor = properties.get('anchor', None)
+        # container layout
+        if self.container_layout:
+            properties = self.wmeta.container_properties
+            propagate = properties.get('propagate', 'true')
+            propagate = tk.getboolean(propagate)
+            anchor = properties.get('anchor', None)
 
-        container_manager = self.wmeta.container_manager
-        if container_manager == 'grid':
-            if anchor:
-                target.grid_anchor(anchor)
-            if not propagate:
-                target.grid_propagate(0)
-            self._gridrc_config(target)
-        elif container_manager == 'pack':
-            if not propagate:
-                target.pack_propagate(0)
-        elif container_manager is None:
-            raise Exception('Container Manager is none :(')
+            container_manager = self.wmeta.container_manager
+            if container_manager == 'grid':
+                if anchor:
+                    target.grid_anchor(anchor)
+                if not propagate:
+                    target.grid_propagate(0)
+                self._gridrc_config(target)
+            elif container_manager == 'pack':
+                if not propagate:
+                    target.pack_propagate(0)
+            elif container_manager is None:
+                raise Exception('Container Manager is none :(')
 
     def _gridrc_config(self, target):
         # configure grid row/col properties:
@@ -496,8 +495,8 @@ class BuilderObject(object):
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
-            if (pname not in self.ro_properties
-                    and pname not in self.command_properties):
+            if (pname not in self.ro_properties and
+                    pname not in self.command_properties):
                 self._code_set_property(targetid, pname, value, code_bag)
 
         # properties

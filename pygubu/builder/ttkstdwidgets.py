@@ -30,6 +30,7 @@ class TTKFrame(TTKWidgetBO):
     OPTIONS_SPECIFIC = ('borderwidth', 'relief', 'padding', 'height', 'width')
     class_ = ttk.Frame
     container = True
+    container_layout = True
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 
@@ -198,6 +199,7 @@ class TTKLabelframe(TTKWidgetBO):
                         ('labelanchor', 'text', 'underline'))
     class_ = ttk.Labelframe
     container = True
+    container_layout = True
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 

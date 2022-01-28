@@ -22,6 +22,7 @@ class TKToplevel(BuilderObject):
     class_ = tk.Toplevel
     container = True
     layout_required = False
+    container_layout = True
     allowed_parents = ('root',)
     # maxchildren = 2  # A menu and a frame
     OPTIONS_STANDARD = ('borderwidth', 'cursor', 'highlightbackground',
@@ -49,9 +50,9 @@ class TKToplevel(BuilderObject):
             self.widget = self.class_(master, **args)
         return self.widget
 
-    def layout(self, target=None):
+    # def layout(self, target=None):
         # we marked this widget as not allowed to edit layoutu
-        pass
+    #    pass
 
     def _set_property(self, target_widget, pname, value):
         method_props = ('geometry', 'overrideredirect', 'title')
@@ -118,6 +119,7 @@ class TKFrame(BuilderObject):
                         'height', 'width')
     class_ = tk.Frame
     container = True
+    container_layout = True
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     ro_properties = ('class_', 'container')
 
@@ -146,6 +148,7 @@ register_widget('tk.Label', TKLabel, 'Label', ('Control & Display', 'tk'))
 class TKLabelFrame(BuilderObject):
     class_ = tk.LabelFrame
     container = True
+    container_layout = True
     OPTIONS_STANDARD = (
         'borderwidth', 'cursor', 'font', 'foreground',
         'highlightbackground', 'highlightcolor', 'highlightthickness',
