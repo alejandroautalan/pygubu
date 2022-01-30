@@ -165,8 +165,8 @@ class BuilderObject(object):
         if target is None:
             target = self.widget
         for pname, value in self.wmeta.properties.items():
-            if (pname not in self.ro_properties
-                    and pname not in self.command_properties):
+            if (pname not in self.ro_properties and
+                    pname not in self.command_properties):
                 self._set_property(target, pname, value)
 
     def _process_property_value(self, pname, value):
@@ -401,25 +401,32 @@ class BuilderObject(object):
             targetid = self.code_identifier()
         if parentid is None:
             parentid = targetid
+        lines = []
         if self.layout_required:
-            lines = []
             layout_stmt = "{0}.{1}({2})"
             arg_stmt = "{0}='{1}'"
             layout = self.wmeta.layout_properties
             args_bag = []
             for p, v in sorted(layout.items()):
-                if p not in ('propagate', ):
-                    args_bag.append(arg_stmt.format(p, v))
+                args_bag.append(arg_stmt.format(p, v))
             args = ', '.join(args_bag)
 
             manager = self.wmeta.manager
             line = layout_stmt.format(targetid, manager, args)
             lines.append(line)
 
-            pvalue = str(layout.get('propagate', '')).lower()
-            if 'propagate' in layout and pvalue == 'false':
+        if self.container_layout:
+            manager = self.wmeta.container_manager
+            container_prop = self.wmeta.container_properties
+            pvalue = str(container_prop.get('propagate', '')).lower()
+            if 'propagate' in container_prop and pvalue == 'false':
                 line = '{0}.{1}_propagate({2})'
                 line = line.format(targetid, manager, 0)
+                lines.append(line)
+            if manager == 'grid' and 'anchor' in container_prop:
+                value = container_prop.get('anchor')
+                line = "{0}.{1}_anchor('{2}')"
+                line = line.format(targetid, manager, value)
                 lines.append(line)
 
             lrow_stmt = "{0}.rowconfigure('{1}', {2})"
@@ -434,15 +441,13 @@ class BuilderObject(object):
                     colbag[num].append(arg)
             for k, bag in rowbag.items():
                 args = ', '.join(bag)
-                line = lrow_stmt.format(parentid, k, args)
+                line = lrow_stmt.format(targetid, k, args)
                 lines.append(line)
             for k, bag in colbag.items():
                 args = ', '.join(bag)
-                line = lcol_stmt.format(parentid, k, args)
+                line = lcol_stmt.format(targetid, k, args)
                 lines.append(line)
-            return lines
-        else:
-            return []
+        return lines
 
     def _code_class_name(self):
         cname = None
@@ -460,8 +465,8 @@ class BuilderObject(object):
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
-            if (pname not in self.ro_properties
-                    and pname not in self.command_properties):
+            if (pname not in self.ro_properties and
+                    pname not in self.command_properties):
                 self._code_set_property(targetid, pname, value, code_bag)
 
         # properties
