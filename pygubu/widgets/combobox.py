@@ -1,15 +1,8 @@
 # encoding: utf8
-from __future__ import print_function
-
+import tkinter as tk
+import tkinter.ttk as ttk
 import json
 from collections import OrderedDict
-
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-except ImportError:
-    import Tkinter as tk
-    import ttk
 
 
 class Combobox(ttk.Combobox, object):

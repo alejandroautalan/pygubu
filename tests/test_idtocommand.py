@@ -2,16 +2,11 @@
 import os
 import sys
 import unittest
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-except:
-    import Tkinter as tk
-    import ttk
-
+import tkinter as tk
+import tkinter.ttk as ttk
 
 pygubu_basedir = os.path.abspath(os.path.dirname(
-                    os.path.dirname(os.path.realpath(sys.argv[0]))))
+    os.path.dirname(os.path.realpath(sys.argv[0]))))
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
@@ -38,11 +33,11 @@ class TestIdtocommand(unittest.TestCase):
         class AnObject:
             def on_button_clicked(self, widgetid):
                 success.append(1)
-    
+
         cbobj = AnObject()
         self.builder.connect_callbacks(cbobj)
         self.button.invoke()
         self.widget.update()
-    
+
         self.assertTrue(success)
         self.widget.destroy()

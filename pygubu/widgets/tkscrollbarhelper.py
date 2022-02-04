@@ -1,12 +1,6 @@
 # encoding: utf8
-from __future__ import unicode_literals
-
 import logging
-
-try:
-    import tkinter as tk
-except ImportError:
-    import Tkinter as tk
+import tkinter as tk
 
 from pygubu import ApplicationLevelBindManager as BindManager
 from pygubu.binding import remove_binding

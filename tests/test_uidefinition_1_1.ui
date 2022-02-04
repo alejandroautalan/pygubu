@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.1">
+  <object class="ttk.Frame" id="fmain">
+    <property name="height">200</property>
+    <property name="padding">10</property>
+    <property name="width">200</property>
+    <layout manager="grid">
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="ttk.Frame" id="fgrid">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="propagate">True</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Button" id="button4">
+            <property name="text" translatable="yes">button4</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property type="col" id="0" name="minsize">30</property>
+              <property type="col" id="0" name="pad">15</property>
+              <property type="col" id="0" name="uniform">y</property>
+              <property type="col" id="0" name="weight">1</property>
+              <property type="row" id="0" name="minsize">10</property>
+              <property type="row" id="0" name="pad">10</property>
+              <property type="row" id="0" name="uniform">x</property>
+              <property type="row" id="0" name="weight">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="button5">
+            <property name="text" translatable="yes">button5</property>
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property type="row" id="0" name="minsize">10</property>
+              <property type="row" id="0" name="pad">10</property>
+              <property type="row" id="0" name="uniform">x</property>
+              <property type="row" id="0" name="weight">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="button6">
+            <property name="text" translatable="yes">button6</property>
+            <layout manager="grid">
+              <property name="column">2</property>
+              <property name="propagate">True</property>
+              <property name="row">0</property>
+              <property type="col" id="2" name="minsize">30</property>
+              <property type="col" id="2" name="pad">15</property>
+              <property type="col" id="2" name="uniform">y</property>
+              <property type="col" id="2" name="weight">1</property>
+              <property type="row" id="0" name="minsize">10</property>
+              <property type="row" id="0" name="pad">10</property>
+              <property type="row" id="0" name="uniform">x</property>
+              <property type="row" id="0" name="weight">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="button7">
+            <property name="text" translatable="yes">button7</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property type="col" id="0" name="minsize">30</property>
+              <property type="col" id="0" name="pad">15</property>
+              <property type="col" id="0" name="uniform">y</property>
+              <property type="col" id="0" name="weight">1</property>
+              <property type="row" id="1" name="minsize">10</property>
+              <property type="row" id="1" name="pad">10</property>
+              <property type="row" id="1" name="uniform">x</property>
+              <property type="row" id="1" name="weight">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="button8">
+            <property name="text" translatable="yes">button8</property>
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property type="row" id="1" name="minsize">10</property>
+              <property type="row" id="1" name="pad">10</property>
+              <property type="row" id="1" name="uniform">x</property>
+              <property type="row" id="1" name="weight">1</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="button9">
+            <property name="text" translatable="yes">button9</property>
+            <layout manager="grid">
+              <property name="column">2</property>
+              <property name="propagate">True</property>
+              <property name="row">1</property>
+              <property type="col" id="2" name="minsize">30</property>
+              <property type="col" id="2" name="pad">15</property>
+              <property type="col" id="2" name="uniform">y</property>
+              <property type="col" id="2" name="weight">1</property>
+              <property type="row" id="1" name="minsize">10</property>
+              <property type="row" id="1" name="pad">10</property>
+              <property type="row" id="1" name="uniform">x</property>
+              <property type="row" id="1" name="weight">1</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -1,12 +1,7 @@
 # encoding: utf8
-from __future__ import unicode_literals
+import tkinter as tk
 
-try:
-    import tkinter as tk
-except ImportError:
-    import Tkinter as tk
-
-from pygubu.builder.builderobject import *
+from pygubu.builder.builderobject import (BuilderObject, register_widget)
 from pygubu.widgets.scrolledframe import ScrolledFrame
 
 
@@ -42,10 +37,6 @@ class TTKScrolledFrameBO(BuilderObject):
                 target_widget,
                 pname,
                 value)
-
-    # def layout(self, target=None, configure_gridrc=True):
-    #    super(TTKScrolledFrameBO, self).layout(target, False)
-    #    self._gridrc_config(self.widget.innerframe)
 
     #
     # Code generation methods

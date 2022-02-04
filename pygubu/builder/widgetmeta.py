@@ -1,6 +1,4 @@
 # encoding: UTF-8
-from __future__ import print_function, unicode_literals
-
 import xml.etree.ElementTree as ET
 from collections import namedtuple
 
@@ -24,6 +22,8 @@ class WidgetMeta(object):
         self._manager = manager if manager is not None else 'grid'
         self.layout_required = True
         self.layout_properties = {}
+        self._container_manager = self._manager
+        self.container_properties = {}
         self.gridrc_properties = []
         self.properties_defaults = properties_defaults if properties_defaults \
             is not None else {}
@@ -41,6 +41,16 @@ class WidgetMeta(object):
     @manager.setter
     def manager(self, value):
         self._manager = value
+
+    @property
+    def container_manager(self):
+        return self._container_manager
+
+    @container_manager.setter
+    def container_manager(self, value):
+        if value == 'pack' and self.gridrc_properties:
+            self.gridrc_properties.clear()
+        self._container_manager = value
 
     def apply_properties_defaults(self):
         for name, value in self.properties_defaults.items():
@@ -78,20 +88,20 @@ class WidgetMeta(object):
                 break
         if index is None:
             # We're setting the grid rc property on this widget for the first time.
-            
+
             line = GridRCLine(rctype, rcid, pname, value)
             self.gridrc_properties.append(line)
         else:
             # We're updating an existing grid rc property value.
 
-            # Prevent code such as weight='0', uniform='' from showing up 
+            # Prevent code such as weight='0', uniform='' from showing up
             # in the generated code - it would be redundant.
             if (pname in ('minsize', 'pad', 'weight') and value == '0') \
                or (pname == 'uniform' and not value):
-                
-                # We found a redundant value 
+
+                # We found a redundant value
                 # '0' or a blank string if it's for the property: uniform
-                
+
                 # Remove the gridrc property
                 self.gridrc_properties.pop(index)
             else:
@@ -113,7 +123,12 @@ class WidgetMeta(object):
         self.gridrc_properties = rc
 
     def copy_properties(self, wfrom):
+        # Used on preview methods
         self.properties = wfrom.properties.copy()
+        self.gridrc_properties.clear()
+        self.gridrc_properties.extend(wfrom.gridrc_properties)
+        self.container_manager = wfrom.container_manager
+        self.container_properties = wfrom.container_properties
 
 
 if __name__ == '__main__':

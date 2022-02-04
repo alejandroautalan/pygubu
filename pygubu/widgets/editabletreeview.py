@@ -1,14 +1,7 @@
 # encoding: utf8
-from __future__ import unicode_literals
-
 import functools
-
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-except ImportError:
-    import Tkinter as tk
-    import ttk
+import tkinter as tk
+import tkinter.ttk as ttk
 
 
 class EditableTreeview(ttk.Treeview):

@@ -2,10 +2,7 @@
 #Copyright © 2001-2013 Python Software Foundation; All Rights Reserved
 
 import sys
-try:
-    import tkinter
-except:
-    import Tkinter as tkinter
+import tkinter
 import unittest
 
 _tk_unavailable = None

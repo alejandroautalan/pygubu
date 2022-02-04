@@ -1,12 +1,7 @@
 # encoding: UTF-8
-from __future__ import unicode_literals
+import tkinter as tk
+import tkinter.ttk as ttk
 
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-except ImportError:
-    import Tkinter as tk
-    import ttk
 
 img_down = '''\
 R0lGODlhEAAQAIAAAAAAAAAAACH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAAQABAA

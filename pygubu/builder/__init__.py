@@ -1,15 +1,8 @@
 # encoding: utf8
-from __future__ import unicode_literals
-
 import importlib
 import logging
 import os
-import xml.etree.ElementTree as ET
-
-try:
-    import tkinter
-except ImportError:
-    import Tkinter as tkinter
+import tkinter
 
 from pygubu.builder.builderobject import CB_TYPES, CLASS_MAP, BuilderObject
 from pygubu.builder.widgetmeta import WidgetMeta

@@ -1,16 +1,11 @@
 # encoding: utf8
-from __future__ import unicode_literals
-
 from collections import OrderedDict
+import tkinter as tk
+import tkinter.ttk as ttk
 
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-except ImportError:
-    import Tkinter as tk
-    import ttk
-
-from .builderobject import *
+from .builderobject import (
+    BuilderObject, register_widget,
+    EntryBaseBO, PanedWindowBO, PanedWindowPaneBO)
 
 
 #
@@ -30,6 +25,7 @@ class TTKFrame(TTKWidgetBO):
     OPTIONS_SPECIFIC = ('borderwidth', 'relief', 'padding', 'height', 'width')
     class_ = ttk.Frame
     container = True
+    container_layout = True
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 
@@ -198,6 +194,7 @@ class TTKLabelframe(TTKWidgetBO):
                         ('labelanchor', 'text', 'underline'))
     class_ = ttk.Labelframe
     container = True
+    container_layout = True
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 

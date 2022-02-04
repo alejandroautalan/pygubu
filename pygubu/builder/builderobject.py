@@ -1,15 +1,9 @@
 # encoding: utf8
-from __future__ import unicode_literals
-
+import tkinter as tk
 import itertools
 import json
 import logging
 from collections import defaultdict, namedtuple
-
-try:
-    import tkinter as tk
-except ImportError:
-    import Tkinter as tk
 
 __all__ = [
     'BuilderObject', 'EntryBaseBO', 'PanedWindowBO',
@@ -23,29 +17,6 @@ logger = logging.getLogger(__name__)
 #
 # Utility functions
 #
-zip_longest = getattr(itertools, 'zip_longest', None)
-if zip_longest is None:
-    def zip_longest(*args, **kw):
-        # zip_longest('ABCD', 'xy', fillvalue='-') --> Ax By C- D-
-        fillvalue = kw.get('fillvalue', None)
-        iterators = [iter(it) for it in args]
-        num_active = len(iterators)
-        if not num_active:
-            return
-        while True:
-            values = []
-            for i, it in enumerate(iterators):
-                try:
-                    value = next(it)
-                except StopIteration:
-                    num_active -= 1
-                    if not num_active:
-                        return
-                    iterators[i] = itertools.repeat(fillvalue)
-                    value = fillvalue
-                values.append(value)
-            yield tuple(values)
-    itertools.zip_longest = zip_longest
 
 
 def grouper(iterable, n, fillvalue=None):
@@ -54,12 +25,6 @@ def grouper(iterable, n, fillvalue=None):
     args = [iter(iterable)] * n
     return itertools.zip_longest(*args, fillvalue=fillvalue)
 
-
-# Python 2 issue:
-try:
-    isinstance(basestring, type)
-except BaseException:
-    basestring = str
 
 #
 # BuilderObject
@@ -138,6 +103,7 @@ class BuilderObject(object):
     OPTIONS_CUSTOM = tuple()
     class_ = None
     container = False
+    container_layout = False
     allowed_parents = None
     allowed_children = None
     maxchildren = None
@@ -199,8 +165,8 @@ class BuilderObject(object):
         if target is None:
             target = self.widget
         for pname, value in self.wmeta.properties.items():
-            if (pname not in self.ro_properties
-                    and pname not in self.command_properties):
+            if (pname not in self.ro_properties and
+                    pname not in self.command_properties):
                 self._set_property(target, pname, value)
 
     def _process_property_value(self, pname, value):
@@ -232,50 +198,46 @@ class BuilderObject(object):
                 logger.error(msg, pname, repr(self.class_), str(e))
                 # logger.exception(e)
 
-    def layout(self, target=None, configure_gridrc=True):
+    def layout(self, target=None):
+        if target is None:
+            target = self.widget
         if self.layout_required:
-            if target is None:
-                target = self.widget
-
             # Check manager
             manager = self.wmeta.manager
             logger.debug(
                 'Applying %s layout to %s',
                 manager,
                 self.wmeta.identifier)
+            properties = self.wmeta.layout_properties
             if manager == 'grid':
-                self._grid_layout(target)
+                target.grid(**properties)
             elif manager == 'pack':
-                self._pack_layout(target)
+                target.pack(**properties)
             elif manager == 'place':
-                self._place_layout(target)
+                target.place(**self.wmeta.layout_properties)
             else:
                 msg = 'Invalid layout manager: {0}'.format(manager)
                 raise Exception(msg)
-        if configure_gridrc:
-            logger.debug('Configurying grid-rc')
-            parent = target.nametowidget(target.winfo_parent())
-            self._gridrc_config(parent)
 
-    def _pack_layout(self, target):
-        properties = dict(self.wmeta.layout_properties)
-        propagate = properties.pop('propagate', 'true')
-        # Do pack
-        target.pack(**properties)
-        if propagate.lower() != 'true':
-            target.pack_propagate(0)
+        # container layout
+        if self.container_layout:
+            properties = self.wmeta.container_properties
+            propagate = properties.get('propagate', 'true')
+            propagate = tk.getboolean(propagate)
+            anchor = properties.get('anchor', None)
 
-    def _place_layout(self, target):
-        # Do place
-        target.place(**self.wmeta.layout_properties)
-
-    def _grid_layout(self, target):
-        properties = dict(self.wmeta.layout_properties)
-        propagate = properties.pop('propagate', 'true')
-        propagate = propagate.lower()
-        target.grid(**properties)
-        if propagate != 'true':
-            target.grid_propagate(0)
+            container_manager = self.wmeta.container_manager
+            if container_manager == 'grid':
+                if anchor:
+                    target.grid_anchor(anchor)
+                if not propagate:
+                    target.grid_propagate(0)
+                self._gridrc_config(target)
+            elif container_manager == 'pack':
+                if not propagate:
+                    target.pack_propagate(0)
+            elif container_manager is None:
+                raise Exception('Container Manager is none :(')
 
     def _gridrc_config(self, target):
         # configure grid row/col properties:
@@ -439,25 +401,32 @@ class BuilderObject(object):
             targetid = self.code_identifier()
         if parentid is None:
             parentid = targetid
+        lines = []
         if self.layout_required:
-            lines = []
             layout_stmt = "{0}.{1}({2})"
             arg_stmt = "{0}='{1}'"
             layout = self.wmeta.layout_properties
             args_bag = []
             for p, v in sorted(layout.items()):
-                if p not in ('propagate', ):
-                    args_bag.append(arg_stmt.format(p, v))
+                args_bag.append(arg_stmt.format(p, v))
             args = ', '.join(args_bag)
 
             manager = self.wmeta.manager
             line = layout_stmt.format(targetid, manager, args)
             lines.append(line)
 
-            pvalue = str(layout.get('propagate', '')).lower()
-            if 'propagate' in layout and pvalue == 'false':
+        if self.container_layout:
+            manager = self.wmeta.container_manager
+            container_prop = self.wmeta.container_properties
+            pvalue = str(container_prop.get('propagate', '')).lower()
+            if 'propagate' in container_prop and pvalue == 'false':
                 line = '{0}.{1}_propagate({2})'
                 line = line.format(targetid, manager, 0)
+                lines.append(line)
+            if manager == 'grid' and 'anchor' in container_prop:
+                value = container_prop.get('anchor')
+                line = "{0}.{1}_anchor('{2}')"
+                line = line.format(targetid, manager, value)
                 lines.append(line)
 
             lrow_stmt = "{0}.rowconfigure('{1}', {2})"
@@ -472,15 +441,13 @@ class BuilderObject(object):
                     colbag[num].append(arg)
             for k, bag in rowbag.items():
                 args = ', '.join(bag)
-                line = lrow_stmt.format(parentid, k, args)
+                line = lrow_stmt.format(targetid, k, args)
                 lines.append(line)
             for k, bag in colbag.items():
                 args = ', '.join(bag)
-                line = lcol_stmt.format(parentid, k, args)
+                line = lcol_stmt.format(targetid, k, args)
                 lines.append(line)
-            return lines
-        else:
-            return []
+        return lines
 
     def _code_class_name(self):
         cname = None
@@ -498,8 +465,8 @@ class BuilderObject(object):
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
-            if (pname not in self.ro_properties
-                    and pname not in self.command_properties):
+            if (pname not in self.ro_properties and
+                    pname not in self.command_properties):
                 self._code_set_property(targetid, pname, value, code_bag)
 
         # properties
@@ -507,7 +474,7 @@ class BuilderObject(object):
         kwproperties = []
         complex_properties = []
         for pname, value in code_bag.items():
-            if isinstance(value, str) or isinstance(value, basestring):
+            if isinstance(value, str) or isinstance(value, str):
                 kwproperties.append(pname)
             else:
                 complex_properties.append(pname)

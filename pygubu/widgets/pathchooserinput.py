@@ -1,14 +1,7 @@
 # encoding: utf8
-from __future__ import unicode_literals
-
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-    from tkinter import filedialog
-except ImportError:
-    import tkFileDialog as filedialog
-    import Tkinter as tk
-    import ttk
+import tkinter as tk
+import tkinter.ttk as ttk
+from tkinter import filedialog
 
 
 class PathChooserInput(ttk.Frame):

@@ -1,15 +1,10 @@
 # encoding: utf8
-from __future__ import unicode_literals
 
 __all__ = ['StockImage', 'StockImageException', 'TK_IMAGE_FORMATS']
 
 import logging
 import os
-
-try:
-    import tkinter as tk
-except ImportError:
-    import Tkinter as tk
+import tkinter as tk
 
 
 logger = logging.getLogger(__name__)

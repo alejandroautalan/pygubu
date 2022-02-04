@@ -2,16 +2,12 @@
 import os
 import sys
 import unittest
-try:
-    import tkinter as tk
-    import tkinter.ttk as ttk
-except:
-    import Tkinter as tk
-    import ttk
+import tkinter as tk
+import tkinter.ttk as ttk
 
 
 pygubu_basedir = os.path.abspath(os.path.dirname(
-                    os.path.dirname(os.path.realpath(sys.argv[0]))))
+    os.path.dirname(os.path.realpath(sys.argv[0]))))
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
@@ -27,7 +23,6 @@ class TestVariables(unittest.TestCase):
         self.builder = builder = pygubu.Builder()
         builder.add_from_file(xmldata)
         self.widget = builder.get_object('mainwindow')
-
 
     def tearDown(self):
         support.root_withdraw()
@@ -52,18 +47,17 @@ class TestVariables(unittest.TestCase):
         self.assertIsInstance(var, tk.BooleanVar)
         self.assertEqual(False, var.get())
         self.widget.destroy()
-    
+
     def test_bugged_oldformat_var(self):
         var = self.builder.get_variable('testoldformat')
         self.assertIsInstance(var, tk.StringVar)
         self.widget.destroy()
-        
+
     def test_invalid_variable_type(self):
         # self.builder.create_variable('complex:mycomplexvar')
         self.assertRaises(Exception, self.builder.create_variable,
                           'complex:mycomplexvar')
         self.widget.destroy()
-
 
 
 if __name__ == '__main__':

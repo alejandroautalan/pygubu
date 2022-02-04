@@ -1,6 +1,18 @@
 History
 =======
 
+Changes for version 0.20
+
+  * Removed Python 2.7 support, Minimum Python version required is now 3.6
+  * Added support to configure grid with 'all' index
+  * Change in xml specification. Interface version is now 1.2. This includes reorganization of grid row/column properties.
+
+Changes for version 0.19
+
+  * Fix generating redundant code for grid properties
+  * Fix install error on python 2.7
+  * This is the last version with python 2.7 support
+
 Changes for version 0.9.8
 
   * Use entry_points field for installing a startup script with setuptools
