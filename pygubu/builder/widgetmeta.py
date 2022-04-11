@@ -1,6 +1,7 @@
 # encoding: UTF-8
 import xml.etree.ElementTree as ET
 from collections import namedtuple
+from pygubu import builder
 
 __all__ = ['WidgetMeta', 'BindingMeta']
 
@@ -20,7 +21,11 @@ class WidgetMeta(object):
         self.properties = {}
         self.bindings = []
         self._manager = manager if manager is not None else 'grid'
-        self.layout_required = True
+        widget_description = builder.CLASS_MAP.get(cname)
+        if widget_description:
+            self.layout_required = widget_description.builder.layout_required
+        else:
+            self.layout_required = True
         self.layout_properties = {}
         self._container_manager = self._manager
         self.container_properties = {}
