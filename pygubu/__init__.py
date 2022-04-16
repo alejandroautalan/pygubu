@@ -17,7 +17,7 @@ from pygubu.builder.builderobject import (BuilderObject, register_widget,
                                           register_property,
                                           register_custom_property)
 
-__version__ = '0.20'
+__version__ = '0.20.1'
 
 
 class TkApplication:
