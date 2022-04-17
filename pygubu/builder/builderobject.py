@@ -552,8 +552,20 @@ class BuilderObject(object):
         if cmdtype == CB_TYPES.ENTRY_VALIDATE:
             cb_args = cmd['args']
             if cb_args:
-                cb_args = cb_args.replace('%', '')
-                args = cb_args.split()
+                name_map = {
+                    '%d': 'd_action',
+                    '%i': 'i_index',
+                    '%P': 'p_entry_value',
+                    '%s': 's_prev_value',
+                    '%S': 's_new_value',
+                    '%v': 'v_validate',
+                    '%V': 'v_condition',
+                    '%W': 'w_entry_name'
+                }
+                args = []
+                for key in cb_args.split():
+                    args.append(name_map[key])
+
         return args
 
     def _code_define_callback(self, cmd_pname, cmd):
