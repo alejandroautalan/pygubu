@@ -1,7 +1,97 @@
-# encoding: utf8
 import functools
 import tkinter as tk
 import tkinter.ttk as ttk
+from abc import ABC, abstractmethod
+
+
+class InplaceEditor(ABC):
+    event_value_changed = '<<InplaceEditor:ValueChanged>>'
+
+    def _notify_change(self) -> None:
+        self.widget.event_generate(self.event_value_changed)
+
+    def focus_set(self) -> None:
+        self.widget.focus_set()
+
+    @property
+    @abstractmethod
+    def widget(self) -> tk.Widget:
+        ...
+
+    @property
+    @abstractmethod
+    def value(self):
+        ...
+
+    @abstractmethod
+    def edit(self, value) -> None:
+        ...
+
+
+class _VariableBasedEditor(InplaceEditor):
+    @abstractmethod
+    def _create_widget(self, master, **kw) -> tk.Widget:
+        ...
+
+    def __init__(self, master, **kw):
+        self._var_blocked = False
+        self._variable = None
+        if kw is None:
+            kw = {}
+        if 'textvariable' in kw:
+            self._variable = kw['textvariable']
+        else:
+            self._variable = tk.StringVar()
+            kw['textvariable'] = self._variable
+        self._widget = self._create_widget(master, **kw)
+
+        def on_var_write(var, index, mode):
+            if not self._var_blocked:
+                self._notify_change()
+
+        self._variable.trace_add('write', on_var_write)
+
+    @property
+    def widget(self):
+        return self._widget
+
+    @property
+    def value(self):
+        return self._variable.get()
+
+    def edit(self, value):
+        self._var_blocked = True
+        self._variable.set(value)
+        self._var_blocked = False
+
+
+class _EntryEditor(_VariableBasedEditor):
+    def _create_widget(self, master, **kw) -> tk.Widget:
+        return ttk.Entry(master, **kw)
+
+
+class _CheckbuttonEditor(_VariableBasedEditor):
+    def _create_widget(self, master, **kw) -> tk.Widget:
+        return ttk.Checkbutton(master, **kw)
+
+
+class _ComboboxEditor(_VariableBasedEditor):
+    def _create_widget(self, master, **kw) -> tk.Widget:
+        return ttk.Combobox(master, **kw)
+
+
+class _SpinboxEditor(_VariableBasedEditor):
+    def _create_widget(self, master, **kw) -> tk.Widget:
+        return ttk.Spinbox(master, **kw)
+
+
+class _CustomEditor(_VariableBasedEditor):
+    def __init__(self, widget, **kw):
+        self._widget = widget
+        super().__init__(widget, **kw)
+
+    def _create_widget(self, master, **kw) -> tk.Widget:
+        return self._widget
 
 
 class EditableTreeview(ttk.Treeview):
@@ -30,33 +120,37 @@ class EditableTreeview(ttk.Treeview):
     """
 
     def __init__(self, master=None, **kw):
-        ttk.Treeview.__init__(self, master, **kw)
+        super().__init__(master, **kw)
 
         self._curfocus = None
-        self._inplace_widgets = {}
-        self._inplace_widgets_show = {}
-        self._inplace_vars = {}
+        self._editors = {}
+        self._editors_show = {}
         self._header_clicked = False
         self._header_dragged = False
+        self._last_column_clicked = '#0'
+        self._update_callback_id = None
 
         self.bind('<<TreeviewSelect>>', self.__check_focus)
         # Wheel events?
-        self.bind('<4>', lambda e: self.after_idle(self.__updateWnds))
-        self.bind('<5>', lambda e: self.after_idle(self.__updateWnds))
-        #self.bind('<ButtonRelease-1>', self.__check_focus)
+        self.bind('<4>', self._schedule_update)
+        self.bind('<5>', self._schedule_update)
         self.bind('<KeyRelease>', self.__check_focus)
         self.bind('<Home>', functools.partial(self.__on_key_press, 'Home'))
         self.bind('<End>', functools.partial(self.__on_key_press, 'End'))
         self.bind('<Button-1>', self.__on_button1)
         self.bind('<ButtonRelease-1>', self.__on_button1_release)
         self.bind('<Motion>', self.__on_mouse_motion)
-        self.bind('<Configure>',
-                  lambda e: self.after_idle(self.__updateWnds))
+        self.bind('<Configure>', self._schedule_update)
+
+    def _schedule_update(self, event=None):
+        if self._update_callback_id is None:
+            self._update_callback_id = self.after_idle(self.__updateWnds)
 
     def __on_button1(self, event):
-        r = event.widget.identify_region(event.x, event.y)
+        r = self.identify_region(event.x, event.y)
         if r in ('separator', 'header'):
             self._header_clicked = True
+        self._last_column_clicked = self.identify_column(event.x)
 
     def __on_mouse_motion(self, event):
         if self._header_clicked:
@@ -64,7 +158,7 @@ class EditableTreeview(ttk.Treeview):
 
     def __on_button1_release(self, event):
         if self._header_dragged:
-            self.after_idle(self.__updateWnds)
+            self._schedule_update(event)
         self._header_clicked = False
         self._header_dragged = False
 
@@ -77,38 +171,37 @@ class EditableTreeview(ttk.Treeview):
             self.focus(self.get_children()[-1])
 
     def delete(self, *items):
-        self.after_idle(self.__updateWnds)
+        self._schedule_update()
         ttk.Treeview.delete(self, *items)
 
     def yview(self, *args):
         """Update inplace widgets position when doing vertical scroll"""
-        self.after_idle(self.__updateWnds)
+        self._schedule_update()
         ttk.Treeview.yview(self, *args)
 
     def yview_scroll(self, number, what):
-        self.after_idle(self.__updateWnds)
+        self._schedule_update()
         ttk.Treeview.yview_scroll(self, number, what)
 
     def yview_moveto(self, fraction):
-        self.after_idle(self.__updateWnds)
+        self._schedule_update()
         ttk.Treeview.yview_moveto(self, fraction)
 
     def xview(self, *args):
         """Update inplace widgets position when doing horizontal scroll"""
-        self.after_idle(self.__updateWnds)
+        self._schedule_update()
         ttk.Treeview.xview(self, *args)
 
     def xview_scroll(self, number, what):
-        self.after_idle(self.__updateWnds)
+        self._schedule_update()
         ttk.Treeview.xview_scroll(self, number, what)
 
     def xview_moveto(self, fraction):
-        self.after_idle(self.__updateWnds)
+        self._schedule_update()
         ttk.Treeview.xview_moveto(self, fraction)
 
     def __check_focus(self, event):
         """Checks if the focus has changed"""
-        #print('Event:', event.type, event.x, event.y)
         changed = False
         if not self._curfocus:
             changed = True
@@ -118,7 +211,7 @@ class EditableTreeview(ttk.Treeview):
         newfocus = self.focus()
         if changed:
             if newfocus:
-                #print('Focus changed to:', newfocus)
+                # print('Focus changed to:', newfocus)
                 self._curfocus = newfocus
                 self.__focus(newfocus)
             self.__updateWnds()
@@ -129,49 +222,40 @@ class EditableTreeview(ttk.Treeview):
         for col in cols:
             self.__event_info = (col, item)
             self.event_generate('<<TreeviewInplaceEdit>>')
-            if col in self._inplace_widgets:
-                w = self._inplace_widgets[col]
-                w.bind('<Key-Tab>',
-                       lambda e: w.tk_focusNext().focus_set())
-                w.bind('<Shift-Key-Tab>',
-                       lambda e: w.tk_focusPrev().focus_set())
 
     def __updateWnds(self, event=None):
         if not self._curfocus:
             return
         item = self._curfocus
+        item_exists = self.exists(item)
         cols = self.__get_display_columns()
-        for col in cols:
-            if col in self._inplace_widgets:
-                wnd = self._inplace_widgets[col]
-                bbox = ''
-                if self.exists(item):
-                    bbox = self.bbox(item, column=col)
+        last_column_index = int(self._last_column_clicked[1:])
+        for index, col in enumerate(cols):
+            if col in self._editors:
+                editor = self._editors[col]
+                bbox = '' if not item_exists else self.bbox(item, column=col)
                 if bbox == '':
-                    wnd.place_forget()
-                elif col in self._inplace_widgets_show:
-                    wnd.place(x=bbox[0], y=bbox[1],
-                              width=bbox[2], height=bbox[3])
+                    editor.widget.place_forget()
+                elif col in self._editors_show:
+                    editor.widget.place(
+                        x=bbox[0], y=bbox[1], width=bbox[2], height=bbox[3]
+                    )
+                    # try to focus the widget in the column clicked
+                    if last_column_index == index:
+                        editor.focus_set()
+        self._update_callback_id = None
 
     def __clear_inplace_widgets(self):
         """Remove all inplace edit widgets."""
-        cols = self.__get_display_columns()
-        #print('Clear:', cols)
-        for c in cols:
-            if c in self._inplace_widgets:
-                widget = self._inplace_widgets[c]
-                widget.place_forget()
-                self._inplace_widgets_show.pop(c, None)
-                # widget.destroy()
-                #del self._inplace_widgets[c]
+        for col, editor in self._editors.items():
+            editor.widget.place_forget()
+        self._editors_show.clear()
 
     def __get_display_columns(self):
         cols = self.cget('displaycolumns')
         show = (str(s) for s in self.cget('show'))
-        if '#all' in cols:
-            cols = self.cget('columns') + ('#0',)
-        elif 'tree' in show:
-            cols = cols + ('#0',)
+        if '#all' in cols or 'tree' in show:
+            cols = ('#0',) + self.cget('columns')
         return cols
 
     def get_event_info(self):
@@ -195,74 +279,57 @@ class EditableTreeview(ttk.Treeview):
         if not self.exists(item):
             return
         value = self.__get_value(col, item)
-        newvalue = self._inplace_vars[col].get()
+        newvalue = self._editors[col].value
         if value != newvalue:
             self.__set_value(col, item, newvalue)
 
+    def _setup_editor(self, col, item, editor):
+        editor.edit(self.__get_value(col, item))
+
+        def on_value_change(event):
+            self.__update_value(col, item)
+
+        editor.widget.bind(InplaceEditor.event_value_changed, on_value_change)
+        self._editors_show[col] = True
+
     def inplace_entry(self, col, item):
-        if col not in self._inplace_vars:
-            self._inplace_vars[col] = tk.StringVar()
-        svar = self._inplace_vars[col]
-        svar.set(self.__get_value(col, item))
-        if col not in self._inplace_widgets:
-            self._inplace_widgets[col] = ttk.Entry(self, textvariable=svar)
-        entry = self._inplace_widgets[col]
-        entry.bind('<Unmap>', lambda e: self.__update_value(col, item))
-        entry.bind('<FocusOut>', lambda e: self.__update_value(col, item))
-        self._inplace_widgets_show[col] = True
+        if col not in self._editors:
+            self._editors[col] = _EntryEditor(self)
+        self._setup_editor(col, item, self._editors[col])
 
     def inplace_checkbutton(self, col, item, onvalue='True', offvalue='False'):
-        if col not in self._inplace_vars:
-            self._inplace_vars[col] = tk.StringVar()
-        svar = self._inplace_vars[col]
-        svar.set(self.__get_value(col, item))
-        if col not in self._inplace_widgets:
-            self._inplace_widgets[col] = ttk.Checkbutton(
-                self, textvariable=svar, variable=svar, onvalue=onvalue, offvalue=offvalue)
-        cb = self._inplace_widgets[col]
-        cb.bind('<Unmap>', lambda e: self.__update_value(col, item))
-        cb.bind('<FocusOut>', lambda e: self.__update_value(col, item))
-        self._inplace_widgets_show[col] = True
+        if col not in self._editors:
+            svar = tk.StringVar()
+            self._editors[col] = _CheckbuttonEditor(
+                self,
+                textvariable=svar,
+                variable=svar,
+                onvalue=onvalue,
+                offvalue=offvalue,
+            )
+        self._setup_editor(col, item, self._editors[col])
 
-    def inplace_combobox(self, col, item, values, readonly=True,
-                         update_values=False):
-        state = 'readonly' if readonly else 'normal'
-        if col not in self._inplace_vars:
-            self._inplace_vars[col] = tk.StringVar()
-        svar = self._inplace_vars[col]
-        svar.set(self.__get_value(col, item))
-        if col not in self._inplace_widgets:
-            self._inplace_widgets[col] = ttk.Combobox(
-                self, textvariable=svar, values=values, state=state)
+    def inplace_combobox(self, col, item, values, readonly=True, update_values=False):
+        if col not in self._editors:
+            state = 'readonly' if readonly else 'normal'
+            self._editors[col] = _ComboboxEditor(self, values=values, state=state)
+        self._setup_editor(col, item, self._editors[col])
         if update_values:
-            self._inplace_widgets[col].configure(values=values)
-        cb = self._inplace_widgets[col]
-        cb.bind('<Unmap>', lambda e: self.__update_value(col, item))
-        cb.bind('<FocusOut>', lambda e: self.__update_value(col, item))
-        self._inplace_widgets_show[col] = True
+            self._editors[col].widget.configure(values=values)
 
     def inplace_spinbox(self, col, item, min, max, step):
-        if col not in self._inplace_vars:
-            self._inplace_vars[col] = tk.StringVar()
-        svar = self._inplace_vars[col]
-        svar.set(self.__get_value(col, item))
-        if col not in self._inplace_widgets:
-            self._inplace_widgets[col] = tk.Spinbox(
-                self, textvariable=svar, from_=min, to=max, increment=step)
-        sb = self._inplace_widgets[col]
-        sb.bind('<Unmap>', lambda e: self.__update_value(col, item))
-        sb.bind('<FocusOut>', lambda e: self.__update_value(col, item))
-        self._inplace_widgets_show[col] = True
+        if col not in self._editors:
+            self._editors[col] = _SpinboxEditor(self, from_=min, to=max, increment=step)
+        self._setup_editor(col, item, self._editors[col])
 
     def inplace_custom(self, col, item, widget, stringvar=None):
-        if col not in self._inplace_vars:
+        if col not in self._editors:
             if stringvar is None:
-                self._inplace_vars[col] = tk.StringVar()
-            else:
-                self._inplace_vars[col] = stringvar
-        svar = self._inplace_vars[col]
-        svar.set(self.__get_value(col, item))
-        self._inplace_widgets[col] = widget
-        widget.bind('<Unmap>', lambda e: self.__update_value(col, item))
-        widget.bind('<FocusOut>', lambda e: self.__update_value(col, item))
-        self._inplace_widgets_show[col] = True
+                stringvar = tk.StringVar()
+            self._editors[col] = _CustomEditor(widget, textvariable=stringvar)
+        self._setup_editor(col, item, self._editors[col])
+
+    def inplace_editor(self, col, item, editor: InplaceEditor):
+        if col not in self._editors:
+            self._editors[col] = editor
+        self._setup_editor(col, item, self._editors[col])
