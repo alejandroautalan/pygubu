@@ -229,7 +229,8 @@ class EditableTreeview(ttk.Treeview):
         item = self._curfocus
         item_exists = self.exists(item)
         cols = self.__get_display_columns()
-        last_column_index = int(self._last_column_clicked[1:])
+        col_diff = 0 if '#0' in cols else -1
+        last_column_index = int(self._last_column_clicked[1:]) + col_diff
         for index, col in enumerate(cols):
             if col in self._editors:
                 editor = self._editors[col]
