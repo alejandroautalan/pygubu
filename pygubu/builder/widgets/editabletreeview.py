@@ -7,16 +7,21 @@ from pygubu.widgets.editabletreeview import EditableTreeview
 
 class EditableTreeviewBO(TTKTreeviewBO):
     class_ = EditableTreeview
-    virtual_events = ('<<TreeviewInplaceEdit>>', '<<TreeviewCellEdited>>')
+    virtual_events = TTKTreeviewBO.virtual_events + (
+        '<<TreeviewInplaceEdit>>',
+        '<<TreeviewCellEdited>>',
+    )
 
 
 classid = 'pygubu.builder.widgets.editabletreeview'
 if classid not in TTKTreeviewColumnBO.allowed_parents:
-    TTKTreeviewColumnBO.allowed_parents = \
-        TTKTreeviewColumnBO.allowed_parents + (classid, )
+    TTKTreeviewColumnBO.add_allowed_parent(classid)
 if classid not in TTKSBHelperBO.allowed_children:
-    TTKSBHelperBO.allowed_children = \
-        TTKSBHelperBO.allowed_children + (classid, )
+    TTKSBHelperBO.add_allowed_child(classid)
 
-register_widget('pygubu.builder.widgets.editabletreeview', EditableTreeviewBO,
-                'EditableTreeview', ('Pygubu Widgets', 'ttk'))
+register_widget(
+    'pygubu.builder.widgets.editabletreeview',
+    EditableTreeviewBO,
+    'EditableTreeview',
+    ('Pygubu Widgets', 'ttk'),
+)
