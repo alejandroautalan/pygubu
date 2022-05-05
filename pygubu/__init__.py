@@ -8,14 +8,18 @@ __all__ = [
     'register_property',
     'register_custom_property',
     'remove_binding',
-    'ApplicationLevelBindManager']
+    'ApplicationLevelBindManager',
+]
 
 import warnings
 from pygubu.binding import ApplicationLevelBindManager, remove_binding
 from pygubu.builder import Builder
-from pygubu.builder.builderobject import (BuilderObject, register_widget,
-                                          register_property,
-                                          register_custom_property)
+from pygubu.builder.builderobject import (
+    BuilderObject,
+    register_widget,
+    register_property,
+    register_custom_property,
+)
 
 __version__ = '0.20.1'
 
@@ -24,7 +28,8 @@ class TkApplication:
     def __init__(self, master=None):
         warnings.warn(
             'TkApplication is deprecated and it will be removed in the future. Use a Toplevel instance in the ui file.',
-            category=DeprecationWarning)
+            category=DeprecationWarning,
+        )
         self.master = master
         self.toplevel = master.winfo_toplevel()
 
@@ -68,7 +73,7 @@ class TkApplication:
 
     def on_close_execute(self):
         """Determine if if the application is ready for quit,
-           return boolean."""
+        return boolean."""
         return True
 
     def quit(self):
