@@ -1,6 +1,13 @@
 History
 =======
 
+Changes for version 0.21
+
+  * Editabletreeview: Add InplaceEditor abstract class for better management of column data editors.
+  * Improve argument names for entry validate callback.
+  * Fix: Generate escaped strings on code generation.
+  * Other minor fixes.
+
 Changes for version 0.20
 
   * Removed Python 2.7 support, Minimum Python version required is now 3.6
