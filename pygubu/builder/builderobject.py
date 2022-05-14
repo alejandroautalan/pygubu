@@ -6,10 +6,18 @@ import logging
 from collections import defaultdict, namedtuple
 
 __all__ = [
-    'BuilderObject', 'EntryBaseBO', 'PanedWindowBO',
-    'PanedWindowPaneBO', 'WidgetDescription', 'CLASS_MAP', 'CB_TYPES',
-    'CUSTOM_PROPERTIES', 'register_widget', 'register_property',
-    'register_custom_property'
+    'BuilderObject',
+    'EntryBaseBO',
+    'PanedWindowBO',
+    'PanedWindowPaneBO',
+    'WidgetDescription',
+    'CLASS_MAP',
+    'CB_TYPES',
+    'CUSTOM_PROPERTIES',
+    'register_widget',
+    'register_property',
+    'register_custom_property',
+    'TRANSLATABLE_PROPERTIES',
 ]
 
 logger = logging.getLogger(__name__)
@@ -30,8 +38,9 @@ def grouper(iterable, n, fillvalue=None):
 # BuilderObject
 #
 
-WidgetDescription = namedtuple('WidgetDescription',
-                               ['classname', 'builder', 'label', 'tags'])
+WidgetDescription = namedtuple(
+    'WidgetDescription', ['classname', 'builder', 'label', 'tags']
+)
 
 CLASS_MAP = {}
 
@@ -58,9 +67,8 @@ def register_property(name, description):
 
 
 def register_custom_property(
-        builder_uid, prop_name,
-        editor, default_value=None, help=None,
-        **editor_params):
+    builder_uid, prop_name, editor, default_value=None, help=None, **editor_params
+):
     '''Helper function to register a custom property.
     All custom properties are created using internal dynamic editor.
     '''
@@ -70,7 +78,7 @@ def register_custom_property(
             'params': {
                 'mode': editor,
             }
-        }
+        },
     }
     description[builder_uid]['params'].update(editor_params)
     if default_value is not None:
@@ -82,6 +90,7 @@ def register_custom_property(
 
 class CB_TYPES:
     '''Callback types'''
+
     SIMPLE = 'simple'
     WITH_WID = 'with_wid'
     ENTRY_VALIDATE = 'entry_validate'
@@ -156,8 +165,7 @@ class BuilderObject(object):
         args = {}
         for rop in self.ro_properties:
             if rop in self.wmeta.properties:
-                pvalue = self._process_property_value(
-                    rop, self.wmeta.properties[rop])
+                pvalue = self._process_property_value(rop, self.wmeta.properties[rop])
                 args[rop] = pvalue
         return args
 
@@ -165,8 +173,7 @@ class BuilderObject(object):
         if target is None:
             target = self.widget
         for pname, value in self.wmeta.properties.items():
-            if (pname not in self.ro_properties and
-                    pname not in self.command_properties):
+            if pname not in self.ro_properties and pname not in self.command_properties:
                 self._set_property(target, pname, value)
 
     def _process_property_value(self, pname, value):
@@ -204,10 +211,7 @@ class BuilderObject(object):
         if self.layout_required:
             # Check manager
             manager = self.wmeta.manager
-            logger.debug(
-                'Applying %s layout to %s',
-                manager,
-                self.wmeta.identifier)
+            logger.debug('Applying %s layout to %s', manager, self.wmeta.identifier)
             properties = self.wmeta.layout_properties
             if manager == 'grid':
                 target.grid(**properties)
@@ -257,8 +261,10 @@ class BuilderObject(object):
         callback = command
         cmd_type = cmd['cbtype']
         if cmd_type == CB_TYPES.WITH_WID:
+
             def widget_callback(button_id=self.wmeta.identifier):
                 command(button_id)
+
             callback = widget_callback
         if cmd_type == CB_TYPES.ENTRY_VALIDATE:
             args = cmd['args']
@@ -299,8 +305,7 @@ class BuilderObject(object):
             for cmd_pname, cmd in commands.items():
                 cmd_name = cmd['value']
                 if hasattr(cmd_bag, cmd_name):
-                    callback = self._create_callback(
-                        cmd, getattr(cmd_bag, cmd_name))
+                    callback = self._create_callback(cmd, getattr(cmd_bag, cmd_name))
                     self._connect_command(cmd_pname, callback)
                 else:
                     notconnected.append(cmd_name)
@@ -349,7 +354,8 @@ class BuilderObject(object):
         for rop in self.ro_properties:
             if rop in self.wmeta.properties:
                 pvalue = self._code_process_property_value(
-                    code_identifier, rop, self.wmeta.properties[rop])
+                    code_identifier, rop, self.wmeta.properties[rop]
+                )
                 args[rop] = pvalue
         return args
 
@@ -366,8 +372,9 @@ class BuilderObject(object):
         kwargs = ''
         if bag:
             kwargs = ', {0}'.format(', '.join(bag))
-        s = "{0} = {1}({2}{3})".format(self.code_identifier(),
-                                       self._code_class_name(), master, kwargs)
+        s = "{0} = {1}({2}{3})".format(
+            self.code_identifier(), self._code_class_name(), master, kwargs
+        )
         lines.append(s)
         return lines
 
@@ -385,8 +392,9 @@ class BuilderObject(object):
     def code_configure(self, targetid=None):
         if targetid is None:
             targetid = self.code_identifier()
-        code_bag, kwproperties, complex_properties = \
-            self._code_process_properties(self.wmeta.properties, targetid)
+        code_bag, kwproperties, complex_properties = self._code_process_properties(
+            self.wmeta.properties, targetid
+        )
         lines = []
         prop_stmt = "{0}.configure({1})"
         arg_stmt = "{0}={1}"
@@ -472,8 +480,7 @@ class BuilderObject(object):
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
-            if (pname not in self.ro_properties and
-                    pname not in self.command_properties):
+            if pname not in self.ro_properties and pname not in self.command_properties:
                 self._code_set_property(targetid, pname, value, code_bag)
 
         # properties
@@ -504,8 +511,7 @@ class BuilderObject(object):
         return propvalue
 
     def _code_set_property(self, targetid, pname, value, code_bag):
-        code_bag[pname] = self._code_process_property_value(
-            targetid, pname, value)
+        code_bag[pname] = self._code_process_property_value(targetid, pname, value)
 
     def _code_set_tkvariable_property(self, pname, value):
         '''Create code for tk variable property.
@@ -542,9 +548,9 @@ class BuilderObject(object):
         cmdtype = cmd['cbtype']
         args = None
         if cmdtype == CB_TYPES.WITH_WID:
-            args = ('widget_id', )
+            args = ('widget_id',)
         if cmdtype == CB_TYPES.SCALE:
-            args = ('scale_value', )
+            args = ('scale_value',)
         if cmdtype == CB_TYPES.SCROLLSET:
             args = ('first', 'last')
         if cmdtype == CB_TYPES.SCROLL:
@@ -560,7 +566,7 @@ class BuilderObject(object):
                     '%S': 's_new_value',
                     '%v': 'v_validate',
                     '%V': 'v_condition',
-                    '%W': 'w_entry_name'
+                    '%W': 'w_entry_name',
                 }
                 args = []
                 for key in cb_args.split():
@@ -583,8 +589,7 @@ class BuilderObject(object):
         if args is not None:
             if cmdtype == CB_TYPES.WITH_WID:
                 wid = self.wmeta.identifier
-                fdef = "_wcmd = lambda wid='{0}': {1}(wid)".format(
-                    wid, cbname)
+                fdef = "_wcmd = lambda wid='{0}': {1}(wid)".format(wid, cbname)
                 cbname = '_wcmd'
                 lines.append(fdef)
             if cmdtype == CB_TYPES.ENTRY_VALIDATE:
@@ -604,7 +609,8 @@ class BuilderObject(object):
         target = self.code_identifier()
         for bind in self.wmeta.bindings:
             cb_name = self.builder.code_create_callback(
-                target, bind.handler, CB_TYPES.BIND_EVENT)
+                target, bind.handler, CB_TYPES.BIND_EVENT
+            )
             add_arg = '+' if bind.add else ''
             line = "{0}.bind('{1}', {2}, add='{3}')"
             line = line.format(target, bind.sequence, cb_name, add_arg)
@@ -628,39 +634,39 @@ class EntryBaseBO(BuilderObject):
             target_widget.insert('0', value)
             target_widget['state'] = wstate
         else:
-            super(EntryBaseBO, self)._set_property(
-                target_widget, pname, value)
+            super(EntryBaseBO, self)._set_property(target_widget, pname, value)
 
     #
     # Code generation methods
     #
     def _code_set_property(self, targetid, pname, value, code_bag):
         if pname == 'text':
+            fval = self.builder.code_translate_str(value)
             lines = [
-                "_text_ = '''{0}'''".format(value),
-                "{0}.delete('0', 'end')".format(targetid),
-                "{0}.insert('0', _text_)".format(targetid),
+                f"_text_ = {fval}",
+                f"{targetid}.delete('0', 'end')",
+                f"{targetid}.insert('0', _text_)",
             ]
             if 'state' in self.wmeta.properties:
                 state_value = self.wmeta.properties['state']
                 if state_value != 'normal':
-                    line = "{0}['state'] = 'normal'".format(targetid)
-                    lines.insert(1, line)
-                    line = "{0}['state'] = '{1}'".format(
-                        targetid, state_value)
+                    lines.insert(1, f"{targetid}['state'] = 'normal'")
+                    line = f"{targetid}['state'] = '{state_value}'"
                     lines.append(line)
             code_bag[pname] = lines
         else:
-            super(EntryBaseBO, self)._code_set_property(targetid, pname,
-                                                        value, code_bag)
+            super(EntryBaseBO, self)._code_set_property(
+                targetid, pname, value, code_bag
+            )
 
 
 class PanedWindowBO(BuilderObject):
     """Base class for tk.PanedWindow and ttk.Panedwindow builder objects"""
+
     class_ = None
     container = True
     properties = []
-    ro_properties = ('orient', )
+    ro_properties = ('orient',)
 
     def realize(self, parent):
         master = parent.get_child_master()

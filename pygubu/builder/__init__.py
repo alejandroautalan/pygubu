@@ -17,8 +17,10 @@ logger = logging.getLogger(__name__)
 # Builder class
 #
 
+
 class Builder(object):
     """Allows to build a tk interface from xml definition."""
+
     TK_VARIABLE_TYPES = ('string', 'int', 'boolean', 'double')
 
     def __init__(self, translator=None):
@@ -203,8 +205,7 @@ class Builder(object):
 
             self.objects[wmeta.identifier] = parent
 
-            for childmeta in \
-                    self.uidefinition.widget_children(wmeta.identifier):
+            for childmeta in self.uidefinition.widget_children(wmeta.identifier):
                 child = self._realize(parent, childmeta)
                 parent.add_child(child)
             parent.configure()
@@ -221,10 +222,11 @@ class Builder(object):
         wmeta = bobject.wmeta
         cname = wmeta.classname
         wmeta.layout_required = bobject.layout_required
-        has_layout = (len(wmeta.layout_properties) > 1)
+        has_layout = len(wmeta.layout_properties) > 1
         if wmeta.layout_required and not has_layout:
-            logger.debug('No layout information for: (%s, %s).',
-                         cname, wmeta.identifier)
+            logger.debug(
+                'No layout information for: (%s, %s).', cname, wmeta.identifier
+            )
 
     def _post_realize(self, bobject):
         pass
