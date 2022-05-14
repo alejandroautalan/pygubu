@@ -515,23 +515,23 @@ class TKText(BuilderObject):
             state_value = ''
             if 'state' in self.wmeta.properties:
                 state_value = self.wmeta.properties['state']
-            lines = []
-            line = "_text_ = '''{0}'''".format(value)
-            lines.append(line)
+            sval = self.builder.code_translate_str(value)
+            lines = [
+                f"_text_ = {sval}",
+            ]
             if state_value == tk.DISABLED:
-                line = "{0}.configure(state='normal')".format(targetid)
-                lines.append(line)
-                line = "{0}.insert('0.0', _text_)".format(targetid)
-                lines.append(line)
-                line = "{0}.configure(state='disabled')".format(targetid)
-                lines.append(line)
+                lines.extend(
+                    (
+                        f"{targetid}.configure(state='normal')",
+                        f"{targetid}.insert('0.0', _text_)",
+                        f"{targetid}.configure(state='disabled')",
+                    )
+                )
             else:
-                line = "{0}.insert('0.0', _text_)".format(targetid)
-                lines.append(line)
+                lines.append(f"{targetid}.insert('0.0', _text_)")
             code_bag[pname] = lines
         else:
-            super(TKText, self)._code_set_property(targetid, pname,
-                                                   value, code_bag)
+            super(TKText, self)._code_set_property(targetid, pname, value, code_bag)
 
 
 register_widget('tk.Text', TKText, 'Text', ('Control & Display', 'tk', 'ttk'))

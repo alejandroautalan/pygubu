@@ -266,3 +266,6 @@ class Builder(object):
 
     def code_create_callback(self, widgetid, cbname, cbtype, args=None):
         raise NotImplementedError()
+
+    def code_translate_str(self, value: str) -> str:
+        raise NotImplementedError()

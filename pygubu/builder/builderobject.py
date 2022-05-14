@@ -99,6 +99,9 @@ class CB_TYPES:
     SCALE = 'scale'
     BIND_EVENT = 'bind_event'
 
+
+TRANSLATABLE_PROPERTIES = ['label', 'text', 'title']
+
 #
 # Base class
 #
@@ -342,11 +345,8 @@ class BuilderObject(object):
     # Code generation methods
     #
     @staticmethod
-    def code_escape_str(value):
-        rval = repr(value)[1:-1]
-        rval.replace('"', '\\"')
-        rval.replace("'", "\\'")
-        return rval
+    def code_escape_str(value: str) -> str:
+        return repr(value)
 
     def _code_get_init_args(self, code_identifier):
         """Creates dict with properties marked as readonly"""
@@ -496,7 +496,7 @@ class BuilderObject(object):
         return (code_bag, kwproperties, complex_properties)
 
     def _code_process_property_value(self, targetid, pname, value):
-        propvalue = "'{}'".format(value)
+        propvalue = None
         if pname in self.tkvar_properties:
             propvalue = self._code_set_tkvariable_property(pname, value)
         elif pname in self.command_properties:
@@ -506,8 +506,11 @@ class BuilderObject(object):
             propvalue = self.builder.code_create_image(value)
         elif pname == 'takefocus':
             propvalue = str(tk.getboolean(value))
-        elif pname == 'text':
-            propvalue = self.code_escape_str(propvalue)
+        elif pname in TRANSLATABLE_PROPERTIES:
+            propvalue = self.builder.code_translate_str(value)
+        # default processing
+        if propvalue is None:
+            propvalue = f"'{value}'"
         return propvalue
 
     def _code_set_property(self, targetid, pname, value, code_bag):
@@ -518,7 +521,7 @@ class BuilderObject(object):
         Can be used from subclases for custom tk variable properties.'''
         varvalue = None
         if 'text' in self.wmeta.properties and pname == 'textvariable':
-            varvalue = self.code_escape_str(self.wmeta.properties['text'])
+            varvalue = self.builder.code_translate_str(self.wmeta.properties['text'])
         elif 'value' in self.wmeta.properties and pname == 'variable':
             varvalue = self.code_escape_str(self.wmeta.properties['value'])
         propvalue = self.builder.code_create_variable(value, varvalue)

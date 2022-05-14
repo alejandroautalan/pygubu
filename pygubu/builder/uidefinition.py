@@ -6,7 +6,7 @@ import operator
 import sys
 import xml.etree.ElementTree as ET
 
-from pygubu.builder.builderobject import CLASS_MAP
+from pygubu.builder.builderobject import CLASS_MAP, TRANSLATABLE_PROPERTIES
 from pygubu.builder.widgetmeta import BindingMeta, GridRCLine, WidgetMeta
 
 
@@ -290,7 +290,7 @@ class UIDefinition(object):
         pnode = ET.Element('property')
         pnode.set('name', pname)
         pnode.text = pvalue
-        if pname in self.TRANSLATABLE_PROPERTIES:
+        if pname in TRANSLATABLE_PROPERTIES:
             pnode.set('translatable', 'yes')
         # if pvalue is a json do special
         try:
