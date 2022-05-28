@@ -34,6 +34,14 @@ def grouper(iterable, n, fillvalue=None):
     return itertools.zip_longest(*args, fillvalue=fillvalue)
 
 
+def isfloat(num: str) -> bool:
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
+
+
 #
 # BuilderObject
 #
@@ -418,16 +426,16 @@ class BuilderObject(object):
             parentid = targetid
         lines = []
         if self.layout_required:
-            layout_stmt = "{0}.{1}({2})"
-            arg_stmt = "{0}='{1}'"
+            manager = self.wmeta.manager
             layout = self.wmeta.layout_properties
             args_bag = []
             for p, v in sorted(layout.items()):
-                args_bag.append(arg_stmt.format(p, v))
+                pvalue = self._code_process_layout_property(manager, p, v)
+                arg_stmt = f"{p}={pvalue}"
+                args_bag.append(arg_stmt)
             args = ', '.join(args_bag)
 
-            manager = self.wmeta.manager
-            line = layout_stmt.format(targetid, manager, args)
+            line = f"{targetid}.{manager}({args})"
             lines.append(line)
 
         if self.container_layout:
@@ -444,23 +452,24 @@ class BuilderObject(object):
                 line = line.format(targetid, manager, value)
                 lines.append(line)
 
-            lrow_stmt = "{0}.rowconfigure('{1}', {2})"
-            lcol_stmt = "{0}.columnconfigure('{1}', {2})"
             rowbag = defaultdict(list)
             colbag = defaultdict(list)
             for type_, num, pname, value in self.wmeta.gridrc_properties:
-                arg = "{0}='{1}'".format(pname, value)
+                pvalue = self._code_process_layout_property('grid', pname, value)
+                arg = f"{pname}={pvalue}"
                 if type_ == 'row':
                     rowbag[num].append(arg)
                 else:
                     colbag[num].append(arg)
             for k, bag in rowbag.items():
                 args = ', '.join(bag)
-                line = lrow_stmt.format(targetid, k, args)
+                rowid = f'"{k}"' if k == 'all' else k
+                line = f"{targetid}.rowconfigure({rowid}, {args})"
                 lines.append(line)
             for k, bag in colbag.items():
                 args = ', '.join(bag)
-                line = lcol_stmt.format(targetid, k, args)
+                colid = f'"{k}"' if k == 'all' else k
+                line = f"{targetid}.columnconfigure({colid}, {args})"
                 lines.append(line)
         return lines
 
@@ -510,7 +519,9 @@ class BuilderObject(object):
             propvalue = self.builder.code_translate_str(value)
         # default processing
         if propvalue is None:
-            propvalue = f"'{value}'"
+            propvalue = (
+                f"{value}" if value.isnumeric() or isfloat(value) else f"'{value}'"
+            )
         return propvalue
 
     def _code_set_property(self, targetid, pname, value, code_bag):
@@ -619,6 +630,12 @@ class BuilderObject(object):
             line = line.format(target, bind.sequence, cb_name, add_arg)
             lines.append(line)
         return lines
+
+    def _code_process_layout_property(
+        self, manager: str, pname: str, pvalue: str
+    ) -> str:
+        fvalue = f"{pvalue}" if pvalue.isnumeric() or isfloat(pvalue) else f"'{pvalue}'"
+        return fvalue
 
 
 #
