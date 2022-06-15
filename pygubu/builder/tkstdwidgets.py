@@ -1464,10 +1464,12 @@ class TKOptionMenu(BuilderObject):
             self._code_identifier = code_identifier
         lines = []
         master = boparent.code_child_master()
-        init_args = self._get_init_args()
+        init_args = self._code_get_init_args(self.code_identifier())
         command_arg = None
         variable_arg = None
         value_arg = None
+
+        # command property
         pname = 'command'
         if pname in self.wmeta.properties:
             value = json.loads(self.wmeta.properties[pname])
@@ -1477,33 +1479,28 @@ class TKOptionMenu(BuilderObject):
             pvalue = self.builder.code_create_callback(
                 self.code_identifier(), cmdname, cmdtype, args
             )
-            command_arg = "{1}".format(pname, pvalue)
-        pname = 'value'
-        if pname in init_args:
-            pvalue = init_args[pname]
-            value_arg = "'{1}'".format(pname, pvalue)
+            command_arg = f"{pvalue}"
+
+        # Value property
+        # Not used in code generation.
+        # Already setup in _code_get_init_args
+
+        # Variable property
         pname = 'variable'
         varname = '__tkvar'
         if pname in init_args:
             varname = init_args[pname]
-        var_value = init_args.get('value', '')
-        pvalue = self.builder.code_create_variable(varname, var_value)
-        variable_arg = "{1}".format(pname, pvalue)
+        variable_arg = varname
+
+        # values property
         pname = 'values'
         om_values = []
-        if pname in init_args:
-            value = init_args[pname]
+        if pname in self.wmeta.properties:
+            value = self.wmeta.properties["values"]
             om_values = value.split(',')
-        line = "__values = {0}".format(om_values)
+        line = f"__values = {om_values}"
         lines.append(line)
-        s = "{0} = {1}({2}, {3}, {4}, *__values, command={5})".format(
-            self.code_identifier(),
-            self._code_class_name(),
-            master,
-            variable_arg,
-            value_arg,
-            command_arg,
-        )
+        s = f"{self.code_identifier()} = {self._code_class_name()}({master}, {variable_arg}, *__values, command={command_arg})"
         lines.append(s)
         return lines
 
