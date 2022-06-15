@@ -1,6 +1,12 @@
 History
 =======
 
+Changes for version 0.22
+
+  * Code generation: mark translatable text in code. issue alejandroautalan/pygubu-designer#120
+  * Code generation: generate keyword arguments as integers when posible. issue alejandroautalan/pygubu-designer#114
+  * Code generation: Fix OptionMenu. issue alejandroautalan/pygubu-designer#125
+
 Changes for version 0.21
 
   * Editabletreeview: Add InplaceEditor abstract class for better management of column data editors.
