@@ -1,12 +1,13 @@
-# encoding: utf8
+# encoding: utf-8
 import os
 import sys
 import unittest
 import tkinter as tk
 import tkinter.ttk as ttk
 
-pygubu_basedir = os.path.abspath(os.path.dirname(
-    os.path.dirname(os.path.realpath(sys.argv[0]))))
+pygubu_basedir = os.path.abspath(
+    os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[0])))
+)
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
@@ -15,7 +16,6 @@ import support
 
 
 class TestButton(unittest.TestCase):
-
     def setUp(self):
         support.root_deiconify()
         xmldata = """<?xml version="1.0" ?>
@@ -49,13 +49,13 @@ class TestButton(unittest.TestCase):
 """
         self.builder = builder = pygubu.Builder()
         builder.add_from_string(xmldata)
-        self.widget = builder.get_object('testbutton')
+        self.widget = builder.get_object("testbutton")
 
         self.is_style_setup = False
         if self.is_style_setup:
             self.is_style_setup = True
             s = ttk.Style()
-            s.configure('CustomButton.TButton', color='Blue')
+            s.configure("CustomButton.TButton", color="Blue")
 
     def tearDown(self):
         support.root_withdraw()
@@ -65,15 +65,15 @@ class TestButton(unittest.TestCase):
         self.widget.destroy()
 
     def test_class_(self):
-        tclobj = self.widget.cget('class')
+        tclobj = self.widget.cget("class")
         class_ = str(tclobj)
-        self.assertEqual('CustomButton', class_)
+        self.assertEqual("CustomButton", class_)
         self.widget.destroy()
 
     def test_style(self):
-        tclobj = self.widget.cget('style')
+        tclobj = self.widget.cget("style")
         style = str(tclobj)
-        self.assertEqual('CustomButton.TButton', style)
+        self.assertEqual("CustomButton.TButton", style)
         self.widget.destroy()
 
     def test_command_dict(self):
@@ -82,7 +82,7 @@ class TestButton(unittest.TestCase):
         def on_button_click():
             success.append(1)
 
-        cbdic = {'on_button_click': on_button_click}
+        cbdic = {"on_button_click": on_button_click}
         self.builder.connect_callbacks(cbdic)
 
         self.widget.invoke()
@@ -104,26 +104,25 @@ class TestButton(unittest.TestCase):
         self.widget.destroy()
 
     def test_compound(self):
-        compound = str(self.widget.cget('compound'))
-        self.assertEqual('right', compound)
+        compound = str(self.widget.cget("compound"))
+        self.assertEqual("right", compound)
         self.widget.destroy()
 
     def test_btn_text(self):
-        txt = self.widget.cget('text')
-        self.assertEqual('Button Label', txt)
+        txt = self.widget.cget("text")
+        self.assertEqual("Button Label", txt)
         self.widget.destroy()
 
     def test_btn_variable(self):
-        var = self.builder.get_variable('button_var')
+        var = self.builder.get_variable("button_var")
         self.assertIsInstance(var, tk.StringVar)
-        self.assertEqual('Button Label', var.get())
+        self.assertEqual("Button Label", var.get())
 
-        newlabel = 'Label Changed'
+        newlabel = "Label Changed"
         var.set(newlabel)
-        self.assertEqual(newlabel, self.widget.cget('text'))
+        self.assertEqual(newlabel, self.widget.cget("text"))
         self.widget.destroy()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
-

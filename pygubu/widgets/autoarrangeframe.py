@@ -9,12 +9,11 @@ Usefull for frames with several children of same size.
 
 
 class AutoArrangeFrame(ttk.Frame):
-
     def __init__(self, master=None, **kw):
         self.__cb = None
         self.__recurse_check = 0
         ttk.Frame.__init__(self, master, **kw)
-        self.bind('<Configure>', self.__on_configure)
+        self.bind("<Configure>", self.__on_configure)
 
     def __arrange(self):
         self.__cb = None
@@ -58,7 +57,7 @@ class AutoArrangeFrame(ttk.Frame):
                 c = c + 1
 
             info = child.grid_info()
-            oldr, oldc = int(info['row']), int(info['column'])
+            oldr, oldc = int(info["row"]), int(info["column"])
             if oldr != r or oldc != c:
                 child.grid_remove()
                 child.grid(row=r, column=c)
@@ -68,7 +67,7 @@ class AutoArrangeFrame(ttk.Frame):
             self.__cb = self.after_idle(self.__arrange)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import random
 
     root = tk.Tk()
@@ -77,11 +76,11 @@ if __name__ == '__main__':
 
     for idx in range(1, 20):
         rand = random.randrange(0, 20)
-        txt = str(idx) + '_' * rand
-        b = ttk.Button(a, text=txt, style='Toolbutton')
+        txt = str(idx) + "_" * rand
+        b = ttk.Button(a, text=txt, style="Toolbutton")
         b.grid()
 
-    a.grid(sticky='nsew')
+    a.grid(sticky="nsew")
 
     root.columnconfigure(0, weight=1)
     root.rowconfigure(0, weight=1)

@@ -3,24 +3,28 @@ import xml.etree.ElementTree as ET
 from collections import namedtuple
 from pygubu import builder
 
-__all__ = ['WidgetMeta', 'BindingMeta']
+__all__ = ["WidgetMeta", "BindingMeta"]
 
-BindingMeta = namedtuple('BindingMeta',
-                         ['sequence', 'handler', 'add'])
+BindingMeta = namedtuple("BindingMeta", ["sequence", "handler", "add"])
 
-GridRCLine = namedtuple('GridRCLine', ['rctype', 'rcid', 'pname', 'pvalue'])
+GridRCLine = namedtuple("GridRCLine", ["rctype", "rcid", "pname", "pvalue"])
 
 
 class WidgetMeta(object):
-    def __init__(self, cname, identifier, manager=None,
-                 properties_defaults=None,
-                 layout_defaults=None):
+    def __init__(
+        self,
+        cname,
+        identifier,
+        manager=None,
+        properties_defaults=None,
+        layout_defaults=None,
+    ):
         super(WidgetMeta, self).__init__()
         self.classname = cname
         self.identifier = identifier
         self.properties = {}
         self.bindings = []
-        self._manager = manager if manager is not None else 'grid'
+        self._manager = manager if manager is not None else "grid"
         widget_description = builder.CLASS_MAP.get(cname)
         if widget_description:
             self.layout_required = widget_description.builder.layout_required
@@ -30,10 +34,12 @@ class WidgetMeta(object):
         self._container_manager = self._manager
         self.container_properties = {}
         self.gridrc_properties = []
-        self.properties_defaults = properties_defaults if properties_defaults \
-            is not None else {}
-        self.layout_defaults = layout_defaults if layout_defaults \
-            is not None else {}
+        self.properties_defaults = (
+            properties_defaults if properties_defaults is not None else {}
+        )
+        self.layout_defaults = (
+            layout_defaults if layout_defaults is not None else {}
+        )
 
         # init defaults
         self.apply_properties_defaults()
@@ -53,7 +59,7 @@ class WidgetMeta(object):
 
     @container_manager.setter
     def container_manager(self, value):
-        if value == 'pack' and self.gridrc_properties:
+        if value == "pack" and self.gridrc_properties:
             self.gridrc_properties.clear()
         self._container_manager = value
 
@@ -69,7 +75,7 @@ class WidgetMeta(object):
             self.layout_properties[name] = value
 
     def has_layout_defined(self):
-        return (len(self.layout_properties) > 0)
+        return len(self.layout_properties) > 0
 
     def clear_layout(self):
         self.layout_properties = {}
@@ -79,8 +85,11 @@ class WidgetMeta(object):
     def get_gridrc_value(self, rctype, rcid, pname):
         value = None
         for line in self.gridrc_properties:
-            if (line.rctype == rctype and line.rcid == rcid
-                    and line.pname == pname):
+            if (
+                line.rctype == rctype
+                and line.rcid == rcid
+                and line.pname == pname
+            ):
                 value = line.pvalue
                 break
         return value
@@ -101,8 +110,9 @@ class WidgetMeta(object):
 
             # Prevent code such as weight='0', uniform='' from showing up
             # in the generated code - it would be redundant.
-            if (pname in ('minsize', 'pad', 'weight') and value == '0') \
-               or (pname == 'uniform' and not value):
+            if (pname in ("minsize", "pad", "weight") and value == "0") or (
+                pname == "uniform" and not value
+            ):
 
                 # We found a redundant value
                 # '0' or a blank string if it's for the property: uniform
@@ -115,13 +125,12 @@ class WidgetMeta(object):
                 self.gridrc_properties[index] = line
 
     def __repr__(self):
-        tpl = '''<WidgetMeta classname: {0} identifier: {1}>'''
+        tpl = """<WidgetMeta classname: {0} identifier: {1}>"""
         return tpl.format(self.classname, self.identifier)
 
     def copy_gridrc(self, from_, rctype):
-        '''Copy gridrc lines of type rctype from from_'''
-        rc = [line for line in self.gridrc_properties
-              if line.rctype != rctype]
+        """Copy gridrc lines of type rctype from from_"""
+        rc = [line for line in self.gridrc_properties if line.rctype != rctype]
         for line in from_.gridrc_properties:
             if line.rctype == rctype:
                 rc.append(line)
@@ -136,29 +145,23 @@ class WidgetMeta(object):
         self.container_properties = wfrom.container_properties
 
 
-if __name__ == '__main__':
-    w = WidgetMeta('mywidget', 'w1')
-    w.manager = 'pack'
-    w.properties = {
-        'key1': 'value1',
-        'key2': 'value2'
-    }
+if __name__ == "__main__":
+    w = WidgetMeta("mywidget", "w1")
+    w.manager = "pack"
+    w.properties = {"key1": "value1", "key2": "value2"}
     w.bindings = [
-        BindingMeta('<<event_1>>', 'callback_1', ''),
-        BindingMeta('<<event_2>>', 'callback_2', '+')
+        BindingMeta("<<event_1>>", "callback_1", ""),
+        BindingMeta("<<event_2>>", "callback_2", "+"),
     ]
-    w.layout_properties = {
-        'prop1': 'value1',
-        'prop2': 'value2'
-    }
+    w.layout_properties = {"prop1": "value1", "prop2": "value2"}
 
-    print('To xml')
+    print("To xml")
     node = w.to_xmlnode()
     node = ET.tostring(node)
-    print(node, end='\n\n')
+    print(node, end="\n\n")
 
-    print('From xml:')
-    strdata = '''<?xml version='1.0' encoding='utf-8'?>
+    print("From xml:")
+    strdata = """<?xml version='1.0' encoding='utf-8'?>
 <object class="ttk.Label" id="Label_1">
         <property name="text" translatable="yes">Label_1</property>
         <property name="background">yellow</property>
@@ -169,7 +172,7 @@ if __name__ == '__main__':
           <property type="row" id="0" name="weight">1</property>
         </layout>
       </object>
-    '''
+    """
     node = ET.fromstring(strdata)
     meta = WidgetMeta.from_xmlnode(node)
     print(meta)

@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: utf-8
 import tkinter as tk
 import tkinter.ttk as ttk
 import json
@@ -16,14 +16,14 @@ class Combobox(ttk.Combobox, object):
         self._choices = OrderedDict()
 
         self.__options = options = {
-            'keyvariable': None,
-            'textvariable': None,
+            "keyvariable": None,
+            "textvariable": None,
         }
         # remove custom options from kw before initialization
         for k, v in options.items():
             options[k] = kw.pop(k, v)
 
-        key = 'values'
+        key = "values"
         if key in kw:
             values = kw[key]
             self.choices = values
@@ -32,35 +32,35 @@ class Combobox(ttk.Combobox, object):
 
         # only normal/disabled supported
         # normal is converted to readonly
-        key = 'state'
+        key = "state"
         if key in kw:
-            if kw[key] not in ('readonly', 'disabled'):
-                kw[key] = 'readonly'
+            if kw[key] not in ("readonly", "disabled"):
+                kw[key] = "readonly"
         else:
-            kw[key] = 'readonly'
+            kw[key] = "readonly"
 
         ttk.Combobox.__init__(self, master, **kw)
 
-        self.__config_keyvar(options['keyvariable'])
-        self.configure(textvariable=options['textvariable'])
+        self.__config_keyvar(options["keyvariable"])
+        self.configure(textvariable=options["textvariable"])
 
     def __config_keyvar(self, var):
         if var is None:
             return
 
         def on_keyvar_changed(varname, elementname, mode):
-            nvalue = self.__options['keyvariable'].get()
+            nvalue = self.__options["keyvariable"].get()
             if nvalue in self._choices:
                 self.current(nvalue)
 
-        keyvar = self.__options['keyvariable']
+        keyvar = self.__options["keyvariable"]
         if self._keyvarcb is not None:
-            keyvar.trace_vdelete('w', self._keyvarcb)
-        self.__options['keyvariable'] = var
+            keyvar.trace_vdelete("w", self._keyvarcb)
+        self.__options["keyvariable"] = var
         self._keyvarcb = var.trace(mode="w", callback=on_keyvar_changed)
 
         # A textvariable is needed if keyvariable is set
-        txtvar = self.cget('textvariable')
+        txtvar = self.cget("textvariable")
         if not txtvar:
             var = tk.StringVar()
             self.configure(textvariable=var)
@@ -68,7 +68,7 @@ class Combobox(ttk.Combobox, object):
             self.__config_txtvar(txtvar)
 
     def __config_txtvar(self, var):
-        keyvar = self.__options['keyvariable']
+        keyvar = self.__options["keyvariable"]
         if var is None or keyvar is None:
             return
 
@@ -76,52 +76,52 @@ class Combobox(ttk.Combobox, object):
             ckey = self.current()
             keyvar.set(ckey)
 
-        txtvar = self.cget('textvariable')
+        txtvar = self.cget("textvariable")
         if txtvar and self._txtvarcb is not None:
-            txtvar.trace_vdelete('w', self._txtvarcb)
-        self.__options['textvariable'] = var
+            txtvar.trace_vdelete("w", self._txtvarcb)
+        self.__options["textvariable"] = var
         self._txtvarcb = var.trace(mode="w", callback=on_txtvar_changed)
 
     def configure(self, cnf=None, **kw):
         args = tk._cnfmerge((cnf, kw))
-        key = 'values'
+        key = "values"
         if key in args:
             self.choices = args[key]
             args[key] = self.__choices2tkvalues(self.choices)
             # clear variables:
-            keyvar = self.__options['keyvariable']
+            keyvar = self.__options["keyvariable"]
             if keyvar is not None:
-                keyvar.set('')
-            txtvar = self.cget('textvariable')
+                keyvar.set("")
+            txtvar = self.cget("textvariable")
             if txtvar is not None:
-                txtvar.set('')
-        key = 'keyvariable'
+                txtvar.set("")
+        key = "keyvariable"
         if key in args:
             value = args.pop(key)
             self.__config_keyvar(value)
             return
-        key = 'textvariable'
+        key = "textvariable"
         if key in args:
             value = args[key]
             self.__config_txtvar(value)
 
         # only readonly and disabled supported
-        key = 'state'
+        key = "state"
         if key in args:
-            if args[key] not in ('readonly', 'disabled'):
-                args[key] = 'readonly'
+            if args[key] not in ("readonly", "disabled"):
+                args[key] = "readonly"
         return ttk.Combobox.configure(self, args)
 
     config = configure
 
     def cget(self, key):
-        option = 'values'
+        option = "values"
         if key == option:
             return json.dumps(self.choices)
-        option = 'keyvariable'
+        option = "keyvariable"
         if key == option:
             return self.__options[key]
-        option = 'textvariable'
+        option = "textvariable"
         if key == option:
             return self.__options[key]
         return ttk.Combobox.cget(self, key)
@@ -138,7 +138,7 @@ class Combobox(ttk.Combobox, object):
         """
         choices = values
         # choices from string
-        if isinstance(values, type('')):
+        if isinstance(values, type("")):
             obj = None
             # try json string
             try:
@@ -168,7 +168,7 @@ class Combobox(ttk.Combobox, object):
         self._choices.clear()
         for idx, v in enumerate(values):
             key = value = v
-            if not isinstance(v, type(u'')) and len(v) == 2:
+            if not isinstance(v, type("")) and len(v) == 2:
                 key, value = v
             self._choices[key] = value
 
@@ -198,44 +198,47 @@ class Combobox(ttk.Combobox, object):
         return self.current()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+
     def show_selection(event):
         cbox = event.widget
-        print('values:', cbox.cget('values'))
-        print('current:', cbox.current())
+        print("values:", cbox.cget("values"))
+        print("current:", cbox.current())
 
     root = tk.Tk()
     txtvalues = '[["DNI", "Doc.Nac.Id."], ["LE", "Libreta Enrolamientox"]]'
     c = Combobox(root, values=txtvalues)
-    c.bind('<<ComboboxSelected>>', show_selection)
+    c.bind("<<ComboboxSelected>>", show_selection)
     c.configure(values=txtvalues)
-    c.set('LE')
+    c.set("LE")
     c.grid()
 
-    values = (('tres', 3), (4, 'cuatro'), (6, "seis"))
+    values = (("tres", 3), (4, "cuatro"), (6, "seis"))
     c = Combobox(root, values=values)
-    c.bind('<<ComboboxSelected>>', show_selection)
+    c.bind("<<ComboboxSelected>>", show_selection)
     c.set(6)
     c.grid()
 
     var = tk.StringVar()
-    var.set('C')
+    var.set("C")
     e = ttk.Entry(root, textvariable=var)
     e.grid()
 
     var2 = tk.StringVar()
-    var2.set('A')
+    var2.set("A")
     e2 = ttk.Entry(root, textvariable=var2)
     e2.grid()
 
-    values = (('', 'Seleccione Opción'),
-              ('A', 'A label'),
-              ('B', 'B label'),
-              ('C', "C label"))
+    values = (
+        ("", "Seleccione Opción"),
+        ("A", "A label"),
+        ("B", "B label"),
+        ("C", "C label"),
+    )
     c = Combobox(root, textvariable=var)
-    c.bind('<<ComboboxSelected>>', show_selection)
+    c.bind("<<ComboboxSelected>>", show_selection)
     c.configure(values=values)
-    c.set('')
+    c.set("")
     c.grid()
 
     c.configure(keyvariable=var2)

@@ -1,12 +1,13 @@
-# encoding: utf8
+# encoding: utf-8
 import os
 import sys
 import unittest
 import tkinter as tk
 import tkinter.ttk as ttk
 
-pygubu_basedir = os.path.abspath(os.path.dirname(
-    os.path.dirname(os.path.realpath(sys.argv[0]))))
+pygubu_basedir = os.path.abspath(
+    os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[0])))
+)
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
@@ -15,13 +16,12 @@ import support
 
 
 class TestFrame(unittest.TestCase):
-
     def setUp(self):
         support.root_deiconify()
-        xmldata = 'test_frame.ui'
+        xmldata = "test_frame.ui"
         self.builder = builder = pygubu.Builder()
         builder.add_from_file(xmldata)
-        self.widget = builder.get_object('mainwindow')
+        self.widget = builder.get_object("mainwindow")
 
     def tearDown(self):
         support.root_withdraw()
@@ -31,59 +31,59 @@ class TestFrame(unittest.TestCase):
         self.widget.destroy()
 
     def test_padding(self):
-        tclobj = self.widget.cget('padding')[0]
+        tclobj = self.widget.cget("padding")[0]
         padding = str(tclobj)
-        self.assertEqual('10', padding)
+        self.assertEqual("10", padding)
         self.widget.destroy()
 
     def test_width(self):
-        tclobj = self.widget.cget('width')
+        tclobj = self.widget.cget("width")
         width = str(tclobj)
-        self.assertEqual('250', width)
+        self.assertEqual("250", width)
         self.widget.destroy()
 
     def test_class_(self):
-        tclobj = self.widget.cget('class')
+        tclobj = self.widget.cget("class")
         class_ = str(tclobj)
-        self.assertEqual('MyCustomFrame', class_)
+        self.assertEqual("MyCustomFrame", class_)
         self.widget.destroy()
 
     def test_relief(self):
-        tclobj = self.widget.cget('relief')
+        tclobj = self.widget.cget("relief")
         relief = str(tclobj)
         self.assertEqual(tk.SUNKEN, relief)
         self.widget.destroy()
 
     def test_style(self):
-        tclobj = self.widget.cget('style')
+        tclobj = self.widget.cget("style")
         style = str(tclobj)
-        self.assertEqual('MyFrameStyle.TFrame', style)
+        self.assertEqual("MyFrameStyle.TFrame", style)
         self.widget.destroy()
 
     def test_takefocus(self):
-        tclobj = self.widget.cget('takefocus')
+        tclobj = self.widget.cget("takefocus")
         takefocus = str(tclobj)
-        self.assertEqual('1', takefocus)
+        self.assertEqual("1", takefocus)
         self.widget.destroy()
 
     def test_cursor(self):
-        tclobj = self.widget.cget('cursor')
+        tclobj = self.widget.cget("cursor")
         cursor = str(tclobj)
-        self.assertEqual('cross', cursor)
+        self.assertEqual("cross", cursor)
         self.widget.destroy()
 
     def test_layout(self):
         ginfo = self.widget.grid_info()
         expected = [
-            ('row', '0'),
-            ('column', '0'),
-            ('sticky', 'nesw'),
-            ('pady', '10'),
-            ('padx', '5'),
-            ('ipadx', '2'),
-            ('ipady', '4'),
-            ('rowspan', '1'),
-            ('columnspan', '2'),
+            ("row", "0"),
+            ("column", "0"),
+            ("sticky", "nesw"),
+            ("pady", "10"),
+            ("padx", "5"),
+            ("ipadx", "2"),
+            ("ipady", "4"),
+            ("rowspan", "1"),
+            ("columnspan", "2"),
         ]
         for k, ev in expected:
             value = str(ginfo[k])
@@ -109,8 +109,8 @@ class TestFrame(unittest.TestCase):
             success.append(1)
 
         cbdic = {
-            'on_button_click': on_button_click,
-            'on_button_click2': on_button_click2
+            "on_button_click": on_button_click,
+            "on_button_click2": on_button_click2,
         }
         self.builder.connect_callbacks(cbdic)
 
@@ -149,8 +149,8 @@ class TestFrame(unittest.TestCase):
             success.append(1)
 
         cbdic = {
-            'on_button_click': on_button_click,
-            'on_button_click2': on_button_click2
+            "on_button_click": on_button_click,
+            "on_button_click2": on_button_click2,
         }
         self.builder.connect_callbacks(cbdic)
 
@@ -161,6 +161,5 @@ class TestFrame(unittest.TestCase):
         self.widget.destroy()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
-

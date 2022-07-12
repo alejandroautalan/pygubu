@@ -17,13 +17,13 @@ class Dialog(object):
         self.toplevel = tk.Toplevel(parent)
         self.toplevel.withdraw()
         self.toplevel.protocol("WM_DELETE_WINDOW", self._on_wm_delete_window)
-        self.bind('<<DialogClose>>', self._default_close_action)
+        self.bind("<<DialogClose>>", self._default_close_action)
 
         self._init_before()
         self._create_ui()
         self._init_after()
 
-        #self.frame.pack(fill='both', expand=True)
+        # self.frame.pack(fill='both', expand=True)
 
     def _init_before(self):
         pass
@@ -44,14 +44,16 @@ class Dialog(object):
         width = window.winfo_width()
         parent = self.parent
         if parent:
-            x_coord = int(parent.winfo_x() +
-                          (parent.winfo_width() / 2 - width / 2))
-            y_coord = int(parent.winfo_y() +
-                          (parent.winfo_height() / 2 - height / 2))
+            x_coord = int(
+                parent.winfo_x() + (parent.winfo_width() / 2 - width / 2)
+            )
+            y_coord = int(
+                parent.winfo_y() + (parent.winfo_height() / 2 - height / 2)
+            )
         else:
             x_coord = int(window.winfo_screenwidth() / 2 - width / 2)
             y_coord = int(window.winfo_screenheight() / 2 - height / 2)
-        geom = '{0}x{1}+{2}+{3}'.format(width, height, x_coord, y_coord)
+        geom = "{0}x{1}+{2}+{3}".format(width, height, x_coord, y_coord)
         window.geometry(geom)
 
     def run(self):
@@ -73,7 +75,7 @@ class Dialog(object):
         self.toplevel = None
 
     def _on_wm_delete_window(self):
-        self.toplevel.event_generate('<<DialogClose>>')
+        self.toplevel.event_generate("<<DialogClose>>")
 
     def _default_close_action(self, dialog):
         self.close()
@@ -98,15 +100,15 @@ class Dialog(object):
     # interface to toplevel methods used by gui builder
     #
     def configure(self, cnf=None, **kw):
-        if 'modal' in kw:
-            value = kw.pop('modal')
+        if "modal" in kw:
+            value = kw.pop("modal")
             self.set_modal(tk.getboolean(value))
         self.toplevel.configure(cnf, **kw)
 
     config = configure
 
     def cget(self, key):
-        if key == 'modal':
+        if key == "modal":
             return self.is_modal
         return self.toplevel.cget(key)
 
@@ -118,22 +120,26 @@ class Dialog(object):
     def bind(self, sequence=None, func=None, add=None):
         def dialog_cb(event, dialog=self):
             func(dialog)
+
         return self.toplevel.bind(sequence, dialog_cb, add)
+
 
 #    def unbind(self, sequence, funcid=None):
 #        pass
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+
     class TestDialog(Dialog):
         def _create_ui(self):
-            label = ttk.Label(self.frame, text='TestDialog Class')
+            label = ttk.Label(self.frame, text="TestDialog Class")
             label.pack()
             entry = ttk.Entry(self.frame)
             entry.pack()
-#            f = ttk.Frame(self.toplevel)
-#            self.default_buttonbox(f)
-#            f.pack(fill='x')
+
+    #            f = ttk.Frame(self.toplevel)
+    #            self.default_buttonbox(f)
+    #            f.pack(fill='x')
 
     app = tk.Tk()
     dialog = None
@@ -147,21 +153,21 @@ if __name__ == '__main__':
             dialog.show()
 
     def custom_callback(dialog):
-        print('Custom callback')
+        print("Custom callback")
         dialog.close()
 
     def show_modal_dialog():
         dialog = TestDialog(app)
-        dialog.set_title('Modal dialog')
+        dialog.set_title("Modal dialog")
         dialog.set_modal(True)
-        dialog.bind('<<DialogClose>>', custom_callback)
-        print('before run')
+        dialog.bind("<<DialogClose>>", custom_callback)
+        print("before run")
         dialog.run()
-        print('after run')
+        print("after run")
 
-    btn = tk.Button(app, text='show dialog', command=show_dialog)
+    btn = tk.Button(app, text="show dialog", command=show_dialog)
     btn.pack()
-    btn = tk.Button(app, text='show modal dialog', command=show_modal_dialog)
+    btn = tk.Button(app, text="show modal dialog", command=show_modal_dialog)
     btn.pack()
 
     app.mainloop()

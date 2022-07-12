@@ -1,4 +1,4 @@
-__all__ = ['remove_binding', 'ApplicationLevelBindManager']
+__all__ = ["remove_binding", "ApplicationLevelBindManager"]
 
 import logging
 import platform
@@ -23,7 +23,7 @@ def remove_binding(widget, seq, index=None, funcid=None):
             widget.unbind(seq, _funcid(binding))
             b.remove(binding)
         except IndexError:
-            logger.info('Binding #%d not defined.', index)
+            logger.info("Binding #%d not defined.", index)
             return
 
     elif funcid:
@@ -38,10 +38,10 @@ def remove_binding(widget, seq, index=None, funcid=None):
             logger.info('Binding "%s" not defined.', funcid)
             return
     else:
-        raise ValueError('No index or function id defined.')
+        raise ValueError("No index or function id defined.")
 
     for x in b:
-        widget.bind(seq, '+' + x, 1)
+        widget.bind(seq, "+" + x, 1)
 
 
 class ApplicationLevelBindManager(object):
@@ -66,17 +66,20 @@ class ApplicationLevelBindManager(object):
     def init_mousewheel_binding(master):
         if not ApplicationLevelBindManager.mw_initialized:
             _os = platform.system()
-            if _os in ('Linux', 'OpenBSD', 'FreeBSD'):
+            if _os in ("Linux", "OpenBSD", "FreeBSD"):
                 master.bind_all(
-                    '<4>', ApplicationLevelBindManager.on_mousewheel, add='+')
+                    "<4>", ApplicationLevelBindManager.on_mousewheel, add="+"
+                )
                 master.bind_all(
-                    '<5>', ApplicationLevelBindManager.on_mousewheel, add='+')
+                    "<5>", ApplicationLevelBindManager.on_mousewheel, add="+"
+                )
             else:
                 # Windows and MacOS
                 master.bind_all(
                     "<MouseWheel>",
                     ApplicationLevelBindManager.on_mousewheel,
-                    add='+')
+                    add="+",
+                )
             ApplicationLevelBindManager.mw_initialized = True
 
     @staticmethod
@@ -87,22 +90,27 @@ class ApplicationLevelBindManager(object):
         widget: widget that implement tk xview and yview methods
         """
         _os = platform.system()
-        view_command = getattr(widget, orient + 'view')
-        if _os in ('Linux', 'OpenBSD', 'FreeBSD'):
+        view_command = getattr(widget, orient + "view")
+        if _os in ("Linux", "OpenBSD", "FreeBSD"):
+
             def on_mousewheel(event):
                 if event.num == 4:
-                    view_command('scroll', (-1) * factor, 'units')
+                    view_command("scroll", (-1) * factor, "units")
                 elif event.num == 5:
-                    view_command('scroll', factor, 'units')
+                    view_command("scroll", factor, "units")
 
-        elif _os == 'Windows':
-            def on_mousewheel(event):
-                view_command('scroll', (-1) *
-                             int((event.delta / 120) * factor), 'units')
+        elif _os == "Windows":
 
-        elif _os == 'Darwin':
             def on_mousewheel(event):
-                view_command('scroll', event.delta, 'units')
+                view_command(
+                    "scroll", (-1) * int((event.delta / 120) * factor), "units"
+                )
+
+        elif _os == "Darwin":
+
+            def on_mousewheel(event):
+                view_command("scroll", event.delta, "units")
+
         else:
             # FIXME: unknown platform scroll method
             def on_mousewheel(event):

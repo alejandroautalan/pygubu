@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: utf-8
 import os
 import sys
 import unittest
@@ -6,8 +6,9 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 
-pygubu_basedir = os.path.abspath(os.path.dirname(
-    os.path.dirname(os.path.realpath(sys.argv[0]))))
+pygubu_basedir = os.path.abspath(
+    os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[0])))
+)
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
@@ -19,7 +20,6 @@ import pygubu.widgets.tkscrollbarhelper
 
 
 class TestScrollbarHelper(unittest.TestCase):
-
     def setUp(self):
         support.root_deiconify()
         xmldata = """<?xml version="1.0" ?>
@@ -49,27 +49,31 @@ class TestScrollbarHelper(unittest.TestCase):
 """
         builder = pygubu.Builder()
         builder.add_from_string(xmldata)
-        self.widget = builder.get_object('scrollbarhelper')
+        self.widget = builder.get_object("scrollbarhelper")
 
     def tearDown(self):
         support.root_withdraw()
 
     def test_class(self):
-        self.assertIsInstance(self.widget,
-                              pygubu.widgets.scrollbarhelper.ScrollbarHelper)
+        self.assertIsInstance(
+            self.widget, pygubu.widgets.scrollbarhelper.ScrollbarHelper
+        )
         self.widget.destroy()
 
     def test_padding(self):
-        expected_value = ('5', '5', '5', '5')
-        tclobj = self.widget.cget('padding')
-        padding = (str(tclobj[0]), str(tclobj[1]),
-                   str(tclobj[2]), str(tclobj[3]))
+        expected_value = ("5", "5", "5", "5")
+        tclobj = self.widget.cget("padding")
+        padding = (
+            str(tclobj[0]),
+            str(tclobj[1]),
+            str(tclobj[2]),
+            str(tclobj[3]),
+        )
         self.assertEqual(expected_value, padding)
         self.widget.destroy()
 
 
 class TestTkScrollbarHelper(unittest.TestCase):
-
     def setUp(self):
         support.root_deiconify()
         xmldata = """<?xml version="1.0" ?>
@@ -100,33 +104,33 @@ class TestTkScrollbarHelper(unittest.TestCase):
 """
         builder = pygubu.Builder()
         builder.add_from_string(xmldata)
-        self.widget = builder.get_object('scrollbarhelper')
+        self.widget = builder.get_object("scrollbarhelper")
 
     def tearDown(self):
         support.root_withdraw()
 
     def test_class(self):
-        self.assertIsInstance(self.widget,
-                              pygubu.widgets.tkscrollbarhelper.TkScrollbarHelper)
+        self.assertIsInstance(
+            self.widget, pygubu.widgets.tkscrollbarhelper.TkScrollbarHelper
+        )
         self.widget.destroy()
 
     def test_padx(self):
-        prop = 'padx'
-        expected_value = '5'
+        prop = "padx"
+        expected_value = "5"
         tclobj = self.widget.cget(prop)
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
 
     def test_pady(self):
-        prop = 'pady'
-        expected_value = '10'
+        prop = "pady"
+        expected_value = "10"
         tclobj = self.widget.cget(prop)
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
-
