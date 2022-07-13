@@ -1,7 +1,7 @@
 # encoding: utf-8
+import json
 import tkinter as tk
 import tkinter.ttk as ttk
-import json
 from collections import OrderedDict
 
 

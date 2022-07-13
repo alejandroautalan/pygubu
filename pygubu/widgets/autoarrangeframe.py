@@ -2,7 +2,6 @@
 import tkinter as tk
 from tkinter import ttk
 
-
 """A frame widget that autoarrange children when is resized.
 Usefull for frames with several children of same size.
 """

@@ -12,13 +12,14 @@ __all__ = [
 ]
 
 import warnings
+
 from pygubu.binding import ApplicationLevelBindManager, remove_binding
 from pygubu.builder import Builder
 from pygubu.builder.builderobject import (
     BuilderObject,
-    register_widget,
-    register_property,
     register_custom_property,
+    register_property,
+    register_widget,
 )
 
 __version__ = "0.22"

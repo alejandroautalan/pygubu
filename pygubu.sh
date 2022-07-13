@@ -20,11 +20,11 @@ install_designer(){
 
 test_installation(){
     pip3 install -e .
-    install_designer
+    pip3 install -e $designer_dir
     pygubu-designer
 }
 
 insd(){     install_designer;   }
-_ti(){      test_installation;  }
+ti(){       test_installation;  }
 
-$@
+$*

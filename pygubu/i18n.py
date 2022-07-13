@@ -29,23 +29,14 @@ APP_NAME = "pygubu"
 
 APP_DIR = Path(__file__).parent
 LOCALE_DIR = APP_DIR / "locale"
-FIRST_LC_MESSAGES_DIR = LOCALE_DIR / "de" / "LC_MESSAGES"
-first_mo_file_path = FIRST_LC_MESSAGES_DIR / "pygubu.mo"
-first_po_file_path = FIRST_LC_MESSAGES_DIR / "pygubu.po"
 
-if not (first_po_file_path).exists():
-    os.makedirs(FIRST_LC_MESSAGES_DIR, exist_ok=True)
-    with open(first_po_file_path, "w") as f:
-        f.write("")
-
-if not (first_mo_file_path).exists():
+if not (LOCALE_DIR / "de" / "LC_MESSAGES" / "pygubu.mo").exists():
     print(
         "You should compile the .po files in the pygubudesigner/locale "
         + "directory first if you are a developer, otherwise give us feedback "
         + "here: https://github.com/alejandroautalan/pygubu-designer/issues"
     )
     sys.exit(0)
-
 
 # Now we need to choose the language. We will provide a list, and gettext
 # will use the first translation available in the list
@@ -76,7 +67,7 @@ language = gettext.translation(
     APP_NAME, mo_location, languages=languages, fallback=True
 )
 
-_ = translator = language.gettext
+_ = T = translator = language.gettext
 
 
 # And now in your modules you can do:

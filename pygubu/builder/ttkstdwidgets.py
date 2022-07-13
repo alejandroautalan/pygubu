@@ -1,16 +1,16 @@
 # encoding: utf-8
-from collections import OrderedDict
 import tkinter as tk
 import tkinter.ttk as ttk
+from collections import OrderedDict
 
 from pygubu.i18n import _
 
 from .builderobject import (
     BuilderObject,
-    register_widget,
     EntryBaseBO,
     PanedWindowBO,
     PanedWindowPaneBO,
+    register_widget,
 )
 
 
@@ -315,7 +315,9 @@ class TTKNotebook(TTKWidgetBO):
     virtual_events = ("<<NotebookTabChanged>>",)
 
 
-register_widget("ttk.Notebook", TTKNotebook, "Notebook", (_("Containers"), "ttk"))
+register_widget(
+    "ttk.Notebook", TTKNotebook, "Notebook", (_("Containers"), "ttk")
+)
 
 
 class TTKMenubuttonBO(TTKWidgetBO):

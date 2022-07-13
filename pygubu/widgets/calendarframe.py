@@ -6,7 +6,6 @@ import locale
 import tkinter as tk
 import tkinter.ttk as ttk
 
-
 imgp_data = (
     "R0lGODlhDAAMAIABAAAAAP///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEK"
     + "AAEALAAAAAAMAAwAAAIVjI+JoMsdgIRyqmoTfrfCmDWh+DUFADs="

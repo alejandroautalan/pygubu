@@ -1,8 +1,8 @@
 # encoding: utf-8
 from pygubu import BuilderObject, register_custom_property, register_widget
 from pygubu.builder.ttkstdwidgets import TTKFrame
-from pygubu.widgets.calendarframe import CalendarFrame
 from pygubu.i18n import _
+from pygubu.widgets.calendarframe import CalendarFrame
 
 
 class CalendarFrameBuilder(BuilderObject):

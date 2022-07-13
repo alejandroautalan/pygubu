@@ -1,8 +1,8 @@
 # encoding: utf-8
-import tkinter as tk
 import itertools
 import json
 import logging
+import tkinter as tk
 from collections import defaultdict, namedtuple
 
 __all__ = [

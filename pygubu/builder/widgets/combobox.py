@@ -1,9 +1,8 @@
 # encoding: utf-8
 from pygubu import register_custom_property, register_widget
 from pygubu.builder.ttkstdwidgets import TTKCombobox
-from pygubu.widgets.combobox import Combobox
-
 from pygubu.i18n import _
+from pygubu.widgets.combobox import Combobox
 
 
 class ComboboxBuilder(TTKCombobox):

@@ -2,9 +2,8 @@
 from pygubu.builder.builderobject import register_widget
 from pygubu.builder.ttkstdwidgets import TTKTreeviewBO, TTKTreeviewColumnBO
 from pygubu.builder.widgets.scrollbarhelper import TTKSBHelperBO
-from pygubu.widgets.editabletreeview import EditableTreeview
-
 from pygubu.i18n import _
+from pygubu.widgets.editabletreeview import EditableTreeview
 
 
 class EditableTreeviewBO(TTKTreeviewBO):

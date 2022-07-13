@@ -5,12 +5,12 @@ import tkinter as tk
 from pygubu.i18n import _
 
 from .builderobject import (
+    CB_TYPES,
     BuilderObject,
     EntryBaseBO,
     PanedWindowBO,
     PanedWindowPaneBO,
     register_widget,
-    CB_TYPES,
 )
 
 logger = logging.getLogger(__name__)

@@ -2,13 +2,12 @@
 import tkinter as tk
 
 from pygubu.builder.builderobject import (
-    register_widget,
     register_custom_property,
+    register_widget,
 )
 from pygubu.builder.tkstdwidgets import TKToplevel
-from pygubu.widgets.dialog import Dialog
-
 from pygubu.i18n import _
+from pygubu.widgets.dialog import Dialog
 
 
 class DialogBO(TKToplevel):

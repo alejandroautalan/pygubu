@@ -6,7 +6,6 @@ import logging
 import os
 import tkinter as tk
 
-
 logger = logging.getLogger(__name__)
 
 

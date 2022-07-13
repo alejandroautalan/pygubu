@@ -4,7 +4,6 @@ from tkinter.scrolledtext import ScrolledText
 
 from pygubu.builder.builderobject import register_widget
 from pygubu.builder.tkstdwidgets import TKText
-
 from pygubu.i18n import _
 
 

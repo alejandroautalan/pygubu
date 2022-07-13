@@ -1,4 +1,4 @@
 include LICENSE
 include README.md
 global-exclude *~
-global-exclude *.mo
+global-include *.mo

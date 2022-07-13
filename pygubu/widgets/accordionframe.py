@@ -1,6 +1,7 @@
 # encoding: UTF-8
 import tkinter as tk
 import tkinter.ttk as ttk
+
 from pygubu.i18n import _
 
 img_down = """\

@@ -2,9 +2,8 @@
 import tkinter as tk
 
 from pygubu.builder.builderobject import BuilderObject, register_widget
-from pygubu.widgets.tkscrolledframe import TkScrolledFrame
-
 from pygubu.i18n import _
+from pygubu.widgets.tkscrolledframe import TkScrolledFrame
 
 
 class TKScrolledFrameBO(BuilderObject):
