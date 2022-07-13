@@ -1,12 +1,13 @@
-# encoding: utf8
+# encoding: utf-8
 import os
 import sys
 import unittest
 import tkinter as tk
 import tkinter.ttk as ttk
 
-pygubu_basedir = os.path.abspath(os.path.dirname(
-    os.path.dirname(os.path.realpath(sys.argv[0]))))
+pygubu_basedir = os.path.abspath(
+    os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[0])))
+)
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
@@ -15,14 +16,13 @@ import support
 
 
 class TestCommandIdArg(unittest.TestCase):
-
     def setUp(self):
         support.root_deiconify()
-        xmldata = 'test_command_id_arg.ui'
+        xmldata = "test_command_id_arg.ui"
         self.builder = builder = pygubu.Builder()
         builder.add_from_file(xmldata)
-        self.widget = builder.get_object('mainwindow')
-        self.menu = builder.get_object('menu1')
+        self.widget = builder.get_object("mainwindow")
+        self.menu = builder.get_object("menu1")
 
     def tearDown(self):
         support.root_withdraw()
@@ -42,5 +42,5 @@ class TestCommandIdArg(unittest.TestCase):
         self.widget.update()
 
         self.assertTrue(success)
-        self.assertEqual(received_id[0], 'menu_item_1')
+        self.assertEqual(received_id[0], "menu_item_1")
         self.widget.destroy()

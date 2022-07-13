@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: utf-8
 import support
 import pygubu
 import os
@@ -8,14 +8,14 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 
-pygubu_basedir = os.path.abspath(os.path.dirname(
-    os.path.dirname(os.path.realpath(sys.argv[0]))))
+pygubu_basedir = os.path.abspath(
+    os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[0])))
+)
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
 
 class TestEntry(unittest.TestCase):
-
     def setUp(self):
         support.root_deiconify()
         xmldata = """<?xml version="1.0" ?>
@@ -54,7 +54,7 @@ class TestEntry(unittest.TestCase):
 """
         self.builder = builder = pygubu.Builder()
         builder.add_from_string(xmldata)
-        self.widget = builder.get_object('label')
+        self.widget = builder.get_object("label")
 
     def tearDown(self):
         support.root_withdraw()
@@ -64,98 +64,97 @@ class TestEntry(unittest.TestCase):
         self.widget.destroy()
 
     def test_text(self):
-        prop = 'text'
-        expected_value = '-- A Label --'
+        prop = "text"
+        expected_value = "-- A Label --"
         tclobj = self.widget.cget(prop)
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
 
     def test_textvariable(self):
-        varname = 'label_var'
-        expected_value = '-- A Label --'
+        varname = "label_var"
+        expected_value = "-- A Label --"
         var = self.builder.get_variable(varname)
         self.assertIsInstance(var, tk.StringVar)
         self.assertEqual(expected_value, var.get())
 
-        newlabel = 'Changed'
+        newlabel = "Changed"
         var.set(newlabel)
-        self.assertEqual(newlabel, self.widget.cget('text'))
+        self.assertEqual(newlabel, self.widget.cget("text"))
         self.widget.destroy()
 
     def test_justify(self):
-        prop = 'justify'
-        expected_value = 'right'
+        prop = "justify"
+        expected_value = "right"
         tclobj = self.widget.cget(prop)
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
 
     def test_anchor(self):
-        prop = 'anchor'
-        expected_value = 'e'
+        prop = "anchor"
+        expected_value = "e"
         tclobj = self.widget.cget(prop)
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
 
     def test_background(self):
-        prop = 'background'
-        expected_value = '#94f900'
+        prop = "background"
+        expected_value = "#94f900"
         tclobj = self.widget.cget(prop)
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
 
     def test_borderwidth(self):
-        prop = 'borderwidth'
-        expected_value = '2'
+        prop = "borderwidth"
+        expected_value = "2"
         tclobj = self.widget.cget(prop)
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
 
     def test_compound(self):
-        prop = 'compound'
-        expected_value = 'right'
+        prop = "compound"
+        expected_value = "right"
         tclobj = self.widget.cget(prop)
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
 
     def test_foreground(self):
-        prop = 'foreground'
-        expected_value = '#690400'
+        prop = "foreground"
+        expected_value = "#690400"
         tclobj = self.widget.cget(prop)
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
 
     def test_padding(self):
-        prop = 'padding'
-        expected_value = '2'
+        prop = "padding"
+        expected_value = "2"
         tclobj = self.widget.cget(prop)[0]
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
 
     def test_relief(self):
-        prop = 'relief'
-        expected_value = 'ridge'
+        prop = "relief"
+        expected_value = "ridge"
         tclobj = self.widget.cget(prop)
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
 
     def test_width(self):
-        prop = 'width'
-        expected_value = '20'
+        prop = "width"
+        expected_value = "20"
         tclobj = self.widget.cget(prop)
         value = str(tclobj)
         self.assertEqual(expected_value, value)
         self.widget.destroy()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
-

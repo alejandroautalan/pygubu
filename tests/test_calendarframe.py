@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: utf-8
 import os
 import sys
 import unittest
@@ -6,8 +6,9 @@ import datetime
 import tkinter as tk
 import tkinter.ttk as ttk
 
-pygubu_basedir = os.path.abspath(os.path.dirname(
-    os.path.dirname(os.path.realpath(sys.argv[0]))))
+pygubu_basedir = os.path.abspath(
+    os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[0])))
+)
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
@@ -17,14 +18,13 @@ from pygubu.widgets.calendarframe import CalendarFrame
 
 
 class TestCalendarFrame(unittest.TestCase):
-
     def setUp(self):
         support.root_deiconify()
-        xmldata = 'test_calendarframe.ui'
+        xmldata = "test_calendarframe.ui"
         self.builder = builder = pygubu.Builder()
         builder.add_from_file(xmldata)
-        self.mainwindow = builder.get_object('mainwindow')
-        self.widget = builder.get_object('calendar')
+        self.mainwindow = builder.get_object("mainwindow")
+        self.widget = builder.get_object("calendar")
 
     def tearDown(self):
         support.root_withdraw()
@@ -65,21 +65,19 @@ class TestCalendarFrame(unittest.TestCase):
 
     def test_uiset_options(self):
         widget = self.widget
-        self.assertEqual('#f0e3f0', widget['calendarbg'])
-        self.assertEqual('#0000a1', widget['calendarfg'])
+        self.assertEqual("#f0e3f0", widget["calendarbg"])
+        self.assertEqual("#0000a1", widget["calendarfg"])
 
-        self.assertEqual('#abb8f0', widget['headerbg'])
-        self.assertEqual('#ffffff', widget['headerfg'])
+        self.assertEqual("#abb8f0", widget["headerbg"])
+        self.assertEqual("#ffffff", widget["headerfg"])
 
-        self.assertEqual('#f06ba4', widget['markbg'])
-        self.assertEqual('#ffffff', widget['markfg'])
+        self.assertEqual("#f06ba4", widget["markbg"])
+        self.assertEqual("#ffffff", widget["markfg"])
 
-        self.assertEqual('#d926ff', widget['selectbg'])
-        self.assertEqual('#ffff00', widget['selectfg'])
+        self.assertEqual("#d926ff", widget["selectbg"])
+        self.assertEqual("#ffff00", widget["selectfg"])
 
-        self.assertEqual('9', str(widget['month']))
-        self.assertEqual('2000', str(widget['year']))
+        self.assertEqual("9", str(widget["month"]))
+        self.assertEqual("2000", str(widget["year"]))
 
         self.widget.destroy()
-
-

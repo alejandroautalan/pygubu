@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: utf-8
 import logging
 import tkinter as tk
 
@@ -20,21 +20,21 @@ def _autoscroll(sbar, first, last):
 
 
 class ScrollbarHelperBase(object):
-    VERTICAL = 'vertical'
-    HORIZONTAL = 'horizontal'
-    BOTH = 'both'
+    VERTICAL = "vertical"
+    HORIZONTAL = "horizontal"
+    BOTH = "both"
     _framecls = None
     _sbarcls = None
 
     def __init__(self, master=None, **kw):
-        self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
-        self.usemousewheel = tk.getboolean(kw.pop('usemousewheel', False))
+        self.scrolltype = kw.pop("scrolltype", self.VERTICAL)
+        self.usemousewheel = tk.getboolean(kw.pop("usemousewheel", False))
         super(ScrollbarHelperBase, self).__init__(master, **kw)
         self.vsb = None
         self.hsb = None
         self.cwidget = None
         self.container = c = self._framecls(self)
-        c.grid(row=0, column=0, sticky='nsew')
+        c.grid(row=0, column=0, sticky="nsew")
         self._bindingids = []
         self._create_scrollbars()
 
@@ -53,24 +53,24 @@ class ScrollbarHelperBase(object):
 
     def add_child(self, cwidget):
         self.cwidget = cwidget
-        cwidget.pack(expand=True, fill='both', in_=self.container)
+        cwidget.pack(expand=True, fill="both", in_=self.container)
 
         if self.scrolltype in (self.BOTH, self.VERTICAL):
-            if hasattr(cwidget, 'yview'):
+            if hasattr(cwidget, "yview"):
                 self.vsb.configure(command=cwidget.yview)
                 cwidget.configure(
-                    yscrollcommand=lambda f, l: _autoscroll(
-                        self.vsb, f, l))
+                    yscrollcommand=lambda f, l: _autoscroll(self.vsb, f, l)
+                )
             else:
                 msg = "widget %s has no attribute 'yview'"
                 logger.info(msg, str(cwidget))
 
         if self.scrolltype in (self.BOTH, self.HORIZONTAL):
-            if hasattr(cwidget, 'xview'):
+            if hasattr(cwidget, "xview"):
                 self.hsb.configure(command=cwidget.xview)
                 cwidget.configure(
-                    xscrollcommand=lambda f, l: _autoscroll(
-                        self.hsb, f, l))
+                    xscrollcommand=lambda f, l: _autoscroll(self.hsb, f, l)
+                )
             else:
                 msg = "widget % has no attribute 'xview'"
                 logger.info(msg, str(cwidget))
@@ -78,7 +78,7 @@ class ScrollbarHelperBase(object):
 
     def configure(self, cnf=None, **kw):
         args = tk._cnfmerge((cnf, kw))
-        key = 'usemousewheel'
+        key = "usemousewheel"
         if key in args:
             self.usemousewheel = tk.getboolean(args[key])
             del args[key]
@@ -88,7 +88,7 @@ class ScrollbarHelperBase(object):
     config = configure
 
     def cget(self, key):
-        option = 'usemousewheel'
+        option = "usemousewheel"
         if key == option:
             return self.usemousewheel
         return super(ScrollbarHelperBase, self).cget(key)
@@ -100,39 +100,46 @@ class ScrollbarHelperBase(object):
         if self.usemousewheel and cwidget is not None:
             BindManager.init_mousewheel_binding(self)
 
-            if self.hsb and not hasattr(self.hsb, 'on_mousewheel'):
+            if self.hsb and not hasattr(self.hsb, "on_mousewheel"):
                 self.hsb.on_mousewheel = BindManager.make_onmousewheel_cb(
-                    cwidget, 'x', 2)
-            if self.vsb and not hasattr(self.vsb, 'on_mousewheel'):
+                    cwidget, "x", 2
+                )
+            if self.vsb and not hasattr(self.vsb, "on_mousewheel"):
                 self.vsb.on_mousewheel = BindManager.make_onmousewheel_cb(
-                    cwidget, 'y', 2)
+                    cwidget, "y", 2
+                )
 
             main_sb = self.vsb or self.hsb
             if main_sb:
                 cwidget.on_mousewheel = main_sb.on_mousewheel
                 bid = cwidget.bind(
-                    '<Enter>',
+                    "<Enter>",
                     lambda event: BindManager.mousewheel_bind(cwidget),
-                    add='+')
+                    add="+",
+                )
                 self._bindingids.append((cwidget, bid))
                 bid = cwidget.bind(
-                    '<Leave>',
+                    "<Leave>",
                     lambda event: BindManager.mousewheel_unbind(),
-                    add='+')
+                    add="+",
+                )
                 self._bindingids.append((cwidget, bid))
             for s in (self.vsb, self.hsb):
                 if s:
                     bid = s.bind(
-                        '<Enter>',
-                        lambda event,
-                        scrollbar=s: BindManager.mousewheel_bind(scrollbar),
-                        add='+')
+                        "<Enter>",
+                        lambda event, scrollbar=s: BindManager.mousewheel_bind(
+                            scrollbar
+                        ),
+                        add="+",
+                    )
                     self._bindingids.append((s, bid))
                     if s != main_sb:
                         bid = s.bind(
-                            '<Leave>',
+                            "<Leave>",
                             lambda event: BindManager.mousewheel_unbind(),
-                            add='+')
+                            add="+",
+                        )
                         self._bindingids.append((s, bid))
         else:
             for widget, bid in self._bindingids:
@@ -145,5 +152,7 @@ class ScrollbarHelperFactory(type):
 
 
 TkScrollbarHelper = ScrollbarHelperFactory(
-    'TkScrollbarHelper', (ScrollbarHelperBase, tk.Frame, object), {
-        '_framecls': tk.Frame, '_sbarcls': tk.Scrollbar})
+    "TkScrollbarHelper",
+    (ScrollbarHelperBase, tk.Frame, object),
+    {"_framecls": tk.Frame, "_sbarcls": tk.Scrollbar},
+)

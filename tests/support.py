@@ -1,5 +1,5 @@
-# encoding: utf8
-#Copyright © 2001-2013 Python Software Foundation; All Rights Reserved
+# encoding: utf-8
+# Copyright © 2001-2013 Python Software Foundation; All Rights Reserved
 
 import sys
 import tkinter
@@ -7,13 +7,14 @@ import unittest
 
 _tk_unavailable = None
 
+
 def check_tk_availability():
     """Check that Tk is installed and available."""
     global _tk_unavailable
 
     if _tk_unavailable is None:
         _tk_unavailable = False
-        if sys.platform == 'darwin':
+        if sys.platform == "darwin":
             # The Aqua Tk implementations on OS X can abort the process if
             # being called in an environment where a window server connection
             # cannot be made, for instance when invoked by a buildbot or ssh
@@ -28,15 +29,20 @@ def check_tk_availability():
             if app_services.CGMainDisplayID() == 0:
                 _tk_unavailable = "cannot run without OS X window manager"
             else:
+
                 class ProcessSerialNumber(Structure):
-                    _fields_ = [("highLongOfPSN", c_int),
-                                ("lowLongOfPSN", c_int)]
+                    _fields_ = [
+                        ("highLongOfPSN", c_int),
+                        ("lowLongOfPSN", c_int),
+                    ]
+
                 psn = ProcessSerialNumber()
                 psn_p = pointer(psn)
-                if (  (app_services.GetCurrentProcess(psn_p) < 0) or
-                      (app_services.SetFrontProcess(psn_p) < 0) ):
+                if (app_services.GetCurrentProcess(psn_p) < 0) or (
+                    app_services.SetFrontProcess(psn_p) < 0
+                ):
                     _tk_unavailable = "cannot run without OS X gui process"
-        else:   # not OS X
+        else:  # not OS X
             try:
                 import tkinter
             except:
@@ -51,8 +57,9 @@ def check_tk_availability():
         raise unittest.SkipTest(_tk_unavailable)
     return
 
+
 def get_tk_root():
-    check_tk_availability()     # raise exception if tk unavailable
+    check_tk_availability()  # raise exception if tk unavailable
     try:
         root = tkinter._default_root
     except AttributeError:
@@ -67,9 +74,11 @@ def get_tk_root():
 
     return root
 
+
 def root_deiconify():
     root = get_tk_root()
     root.deiconify()
+
 
 def root_withdraw():
     root = get_tk_root()
@@ -79,7 +88,7 @@ def root_withdraw():
 def simulate_mouse_click(widget, x, y):
     """Generate proper events to click at the x, y position (tries to act
     like an X server)."""
-    widget.event_generate('<Enter>', x=0, y=0)
-    widget.event_generate('<Motion>', x=x, y=y)
-    widget.event_generate('<ButtonPress-1>', x=x, y=y)
-    widget.event_generate('<ButtonRelease-1>', x=x, y=y)
+    widget.event_generate("<Enter>", x=0, y=0)
+    widget.event_generate("<Motion>", x=x, y=y)
+    widget.event_generate("<ButtonPress-1>", x=x, y=y)
+    widget.event_generate("<ButtonRelease-1>", x=x, y=y)

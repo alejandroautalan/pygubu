@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: utf-8
 import os
 import sys
 import unittest
@@ -6,8 +6,9 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 
-pygubu_basedir = os.path.abspath(os.path.dirname(
-    os.path.dirname(os.path.realpath(sys.argv[0]))))
+pygubu_basedir = os.path.abspath(
+    os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[0])))
+)
 if pygubu_basedir not in sys.path:
     sys.path.insert(0, pygubu_basedir)
 
@@ -16,22 +17,21 @@ import support
 
 
 class TestMenu(unittest.TestCase):
-
     def setUp(self):
         self.root = support.get_tk_root()
         support.root_deiconify()
-        xmldata = 'test_menu_commands.ui'
+        xmldata = "test_menu_commands.ui"
         self.builder = builder = pygubu.Builder()
         filepath = os.path.dirname(os.path.realpath(__file__))
         builder.add_resource_path(filepath)
         builder.add_from_file(xmldata)
-        self.widget = builder.get_object('mainmenu')
-        self.menu1 = builder.get_object('menu1')
-        self.root['menu'] = self.widget
+        self.widget = builder.get_object("mainmenu")
+        self.menu1 = builder.get_object("menu1")
+        self.root["menu"] = self.widget
 
     def tearDown(self):
         support.root_withdraw()
-        self.root['menu'] = None
+        self.root["menu"] = None
 
     def test_tearoff_command(self):
         success = []
@@ -132,5 +132,5 @@ class TestMenu(unittest.TestCase):
         # validate test
         self.assertTrue(success)
         wid = success[0]
-        self.assertEqual(wid, 'mchb1')
+        self.assertEqual(wid, "mchb1")
         self.widget.destroy()
