@@ -1,4 +1,4 @@
-# encoding: utf8
+# encoding: utf-8
 import tkinter as tk
 
 from pygubu import ApplicationLevelBindManager as BindManager
@@ -6,18 +6,18 @@ from pygubu.binding import remove_binding
 
 
 class TkScrolledFrame(tk.Frame):
-    VERTICAL = 'vertical'
-    HORIZONTAL = 'horizontal'
-    BOTH = 'both'
+    VERTICAL = "vertical"
+    HORIZONTAL = "horizontal"
+    BOTH = "both"
     _framecls = tk.Frame
     _sbarcls = tk.Scrollbar
 
     def __init__(self, master=None, **kw):
-        self.scrolltype = kw.pop('scrolltype', self.VERTICAL)
-        self.usemousewheel = tk.getboolean(kw.pop('usemousewheel', False))
+        self.scrolltype = kw.pop("scrolltype", self.VERTICAL)
+        self.usemousewheel = tk.getboolean(kw.pop("usemousewheel", False))
         self._bindingids = []
 
-        #super(ScrolledFrameBase, self).__init__(master, **kw)
+        # super(ScrolledFrameBase, self).__init__(master, **kw)
         self._framecls.__init__(self, master, **kw)
 
         self._container = self._framecls(self, width=200, height=200)
@@ -44,19 +44,19 @@ class TkScrolledFrame(tk.Frame):
         self.hsb.config(command=self.xview)
 
         # grid
-        self._container.pack(expand=True, fill='both')
+        self._container.pack(expand=True, fill="both")
         self._clipper.grid(row=0, column=0, sticky=tk.NSEW)
-        #self.vsb.grid(row=0, column=1, sticky=tk.NS)
-        #self.hsb.grid(row=1, column=0, sticky=tk.EW)
+        # self.vsb.grid(row=0, column=1, sticky=tk.NS)
+        # self.hsb.grid(row=1, column=0, sticky=tk.EW)
 
         self._container.rowconfigure(0, weight=1)
         self._container.columnconfigure(0, weight=1)
 
         # Whenever the clipping window or scrolled frame change size,
         # update the scrollbars.
-        self.innerframe.bind('<Configure>', self._reposition)
-        self._clipper.bind('<Configure>', self._reposition)
-        self.bind('<Configure>', self._reposition)
+        self.innerframe.bind("<Configure>", self._reposition)
+        self._clipper.bind("<Configure>", self._reposition)
+        self.bind("<Configure>", self._reposition)
         self._configure_mousewheel()
 
     # Set timer to call real reposition method, so that it is not
@@ -74,12 +74,12 @@ class TkScrolledFrame(tk.Frame):
             value = float(value)
         if mode is None:
             return self.hsb.get()
-        elif mode == 'moveto':
+        elif mode == "moveto":
             frameWidth = self.innerframe.winfo_reqwidth()
             self._startX = value * float(frameWidth)
         else:  # mode == 'scroll'
             clipperWidth = self._clipper.winfo_width()
-            if units == 'units':
+            if units == "units":
                 jump = int(clipperWidth * self._jfraction)
             else:
                 jump = clipperWidth
@@ -96,12 +96,12 @@ class TkScrolledFrame(tk.Frame):
             value = float(value)
         if mode is None:
             return self.vsb.get()
-        elif mode == 'moveto':
+        elif mode == "moveto":
             frameHeight = self.innerframe.winfo_reqheight()
             self._startY = value * float(frameHeight)
         else:  # mode == 'scroll'
             clipperHeight = self._clipper.winfo_height()
-            if units == 'units':
+            if units == "units":
                 jump = int(clipperHeight * self._jfraction)
             else:
                 jump = clipperHeight
@@ -134,7 +134,7 @@ class TkScrolledFrame(tk.Frame):
                 if self._startX < 0:
                     self._startX = 0
                 endScrollX = (self._startX + clipperWidth) / float(frameWidth)
-            relwidth = ''
+            relwidth = ""
 
         # Position frame relative to clipper.
         self.innerframe.place(x=-self._startX, relwidth=relwidth)
@@ -161,9 +161,8 @@ class TkScrolledFrame(tk.Frame):
             else:
                 if self._startY < 0:
                     self._startY = 0
-                endScrollY = (self._startY + clipperHeight) / \
-                    float(frameHeight)
-            relheight = ''
+                endScrollY = (self._startY + clipperHeight) / float(frameHeight)
+            relheight = ""
 
         # Position frame relative to clipper.
         self.innerframe.place(y=-self._startY, relheight=relheight)
@@ -198,9 +197,11 @@ class TkScrolledFrame(tk.Frame):
         # currently only one scrollbar is mapped and both should be
         # toggled, then unmap the mapped scrollbar.  This prevents a
         # continuous mapping and unmapping of the scrollbars.
-        if (self.hsbNeeded != self.hsbOn and
-            self.vsbNeeded != self.vsbOn and
-                self.vsbOn != self.hsbOn):
+        if (
+            self.hsbNeeded != self.hsbOn
+            and self.vsbNeeded != self.vsbOn
+            and self.vsbOn != self.hsbOn
+        ):
             if self.hsbOn:
                 self._toggleHorizScrollbar()
             else:
@@ -220,10 +221,10 @@ class TkScrolledFrame(tk.Frame):
         # interior = self #.origInterior
         if self.hsbOn:
             self.hsb.grid(row=1, column=0, sticky=tk.EW)
-            #interior.grid_rowconfigure(3, minsize = self['scrollmargin'])
+            # interior.grid_rowconfigure(3, minsize = self['scrollmargin'])
         else:
             self.hsb.grid_forget()
-            #interior.grid_rowconfigure(3, minsize = 0)
+            # interior.grid_rowconfigure(3, minsize = 0)
 
     def _toggleVertScrollbar(self):
 
@@ -232,25 +233,25 @@ class TkScrolledFrame(tk.Frame):
         # interior = self#.origInterior
         if self.vsbOn:
             self.vsb.grid(row=0, column=1, sticky=tk.NS)
-            #interior.grid_columnconfigure(3, minsize = self['scrollmargin'])
+            # interior.grid_columnconfigure(3, minsize = self['scrollmargin'])
         else:
             self.vsb.grid_forget()
-            #interior.grid_columnconfigure(3, minsize = 0)
+            # interior.grid_columnconfigure(3, minsize = 0)
 
     def configure(self, cnf=None, **kw):
         args = tk._cnfmerge((cnf, kw))
-        key = 'usemousewheel'
+        key = "usemousewheel"
         if key in args:
             self.usemousewheel = tk.getboolean(args[key])
             del args[key]
             self._configure_mousewheel()
-        #super(ScrolledFrameBase, self).configure(args)
+        # super(ScrolledFrameBase, self).configure(args)
         self._framecls.configure(self, args)
 
     config = configure
 
     def cget(self, key):
-        option = 'usemousewheel'
+        option = "usemousewheel"
         if key == option:
             return self.usemousewheel
         # return super(ScrolledFrameBase, self).cget(key)
@@ -262,38 +263,46 @@ class TkScrolledFrame(tk.Frame):
         if self.usemousewheel:
             BindManager.init_mousewheel_binding(self)
 
-            if self.hsb and not hasattr(self.hsb, 'on_mousewheel'):
+            if self.hsb and not hasattr(self.hsb, "on_mousewheel"):
                 self.hsb.on_mousewheel = BindManager.make_onmousewheel_cb(
-                    self, 'x', 2)
-            if self.vsb and not hasattr(self.vsb, 'on_mousewheel'):
+                    self, "x", 2
+                )
+            if self.vsb and not hasattr(self.vsb, "on_mousewheel"):
                 self.vsb.on_mousewheel = BindManager.make_onmousewheel_cb(
-                    self, 'y', 2)
+                    self, "y", 2
+                )
 
             main_sb = self.vsb or self.hsb
             if main_sb:
                 self.on_mousewheel = main_sb.on_mousewheel
                 bid = self.bind(
-                    '<Enter>',
+                    "<Enter>",
                     lambda event: BindManager.mousewheel_bind(self),
-                    add='+')
+                    add="+",
+                )
                 self._bindingids.append((self, bid))
-                bid = self.bind('<Leave>',
-                                lambda event: BindManager.mousewheel_unbind(),
-                                add='+')
+                bid = self.bind(
+                    "<Leave>",
+                    lambda event: BindManager.mousewheel_unbind(),
+                    add="+",
+                )
                 self._bindingids.append((self, bid))
             for s in (self.vsb, self.hsb):
                 if s:
                     bid = s.bind(
-                        '<Enter>',
-                        lambda event,
-                        scrollbar=s: BindManager.mousewheel_bind(scrollbar),
-                        add='+')
+                        "<Enter>",
+                        lambda event, scrollbar=s: BindManager.mousewheel_bind(
+                            scrollbar
+                        ),
+                        add="+",
+                    )
                     self._bindingids.append((s, bid))
                     if s != main_sb:
                         bid = s.bind(
-                            '<Leave>',
+                            "<Leave>",
                             lambda event: BindManager.mousewheel_unbind(),
-                            add='+')
+                            add="+",
+                        )
                         self._bindingids.append((s, bid))
         else:
             for widget, bid in self._bindingids:

@@ -1,33 +1,34 @@
-# encoding: utf8
+# encoding: utf-8
 
 __all__ = [
-    'Builder',
-    'TkApplication',
-    'BuilderObject',
-    'register_widget',
-    'register_property',
-    'register_custom_property',
-    'remove_binding',
-    'ApplicationLevelBindManager',
+    "Builder",
+    "TkApplication",
+    "BuilderObject",
+    "register_widget",
+    "register_property",
+    "register_custom_property",
+    "remove_binding",
+    "ApplicationLevelBindManager",
 ]
 
 import warnings
+
 from pygubu.binding import ApplicationLevelBindManager, remove_binding
 from pygubu.builder import Builder
 from pygubu.builder.builderobject import (
     BuilderObject,
-    register_widget,
-    register_property,
     register_custom_property,
+    register_property,
+    register_widget,
 )
 
-__version__ = '0.22'
+__version__ = "0.22"
 
 
 class TkApplication:
     def __init__(self, master=None):
         warnings.warn(
-            'TkApplication is deprecated and it will be removed in the future. Use a Toplevel instance in the ui file.',
+            "TkApplication is deprecated and it will be removed in the future. Use a Toplevel instance in the ui file.",
             category=DeprecationWarning,
         )
         self.master = master
