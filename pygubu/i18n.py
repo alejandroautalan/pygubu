@@ -14,64 +14,28 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import gettext
-import locale
-import os
-import sys
-from pathlib import Path
 
-# Change this variable to your app name!
-#  The translation files will be under
-#  @LOCALE_DIR@/@LANGUAGE@/LC_MESSAGES/@APP_NAME@.mo
 #
-APP_NAME = "pygubu"
+# Keep pygubu as a simple library. Translations will be done in pygubu-designer repo.
 
-# Not sure in a regular desktop:
-
-APP_DIR = Path(__file__).parent
-LOCALE_DIR = APP_DIR / "locale"
-
-if not (LOCALE_DIR / "de" / "LC_MESSAGES" / "pygubu.mo").exists():
-    print(
-        "You should compile the .po files in the pygubudesigner/locale "
-        + "directory first if you are a developer, otherwise give us feedback "
-        + "here: https://github.com/alejandroautalan/pygubu-designer/issues"
-    )
-    sys.exit(0)
-
-# Now we need to choose the language. We will provide a list, and gettext
-# will use the first translation available in the list
-#
-#  In maemo it is in the LANG environment variable
-#  (on desktop is usually LANGUAGES)
-#
-DEFAULT_LANGUAGES = os.environ.get("LANG", "").split(":")
-
-# Try to get the languages from the default locale
-languages = []
-lc, encoding = locale.getdefaultlocale()
-if lc:
-    languages = [lc]
-
-# Concat all languages (env + default locale),
-#  and here we have the languages and location of the translations
-#
-languages = DEFAULT_LANGUAGES + languages + ["en_US"]
-mo_location = LOCALE_DIR
-
-# Lets tell those details to gettext
-#  (nothing to change here for you)
-gettext.install(True)
-gettext.bindtextdomain(APP_NAME, mo_location)
-gettext.textdomain(APP_NAME)
-language = gettext.translation(
-    APP_NAME, mo_location, languages=languages, fallback=True
-)
-
-_ = T = translator = language.gettext
+_real_translator = gettext.gettext
 
 
-# And now in your modules you can do:
-#
-# import i18n
-# _ = i18n.translator
-#
+class LazyTranslator:
+    def __init__(self, message):
+        self._message = message
+
+    def __str__(self):
+        return _real_translator(self._message)
+
+
+def setup_translator(translator):
+    global _real_translator
+    _real_translator = translator
+
+
+def translator(message: str) -> str:
+    return LazyTranslator(message)
+
+
+_ = T = translator
