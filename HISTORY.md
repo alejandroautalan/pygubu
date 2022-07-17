@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.23
+
+  * Translations for pygubu strings in pygubu-designer (larryw3i)
+
 Changes for version 0.22
 
   * Code generation: mark translatable text in code. issue alejandroautalan/pygubu-designer#120
