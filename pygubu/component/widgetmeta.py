@@ -2,7 +2,7 @@
 import xml.etree.ElementTree as ET
 from collections import namedtuple
 
-from pygubu import builder
+from .builderobject import CLASS_MAP
 
 __all__ = ["WidgetMeta", "BindingMeta"]
 
@@ -26,7 +26,7 @@ class WidgetMeta(object):
         self.properties = {}
         self.bindings = []
         self._manager = manager if manager is not None else "grid"
-        widget_description = builder.CLASS_MAP.get(cname)
+        widget_description = CLASS_MAP.get(cname)
         if widget_description:
             self.layout_required = widget_description.builder.layout_required
         else:
@@ -38,9 +38,7 @@ class WidgetMeta(object):
         self.properties_defaults = (
             properties_defaults if properties_defaults is not None else {}
         )
-        self.layout_defaults = (
-            layout_defaults if layout_defaults is not None else {}
-        )
+        self.layout_defaults = layout_defaults if layout_defaults is not None else {}
 
         # init defaults
         self.apply_properties_defaults()
@@ -86,11 +84,7 @@ class WidgetMeta(object):
     def get_gridrc_value(self, rctype, rcid, pname):
         value = None
         for line in self.gridrc_properties:
-            if (
-                line.rctype == rctype
-                and line.rcid == rcid
-                and line.pname == pname
-            ):
+            if line.rctype == rctype and line.rcid == rcid and line.pname == pname:
                 value = line.pvalue
                 break
         return value

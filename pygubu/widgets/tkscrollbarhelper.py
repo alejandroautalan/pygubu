@@ -2,8 +2,10 @@
 import logging
 import tkinter as tk
 
-from pygubu import ApplicationLevelBindManager as BindManager
-from pygubu.binding import remove_binding
+from pygubu.binding import (
+    ApplicationLevelBindManager as BindManager,
+    remove_binding,
+)
 
 logger = logging.getLogger(__name__)
 

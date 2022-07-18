@@ -4,13 +4,11 @@ import tkinter.ttk as ttk
 from collections import OrderedDict
 
 from pygubu.i18n import _
-
-from .builderobject import (
-    BuilderObject,
+from pygubu.api.v1 import BuilderObject, register_widget
+from pygubu.component.builderobject import (
     EntryBaseBO,
     PanedWindowBO,
     PanedWindowPaneBO,
-    register_widget,
 )
 
 
@@ -46,9 +44,7 @@ register_widget("ttk.Frame", TTKFrame, "Frame", (_("Containers"), "ttk"))
 
 class TTKLabel(TTKWidgetBO):
     OPTIONS_STANDARD = (
-        TTKWidgetBO.OPTIONS_STANDARD
-        + TTKWidgetBO.OPTIONS_LABEL
-        + ("borderwidth",)
+        TTKWidgetBO.OPTIONS_STANDARD + TTKWidgetBO.OPTIONS_LABEL + ("borderwidth",)
     )
     OPTIONS_SPECIFIC = (
         "anchor",
@@ -78,15 +74,11 @@ class TTKButton(TTKWidgetBO):
     OPTIONS_SPECIFIC = ("command", "default")
     class_ = ttk.Button
     container = False
-    properties = (
-        OPTIONS_STANDARD + OPTIONS_SPECIFIC + TTKWidgetBO.OPTIONS_CUSTOM
-    )
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + TTKWidgetBO.OPTIONS_CUSTOM
     command_properties = ("command",)
 
 
-register_widget(
-    "ttk.Button", TTKButton, "Button", (_("Control & Display"), "ttk")
-)
+register_widget("ttk.Button", TTKButton, "Button", (_("Control & Display"), "ttk"))
 
 
 class TTKCheckbutton(TTKWidgetBO):
@@ -98,9 +90,7 @@ class TTKCheckbutton(TTKWidgetBO):
     OPTIONS_SPECIFIC = ("command", "offvalue", "onvalue", "variable")
     class_ = ttk.Checkbutton
     container = False
-    properties = (
-        OPTIONS_STANDARD + OPTIONS_SPECIFIC + TTKWidgetBO.OPTIONS_CUSTOM
-    )
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + TTKWidgetBO.OPTIONS_CUSTOM
     command_properties = ("command",)
 
 
@@ -121,9 +111,7 @@ class TTKRadiobutton(TTKWidgetBO):
     OPTIONS_SPECIFIC = ("command", "value", "variable")
     class_ = ttk.Radiobutton
     container = False
-    properties = (
-        OPTIONS_STANDARD + OPTIONS_SPECIFIC + TTKWidgetBO.OPTIONS_CUSTOM
-    )
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + TTKWidgetBO.OPTIONS_CUSTOM
     ro_properties = ("class_",)
     command_properties = ("command",)
 
@@ -154,9 +142,7 @@ class TTKCombobox(TTKWidgetBO):
     class_ = ttk.Combobox
     container = False
     properties = (
-        TTKWidgetBO.OPTIONS_STANDARD
-        + OPTIONS_SPECIFIC
-        + TTKWidgetBO.OPTIONS_CUSTOM
+        TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC + TTKWidgetBO.OPTIONS_CUSTOM
     )
     command_properties = (
         "postcommand",
@@ -287,9 +273,7 @@ class TTKLabelframe(TTKWidgetBO):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 
-register_widget(
-    "ttk.Labelframe", TTKLabelframe, "Labelframe", (_("Containers"), "ttk")
-)
+register_widget("ttk.Labelframe", TTKLabelframe, "Labelframe", (_("Containers"), "ttk"))
 
 
 class TTKPanedwindow(TTKWidgetBO, PanedWindowBO):
@@ -315,9 +299,7 @@ class TTKNotebook(TTKWidgetBO):
     virtual_events = ("<<NotebookTabChanged>>",)
 
 
-register_widget(
-    "ttk.Notebook", TTKNotebook, "Notebook", (_("Containers"), "ttk")
-)
+register_widget("ttk.Notebook", TTKNotebook, "Notebook", (_("Containers"), "ttk"))
 
 
 class TTKMenubuttonBO(TTKWidgetBO):
@@ -381,9 +363,7 @@ class TTKTreeviewBO(TTKWidgetBO):
             if "#0" in columns:
                 columns.remove("#0")
             displaycolumns = self._dcolumns
-            self.widget.configure(
-                columns=columns, displaycolumns=displaycolumns
-            )
+            self.widget.configure(columns=columns, displaycolumns=displaycolumns)
             for col in self._columns:
                 self.widget.column(col, **self._columns[col])
         if self._headings:
@@ -520,9 +500,7 @@ class TTKNotebookTab(TTKWidgetBO):
 
     def code_child_add(self, childid):
         targetid = self.code_identifier()
-        code_bag, kw, _ = self._code_process_properties(
-            self.wmeta.properties, targetid
-        )
+        code_bag, kw, _ = self._code_process_properties(self.wmeta.properties, targetid)
         kwbag = []
         for pname in kw:
             arg = "{0}={1}".format(pname, code_bag[pname])

@@ -1,7 +1,7 @@
 # encoding: utf-8
 import tkinter as tk
 
-from pygubu.builder.builderobject import BuilderObject, register_widget
+from pygubu.api.v1 import BuilderObject, register_widget
 from pygubu.i18n import _
 from pygubu.widgets.scrollbarhelper import ScrollbarHelper
 

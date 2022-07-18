@@ -1,7 +1,7 @@
 # encoding: utf-8
 import tkinter as tk
 
-from pygubu.builder.builderobject import BuilderObject, register_widget
+from pygubu.api.v1 import BuilderObject, register_widget
 from pygubu.i18n import _
 from pygubu.widgets.tkscrollbarhelper import TkScrollbarHelper
 
@@ -29,7 +29,13 @@ class TKSBHelperBO(BuilderObject):
         "relief",
         "takefocus",
     )
-    OPTIONS_SPECIFIC = ("background", "class_", "container", "height", "width")
+    OPTIONS_SPECIFIC = (
+        "background",
+        "class_",
+        "container",
+        "height",
+        "width",
+    )
     OPTIONS_CUSTOM = ("scrolltype", "usemousewheel")
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     ro_properties = ("class_", "scrolltype")

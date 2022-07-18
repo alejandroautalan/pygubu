@@ -3,14 +3,12 @@ import logging
 import tkinter as tk
 
 from pygubu.i18n import _
-
-from .builderobject import (
+from pygubu.api.v1 import BuilderObject, register_widget
+from pygubu.component.builderobject import (
     CB_TYPES,
-    BuilderObject,
     EntryBaseBO,
     PanedWindowBO,
     PanedWindowPaneBO,
-    register_widget,
 )
 
 logger = logging.getLogger(__name__)
@@ -38,7 +36,13 @@ class TKToplevel(BuilderObject):
         "relief",
         "takefocus",
     )
-    OPTIONS_SPECIFIC = ("background", "class_", "container", "height", "width")
+    OPTIONS_SPECIFIC = (
+        "background",
+        "class_",
+        "container",
+        "height",
+        "width",
+    )
     OPTIONS_CUSTOM = (
         "title",
         "geometry",
@@ -142,7 +146,13 @@ class TKFrame(BuilderObject):
         "relief",
         "takefocus",
     )
-    OPTIONS_SPECIFIC = ("background", "class_", "container", "height", "width")
+    OPTIONS_SPECIFIC = (
+        "background",
+        "class_",
+        "container",
+        "height",
+        "width",
+    )
     class_ = tk.Frame
     container = True
     container_layout = True
@@ -264,7 +274,11 @@ class TKEntry(EntryBaseBO):
     class_ = tk.Entry
     container = False
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
-    command_properties = ("validatecommand", "invalidcommand", "xscrollcommand")
+    command_properties = (
+        "validatecommand",
+        "invalidcommand",
+        "xscrollcommand",
+    )
 
 
 register_widget("tk.Entry", TKEntry, "Entry", (_("Control & Display"), "tk"))
@@ -315,7 +329,9 @@ class TKButton(BuilderObject):
     command_properties = ("command",)
 
 
-register_widget("tk.Button", TKButton, "Button", (_("Control & Display"), "tk"))
+register_widget(
+    "tk.Button", TKButton, "Button", (_("Control & Display"), "tk")
+)
 
 
 class TKCheckbutton(BuilderObject):
@@ -638,7 +654,13 @@ class TKMenubutton(BuilderObject):
         "underline",
         "wraplength",
     )
-    OPTIONS_SPECIFIC = ("direction", "height", "indicatoron", "state", "width")
+    OPTIONS_SPECIFIC = (
+        "direction",
+        "height",
+        "indicatoron",
+        "state",
+        "width",
+    )
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     allowed_children = ("tk.Menu",)
     maxchildren = 1

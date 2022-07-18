@@ -1,11 +1,6 @@
 # encoding: utf-8
-import tkinter as tk
-
-from pygubu.builder.builderobject import (
-    register_custom_property,
-    register_widget,
-)
-from pygubu.builder.tkstdwidgets import TKToplevel
+from pygubu.api.v1 import register_widget, register_custom_property
+from pygubu.plugins.tk.tkstdwidgets import TKToplevel
 from pygubu.i18n import _
 from pygubu.widgets.dialog import Dialog
 

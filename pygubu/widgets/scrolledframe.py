@@ -2,8 +2,10 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
-from pygubu import ApplicationLevelBindManager as BindManager
-from pygubu.binding import remove_binding
+from pygubu.binding import (
+    ApplicationLevelBindManager as BindManager,
+    remove_binding,
+)
 
 
 class ScrolledFrame(ttk.Frame):
@@ -162,7 +164,9 @@ class ScrolledFrame(ttk.Frame):
             else:
                 if self._startY < 0:
                     self._startY = 0
-                endScrollY = (self._startY + clipperHeight) / float(frameHeight)
+                endScrollY = (self._startY + clipperHeight) / float(
+                    frameHeight
+                )
             relheight = ""
 
         # Position frame relative to clipper.

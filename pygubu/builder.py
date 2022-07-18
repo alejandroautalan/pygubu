@@ -1,16 +1,33 @@
 # encoding: utf-8
 import importlib
+import pkgutil
 import logging
 import os
 import tkinter
 
-from pygubu.builder.builderobject import CB_TYPES, CLASS_MAP, BuilderObject
-from pygubu.builder.widgetmeta import WidgetMeta
-from pygubu.stockimage import StockImage, StockImageException
+import pygubu.plugins
+from .component.builderobject import BUILDER_LOADERS, CLASS_MAP, BuilderObject
+from .component.widgetmeta import WidgetMeta
+from .stockimage import StockImage, StockImageException
 
-from .uidefinition import UIDefinition
+from .component.uidefinition import UIDefinition
 
 logger = logging.getLogger(__name__)
+
+
+def iter_namespace(ns_pkg):
+    # Specifying the second argument (prefix) to iter_modules makes the
+    # returned name an absolute name instead of a relative one. This allows
+    # import_module to work without having to do additional modification to
+    # the name.
+    #
+    # Source: https://packaging.python.org/guides/creating-and-discovering-plugins/
+    return pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + ".")
+
+
+def load_plugins():
+    for _, name, _ in iter_namespace(pygubu.plugins):
+        importlib.import_module(name)
 
 
 #
@@ -165,30 +182,16 @@ class Builder(object):
             raise Exception(msg)
         return widget
 
-    def _import_class(self, modulename):
-        if modulename.startswith("tk."):
-            importlib.import_module("pygubu.builder.tkstdwidgets")
-        elif modulename.startswith("ttk."):
-            importlib.import_module("pygubu.builder.ttkstdwidgets")
-        else:
-            # Import module as full path
-            try:
-                importlib.import_module(modulename)
-                logger.debug("Module %s loaded.", modulename)
-            except (ModuleNotFoundError, ImportError) as e:
-                msg = "Failed to import module as fullname: %s"
-                logger.debug(msg, modulename)
-                # A single module can contain various widgets
-                # try to import the first part of the path
-                if "." in modulename:
-                    first, last = modulename.rsplit(".", 1)
-                    try:
-                        importlib.import_module(first)
-                        logger.debug("Module %s loaded.", first)
-                    except (ModuleNotFoundError, ImportError) as e:
-                        importlib.import_module(last)
-                        logger.debug("Module %s loaded.", last)
-                else:
+    def _import_class(self, builder_id):
+        for loader in BUILDER_LOADERS:
+            if loader.can_load(builder_id):
+                _module = loader.get_module_path(builder_id)
+                try:
+                    importlib.import_module(_module)
+                    logger.debug("Module %s loaded.", _module)
+                except (ModuleNotFoundError, ImportError) as e:
+                    msg = "Failed to import module as fullname: %s"
+                    logger.debug(msg, _module)
                     raise e
 
     def _realize(self, master, wmeta):
@@ -227,7 +230,9 @@ class Builder(object):
         has_layout = len(wmeta.layout_properties) > 1
         if wmeta.layout_required and not has_layout:
             logger.debug(
-                "No layout information for: (%s, %s).", cname, wmeta.identifier
+                "No layout information for: (%s, %s).",
+                cname,
+                wmeta.identifier,
             )
 
     def _post_realize(self, bobject):
@@ -271,3 +276,7 @@ class Builder(object):
 
     def code_translate_str(self, value: str) -> str:
         raise NotImplementedError()
+
+
+# Load plugins on module init
+load_plugins()

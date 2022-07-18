@@ -1,7 +1,10 @@
 # encoding: utf-8
-from pygubu.builder.builderobject import register_widget
-from pygubu.builder.ttkstdwidgets import TTKTreeviewBO, TTKTreeviewColumnBO
-from pygubu.builder.widgets.scrollbarhelper import TTKSBHelperBO
+from pygubu.api.v1 import register_widget
+from pygubu.plugins.ttk.ttkstdwidgets import (
+    TTKTreeviewBO,
+    TTKTreeviewColumnBO,
+)
+from .scrollbarhelper import TTKSBHelperBO
 from pygubu.i18n import _
 from pygubu.widgets.editabletreeview import EditableTreeview
 
