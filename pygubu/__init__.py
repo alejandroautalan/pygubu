@@ -22,7 +22,7 @@ from pygubu.builder.builderobject import (
     register_widget,
 )
 
-__version__ = "0.23"
+__version__ = "0.23.1"
 
 
 class TkApplication:
