@@ -425,6 +425,12 @@ class TTKTreeviewBO(TTKWidgetBO):
                 kwargs = ",".join(bag)
                 line = "{0}.heading('{1}', {2})".format(targetid, col, kwargs)
                 lines.append(line)
+
+        # Get other treeview properties such as padding, cursor, selectmode, etc.
+        treeview_properties = super().code_configure(targetid)
+        for treeview_property in treeview_properties:
+            lines.append(treeview_property)
+
         return lines
 
 
