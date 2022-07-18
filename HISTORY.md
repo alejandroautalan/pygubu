@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.23.1
+
+  * Fix: Generate regular treeview properties in the Code Script #264 (jrezai)
+  
 Changes for version 0.23
 
   * Translations for pygubu strings in pygubu-designer (larryw3i)
