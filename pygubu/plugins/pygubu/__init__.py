@@ -1,7 +1,7 @@
-from pygubu.api.v1 import BuilderLoader, register_loader
+from pygubu.api.v1 import BuilderLoaderPlugin
 
 
-class PygubuWidgetsLoader(BuilderLoader):
+class PygubuWidgetsLoader(BuilderLoaderPlugin):
     builders = {
         "pygubu.builder.widgets.calendarframe": "pygubu.plugins.pygubu.calendarframe",
         "pygubu.builder.widgets.combobox": "pygubu.plugins.pygubu.combobox",
@@ -15,11 +15,11 @@ class PygubuWidgetsLoader(BuilderLoader):
         "pygubu.builder.widgets.tkscrolledframe": "pygubu.plugins.pygubu.tkscrolledframe",
     }
 
-    def get_module_path(self, identifier: str) -> str:
+    def get_all_modules(self):
+        return [m for m in self.builders.values()]
+
+    def get_module_for(self, identifier: str) -> str:
         return self.builders[identifier]
 
     def can_load(self, identifier: str) -> bool:
         return identifier in self.builders
-
-
-register_loader(PygubuWidgetsLoader())

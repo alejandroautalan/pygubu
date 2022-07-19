@@ -3,16 +3,9 @@ from ...component.builderobject import (
     CLASS_MAP,
     WidgetDescription,
     CUSTOM_PROPERTIES,
-    BUILDER_LOADERS,
 )
 
-
 logger = logging.getLogger(__name__)
-
-
-def register_loader(loader_class):
-    global BUILDER_LOADERS
-    BUILDER_LOADERS.append(loader_class)
 
 
 def register_builder(classname, builder, label=None, tags=None):

@@ -1,33 +1,16 @@
 # encoding: utf-8
 import importlib
-import pkgutil
 import logging
 import os
 import tkinter
 
-import pygubu.plugins
-from .component.builderobject import BUILDER_LOADERS, CLASS_MAP, BuilderObject
+from .component.builderobject import CLASS_MAP, BuilderObject
 from .component.widgetmeta import WidgetMeta
 from .stockimage import StockImage, StockImageException
-
 from .component.uidefinition import UIDefinition
+from .component.plugin_manager import PluginManager
 
 logger = logging.getLogger(__name__)
-
-
-def iter_namespace(ns_pkg):
-    # Specifying the second argument (prefix) to iter_modules makes the
-    # returned name an absolute name instead of a relative one. This allows
-    # import_module to work without having to do additional modification to
-    # the name.
-    #
-    # Source: https://packaging.python.org/guides/creating-and-discovering-plugins/
-    return pkgutil.iter_modules(ns_pkg.__path__, ns_pkg.__name__ + ".")
-
-
-def load_plugins():
-    for _, name, _ in iter_namespace(pygubu.plugins):
-        importlib.import_module(name)
 
 
 #
@@ -183,9 +166,9 @@ class Builder(object):
         return widget
 
     def _import_class(self, builder_id):
-        for loader in BUILDER_LOADERS:
+        for loader in PluginManager.builder_plugins():
             if loader.can_load(builder_id):
-                _module = loader.get_module_path(builder_id)
+                _module = loader.get_module_for(builder_id)
                 try:
                     importlib.import_module(_module)
                     logger.debug("Module %s loaded.", _module)
@@ -279,4 +262,4 @@ class Builder(object):
 
 
 # Load plugins on module init
-load_plugins()
+PluginManager.load_plugins()

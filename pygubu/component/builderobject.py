@@ -49,7 +49,6 @@ WidgetDescription = namedtuple(
 
 CLASS_MAP = {}
 CUSTOM_PROPERTIES = {}
-BUILDER_LOADERS = []
 
 
 class CB_TYPES:

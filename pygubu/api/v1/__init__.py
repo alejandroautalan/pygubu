@@ -1,9 +1,9 @@
 from ...component.builderobject import BuilderObject
-from ...component.builderloader import BuilderLoader
+from ...component.plugin_engine import BuilderLoaderPlugin
 
 from ._private import (
-    register_loader,
     register_builder,
     register_widget,
+    register_property,
     register_custom_property,
 )
