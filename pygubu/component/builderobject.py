@@ -131,7 +131,9 @@ class BuilderObject(object):
         args = {}
         for rop in self.ro_properties:
             if rop in self.wmeta.properties:
-                pvalue = self._process_property_value(rop, self.wmeta.properties[rop])
+                pvalue = self._process_property_value(
+                    rop, self.wmeta.properties[rop]
+                )
                 args[rop] = pvalue
         return args
 
@@ -139,7 +141,10 @@ class BuilderObject(object):
         if target is None:
             target = self.widget
         for pname, value in self.wmeta.properties.items():
-            if pname not in self.ro_properties and pname not in self.command_properties:
+            if (
+                pname not in self.ro_properties
+                and pname not in self.command_properties
+            ):
                 self._set_property(target, pname, value)
 
     def _process_property_value(self, pname, value):
@@ -177,7 +182,9 @@ class BuilderObject(object):
         if self.layout_required:
             # Check manager
             manager = self.wmeta.manager
-            logger.debug("Applying %s layout to %s", manager, self.wmeta.identifier)
+            logger.debug(
+                "Applying %s layout to %s", manager, self.wmeta.identifier
+            )
             properties = self.wmeta.layout_properties
             if manager == "grid":
                 target.grid(**properties)
@@ -271,7 +278,9 @@ class BuilderObject(object):
             for cmd_pname, cmd in commands.items():
                 cmd_name = cmd["value"]
                 if hasattr(cmd_bag, cmd_name):
-                    callback = self._create_callback(cmd, getattr(cmd_bag, cmd_name))
+                    callback = self._create_callback(
+                        cmd, getattr(cmd_bag, cmd_name)
+                    )
                     self._connect_command(cmd_pname, callback)
                 else:
                     notconnected.append(cmd_name)
@@ -412,7 +421,9 @@ class BuilderObject(object):
             rowbag = defaultdict(list)
             colbag = defaultdict(list)
             for type_, num, pname, value in self.wmeta.gridrc_properties:
-                pvalue = self._code_process_layout_property("grid", pname, value)
+                pvalue = self._code_process_layout_property(
+                    "grid", pname, value
+                )
                 arg = f"{pname}={pvalue}"
                 if type_ == "row":
                     rowbag[num].append(arg)
@@ -446,7 +457,10 @@ class BuilderObject(object):
     def _code_process_properties(self, properties, targetid):
         code_bag = {}
         for pname, value in properties.items():
-            if pname not in self.ro_properties and pname not in self.command_properties:
+            if (
+                pname not in self.ro_properties
+                and pname not in self.command_properties
+            ):
                 self._code_set_property(targetid, pname, value, code_bag)
 
         # properties
@@ -477,19 +491,25 @@ class BuilderObject(object):
         # default processing
         if propvalue is None:
             propvalue = (
-                f"{value}" if value.isnumeric() or isfloat(value) else f"'{value}'"
+                f"{value}"
+                if value.isnumeric() or isfloat(value)
+                else f"'{value}'"
             )
         return propvalue
 
     def _code_set_property(self, targetid, pname, value, code_bag):
-        code_bag[pname] = self._code_process_property_value(targetid, pname, value)
+        code_bag[pname] = self._code_process_property_value(
+            targetid, pname, value
+        )
 
     def _code_set_tkvariable_property(self, pname, value):
         """Create code for tk variable property.
         Can be used from subclases for custom tk variable properties."""
         varvalue = None
         if "text" in self.wmeta.properties and pname == "textvariable":
-            varvalue = self.builder.code_translate_str(self.wmeta.properties["text"])
+            varvalue = self.builder.code_translate_str(
+                self.wmeta.properties["text"]
+            )
         elif "value" in self.wmeta.properties and pname == "variable":
             varvalue = self.code_escape_str(self.wmeta.properties["value"])
         propvalue = self.builder.code_create_variable(value, varvalue)
@@ -591,7 +611,11 @@ class BuilderObject(object):
     def _code_process_layout_property(
         self, manager: str, pname: str, pvalue: str
     ) -> str:
-        fvalue = f"{pvalue}" if pvalue.isnumeric() or isfloat(pvalue) else f"'{pvalue}'"
+        fvalue = (
+            f"{pvalue}"
+            if pvalue.isnumeric() or isfloat(pvalue)
+            else f"'{pvalue}'"
+        )
         return fvalue
 
 

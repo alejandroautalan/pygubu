@@ -163,9 +163,7 @@ class TkScrolledFrame(tk.Frame):
             else:
                 if self._startY < 0:
                     self._startY = 0
-                endScrollY = (self._startY + clipperHeight) / float(
-                    frameHeight
-                )
+                endScrollY = (self._startY + clipperHeight) / float(frameHeight)
             relheight = ""
 
         # Position frame relative to clipper.

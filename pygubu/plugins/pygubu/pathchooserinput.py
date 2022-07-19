@@ -62,9 +62,7 @@ _help = "Image for the button."
 register_custom_property(_builder_id, "image", "imageentry", help=_help)
 
 _help = "Tk variable associated to the path property."
-register_custom_property(
-    _builder_id, "textvariable", "tkvarentry", help=_help
-)
+register_custom_property(_builder_id, "textvariable", "tkvarentry", help=_help)
 
 _help = "Path entry state."
 register_custom_property(

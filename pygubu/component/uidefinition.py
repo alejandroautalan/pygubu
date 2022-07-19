@@ -126,7 +126,9 @@ class UIDefinition(object):
         bindings = []
         bind_elements = element.findall("./bind")
         for e in bind_elements:
-            binding = BindingMeta(e.get("sequence"), e.get("handler"), e.get("add"))
+            binding = BindingMeta(
+                e.get("sequence"), e.get("handler"), e.get("add")
+            )
             bindings.append(binding)
         meta.bindings = bindings
 
@@ -218,7 +220,9 @@ class UIDefinition(object):
                                 key = (ptype, rcid, rcname)
                                 if key not in rclines_loaded:
                                     rcvalue = p.text
-                                    line = GridRCLine(ptype, rcid, rcname, rcvalue)
+                                    line = GridRCLine(
+                                        ptype, rcid, rcname, rcvalue
+                                    )
                                     meta.gridrc_properties.append(line)
                                     rclines_loaded.add(key)
             meta.container_manager = clmanager
@@ -358,7 +362,9 @@ class UIDefinition(object):
                 pnode.text = wmeta.container_properties[prop]
                 clnode.append(pnode)
 
-            lines = sorted(wmeta.gridrc_properties, key=operator.itemgetter(0, 1, 2))
+            lines = sorted(
+                wmeta.gridrc_properties, key=operator.itemgetter(0, 1, 2)
+            )
             for line in lines:
                 p = ET.Element("property")
                 p.set("type", line.rctype)
@@ -428,7 +434,9 @@ class UIDefinition(object):
 
     def save(self, file_or_filename):
         indent(self.root)
-        self.tree.write(file_or_filename, xml_declaration=True, encoding="utf-8")
+        self.tree.write(
+            file_or_filename, xml_declaration=True, encoding="utf-8"
+        )
 
     def get_widget(self, identifier):
         wmeta = None

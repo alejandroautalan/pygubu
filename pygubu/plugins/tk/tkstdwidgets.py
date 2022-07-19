@@ -329,9 +329,7 @@ class TKButton(BuilderObject):
     command_properties = ("command",)
 
 
-register_widget(
-    "tk.Button", TKButton, "Button", (_("Control & Display"), "tk")
-)
+register_widget("tk.Button", TKButton, "Button", (_("Control & Display"), "tk"))
 
 
 class TKCheckbutton(BuilderObject):
