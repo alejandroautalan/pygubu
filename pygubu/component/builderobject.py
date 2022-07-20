@@ -147,6 +147,10 @@ class BuilderObject(object):
             ):
                 self._set_property(target, pname, value)
 
+    def configure_children(self, target=None):
+        "Aditional configurations after adding all children."
+        pass
+
     def _process_property_value(self, pname, value):
         propvalue = value
         if pname in self.tkvar_properties:
@@ -384,6 +388,10 @@ class BuilderObject(object):
             lines.extend(code_bag[pname])
 
         return lines
+
+    def code_configure_children(self, target=None):
+        "Aditional configurations after adding all children."
+        return tuple()
 
     def code_layout(self, targetid=None, parentid=None):
         if targetid is None:

@@ -188,6 +188,7 @@ class Builder(object):
             parent = bclass.factory(self, wmeta)
             self._pre_realize(parent)
             parent.realize(master)
+            parent.configure()
 
             self.objects[wmeta.identifier] = parent
 
@@ -196,7 +197,7 @@ class Builder(object):
             ):
                 child = self._realize(parent, childmeta)
                 parent.add_child(child)
-            parent.configure()
+            parent.configure_children()
             parent.layout()
 
             self._post_realize(parent)

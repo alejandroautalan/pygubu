@@ -369,8 +369,7 @@ class TTKTreeviewBO(TTKWidgetBO):
         self._headings = None
         self._dcolumns = None
 
-    def configure(self):
-        super(TTKTreeviewBO, self).configure()
+    def configure_children(self):
         self.__configure_columns()
 
     def __configure_columns(self):
@@ -404,7 +403,7 @@ class TTKTreeviewBO(TTKWidgetBO):
     #
     # Code generation methods
     #
-    def code_configure(self, targetid=None):
+    def code_configure_children(self, targetid=None):
         if targetid is None:
             targetid = self.code_identifier()
         lines = []
@@ -443,11 +442,6 @@ class TTKTreeviewBO(TTKWidgetBO):
                 kwargs = ",".join(bag)
                 line = "{0}.heading('{1}', {2})".format(targetid, col, kwargs)
                 lines.append(line)
-
-        # Get other treeview properties such as padding, cursor, selectmode, etc.
-        treeview_properties = super().code_configure(targetid)
-        for treeview_property in treeview_properties:
-            lines.append(treeview_property)
 
         return lines
 
