@@ -24,8 +24,9 @@ class PluginManager:
             importlib.import_module(name)
 
         for class_ in PluginRegistry.plugins:
-            instance_ = class_()
-            cls.plugins.append(instance_)
+            plugin = class_()
+            if plugin.do_activate():
+                cls.plugins.append(plugin)
 
     @classmethod
     def builder_plugins(cls):

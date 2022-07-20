@@ -15,6 +15,9 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.builder.widgets.tkscrolledframe": "pygubu.plugins.pygubu.tkscrolledframe",
     }
 
+    def do_activate(self) -> bool:
+        return True
+
     def get_all_modules(self):
         return [m for m in self.builders.values()]
 
