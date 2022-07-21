@@ -10,12 +10,11 @@ from pygubu.api.v1 import (
     register_widget,
     register_custom_property,
 )
-from pygubu.plugins.tk.tkstdwidgets import TKFrame, TKCheckbutton
-from pygubu.plugins.ttk.ttkstdwidgets import TTKButton, TTKFrame, TTKRadiobutton
+from pygubu.plugins.tk.tkstdwidgets import TKFrame
+from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 import awesometkinter as atk
 
-designer_tab_label = _("AwesomeTkinter")
-module_uid = "awesometkinter"
+from .config import designer_tab_label, module_uid
 
 
 class Frame3dBO(TTKFrame):
@@ -126,89 +125,6 @@ register_custom_property(
 )
 
 
-class Button3dBO(TTKButton):
-    OPTIONS_STANDARD = tuple(set(TTKButton.OPTIONS_STANDARD) - set(("style",)))
-    OPTIONS_CUSTOM = ("bg", "fg")
-    properties = OPTIONS_STANDARD + TTKButton.OPTIONS_SPECIFIC + OPTIONS_CUSTOM
-    ro_properties = TTKButton.ro_properties + ("bg", "fg")
-    class_ = atk.Button3d
-
-
-_builder_uid = module_uid + ".button3d"
-register_widget(
-    _builder_uid, Button3dBO, "Button3d", ("ttk", designer_tab_label)
-)
-register_custom_property(
-    _builder_uid, "bg", "colorentry", help=_("button color")
-)
-
-register_custom_property(_builder_uid, "fg", "colorentry", help=_("text color"))
-
-
-class RadiobuttonBO(TTKRadiobutton):
-    OPTIONS_STANDARD = tuple(
-        set(TTKRadiobutton.OPTIONS_STANDARD) - set(("style",))
-    )
-    OPTIONS_CUSTOM = (
-        "bg",
-        "fg",
-        "ind_bg",
-        "ind_mark_color",
-        "ind_outline_color",
-        "font",
-    )
-    properties = (
-        OPTIONS_STANDARD + TTKRadiobutton.OPTIONS_SPECIFIC + OPTIONS_CUSTOM
-    )
-    ro_properties = (
-        TTKRadiobutton.ro_properties + OPTIONS_CUSTOM + ("text", "value")
-    )
-    class_ = atk.Radiobutton
-
-
-_builder_uid = module_uid + ".radiobutton"
-register_widget(
-    _builder_uid, RadiobuttonBO, "Radiobutton", ("ttk", designer_tab_label)
-)
-register_custom_property(
-    _builder_uid,
-    "bg",
-    "colorentry",
-    help=_('background color "should match parent bg"'),
-)
-register_custom_property(_builder_uid, "fg", "colorentry", help=_("text color"))
-register_custom_property(
-    _builder_uid,
-    "ind_bg",
-    "colorentry",
-    help=_('indicator ring background "fill color"'),
-)
-register_custom_property(
-    _builder_uid,
-    "ind_outline_color",
-    "colorentry",
-    help=_("indicator outline / ring color"),
-)
-register_custom_property(
-    _builder_uid, "ind_mark_color", "colorentry", help=_("check mark color")
-)
-register_custom_property(
-    _builder_uid,
-    "font",
-    "fontentry",
-)
-
-
-class CheckbuttonBO(TKCheckbutton):
-    class_ = atk.Checkbutton
-
-
-_builder_uid = module_uid + ".checkbutton"
-register_widget(
-    _builder_uid, CheckbuttonBO, "Checkbutton", ("ttk", designer_tab_label)
-)
-
-
 class RadialProgressbarBO(BuilderObject):
     class_ = atk.RadialProgressbar
 
@@ -239,7 +155,7 @@ class SegmentbarBO(BuilderObject):
     class_ = atk.Segmentbar
 
 
-_builder_uid = module_uid + ".Segmentbar"
+_builder_uid = module_uid + ".segmentbar"
 register_widget(
     _builder_uid, SegmentbarBO, "Segmentbar", ("ttk", designer_tab_label)
 )
