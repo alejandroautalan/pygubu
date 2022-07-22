@@ -131,6 +131,11 @@ class SegmentbarBO(BuilderObject):
     ro_properties = OPTIONS_CUSTOM
     class_ = atk.Segmentbar
 
+    def _process_property_value(self, pname, value):
+        if pname in ("width",):
+            return int(value)
+        return super()._process_property_value(pname, value)
+
 
 _builder_uid = _plugin_uid + ".Segmentbar"
 register_widget(
@@ -149,7 +154,7 @@ register_custom_property(
 register_custom_property(
     _builder_uid,
     "width",
-    "dimensionentry",
+    "naturalnumber",
 )
 register_custom_property(
     _builder_uid,
