@@ -14,7 +14,7 @@ from pygubu.plugins.tk.tkstdwidgets import TKFrame
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 import awesometkinter as atk
 
-from .config import designer_tab_label, module_uid
+from ..awesometkinter import _designer_tab_label, _plugin_uid
 
 
 class Frame3dBO(TTKFrame):
@@ -25,8 +25,10 @@ class Frame3dBO(TTKFrame):
     class_ = atk.Frame3d
 
 
-_builder_uid = module_uid + ".frame3d"
-register_widget(_builder_uid, Frame3dBO, "Frame3d", ("ttk", designer_tab_label))
+_builder_uid = _plugin_uid + ".Frame3d"
+register_widget(
+    _builder_uid, Frame3dBO, "Frame3d", ("ttk", _designer_tab_label)
+)
 
 register_custom_property(
     _builder_uid, "bg", "colorentry", help=_("color of frame")
@@ -60,12 +62,12 @@ class ScrollableFrameBO(TKFrame):
         return super()._code_process_property_value(targetid, pname, value)
 
 
-_builder_uid = module_uid + ".scrollable_frame"
+_builder_uid = _plugin_uid + ".ScrollableFrame"
 register_widget(
     _builder_uid,
     ScrollableFrameBO,
     "ScrollableFrame",
-    ("ttk", designer_tab_label),
+    ("ttk", _designer_tab_label),
 )
 
 register_custom_property(
@@ -129,12 +131,12 @@ class RadialProgressbarBO(BuilderObject):
     class_ = atk.RadialProgressbar
 
 
-_builder_uid = module_uid + ".radialprogressbar"
+_builder_uid = _plugin_uid + ".RadialProgressbar"
 register_widget(
     _builder_uid,
     RadialProgressbarBO,
     "RadialProgressbar",
-    ("ttk", designer_tab_label),
+    ("ttk", _designer_tab_label),
 )
 
 
@@ -142,12 +144,12 @@ class RadialProgressbar3dBO(BuilderObject):
     class_ = atk.RadialProgressbar3d
 
 
-_builder_uid = module_uid + ".radialprogressbar3d"
+_builder_uid = _plugin_uid + ".RadialProgressbar3d"
 register_widget(
     _builder_uid,
     RadialProgressbar3dBO,
     "RadialProgressbar3d",
-    ("ttk", designer_tab_label),
+    ("ttk", _designer_tab_label),
 )
 
 
@@ -155,7 +157,7 @@ class SegmentbarBO(BuilderObject):
     class_ = atk.Segmentbar
 
 
-_builder_uid = module_uid + ".segmentbar"
+_builder_uid = _plugin_uid + ".Segmentbar"
 register_widget(
-    _builder_uid, SegmentbarBO, "Segmentbar", ("ttk", designer_tab_label)
+    _builder_uid, SegmentbarBO, "Segmentbar", ("ttk", _designer_tab_label)
 )

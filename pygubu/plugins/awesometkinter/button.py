@@ -3,7 +3,7 @@ from pygubu.i18n import _
 from pygubu.api.v1 import register_widget, register_custom_property
 from pygubu.plugins.tk.tkstdwidgets import TKCheckbutton
 from pygubu.plugins.ttk.ttkstdwidgets import TTKButton, TTKRadiobutton
-from .config import designer_tab_label, module_uid
+from ..awesometkinter import _designer_tab_label, _plugin_uid
 
 
 class Button3dBO(TTKButton):
@@ -14,9 +14,9 @@ class Button3dBO(TTKButton):
     class_ = atk.Button3d
 
 
-_builder_uid = module_uid + ".button3d"
+_builder_uid = _plugin_uid + ".Button3d"
 register_widget(
-    _builder_uid, Button3dBO, "Button3d", ("ttk", designer_tab_label)
+    _builder_uid, Button3dBO, "Button3d", ("ttk", _designer_tab_label)
 )
 register_custom_property(
     _builder_uid, "bg", "colorentry", help=_("button color")
@@ -46,9 +46,9 @@ class RadiobuttonBO(TTKRadiobutton):
     class_ = atk.Radiobutton
 
 
-_builder_uid = module_uid + ".radiobutton"
+_builder_uid = _plugin_uid + ".Radiobutton"
 register_widget(
-    _builder_uid, RadiobuttonBO, "Radiobutton", ("ttk", designer_tab_label)
+    _builder_uid, RadiobuttonBO, "Radiobutton", ("ttk", _designer_tab_label)
 )
 register_custom_property(
     _builder_uid,
@@ -80,10 +80,39 @@ register_custom_property(
 
 
 class CheckbuttonBO(TKCheckbutton):
+    OPTIONS_CUSTOM = (
+        "box_color",
+        "check_mark_color",
+        "text_color",
+    )
+    properties = (
+        TKCheckbutton.OPTIONS_STANDARD
+        + TKCheckbutton.OPTIONS_SPECIFIC
+        + OPTIONS_CUSTOM
+    )
+    ro_properties = TKCheckbutton.ro_properties + OPTIONS_CUSTOM
     class_ = atk.Checkbutton
 
 
-_builder_uid = module_uid + ".checkbutton"
+_builder_uid = _plugin_uid + ".Checkbutton"
 register_widget(
-    _builder_uid, CheckbuttonBO, "Checkbutton", ("ttk", designer_tab_label)
+    _builder_uid, CheckbuttonBO, "Checkbutton", ("ttk", _designer_tab_label)
+)
+
+register_custom_property(
+    _builder_uid,
+    "box_color",
+    "colorentry",
+)
+
+register_custom_property(
+    _builder_uid,
+    "check_mark_color",
+    "colorentry",
+)
+
+register_custom_property(
+    _builder_uid,
+    "text_color",
+    "colorentry",
 )
