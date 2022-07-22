@@ -11,9 +11,6 @@ class AwesometkinterLoader(BuilderLoaderPlugin):
         "pygubu.plugins.awesometkinter.frame": (
             f"{_plugin_uid}.Frame3d",
             f"{_plugin_uid}.ScrollableFrame",
-            f"{_plugin_uid}.RadialProgressbar",
-            f"{_plugin_uid}.RadialProgressbar3d",
-            f"{_plugin_uid}.Segmentbar",
         ),
         "pygubu.plugins.awesometkinter.button": (
             f"{_plugin_uid}.Button3d",
@@ -23,6 +20,11 @@ class AwesometkinterLoader(BuilderLoaderPlugin):
         "pygubu.plugins.awesometkinter.label": (
             f"{_plugin_uid}.AutoWrappingLabel",
             f"{_plugin_uid}.AutofitLabel",
+        ),
+        "pygubu.plugins.awesometkinter.progressbar": (
+            f"{_plugin_uid}.RadialProgressbar",
+            f"{_plugin_uid}.RadialProgressbar3d",
+            f"{_plugin_uid}.Segmentbar",
         ),
     }
 

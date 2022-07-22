@@ -5,11 +5,7 @@ Documentation, License etc.
 """
 import tkinter as tk
 from pygubu.i18n import _
-from pygubu.api.v1 import (
-    BuilderObject,
-    register_widget,
-    register_custom_property,
-)
+from pygubu.api.v1 import register_widget, register_custom_property
 from pygubu.plugins.tk.tkstdwidgets import TKFrame
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 import awesometkinter as atk
@@ -124,40 +120,4 @@ register_custom_property(
     "hbar_width",
     "dimensionentry",
     help=_("vertical scrollbar width"),
-)
-
-
-class RadialProgressbarBO(BuilderObject):
-    class_ = atk.RadialProgressbar
-
-
-_builder_uid = _plugin_uid + ".RadialProgressbar"
-register_widget(
-    _builder_uid,
-    RadialProgressbarBO,
-    "RadialProgressbar",
-    ("ttk", _designer_tab_label),
-)
-
-
-class RadialProgressbar3dBO(BuilderObject):
-    class_ = atk.RadialProgressbar3d
-
-
-_builder_uid = _plugin_uid + ".RadialProgressbar3d"
-register_widget(
-    _builder_uid,
-    RadialProgressbar3dBO,
-    "RadialProgressbar3d",
-    ("ttk", _designer_tab_label),
-)
-
-
-class SegmentbarBO(BuilderObject):
-    class_ = atk.Segmentbar
-
-
-_builder_uid = _plugin_uid + ".Segmentbar"
-register_widget(
-    _builder_uid, SegmentbarBO, "Segmentbar", ("ttk", _designer_tab_label)
 )
