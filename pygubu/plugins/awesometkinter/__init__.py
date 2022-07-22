@@ -26,6 +26,10 @@ class AwesometkinterLoader(BuilderLoaderPlugin):
             f"{_plugin_uid}.RadialProgressbar3d",
             f"{_plugin_uid}.Segmentbar",
         ),
+        "pygubu.plugins.awesometkinter.scrollbar": (
+            f"{_plugin_uid}.SimpleScrollbar",
+        ),
+        "pygubu.plugins.awesometkinter.text": (f"{_plugin_uid}.ScrolledText",),
     }
 
     def do_activate(self) -> bool:
