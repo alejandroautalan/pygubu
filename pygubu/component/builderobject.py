@@ -466,7 +466,12 @@ class BuilderObject(object):
         kwproperties = []
         complex_properties = []
         for pname, value in code_bag.items():
-            if isinstance(value, str) or isinstance(value, str):
+            if (
+                isinstance(value, str)
+                or isinstance(value, bool)
+                or isinstance(value, int)
+                or isinstance(value, float)
+            ):
                 kwproperties.append(pname)
             else:
                 complex_properties.append(pname)
