@@ -24,13 +24,6 @@ logger = logging.getLogger(__name__)
 #
 
 
-def grouper(iterable, n, fillvalue=None):
-    "Collect data into fixed-length chunks or blocks"
-    # grouper('ABCDEFG', 3, 'x') --> ABC DEF Gxx"
-    args = [iter(iterable)] * n
-    return itertools.zip_longest(*args, fillvalue=fillvalue)
-
-
 def isfloat(num: str) -> bool:
     try:
         float(num)
@@ -374,16 +367,13 @@ class BuilderObject(object):
             complex_properties,
         ) = self._code_process_properties(self.wmeta.properties, targetid)
         lines = []
-        prop_stmt = "{0}.configure({1})"
-        arg_stmt = "{0}={1}"
-        for g in grouper(sorted(kwproperties), 4):
-            args_bag = []
-            for p in g:
-                if p is not None:
-                    args_bag.append(arg_stmt.format(p, code_bag[p]))
-            args = ", ".join(args_bag)
-            line = prop_stmt.format(targetid, args)
-            lines.append(line)
+        args_bag = []
+        for pname in sorted(kwproperties):
+            arg_stmt = f"{pname}={code_bag[pname]}"
+            args_bag.append(arg_stmt)
+        args = ", ".join(args_bag)
+        line = f"{targetid}.configure({args})"
+        lines.append(line)
         for pname in complex_properties:
             lines.extend(code_bag[pname])
 
