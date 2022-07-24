@@ -26,6 +26,11 @@ class TtkWidgetsLoader(BuilderLoaderPlugin):
             f"{_plugin_uid}.ScrolledFrame",
             f"{_plugin_uid}.ToggledFrame",
         ),
+        "pygubu.plugins.ttkwidgets.color": (
+            f"{_plugin_uid}.AlphaBar",
+            f"{_plugin_uid}.ColorSquare",
+            f"{_plugin_uid}.GradientBar",
+        ),
     }
 
     def do_activate(self) -> bool:
