@@ -249,7 +249,7 @@ class ScrolledFrame(ttk.Frame):
             del args[key]
             self._configure_mousewheel()
         # super(ScrolledFrameBase, self).configure(args)
-        self._framecls.configure(self, args)
+        self._framecls.configure(self, **args)
 
     config = configure
 
