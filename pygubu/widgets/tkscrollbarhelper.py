@@ -85,7 +85,7 @@ class ScrollbarHelperBase(object):
             self.usemousewheel = tk.getboolean(args[key])
             del args[key]
             self._configure_mousewheel()
-        super(ScrollbarHelperBase, self).configure(args)
+        super().configure(**args)
 
     config = configure
 
