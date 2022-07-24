@@ -27,7 +27,7 @@ class CalendarBO(TTKFrame):
     def _process_property_value(self, pname, value):
         if pname in ("firstweekday", "year", "month"):
             return int(value)
-        return super(CalendarBO, self)._process_property_value(pname, value)
+        return super()._process_property_value(pname, value)
 
 
 _builder_uid = f"{_plugin_uid}.Calendar"
