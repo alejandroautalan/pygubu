@@ -22,6 +22,16 @@ class AutocompleteBaseBO(BuilderObject):
             )._process_property_value(pname, value)
         return final_value
 
+    def _code_process_property_value(self, targetid, pname, value):
+        if pname == "completevalues":
+            cvalues = None
+            try:
+                cvalues = f"{value.split()}"
+            except:
+                pass
+            return cvalues
+        return super()._code_process_property_value(targetid, pname, value)
+
 
 class CallbakInitArgMixin:
     """Some widgtes of the ttkwidget set, have a callback argument in the

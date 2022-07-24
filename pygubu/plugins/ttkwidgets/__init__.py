@@ -31,6 +31,18 @@ class TtkWidgetsLoader(BuilderLoaderPlugin):
             f"{_plugin_uid}.ColorSquare",
             f"{_plugin_uid}.GradientBar",
         ),
+        "pygubu.plugins.ttkwidgets.autocomplete": (
+            f"{_plugin_uid}.AutocompleteEntry",
+            f"{_plugin_uid}.AutocompleteEntryListbox",
+            f"{_plugin_uid}.AutocompleteCombobox",
+        ),
+        "pygubu.plugins.ttkwidgets.font": (
+            f"{_plugin_uid}.FontFamilyDropdown",
+            f"{_plugin_uid}.FontFamilyListbox",
+            f"{_plugin_uid}.FontSelectFrame",
+            f"{_plugin_uid}.FontPropertiesFrame",
+            f"{_plugin_uid}.FontSizeDropdown",
+        ),
     }
 
     def do_activate(self) -> bool:
