@@ -626,6 +626,11 @@ class BuilderObject(object):
         )
         return fvalue
 
+    def code_imports(self):
+        # will return an iterable of (module, classname/function) to import
+        # or None
+        return None
+
 
 #
 # Base clases for some widgets
