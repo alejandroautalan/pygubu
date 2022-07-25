@@ -189,7 +189,7 @@ class BuilderObject(object):
             elif manager == "place":
                 target.place(**self.wmeta.layout_properties)
             else:
-                msg = "Invalid layout manager: {0}".format(manager)
+                msg = f"Invalid layout manager: {manager}"
                 raise Exception(msg)
 
         # container layout
@@ -335,14 +335,11 @@ class BuilderObject(object):
         init_args = self._code_get_init_args(self.code_identifier())
         bag = []
         for pname, value in init_args.items():
-            s = "{0}={1}".format(pname, value)
-            bag.append(s)
+            bag.append(f"{pname}={value}")
         kwargs = ""
         if bag:
-            kwargs = ", {0}".format(", ".join(bag))
-        s = "{0} = {1}({2}{3})".format(
-            self.code_identifier(), self._code_class_name(), master, kwargs
-        )
+            kwargs = f""", {", ".join(bag)}"""
+        s = f"{self.code_identifier()} = {self._code_class_name()}({master}{kwargs})"
         lines.append(s)
         return lines
 
@@ -370,9 +367,10 @@ class BuilderObject(object):
         for pname in sorted(kwproperties):
             arg_stmt = f"{pname}={code_bag[pname]}"
             args_bag.append(arg_stmt)
-        args = ", ".join(args_bag)
-        line = f"{targetid}.configure({args})"
-        lines.append(line)
+        if args_bag:
+            args = ", ".join(args_bag)
+            line = f"{targetid}.configure({args})"
+            lines.append(line)
         for pname in complex_properties:
             lines.extend(code_bag[pname])
 
@@ -406,13 +404,11 @@ class BuilderObject(object):
             container_prop = self.wmeta.container_properties
             pvalue = str(container_prop.get("propagate", "")).lower()
             if "propagate" in container_prop and pvalue == "false":
-                line = "{0}.{1}_propagate({2})"
-                line = line.format(targetid, manager, 0)
+                line = f"{targetid}.{manager}_propagate(0)"
                 lines.append(line)
             if manager == "grid" and "anchor" in container_prop:
                 value = container_prop.get("anchor")
-                line = "{0}.{1}_anchor('{2}')"
-                line = line.format(targetid, manager, value)
+                line = f"{targetid}.{manager}_anchor('{value}')"
                 lines.append(line)
 
             rowbag = defaultdict(list)
@@ -446,7 +442,7 @@ class BuilderObject(object):
             if self.class_ is not None:
                 prefix = self.class_.__module__
                 name = self.class_.__name__
-                cname = "{0}.{1}".format(prefix, name)
+                cname = f"{prefix}.{name}"
             else:
                 cname = "ClassNameNotDefined"
         return cname
@@ -477,7 +473,7 @@ class BuilderObject(object):
 
         return (code_bag, kwproperties, complex_properties)
 
-    def _code_process_property_value(self, targetid, pname, value):
+    def _code_process_property_value(self, targetid, pname, value: str):
         propvalue = None
         if pname in self.tkvar_properties:
             propvalue = self._code_set_tkvariable_property(pname, value)
@@ -582,18 +578,17 @@ class BuilderObject(object):
         if args is not None:
             if cmdtype == CB_TYPES.WITH_WID:
                 wid = self.wmeta.identifier
-                fdef = "_wcmd = lambda wid='{0}': {1}(wid)".format(wid, cbname)
+                fdef = f"_wcmd = lambda wid='{wid}': {cbname}(wid)"
                 cbname = "_wcmd"
                 lines.append(fdef)
             if cmdtype == CB_TYPES.ENTRY_VALIDATE:
                 original_cb = cbname
-                tk_args = ["'%{0}'".format(a) for a in args]
+                tk_args = [f"'%{a}'" for a in args]
                 tk_args = ",".join(tk_args)
-                fdef = "_validatecmd = ({0}.register({1}), {2})"
-                fdef = fdef.format(target, original_cb, tk_args)
+                fdef = f"_validatecmd = ({target}.register({original_cb}), {tk_args})"
                 cbname = "_validatecmd"
                 lines.append(fdef)
-        line = "{0}.configure({1}={2})".format(target, cmd_pname, cbname)
+        line = f"{target}.configure({cmd_pname}={cbname})"
         lines.append(line)
         return lines
 
@@ -605,8 +600,9 @@ class BuilderObject(object):
                 target, bind.handler, CB_TYPES.BIND_EVENT
             )
             add_arg = "+" if bind.add else ""
-            line = "{0}.bind('{1}', {2}, add='{3}')"
-            line = line.format(target, bind.sequence, cb_name, add_arg)
+            line = (
+                f"{target}.bind('{bind.sequence}', {cb_name}, add='{add_arg}')"
+            )
             lines.append(line)
         return lines
 
@@ -725,12 +721,12 @@ class PanedWindowPaneBO(BuilderObject):
         config = []
         masterid = self.code_child_master()
         for pname, val in self.wmeta.properties.items():
-            line = "{}='{}'".format(pname, val)
+            line = f"{pname}='{val}'"
             config.append(line)
         kw = ""
         lines = []
         if config:
-            kw = ", {0}".format(", ".join(config))
-        line = "{0}.add({1}{2})".format(masterid, childid, kw)
+            kw = f""", {", ".join(config)}"""
+        line = f"{masterid}.add({childid}{kw})"
         lines.append(line)
         return lines
