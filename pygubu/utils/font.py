@@ -29,7 +29,7 @@ def tkfontstr_to_dict(fontstr):
     return font_dict
 
 
-def tkfontstr_to_tuple(fontstr):
+def tkfontstr_to_tuple(fontstr, default_size=12):
     """Convert string with a tk font format like '{Helvetica} 12 {bold}'
     to a python tuple ('Helvetica', 12, 'bold')."""
 
@@ -37,8 +37,13 @@ def tkfontstr_to_tuple(fontstr):
     font_desc = [
         fdict["family"],
     ]
-    for k in ("size", "modifiers"):
-        if fdict[k] is not None:
-            font_desc.append(fdict[k])
+    # Add default size
+    size = fdict["size"]
+    size = size if size is not None else default_size
+    font_desc.append(size)
+
+    key = "modifiers"
+    if fdict[key] is not None:
+        font_desc.append(fdict[key])
 
     return tuple(font_desc)
