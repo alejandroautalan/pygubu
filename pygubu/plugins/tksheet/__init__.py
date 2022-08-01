@@ -7,7 +7,7 @@ _designer_tab_label = _("tksheet")
 _plugin_uid = "tksheet"
 
 
-class StandardTKWidgetsLoader(BuilderLoaderPlugin):
+class TksheetLoader(BuilderLoaderPlugin):
     _module = "pygubu.plugins.tksheet.sheet"
 
     def do_activate(self) -> bool:
