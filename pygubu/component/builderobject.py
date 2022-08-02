@@ -163,12 +163,13 @@ class BuilderObject(object):
             msg = "Attempt to set an unknown property '%s' on class '%s'"
             logger.warning(msg, pname, repr(self.class_))
         else:
-            propvalue = self._process_property_value(pname, value)
             try:
+                logger.debug("processing property %s value", pname)
+                propvalue = self._process_property_value(pname, value)
                 logger.debug("setting property %s = %s", pname, propvalue)
                 target_widget[pname] = propvalue
-            except tk.TclError as e:
-                msg = "Failed to set property '%s' on class '%s'. TclError: %s"
+            except Exception as e:
+                msg = "Failed to set property '%s' on class '%s'. Error: %s"
                 logger.error(msg, pname, repr(self.class_), str(e))
                 # logger.exception(e)
 
