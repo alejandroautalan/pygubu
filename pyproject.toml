@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygubu"
+description = "A simple GUI builder for the python tkinter module"
+readme = "README.md"
+requires-python = ">=3.6"
+license = { text = "MIT" }
+keywords = ["gui", "tkinter", "designer"]
+authors = [
+  { name = "Alejandro Autalan", email = "alejandroautalan@gmail.com" },
+]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3.6",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Intended Audience :: Developers",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Utilities",
+  "Topic :: Software Development :: User Interfaces",
+]
+dependencies = []
+dynamic = ["version"]
+
+[project.urls]
+Documentation = "https://github.com/alejandroautalan/pygubu#readme"
+Issues = "https://github.com/alejandroautalan/pygubu/issues"
+Source = "https://github.com/alejandroautalan/pygubu"
+
+[project.optional-dependencies]
+ttkwidgets = ['ttkwidgets']
+tksheet = ['tksheet']
+tkinterweb = ['tkinterweb']
+tkintertable = ['tkintertable']
+tkcalendar = ['tkcalendar']
+awesometkinter = ['AwesomeTkinter']
+all = ['AwesomeTkinter', 'tkintertable', 'tksheet', 'ttkwidgets', 'tkinterweb', 'tkcalendar']
+
+[tool.setuptools.dynamic]
+version = {attr = "pygubu.__version__"}
