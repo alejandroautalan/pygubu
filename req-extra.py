@@ -28,7 +28,7 @@ def get_extra_requires(add_all=True):
                 if ":" in k:
                     k, v = k.split(":")
                     tags.update(vv.strip() for vv in v.split(","))
-                tags.add(re.split("[<=>]", k)[0])
+                # tags.add(re.split("[<=>]", k)[0])
                 for t in tags:
                     extra_deps[t].add(k)
         # add tag `all` at the end
@@ -39,4 +39,6 @@ def get_extra_requires(add_all=True):
 
 
 if __name__ == "__main__":
-    pp(dict(get_extra_requires()))
+    requires = get_extra_requires()
+    for key, dep in requires.items():
+        print(f"{key} = {list(dep)}")
