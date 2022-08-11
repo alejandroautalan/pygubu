@@ -15,6 +15,7 @@ register_widget(
     AutoWrappingLabelBO,
     "AutoWrappingLabel",
     ("ttk", _designer_tab_label),
+    group=1,
 )
 
 
@@ -33,6 +34,7 @@ register_widget(
     AutofitLabelBO,
     "AutofitLabel",
     ("ttk", _designer_tab_label),
+    group=1,
 )
 
 register_custom_property(

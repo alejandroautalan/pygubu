@@ -49,7 +49,11 @@ class ItemsCanvasBO(TTKFrame):
 
 _builder_uid = f"{_plugin_uid}.ItemsCanvas"
 register_widget(
-    _builder_uid, ItemsCanvasBO, "ItemsCanvas", ("ttk", _designer_tab_label)
+    _builder_uid,
+    ItemsCanvasBO,
+    "ItemsCanvas",
+    ("ttk", _designer_tab_label),
+    group=6,
 )
 
 register_custom_property(

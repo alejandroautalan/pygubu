@@ -49,6 +49,7 @@ register_widget(
     ScrolledTextBO,
     "ScrolledText",
     ("ttk", _designer_tab_label),
+    group=1,
 )
 register_custom_property(
     _builder_uid, "bg", "colorentry", help=_("background color")

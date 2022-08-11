@@ -32,7 +32,7 @@ class CalendarBO(TTKFrame):
 
 _builder_uid = f"{_plugin_uid}.Calendar"
 register_widget(
-    _builder_uid, CalendarBO, "Calendar", ("ttk", _designer_tab_label)
+    _builder_uid, CalendarBO, "Calendar", ("ttk", _designer_tab_label), group=2
 )
 
 register_custom_property(

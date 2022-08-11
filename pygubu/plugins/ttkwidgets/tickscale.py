@@ -38,7 +38,11 @@ class TickScaleBO(TTKScale):
 _builder_uid = f"{_plugin_uid}.TickScale"
 
 register_widget(
-    _builder_uid, TickScaleBO, "TickScale", ("ttk", _designer_tab_label)
+    _builder_uid,
+    TickScaleBO,
+    "TickScale",
+    ("ttk", _designer_tab_label),
+    group=3,
 )
 
 register_custom_property(_builder_uid, "digits", "naturalnumber")

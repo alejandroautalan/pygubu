@@ -47,6 +47,7 @@ register_widget(
     ScrolledListboxBO,
     "ScrolledListbox",
     ("ttk", _designer_tab_label),
+    group=3,
 )
 
 register_custom_property(

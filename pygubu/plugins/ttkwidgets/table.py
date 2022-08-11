@@ -28,7 +28,9 @@ class TableBO(TTKTreeviewBO):
 
 
 _builder_uid = _table_uid = f"{_plugin_uid}.Table"
-register_widget(_builder_uid, TableBO, "Table", ("ttk", _designer_tab_label))
+register_widget(
+    _builder_uid, TableBO, "Table", ("ttk", _designer_tab_label), group=6
+)
 
 register_custom_property(
     _builder_uid,
@@ -88,7 +90,11 @@ _builder_uid = f"{_plugin_uid}.Table.Column"
 TableBO.add_allowed_child(_builder_uid)
 
 register_widget(
-    _builder_uid, TableColumnBO, "Table.Column", ("ttk", _designer_tab_label)
+    _builder_uid,
+    TableColumnBO,
+    "Table.Column",
+    ("ttk", _designer_tab_label),
+    group=6,
 )
 
 register_custom_property(

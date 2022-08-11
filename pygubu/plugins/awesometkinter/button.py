@@ -16,7 +16,7 @@ class Button3dBO(TTKButton):
 
 _builder_uid = _plugin_uid + ".Button3d"
 register_widget(
-    _builder_uid, Button3dBO, "Button3d", ("ttk", _designer_tab_label)
+    _builder_uid, Button3dBO, "Button3d", ("ttk", _designer_tab_label), group=2
 )
 register_custom_property(
     _builder_uid, "bg", "colorentry", help=_("button color")
@@ -48,7 +48,11 @@ class RadiobuttonBO(TTKRadiobutton):
 
 _builder_uid = _plugin_uid + ".Radiobutton"
 register_widget(
-    _builder_uid, RadiobuttonBO, "Radiobutton", ("ttk", _designer_tab_label)
+    _builder_uid,
+    RadiobuttonBO,
+    "Radiobutton",
+    ("ttk", _designer_tab_label),
+    group=2,
 )
 register_custom_property(
     _builder_uid,
@@ -96,7 +100,11 @@ class CheckbuttonBO(TKCheckbutton):
 
 _builder_uid = _plugin_uid + ".Checkbutton"
 register_widget(
-    _builder_uid, CheckbuttonBO, "Checkbutton", ("ttk", _designer_tab_label)
+    _builder_uid,
+    CheckbuttonBO,
+    "Checkbutton",
+    ("ttk", _designer_tab_label),
+    group=2,
 )
 
 register_custom_property(

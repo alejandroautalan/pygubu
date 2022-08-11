@@ -41,7 +41,7 @@ class AlphaBarBO(TKCanvas):
 _builder_uid = f"{_plugin_uid}.AlphaBar"
 
 register_widget(
-    _builder_uid, AlphaBarBO, "AlphaBar", ("ttk", _designer_tab_label)
+    _builder_uid, AlphaBarBO, "AlphaBar", ("ttk", _designer_tab_label), group=5
 )
 
 register_custom_property(
@@ -107,7 +107,11 @@ class ColorSquareBO(TKCanvas):
 _builder_uid = f"{_plugin_uid}.ColorSquare"
 
 register_widget(
-    _builder_uid, ColorSquareBO, "ColorSquare", ("ttk", _designer_tab_label)
+    _builder_uid,
+    ColorSquareBO,
+    "ColorSquare",
+    ("ttk", _designer_tab_label),
+    group=5,
 )
 
 # Custom properties
@@ -150,7 +154,11 @@ class GradientBarBO(TKCanvas):
 _builder_uid = f"{_plugin_uid}.GradientBar"
 
 register_widget(
-    _builder_uid, GradientBarBO, "GradientBar", ("ttk", _designer_tab_label)
+    _builder_uid,
+    GradientBarBO,
+    "GradientBar",
+    ("ttk", _designer_tab_label),
+    group=5,
 )
 
 register_custom_property(

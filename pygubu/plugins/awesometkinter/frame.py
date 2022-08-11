@@ -23,7 +23,7 @@ class Frame3dBO(TTKFrame):
 
 _builder_uid = _plugin_uid + ".Frame3d"
 register_widget(
-    _builder_uid, Frame3dBO, "Frame3d", ("ttk", _designer_tab_label)
+    _builder_uid, Frame3dBO, "Frame3d", ("ttk", _designer_tab_label), group=0
 )
 
 register_custom_property(
@@ -64,6 +64,7 @@ register_widget(
     ScrollableFrameBO,
     "ScrollableFrame",
     ("ttk", _designer_tab_label),
+    group=0,
 )
 
 register_custom_property(

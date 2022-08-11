@@ -45,7 +45,11 @@ class ScrolledFrameBO(TTKFrame):
 
 _builder_uid = f"{_plugin_uid}.ScrolledFrame"
 register_widget(
-    _builder_uid, ScrolledFrameBO, "ScrolledFrame", ("ttk", _designer_tab_label)
+    _builder_uid,
+    ScrolledFrameBO,
+    "ScrolledFrame",
+    ("ttk", _designer_tab_label),
+    group=0,
 )
 
 register_custom_property(
@@ -105,7 +109,11 @@ class ToggledFrameBO(TTKFrame):
 
 _builder_uid = f"{_plugin_uid}.ToggledFrame"
 register_widget(
-    _builder_uid, ToggledFrameBO, "ToggledFrame", ("ttk", _designer_tab_label)
+    _builder_uid,
+    ToggledFrameBO,
+    "ToggledFrame",
+    ("ttk", _designer_tab_label),
+    group=0,
 )
 
 register_custom_property(

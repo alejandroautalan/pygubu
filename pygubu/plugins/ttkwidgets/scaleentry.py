@@ -52,7 +52,11 @@ class ScaleEntryBO(TTKFrame):
 
 _builder_uid = f"{_plugin_uid}.ScaleEntry"
 register_widget(
-    _builder_uid, ScaleEntryBO, "ScaleEntry", ("ttk", _designer_tab_label)
+    _builder_uid,
+    ScaleEntryBO,
+    "ScaleEntry",
+    ("ttk", _designer_tab_label),
+    group=3,
 )
 
 register_custom_property(

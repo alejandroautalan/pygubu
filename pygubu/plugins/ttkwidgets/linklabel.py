@@ -16,7 +16,11 @@ class LinkLabelBO(TTKLabel):
 
 _builder_uid = f"{_plugin_uid}.LinkLabel"
 register_widget(
-    _builder_uid, LinkLabelBO, "LinkLabel", ("ttk", _designer_tab_label)
+    _builder_uid,
+    LinkLabelBO,
+    "LinkLabel",
+    ("ttk", _designer_tab_label),
+    group=1,
 )
 
 register_custom_property(

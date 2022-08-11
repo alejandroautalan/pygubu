@@ -76,4 +76,5 @@ register_widget(
     TKScrolledFrameBO,
     "ScrolledFrame",
     (_("Pygubu Widgets"), "tk"),
+    group=0,
 )

@@ -47,7 +47,9 @@ class DialogBO(TKToplevel):
 
 
 _builder_id = "pygubu.builder.widgets.dialog"
-register_widget(_builder_id, DialogBO, "Dialog", (_("Pygubu Widgets"), "ttk"))
+register_widget(
+    _builder_id, DialogBO, "Dialog", (_("Pygubu Widgets"), "ttk"), group=0
+)
 
 _help = "Determines if dialog is run in normal or modal mode."
 register_custom_property(

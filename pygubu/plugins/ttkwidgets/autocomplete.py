@@ -34,6 +34,7 @@ register_widget(
     AutocompleteEntryBO,
     "AutocompleteEntry",
     ("ttk", _designer_tab_label),
+    group=4,
 )
 
 register_custom_property(
@@ -94,6 +95,7 @@ register_widget(
     AutocompleteEntryListboxBO,
     "AutocompleteEntryListbox",
     ("ttk", _designer_tab_label),
+    group=4,
 )
 
 register_custom_property(
@@ -159,6 +161,7 @@ register_widget(
     AutocompleteComboboxBO,
     "AutocompleteCombobox",
     ("ttk", _designer_tab_label),
+    group=4,
 )
 
 register_custom_property(
