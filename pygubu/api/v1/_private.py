@@ -8,17 +8,21 @@ from ...component.builderobject import (
 logger = logging.getLogger(__name__)
 
 
-def register_builder(classname, builder, label=None, tags=None):
+def register_builder(classname, builder, label=None, tags=None, group=None):
     if label is None:
         label = classname
     if tags is None:
         tags = tuple()
+    if group is None:
+        group = 9
 
-    CLASS_MAP[classname] = WidgetDescription(classname, builder, label, tags)
+    CLASS_MAP[classname] = WidgetDescription(
+        classname, builder, label, tags, group
+    )
 
 
-def register_widget(classname, builder, label=None, tags=None):
-    return register_builder(classname, builder, label, tags)
+def register_widget(classname, builder, label=None, tags=None, group=None):
+    return register_builder(classname, builder, label, tags, group)
 
 
 def register_property(name, description):
