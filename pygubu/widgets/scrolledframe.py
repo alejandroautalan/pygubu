@@ -2,8 +2,10 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
-from pygubu import ApplicationLevelBindManager as BindManager
-from pygubu.binding import remove_binding
+from pygubu.binding import (
+    ApplicationLevelBindManager as BindManager,
+    remove_binding,
+)
 
 
 class ScrolledFrame(ttk.Frame):
@@ -247,7 +249,7 @@ class ScrolledFrame(ttk.Frame):
             del args[key]
             self._configure_mousewheel()
         # super(ScrolledFrameBase, self).configure(args)
-        self._framecls.configure(self, args)
+        self._framecls.configure(self, **args)
 
     config = configure
 

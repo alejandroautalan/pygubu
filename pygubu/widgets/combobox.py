@@ -5,7 +5,7 @@ import tkinter.ttk as ttk
 from collections import OrderedDict
 
 
-class Combobox(ttk.Combobox, object):
+class Combobox(ttk.Combobox):
     """
     A ttk.Combobox that accepts a list of (key, label) pair of options.
     """
@@ -39,7 +39,7 @@ class Combobox(ttk.Combobox, object):
         else:
             kw[key] = "readonly"
 
-        ttk.Combobox.__init__(self, master, **kw)
+        super().__init__(master, **kw)
 
         self.__config_keyvar(options["keyvariable"])
         self.configure(textvariable=options["textvariable"])
@@ -110,7 +110,7 @@ class Combobox(ttk.Combobox, object):
         if key in args:
             if args[key] not in ("readonly", "disabled"):
                 args[key] = "readonly"
-        return ttk.Combobox.configure(self, args)
+        return super().configure(**args)
 
     config = configure
 
@@ -124,7 +124,7 @@ class Combobox(ttk.Combobox, object):
         option = "textvariable"
         if key == option:
             return self.__options[key]
-        return ttk.Combobox.cget(self, key)
+        return super().cget(key)
 
     def __obj2choices(self, values):
         """
@@ -173,7 +173,7 @@ class Combobox(ttk.Combobox, object):
             self._choices[key] = value
 
     def current(self, key=None):
-        idx = ttk.Combobox.current(self, None)
+        idx = super().current(None)
         index = -1
         ckey = None
         # find the key of the current selection,
@@ -188,11 +188,11 @@ class Combobox(ttk.Combobox, object):
         if key is None:
             # return current key
             return ckey
-        return ttk.Combobox.current(self, index)
+        return super().current(index)
 
     def set(self, key):
         value = self._choices[key]
-        return ttk.Combobox.set(self, value)
+        return super().set(value)
 
     def get(self):
         return self.current()

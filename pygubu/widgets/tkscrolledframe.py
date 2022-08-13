@@ -1,8 +1,10 @@
 # encoding: utf-8
 import tkinter as tk
 
-from pygubu import ApplicationLevelBindManager as BindManager
-from pygubu.binding import remove_binding
+from pygubu.binding import (
+    ApplicationLevelBindManager as BindManager,
+    remove_binding,
+)
 
 
 class TkScrolledFrame(tk.Frame):

@@ -2,8 +2,10 @@
 import logging
 import tkinter as tk
 
-from pygubu import ApplicationLevelBindManager as BindManager
-from pygubu.binding import remove_binding
+from pygubu.binding import (
+    ApplicationLevelBindManager as BindManager,
+    remove_binding,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -83,7 +85,7 @@ class ScrollbarHelperBase(object):
             self.usemousewheel = tk.getboolean(args[key])
             del args[key]
             self._configure_mousewheel()
-        super(ScrollbarHelperBase, self).configure(args)
+        super().configure(**args)
 
     config = configure
 
