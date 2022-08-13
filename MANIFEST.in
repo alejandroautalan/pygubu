@@ -1,4 +1,6 @@
 include LICENSE
 include README.md
-include extra_requirements.txt
+include HISTORY.md
+graft development
+
 global-exclude *~
