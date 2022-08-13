@@ -46,3 +46,6 @@ all = ['AwesomeTkinter', 'tkintertable', 'tksheet', 'ttkwidgets', 'tkinterweb', 
 
 [tool.setuptools.dynamic]
 version = {attr = "pygubu.__version__"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
