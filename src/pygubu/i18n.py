@@ -1,9 +1,15 @@
-import gettext
+"""
+Keep pygubu as a simple library. Translations will be done in pygubu-designer repo.
 
-#
-# Keep pygubu as a simple library. Translations will be done in pygubu-designer repo.
+Here _ is used to mark strings in plugins files as translatable.
 
-_real_translator = gettext.gettext
+Do not use this file in your application projects.
+"""
+
+import os
+
+_real_translator = lambda msg: msg
+_ = _real_translator
 
 
 class LazyTranslator:
@@ -23,4 +29,6 @@ def translator(message: str) -> str:
     return LazyTranslator(message)
 
 
-_ = T = translator
+if "PYGUBU_LAZY_TRANSLATOR" in os.environ:
+    # Environment variable is set in pygubu-designer to activate string translations.
+    _ = T = translator
