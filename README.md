@@ -141,4 +141,3 @@ History
 =======
 
 See the list of changes [here](HISTORY.md).
-
