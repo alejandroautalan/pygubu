@@ -1,7 +1,7 @@
 History
 =======
 
-Changes for version 0.xx
+Changes for version 0.24
 
   * New plugin engine and API (alpha state)
   * Added support for: AwesomeTkinter, tkintertable, tksheet, ttkwidgets,
