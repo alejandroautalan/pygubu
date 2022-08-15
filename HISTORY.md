@@ -6,6 +6,7 @@ Changes for version 0.xx
   * New plugin engine and API (alpha state)
   * Added support for: AwesomeTkinter, tkintertable, tksheet, ttkwidgets,
     tkinterweb, tkcalendar.
+  * Changed project structure to use src folder.
 
 Changes for version 0.23.1
 
