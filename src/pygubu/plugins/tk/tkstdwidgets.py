@@ -1570,7 +1570,7 @@ class TKOptionMenu(BuilderObject):
         init_args = self._code_get_init_args(self.code_identifier())
         command_arg = None
         variable_arg = None
-        value_arg = None
+        # value_arg = None
 
         # command property
         pname = "command"

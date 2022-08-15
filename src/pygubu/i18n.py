@@ -8,7 +8,11 @@ Do not use this file in your application projects.
 
 import os
 
-_real_translator = lambda msg: msg
+
+def _real_translator(msg):
+    return msg
+
+
 _ = _real_translator
 
 

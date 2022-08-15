@@ -5,12 +5,7 @@ import unittest
 import tkinter as tk
 import tkinter.ttk as ttk
 
-pygubu_basedir = os.path.abspath(
-    os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[0])))
-)
-if pygubu_basedir not in sys.path:
-    sys.path.insert(0, pygubu_basedir)
-
+import fixpath
 import pygubu
 import support
 

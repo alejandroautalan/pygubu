@@ -27,7 +27,7 @@ class AutocompleteBaseBO(BuilderObject):
             cvalues = None
             try:
                 cvalues = f"{value.split()}"
-            except:
+            except Exception:
                 pass
             return cvalues
         return super()._code_process_property_value(targetid, pname, value)

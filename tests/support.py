@@ -45,7 +45,7 @@ def check_tk_availability():
         else:  # not OS X
             try:
                 import tkinter
-            except:
+            except ModuleNotFoundError:
                 import Tkinter as tkinter
             try:
                 tkinter.Button()

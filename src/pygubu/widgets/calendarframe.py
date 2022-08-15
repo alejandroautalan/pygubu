@@ -242,6 +242,7 @@ class CalendarFrame(ttk.Frame):
         self.__img_next = imgn = tk.PhotoImage(data=imgn_data)
         # self._lmonth = lmonth
         # self._lyear = lyear
+
         def callback(event=None):
             return self._change_date("month", -1)
 
@@ -477,7 +478,7 @@ class CalendarFrame(ttk.Frame):
 
         # text matrix
         weeks = self._weeks
-        xoffset = colw / 2.0
+        # xoffset = colw / 2.0
         yoffset = rowh / 2.0
         oy = rowh
         ox = 0

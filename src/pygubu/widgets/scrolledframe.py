@@ -25,9 +25,9 @@ class ScrolledFrame(ttk.Frame):
 
         self._container = self._framecls(self, width=200, height=200)
         self._clipper = self._framecls(self._container, width=200, height=200)
-        self.innerframe = innerframe = self._framecls(self._clipper)
-        self.vsb = vsb = self._sbarcls(self._container)
-        self.hsb = hsb = self._sbarcls(self._container, orient="horizontal")
+        self.innerframe = self._framecls(self._clipper)
+        self.vsb = self._sbarcls(self._container)
+        self.hsb = self._sbarcls(self._container, orient="horizontal")
 
         # variables
         self.hsbOn = 0

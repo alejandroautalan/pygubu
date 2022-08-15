@@ -155,7 +155,7 @@ class StockImage(object):
 
                     aux = Image.open(fpath)
                     img = ImageTk.PhotoImage(aux)
-                except Exception as e:
+                except ModuleNotFoundError:
                     msg = (
                         "Error loading image %s, try installing Pillow module."
                     )

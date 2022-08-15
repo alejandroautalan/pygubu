@@ -6,12 +6,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 
-pygubu_basedir = os.path.abspath(
-    os.path.dirname(os.path.dirname(os.path.realpath(sys.argv[0])))
-)
-if pygubu_basedir not in sys.path:
-    sys.path.insert(0, pygubu_basedir)
-
+import fixpath
 import pygubu
 import support
 
@@ -46,7 +41,7 @@ class TestTkSpinbox(unittest.TestCase):
         self.assertEqual(10, value)
         self.widget.destroy()
 
-    def test_to(self):
+    def test_from_to(self):
         self.widget = self.builder.get_object("test_from_to")
         spinbox = self.builder.get_object("spinbox3")
         value_from = spinbox.cget("from")

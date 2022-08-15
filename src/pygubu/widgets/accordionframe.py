@@ -2,7 +2,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 
-from pygubu.i18n import _
 
 img_down = """\
 R0lGODlhEAAQAIAAAAAAAAAAACH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAAQABAA
@@ -123,23 +122,23 @@ if __name__ == "__main__":
     top.columnconfigure(0, weight=1)
 
     g = app.add_group("g1", "Tk widgets")
-    l = tk.Label(g, text=_("Label1"))
-    l.grid()
-    l = tk.Label(g, text=_("Label2"))
-    l.grid()
+    w = tk.Label(g, text="Label1")
+    w.grid()
+    w = tk.Label(g, text="Label2")
+    w.grid()
     g = app.add_group("g2", "Ttk widgets")
     ##
     app = AccordionFrame(g)
     app.grid(sticky="nsew", padx="5 0")
     g = app.add_group("g1", "Containers")
-    l = tk.Label(g, text=_("Label1"))
-    l.grid()
-    l = tk.Label(g, text=_("Label2"))
-    l.grid()
+    w = tk.Label(g, text="Label1")
+    w.grid()
+    w = tk.Label(g, text="Label2")
+    w.grid()
     g = app.add_group("g2", "Control")
-    l = tk.Label(g, text=_("Label3"))
-    l.grid()
-    l = tk.Label(g, text=_("Label4"))
-    l.grid()
+    w = tk.Label(g, text="Label3")
+    w.grid()
+    w = tk.Label(g, text="Label4")
+    w.grid()
 
     tk.mainloop()
