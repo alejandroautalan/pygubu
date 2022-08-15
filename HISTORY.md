@@ -1,6 +1,12 @@
 History
 =======
 
+Changes for version 0.xx
+
+  * New plugin engine and API (alpha state)
+  * Added support for: AwesomeTkinter, tkintertable, tksheet, ttkwidgets,
+    tkinterweb, tkcalendar.
+
 Changes for version 0.23.1
 
   * Fix: Generate regular treeview properties in the Code Script #264 (jrezai)
