@@ -44,6 +44,9 @@ tkcalendar = ['tkcalendar']
 awesometkinter = ['AwesomeTkinter']
 all = ['AwesomeTkinter', 'tkintertable', 'tksheet', 'ttkwidgets', 'tkinterweb', 'tkcalendar']
 
+[project.entry-points."pyinstaller40"]
+hook-dirs = "pygubu.__pyinstaller:get_hook_dirs"
+
 [tool.setuptools.dynamic]
 version = {attr = "pygubu.__version__"}
 
