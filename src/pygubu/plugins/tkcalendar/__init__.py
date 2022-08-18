@@ -10,7 +10,7 @@ _plugin_uid = "tkcalendar"
 class TkcalendarLoader(BuilderLoaderPlugin):
     module_map = {
         "pygubu.plugins.tkcalendar.calendar": (f"{_plugin_uid}.Calendar",),
-        "pygubu.plugins.tkcalendar.dateentry": (f"{_plugin_uid}.Calendar",),
+        "pygubu.plugins.tkcalendar.dateentry": (f"{_plugin_uid}.DateEntry",),
     }
 
     def do_activate(self) -> bool:
