@@ -1,6 +1,11 @@
 History
 =======
 
+Changes for version 0.24.1
+
+  * Hotfix: Fix error loading tkcalendar DateEntry
+  * Added pyinstaller hook (thanks to @gwelch-contegix)
+
 Changes for version 0.24
 
   * New plugin engine and API (alpha state)
