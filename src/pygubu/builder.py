@@ -166,14 +166,39 @@ class Builder(object):
         return widget
 
     def _import_class(self, builder_id):
+        plugin_managed = False
         for loader in PluginManager.builder_plugins():
             if loader.can_load(builder_id):
                 _module = loader.get_module_for(builder_id)
                 try:
                     importlib.import_module(_module)
+                    plugin_managed = True
                     logger.debug("Module %s loaded.", _module)
                 except (ModuleNotFoundError, ImportError) as e:
                     msg = "Failed to import module as fullname: %s"
+                    logger.debug(msg, _module)
+                    raise e
+
+        # If no plugin, Try loading as old custom widget method.
+        if not plugin_managed:
+            _module = builder_id
+            try:
+                # Import module as full path
+                importlib.import_module(_module)
+                logger.debug("Module %s loaded.", _module)
+            except (ModuleNotFoundError, ImportError) as e:
+                # A single module can contain various widgets
+                # try to import the first part of the path
+                if "." in _module:
+                    first, last = _module.rsplit(".", 1)
+                    try:
+                        importlib.import_module(first)
+                        logger.debug("Module %s loaded.", first)
+                    except (ModuleNotFoundError, ImportError):
+                        importlib.import_module(last)
+                        logger.debug("Module %s loaded.", last)
+                else:
+                    msg = "Failed to import module: %s"
                     logger.debug(msg, _module)
                     raise e
 
