@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.24.2
+
+  * Fix loading of custom widgets
+
 Changes for version 0.24.1
 
   * Hotfix: Fix error loading tkcalendar DateEntry
