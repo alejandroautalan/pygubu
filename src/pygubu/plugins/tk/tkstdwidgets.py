@@ -1042,64 +1042,28 @@ class TKMenuitem(BuilderObject):
     #
     # code generation functions
     #
-    def _code_get_item_name(self):
-        return "self.mi_{0}".format(self.wmeta.identifier)
-
     def code_realize(self, boparent, code_identifier=None):
-        boparent.code_item_index += 1
-        self._code_item_index = boparent.code_item_index
         self._code_identifier = boparent.code_child_master()
-        masterid = self._code_identifier
         (
             code_bag,
             kwproperties,
             complex_properties,
         ) = self._code_process_properties(
-            self.wmeta.properties, self._code_identifier
+            self.wmeta.properties, self._code_identifier, skip_commands=False
         )
-        lines = []
-        # item index
-        itemname = self._code_get_item_name()
-        line = "{0} = {1}".format(itemname, self._code_item_index)
-        lines.append(line)
 
-        pbag = []
+        properties = {}
         for pname in kwproperties:
-            line = "{0}={1}".format(pname, code_bag[pname])
-            pbag.append(line)
-        props = ""
-        if pbag:
-            props = ", " + ", ".join(pbag)
-        itemtype = self.itemtype
-        line = "{0}.add('{1}'{2})".format(masterid, itemtype, props)
-        lines.append(line)
+            properties[pname] = code_bag[pname]
+        boparent.add_menuitem(self.wmeta.identifier, self.itemtype, properties)
+
+        lines = []
         for pname in complex_properties:
             lines.extend(code_bag[pname])
         return lines
 
     def code_configure(self, targetid=None):
         return tuple()
-
-    def _code_process_properties(self, properties, targetid):
-        code_bag = {}
-        for pname, value in properties.items():
-            if (
-                pname not in self.ro_properties
-                and pname not in self.command_properties
-            ):
-                self._code_set_property(targetid, pname, value, code_bag)
-
-        # properties
-        # determine kw properties or complex properties
-        kwproperties = []
-        complex_properties = []
-        for pname, value in code_bag.items():
-            if isinstance(value, str):
-                kwproperties.append(pname)
-            else:
-                complex_properties.append(pname)
-
-        return (code_bag, kwproperties, complex_properties)
 
     def _code_set_property(self, targetid, pname, value, code_bag):
         if pname == "command_id_arg":
@@ -1123,21 +1087,22 @@ class TKMenuitem(BuilderObject):
             args = ("itemid",)
         return args
 
-    def _code_connect_item_command(self, cmd_pname, cmd, cbname):
-        lines = []
-        target = self.code_identifier()
+    def _code_define_callback(self, cmd_pname, cmd):
+        usercb = super()._code_define_callback(cmd_pname, cmd)
+        self._realcb = usercb
         args = self._code_define_callback_args(cmd_pname, cmd)
         if args is not None and "itemid" in args:
-            newcb = "_wcmd"
+            usercb = f"{self.wmeta.identifier}_cmd"
+        return usercb
+
+    def _code_connect_item_command(self, cmd_pname, cmd, cbname):
+        lines = []
+        if cbname != self._realcb:
+            cbname = self._realcb
+            newcb = f"{self.wmeta.identifier}_cmd"
             wid = self.wmeta.identifier
-            line = '{0} = lambda itemid="{1}": {2}(itemid)'
-            line = line.format(newcb, wid, cbname)
-            cbname = newcb
+            line = f'def {newcb}(itemid="{wid}"): {cbname}(itemid)'
             lines.append(line)
-        itemname = self._code_get_item_name()
-        line = "{0}.entryconfigure({1}, {2}={3})"
-        line = line.format(target, itemname, cmd_pname, cbname)
-        lines.append(line)
         return lines
 
     def _code_connect_command(self, cmd_pname, cmd, cbname):
@@ -1194,6 +1159,10 @@ class TKMenuitemSubmenu(TKMenuitem):
     # ro_properties = ('specialmenu', )
     command_properties = ("postcommand", "tearoffcommand")
 
+    def __init__(self, builder, wdescr):
+        super().__init__(builder, wdescr)
+        self._menuitems = None
+
     def realize(self, parent):
         master = parent.get_child_master()
         self._setup_item_index(parent)
@@ -1238,12 +1207,12 @@ class TKMenuitemSubmenu(TKMenuitem):
     #
     # code generation functions
     #
+    def add_menuitem(self, itemid, itemtype, properties):
+        if self._menuitems is None:
+            self._menuitems = []
+        self._menuitems.append((itemtype, properties))
+
     def code_realize(self, boparent, code_identifier=None):
-        start = -1
-        tearoff_conf = self.wmeta.properties.get("tearoff", "true")
-        if tearoff_conf in ("1", "true"):
-            start = 0
-        self.code_item_index = start
         self._code_identifier = code_identifier
         masterid = boparent.code_child_master()
         lines = []
@@ -1307,6 +1276,25 @@ class TKMenuitemSubmenu(TKMenuitem):
 
     def code_configure(self, targetid=None):
         return tuple()
+
+    def code_configure_children(self, targetid=None):
+        if self._menuitems is None:
+            return tuple()
+
+        if targetid is None:
+            targetid = self.code_identifier()
+        lines = []
+        for itemtype, kwp in self._menuitems:
+            bag = []
+            for pname, value in kwp.items():
+                s = f"{pname}={value}"
+                bag.append(s)
+            props = ""
+            if bag:
+                props = ", " + ", ".join(bag)
+            line = f"{targetid}.add('{itemtype}'{props})"
+            lines.append(line)
+        return lines
 
     def _code_define_callback_args(self, cmd_pname, cmd):
         args = None

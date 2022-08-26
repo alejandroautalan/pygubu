@@ -448,14 +448,16 @@ class BuilderObject(object):
                 cname = "ClassNameNotDefined"
         return cname
 
-    def _code_process_properties(self, properties, targetid):
+    def _code_process_properties(
+        self, properties, targetid, skip_ro=True, skip_commands=True
+    ):
         code_bag = {}
         for pname, value in properties.items():
-            if (
-                pname not in self.ro_properties
-                and pname not in self.command_properties
-            ):
-                self._code_set_property(targetid, pname, value, code_bag)
+            if pname in self.ro_properties and skip_ro:
+                continue
+            if pname in self.command_properties and skip_commands:
+                continue
+            self._code_set_property(targetid, pname, value, code_bag)
 
         # properties
         # determine kw properties or complex properties
