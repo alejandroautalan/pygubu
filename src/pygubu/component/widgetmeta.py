@@ -11,7 +11,7 @@ BindingMeta = namedtuple("BindingMeta", ["sequence", "handler", "add"])
 GridRCLine = namedtuple("GridRCLine", ["rctype", "rcid", "pname", "pvalue"])
 
 
-class WidgetMeta(object):
+class WidgetMeta:
     def __init__(
         self,
         cname,
@@ -19,10 +19,12 @@ class WidgetMeta(object):
         manager=None,
         properties_defaults=None,
         layout_defaults=None,
+        uid=None,
     ):
-        super(WidgetMeta, self).__init__()
+        super().__init__()
         self.classname = cname
         self.identifier = identifier
+        self.uid = uid
         self.properties = {}
         self.bindings = []
         self._manager = manager if manager is not None else "grid"
@@ -63,6 +65,10 @@ class WidgetMeta(object):
         if value == "pack" and self.gridrc_properties:
             self.gridrc_properties.clear()
         self._container_manager = value
+
+    @property
+    def is_named(self):
+        return self.uid is not None and self.uid
 
     def apply_properties_defaults(self):
         for name, value in self.properties_defaults.items():

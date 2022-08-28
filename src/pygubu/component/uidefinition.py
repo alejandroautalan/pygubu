@@ -46,7 +46,7 @@ class UIDefinition(object):
         super(UIDefinition, self).__init__()
         self.tree = None
         self.root = None
-        self._latest_version = "1.2"
+        self._latest_version = "1.3"
         self.version = self._latest_version
         self.author = ""
         self._ignore_properties = (
@@ -110,7 +110,8 @@ class UIDefinition(object):
 
     def xmlnode_to_widget(self, element):
         elemid = element.get("id")
-        meta = self.wmetaclass(element.get("class"), elemid)
+        elem_uid = element.get("uid")  # Unique user name
+        meta = self.wmetaclass(element.get("class"), elemid, uid=elem_uid)
 
         # properties
         properties = element.findall("./property")
@@ -316,6 +317,8 @@ class UIDefinition(object):
 
         node.set("class", wmeta.classname)
         node.set("id", wmeta.identifier)
+        if wmeta.uid:
+            node.set("uid", wmeta.uid)
 
         pkeys = sorted(wmeta.properties.keys())
         for pkey in pkeys:
