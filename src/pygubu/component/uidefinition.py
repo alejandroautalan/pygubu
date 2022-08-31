@@ -110,8 +110,7 @@ class UIDefinition(object):
 
     def xmlnode_to_widget(self, element):
         elemid = element.get("id")
-        elem_uid = element.get("uid")  # Unique user name
-        meta = self.wmetaclass(element.get("class"), elemid, uid=elem_uid)
+        meta = self.wmetaclass(element.get("class"), elemid)
 
         # properties
         properties = element.findall("./property")
@@ -317,8 +316,6 @@ class UIDefinition(object):
 
         node.set("class", wmeta.classname)
         node.set("id", wmeta.identifier)
-        if wmeta.uid:
-            node.set("uid", wmeta.uid)
 
         pkeys = sorted(wmeta.properties.keys())
         for pkey in pkeys:

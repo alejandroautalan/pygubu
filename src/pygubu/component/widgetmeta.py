@@ -19,12 +19,10 @@ class WidgetMeta:
         manager=None,
         properties_defaults=None,
         layout_defaults=None,
-        uid=None,
     ):
         super().__init__()
         self.classname = cname
         self.identifier = identifier
-        self.uid = uid
         self.properties = {}
         self.bindings = []
         self._manager = manager if manager is not None else "grid"

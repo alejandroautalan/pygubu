@@ -346,7 +346,7 @@ class BuilderObject(object):
 
     def code_identifier(self):
         if self._code_identifier is None:
-            return self.wmeta.uid or self.wmeta.identifier
+            return self.wmeta.identifier
         return self._code_identifier
 
     def code_child_master(self):
