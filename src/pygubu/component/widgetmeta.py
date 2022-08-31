@@ -22,7 +22,7 @@ class WidgetMeta:
     ):
         super().__init__()
         self.classname = cname
-        self.identifier = identifier
+        self._id = identifier
         self.properties = {}
         self.bindings = []
         self._manager = manager if manager is not None else "grid"
@@ -41,7 +41,7 @@ class WidgetMeta:
         self.layout_defaults = (
             layout_defaults if layout_defaults is not None else {}
         )
-
+        self._named = False
         # init defaults
         self.apply_properties_defaults()
         self.apply_layout_defaults()
@@ -65,8 +65,22 @@ class WidgetMeta:
         self._container_manager = value
 
     @property
-    def is_named(self):
-        return self.uid is not None and self.uid
+    def is_named(self) -> bool:
+        return self._named
+
+    @is_named.setter
+    def is_named(self, value: bool):
+        self._named = value
+
+    @property
+    def identifier(self) -> str:
+        return self._id
+
+    @identifier.setter
+    def identifier(self, value: str):
+        if not value:
+            raise ValueError()
+        self._id = value
 
     def apply_properties_defaults(self):
         for name, value in self.properties_defaults.items():

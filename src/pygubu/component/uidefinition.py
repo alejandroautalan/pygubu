@@ -111,6 +111,7 @@ class UIDefinition(object):
     def xmlnode_to_widget(self, element):
         elemid = element.get("id")
         meta = self.wmetaclass(element.get("class"), elemid)
+        meta.is_named = True if element.get("named") is not None else False
 
         # properties
         properties = element.findall("./property")
@@ -316,6 +317,8 @@ class UIDefinition(object):
 
         node.set("class", wmeta.classname)
         node.set("id", wmeta.identifier)
+        if wmeta.is_named:
+            node.set("named", str(wmeta.is_named))
 
         pkeys = sorted(wmeta.properties.keys())
         for pkey in pkeys:
