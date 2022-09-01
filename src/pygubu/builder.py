@@ -19,7 +19,13 @@ logger = logging.getLogger(__name__)
 
 
 class Builder(object):
-    """Allows to build a tk interface from xml definition."""
+    """Allows to build a tk interface from xml definition.
+
+    Parameters
+    ----------
+    translator: callable
+        function used to process translatable strings.
+    """
 
     TK_VARIABLE_TYPES = ("string", "int", "boolean", "double")
 
@@ -267,6 +273,16 @@ class Builder(object):
             return notconnected
         else:
             return None
+
+    def forget_unnamed(self):
+        """Removes unnamed object from the objects attribute.
+
+        User should calls this method at the end of the build process,
+        after calling "connect_callbacks".
+        """
+        for key in list(self.objects.keys()):
+            if not self.objects[key].wmeta.is_named:
+                del self.objects[key]
 
     def code_create_variable(self, name_or_desc, value, vtype=None):
         raise NotImplementedError()
