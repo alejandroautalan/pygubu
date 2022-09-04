@@ -508,11 +508,9 @@ class BuilderObject(object):
         Can be used from subclases for custom tk variable properties."""
         varvalue = None
         if "text" in self.wmeta.properties and pname == "textvariable":
-            varvalue = self.builder.code_translate_str(
-                self.wmeta.properties["text"]
-            )
+            varvalue = self.wmeta.properties["text"]
         elif "value" in self.wmeta.properties and pname == "variable":
-            varvalue = self.code_escape_str(self.wmeta.properties["value"])
+            varvalue = self.wmeta.properties["value"]
         propvalue = self.builder.code_create_variable(value, varvalue)
         return propvalue
 
