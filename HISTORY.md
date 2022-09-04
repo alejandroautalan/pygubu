@@ -1,6 +1,12 @@
 History
 =======
 
+Changes for version 0.25
+
+  * Modified ui definition file to allow decluttering of widget ids in designer (alejandroautalan/pygubu-designer#117)
+  * Fix initial value for boolean tkvariables (issue #268)
+  * Improved  menu code generation (refs alejandroautalan/pygubu-designer#103)
+
 Changes for version 0.24.2
 
   * Fix loading of custom widgets
