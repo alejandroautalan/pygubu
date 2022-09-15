@@ -60,7 +60,7 @@ STOCK_DATA = {
 }
 
 
-class StockImage(object):
+class StockImage:
     """Maintain references to image name and file.
     When image is used, the class maintains it on memory for tkinter"""
 
@@ -77,38 +77,38 @@ class StockImage(object):
         cls._cached = {}
 
     @classmethod
-    def register(cls, key, filename):
-        """Register a image file using key"""
+    def register(cls, image_id, filename):
+        """Register a image file using image_id"""
 
-        if key in cls._stock:
-            logger.info("Warning, replacing resource %s", key)
-        cls._stock[key] = {"type": "custom", "filename": filename}
-        logger.info("%s registered as %s", filename, key)
-
-    @classmethod
-    def register_from_data(cls, key, format, data):
-        """Register a image data using key"""
-
-        if key in cls._stock:
-            logger.info("Warning, replacing resource %s", key)
-        cls._stock[key] = {"type": "data", "data": data, "format": format}
-        logger.info("%s registered as %s", "data", key)
+        if image_id in cls._stock:
+            logger.info("Warning, replacing resource %s", image_id)
+        cls._stock[image_id] = {"type": "custom", "filename": filename}
+        logger.info("%s registered as %s", filename, image_id)
 
     @classmethod
-    def register_created(cls, key, image):
-        """Register an already created image using key"""
+    def register_from_data(cls, image_id, format, data):
+        """Register a image data using image_id"""
 
-        if key in cls._stock:
-            logger.info("Warning, replacing resource {0}", key)
-        cls._stock[key] = {"type": "created", "image": image}
-        logger.info("%s registered as %s", "data", key)
-
-    @classmethod
-    def is_registered(cls, key):
-        return key in cls._stock
+        if image_id in cls._stock:
+            logger.info("Warning, replacing resource %s", image_id)
+        cls._stock[image_id] = {"type": "data", "data": data, "format": format}
+        logger.info("%s registered as %s", "data", image_id)
 
     @classmethod
-    def register_from_dir(cls, dir_path, prefix="", ext=TK_IMAGE_FORMATS):
+    def register_created(cls, image_id, image):
+        """Register an already created image using image_id"""
+
+        if image_id in cls._stock:
+            logger.info("Warning, replacing resource {0}", image_id)
+        cls._stock[image_id] = {"type": "created", "image": image}
+        logger.info("data registered as %s", image_id)
+
+    @classmethod
+    def is_registered(cls, image_id):
+        return image_id in cls._stock
+
+    @classmethod
+    def register_from_dir(cls, dir_path, prefix="", ext=None):
         """List files from dir_path and register images with
             filename as key (without extension)
 
@@ -118,6 +118,8 @@ class StockImage(object):
         :param iterable ext: list of file extensions to load. Defaults to
             tk supported image extensions. Example ('.jpg', '.png')
         """
+        if ext is None:
+            ext = TK_IMAGE_FORMATS
 
         for filename in os.listdir(dir_path):
             name, file_ext = os.path.splitext(filename)
@@ -126,10 +128,10 @@ class StockImage(object):
                 cls.register(fkey, os.path.join(dir_path, filename))
 
     @classmethod
-    def _load_image(cls, rkey):
+    def _load_image(cls, image_id):
         """Load image from file or return the cached instance."""
 
-        v = cls._stock[rkey]
+        v = cls._stock[image_id]
         img = None
         itype = v["type"]
         from_ = itype
@@ -162,31 +164,31 @@ class StockImage(object):
                     logger.error(msg, fpath)
                     img = cls.get("img_not_supported")
 
-        cls._cached[rkey] = img
-        logger.info("Loaded resource %s from %s.", rkey, from_)
+        cls._cached[image_id] = img
+        logger.info("Loaded resource %s from %s.", image_id, from_)
         return img
 
     @classmethod
-    def get(cls, rkey):
-        """Get image previously registered with key rkey.
+    def get(cls, image_id):
+        """Get image previously registered with key image_id.
         If key not exist, raise StockImageException
         """
 
-        if rkey in cls._cached:
-            logger.info("Resource %s is in cache.", rkey)
-            return cls._cached[rkey]
-        if rkey in cls._stock:
-            img = cls._load_image(rkey)
+        if image_id in cls._cached:
+            logger.info("Resource %s is in cache.", image_id)
+            return cls._cached[image_id]
+        if image_id in cls._stock:
+            img = cls._load_image(image_id)
             return img
         else:
-            raise StockImageException("StockImage: %s not registered." % rkey)
+            raise StockImageException(f"StockImage: {image_id} not registered.")
 
     @classmethod
-    def as_iconbitmap(cls, rkey):
+    def as_iconbitmap(cls, image_id):
         """Get image path for use in iconbitmap property"""
         img = None
-        if rkey in cls._stock:
-            data = cls._stock[rkey]
+        if image_id in cls._stock:
+            data = cls._stock[image_id]
             if data["type"] not in ("stock", "data", "image"):
                 fpath = data["filename"]
                 fname = os.path.basename(fpath)
