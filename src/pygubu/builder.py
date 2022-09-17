@@ -1,8 +1,8 @@
 # encoding: utf-8
 import importlib
 import logging
-import os
 import tkinter
+from pathlib import Path
 
 from .component.builderobject import CLASS_MAP, BuilderObject
 from .component.widgetmeta import WidgetMeta
@@ -45,7 +45,7 @@ class Builder(object):
     def get_image(self, path):
         """Return tk image corresponding to name which is taken form path."""
         image = ""
-        name = os.path.basename(path)
+        name = Path(path).name
         self.__load_image(path)
         try:
             image = StockImage.get(name)
@@ -57,7 +57,7 @@ class Builder(object):
     def get_iconbitmap(self, path):
         """Return path to use as iconbitmap property."""
         image = None
-        name = os.path.basename(path)
+        name = Path(path).name
         self.__load_image(path)
         try:
             image = StockImage.as_iconbitmap(name)
@@ -67,7 +67,7 @@ class Builder(object):
         return image
 
     def __load_image(self, path):
-        name = os.path.basename(path)
+        name = Path(path).name
         if not StockImage.is_registered(name):
             ipath = self.__find_image(path)
             if ipath is not None:
@@ -78,10 +78,11 @@ class Builder(object):
 
     def __find_image(self, relpath):
         image_path = None
+        pattern = f"*{relpath}"
         for rp in self._resource_paths:
-            for root, dirs, files in os.walk(rp):
-                if relpath in files:
-                    image_path = os.path.join(root, relpath)
+            for p in Path(rp).glob("**/*"):
+                if p.is_file() and p.match(pattern):
+                    image_path = p
                     break
             if image_path is not None:
                 break

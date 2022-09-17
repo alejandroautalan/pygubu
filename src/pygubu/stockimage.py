@@ -5,6 +5,7 @@ __all__ = ["StockImage", "StockImageException", "TK_IMAGE_FORMATS"]
 import logging
 import os
 import tkinter as tk
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
@@ -121,11 +122,12 @@ class StockImage:
         if ext is None:
             ext = TK_IMAGE_FORMATS
 
-        for filename in os.listdir(dir_path):
-            name, file_ext = os.path.splitext(filename)
+        for filename in Path(dir_path).iterdir():
+            name = filename.stem
+            file_ext = filename.suffix
             if file_ext in ext:
-                fkey = "{0}{1}".format(prefix, name)
-                cls.register(fkey, os.path.join(dir_path, filename))
+                fkey = f"{prefix}{name}"
+                cls.register(fkey, filename)
 
     @classmethod
     def _load_image(cls, image_id):
@@ -143,9 +145,7 @@ class StockImage:
             # custom
             fpath = v["filename"]
             from_ = fpath
-            fname = os.path.basename(fpath)
-            name, file_ext = os.path.splitext(fname)
-            file_ext = str(file_ext).lower()
+            file_ext = fpath.suffix.lower()
 
             if file_ext in TK_PHOTO_FORMATS:
                 img = tk.PhotoImage(file=fpath)
@@ -191,9 +191,7 @@ class StockImage:
             data = cls._stock[image_id]
             if data["type"] not in ("stock", "data", "image"):
                 fpath = data["filename"]
-                fname = os.path.basename(fpath)
-                name, file_ext = os.path.splitext(fname)
-                file_ext = str(file_ext).lower()
+                file_ext = fpath.suffix.lower()
 
                 if file_ext in TK_BITMAP_FORMATS:
                     img = BITMAP_TEMPLATE.format(fpath)
