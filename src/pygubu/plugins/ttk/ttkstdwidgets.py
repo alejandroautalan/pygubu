@@ -334,6 +334,10 @@ class TTKMenubuttonBO(TTKWidgetBO):
     def add_child(self, bobject):
         self.widget.configure(menu=bobject.widget)
 
+    def code_child_add(self, childid):
+        lines = [f"{self.code_identifier()}.configure(menu={childid})"]
+        return lines
+
 
 register_widget(
     "ttk.Menubutton",

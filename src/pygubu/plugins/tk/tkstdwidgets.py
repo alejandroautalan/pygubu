@@ -666,6 +666,10 @@ class TKMenubutton(BuilderObject):
     def add_child(self, bobject):
         self.widget.configure(menu=bobject.widget)
 
+    def code_child_add(self, childid):
+        lines = [f"{self.code_identifier()}.configure(menu={childid})"]
+        return lines
+
 
 register_widget(
     "tk.Menubutton",
@@ -945,8 +949,20 @@ class TKMenu(BuilderObject):
     command_properties = ("postcommand", "tearoffcommand")
     allow_bindings = False
 
+    def __init__(self, builder, wdescr):
+        super().__init__(builder, wdescr)
+        self._menuitems = None
+
     def layout(self):
         pass
+
+    #
+    # code generation functions
+    #
+    def add_menuitem(self, itemid, itemtype, properties):
+        if self._menuitems is None:
+            self._menuitems = []
+        self._menuitems.append((itemtype, properties))
 
     def code_realize(self, boparent, code_identifier=None):
         start = -1
@@ -961,6 +977,25 @@ class TKMenu(BuilderObject):
         if cmd_pname == "tearoffcommand":
             args = ("menu", "tearoff")
         return args
+
+    def code_configure_children(self, targetid=None):
+        if self._menuitems is None:
+            return tuple()
+
+        if targetid is None:
+            targetid = self.code_identifier()
+        lines = []
+        for itemtype, kwp in self._menuitems:
+            bag = []
+            for pname, value in kwp.items():
+                s = f"{pname}={value}"
+                bag.append(s)
+            props = ""
+            if bag:
+                props = ", " + ", ".join(bag)
+            line = f"{targetid}.add('{itemtype}'{props})"
+            lines.append(line)
+        return lines
 
 
 register_widget("tk.Menu", TKMenu, "Menu", (_("Menu"), "tk", "ttk"))
