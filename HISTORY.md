@@ -1,6 +1,11 @@
 History
 =======
 
+Changes for version 0.25.1
+
+  * Fix Menubutton code generation. refs alejandroautalan/pygubu-designer#151
+  * Fix pyinstaller hook for python 3.8  refs #270
+
 Changes for version 0.25
 
   * Modified ui definition file to allow decluttering of widget ids in designer (alejandroautalan/pygubu-designer#117)
