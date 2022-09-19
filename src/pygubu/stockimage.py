@@ -4,14 +4,48 @@ __all__ = ["StockImage", "StockImageException", "TK_IMAGE_FORMATS"]
 
 import logging
 import os
+import sys
 import tkinter as tk
 from pathlib import Path
+from collections import namedtuple
+from dataclasses import dataclass
+from enum import Enum
+from typing import Any
+
+
+if sys.version_info < (3, 9):
+    import importlib_resources as resources
+else:
+    import importlib.resources as resources
+
 
 logger = logging.getLogger(__name__)
 
 
 class StockImageException(Exception):
     pass
+
+
+class ImageNotFoundError(StockImageException):
+    pass
+
+
+class ImageFormatNotSupportedError(StockImageException):
+    pass
+
+
+def _iter_package_files(pkg: str):
+    subpkg = []
+    try:
+        for r in resources.files(pkg).iterdir():
+            if r.is_file():
+                yield r
+            if r.is_dir():
+                subpkg.append(r.name)
+    except NotADirectoryError:
+        pass
+    for s in subpkg:
+        yield from _iter_package_files(f"{pkg}/{s}")
 
 
 BITMAP_TEMPLATE = "@{0}"
@@ -52,13 +86,77 @@ K+ztunhEbHHBUlV78cb/YsIgxyDr663GIZcMgw3wmqxyvPmu7HIeCb8sc1Qxz2zzzTjnrPPOPPcs
 QwgAOw==
 """
 
-STOCK_DATA = {
-    "img_not_supported": {
-        "type": "data",
-        "data": _img_notsupported,
-        "format": "gif",
-    }
-}
+
+class PitType(Enum):
+    PATH = 1
+    PACKAGE = 2
+
+
+@dataclass
+class CacheItem:
+    def create_tkimage(self):
+        ...
+
+
+@dataclass(slots=True)
+class ImgFromData(CacheItem):
+    data: Any = None
+    format: str = None
+
+    def create_tkimage(self):
+        tk.PhotoImage(format=self.format, data=self.data)
+
+
+@dataclass(slots=True)
+class ImgCreated(CacheItem):
+    image: Any = None
+
+    def create_tkimage(self):
+        return self.image
+
+
+@dataclass(slots=True)
+class ImgFromPath(CacheItem):
+    fpath: Any = None
+
+    def _create_with_pillow(self, fpath):
+        try:
+            from PIL import Image, ImageTk
+
+            aux = Image.open(fpath)
+            img = ImageTk.PhotoImage(aux)
+            return img
+        except ModuleNotFoundError:
+            msg = f"Error loading {self.fpath}, image format not supported."
+            raise ImageFormatNotSupportedError(msg)
+
+    def create_tkimage(self):
+        file_ext = self.fpath.suffix.lower()
+        if file_ext in TK_PHOTO_FORMATS:
+            img = tk.PhotoImage(file=self.fpath)
+        elif file_ext in TK_BITMAP_FORMATS:
+            img = tk.BitmapImage(file=self.fpath)
+        else:
+            img = self._create_with_pillow(self.fpath)
+        return img
+
+
+@dataclass
+class ImgFromPackage(ImgFromPath):
+    def create_tkimage(self):
+        file_ext = Path(str(self.fpath)).suffix.lower()
+
+        with resources.as_file(self.fpath) as file:
+            if file_ext in TK_PHOTO_FORMATS:
+                img = tk.PhotoImage(file=file)
+            elif file_ext in TK_BITMAP_FORMATS:
+                img = tk.BitmapImage(file=file)
+            else:
+                img = self._create_with_pillow(file)
+        return img
+
+
+STOCK_DATA = {"img_not_supported": ImgFromData(_img_notsupported, "gif")}
 
 
 class StockImage:
@@ -68,6 +166,7 @@ class StockImage:
     _stock = STOCK_DATA
     _cached = {}
     _formats = TK_IMAGE_FORMATS
+    _resource_pit = {}
 
     @classmethod
     def clear_cache(cls):
@@ -78,21 +177,30 @@ class StockImage:
         cls._cached = {}
 
     @classmethod
+    def _register_cache_item(cls, image_id, cache_item):
+        if image_id in cls._stock:
+            logger.warning("Warning, replacing resource %s", image_id)
+        cls._stock[image_id] = cache_item
+
+    @classmethod
     def register(cls, image_id, filename):
         """Register a image file using image_id"""
-
-        if image_id in cls._stock:
-            logger.info("Warning, replacing resource %s", image_id)
-        cls._stock[image_id] = {"type": "custom", "filename": filename}
+        fpath = Path(filename) if isinstance(filename, str) else filename
+        cls._register_cache_item(image_id, ImgFromPath(fpath))
         logger.info("%s registered as %s", filename, image_id)
+
+    @classmethod
+    def register_from_package(cls, image_id, fpath):
+        cls._register_cache_item(image_id, ImgFromPackage(fpath))
+        logger.info("%s registered as %s", fpath, image_id)
 
     @classmethod
     def register_from_data(cls, image_id, format, data):
         """Register a image data using image_id"""
 
         if image_id in cls._stock:
-            logger.info("Warning, replacing resource %s", image_id)
-        cls._stock[image_id] = {"type": "data", "data": data, "format": format}
+            logger.warning("Warning, replacing resource %s", image_id)
+        cls._stock[image_id] = ImgFromData(data, format)
         logger.info("%s registered as %s", "data", image_id)
 
     @classmethod
@@ -100,8 +208,8 @@ class StockImage:
         """Register an already created image using image_id"""
 
         if image_id in cls._stock:
-            logger.info("Warning, replacing resource {0}", image_id)
-        cls._stock[image_id] = {"type": "created", "image": image}
+            logger.warning("Warning, replacing resource {0}", image_id)
+        cls._stock[image_id] = ImgCreated(image)
         logger.info("data registered as %s", image_id)
 
     @classmethod
@@ -109,7 +217,9 @@ class StockImage:
         return image_id in cls._stock
 
     @classmethod
-    def register_from_dir(cls, dir_path, prefix="", ext=None):
+    def register_all_from_dir(
+        cls, dir_path, prefix=None, ext=None, recurse=False
+    ):
         """List files from dir_path and register images with
             filename as key (without extension)
 
@@ -118,54 +228,66 @@ class StockImage:
             so the resulting key will be prefix + filename
         :param iterable ext: list of file extensions to load. Defaults to
             tk supported image extensions. Example ('.jpg', '.png')
+        :param boolean recurse: search recursivelly.
         """
+        prefix = "" if prefix is None else prefix
         if ext is None:
             ext = TK_IMAGE_FORMATS
 
-        for filename in Path(dir_path).iterdir():
-            name = filename.stem
-            file_ext = filename.suffix
-            if file_ext in ext:
-                fkey = f"{prefix}{name}"
-                cls.register(fkey, filename)
+        path_gen = Path(dir_path).iterdir()
+        if recurse:
+            path_gen = Path(dir_path).glob("**/*")
+
+        for filename in path_gen:
+            if filename.is_file():
+                name = filename.stem
+                file_ext = filename.suffix
+                if file_ext in ext:
+                    fkey = f"{prefix}{name}"
+                    cls.register(fkey, filename)
+
+    @classmethod
+    def register_all_from_pkg(cls, pkg, prefix=None, ext=None, recurse=False):
+        """List files from package and register images with
+            filename as key (without extension)
+
+        :param str pkg: package to search for images.
+        :param str prefix: Additionaly a prefix for the key can be provided,
+            so the resulting key will be prefix + filename
+        :param iterable ext: list of file extensions to load. Defaults to
+            tk supported image extensions. Example ('.jpg', '.png')
+        :param boolean recurse: search recursivelly.
+        """
+        prefix = "" if prefix is None else prefix
+        if ext is None:
+            ext = TK_IMAGE_FORMATS
+        path_gen = resources.files(pkg).iterdir()
+        if recurse:
+            path_gen = _iter_package_files(pkg)
+        for pkg_path in path_gen:
+            if pkg_path.is_file():
+                fpath = Path(str(pkg_path))
+                name = fpath.stem
+                file_ext = fpath.suffix
+                if file_ext in ext:
+                    image_id = f"{prefix}{name}"
+                    cls.register_from_package(image_id, pkg_path)
 
     @classmethod
     def _load_image(cls, image_id):
         """Load image from file or return the cached instance."""
 
-        v = cls._stock[image_id]
+        cache_info = cls._stock[image_id]
         img = None
-        itype = v["type"]
-        from_ = itype
-        if itype in ("stock", "data"):
-            img = tk.PhotoImage(format=v["format"], data=v["data"])
-        elif itype == "created":
-            img = v["image"]
-        else:
-            # custom
-            fpath = v["filename"]
-            from_ = fpath
-            file_ext = fpath.suffix.lower()
-
-            if file_ext in TK_PHOTO_FORMATS:
-                img = tk.PhotoImage(file=fpath)
-            elif file_ext in TK_BITMAP_FORMATS:
-                img = tk.BitmapImage(file=fpath)
-            else:
-                try:
-                    from PIL import Image, ImageTk
-
-                    aux = Image.open(fpath)
-                    img = ImageTk.PhotoImage(aux)
-                except ModuleNotFoundError:
-                    msg = (
-                        "Error loading image %s, try installing Pillow module."
-                    )
-                    logger.error(msg, fpath)
-                    img = cls.get("img_not_supported")
+        try:
+            img = cache_info.create_tkimage()
+        except ImageFormatNotSupportedError:
+            msg = "Error loading image %s, try installing Pillow module."
+            logger.error(msg, image_id)
+            img = cls.get("img_not_supported")
 
         cls._cached[image_id] = img
-        logger.info("Loaded resource %s from %s.", image_id, from_)
+        logger.info("Loaded resource data for %s.", image_id)
         return img
 
     @classmethod
@@ -196,3 +318,58 @@ class StockImage:
                 if file_ext in TK_BITMAP_FORMATS:
                     img = BITMAP_TEMPLATE.format(fpath)
         return img
+
+    @classmethod
+    def add_resource_path(cls, path):
+        if path not in cls._resource_pit:
+            cls._resource_pit[path] = PitType.PATH
+
+    @classmethod
+    def add_resource_package(cls, package):
+        if package not in cls._resource_pit:
+            cls._resource_pit[package] = PitType.PACKAGE
+
+    @classmethod
+    def find_and_register(cls, image_id):
+        """Find and register image from the resource pits."""
+        image_path = None
+        pattern = f"*{image_id}"
+        for pit, pit_type in cls._resource_pit.items():
+            if pit_type == PitType.PATH:
+                try:
+                    image_path = cls._find_in_path(pit, pattern)
+                except TypeError:
+                    pass
+                if image_path:
+                    cls.register(image_id, image_path)
+                    break
+            else:
+                try:
+                    image_path = cls._find_in_package(pit, pattern)
+                except ModuleNotFoundError:
+                    pass
+                if image_path:
+                    cls.register_from_package(image_id, image_path)
+                    break
+        if image_path is None:
+            msg = f"Error: image {image_id} not found in resource pits."
+            raise ImageNotFoundError(msg)
+
+    @staticmethod
+    def _find_in_path(path_src, pattern):
+        found = None
+        for p in Path(path_src).glob("**/*"):
+            if p.is_file() and p.match(pattern):
+                found = p
+                break
+        return found
+
+    @staticmethod
+    def _find_in_package(pkg_src, pattern):
+        found = None
+        for r in _iter_package_files(pkg_src):
+            p2 = Path(str(r))
+            if r.is_file() and p2.match(pattern):
+                found = r
+                break
+        return found

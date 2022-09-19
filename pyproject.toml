@@ -27,7 +27,10 @@ classifiers = [
   "Topic :: Utilities",
   "Topic :: Software Development :: User Interfaces",
 ]
-dependencies = []
+dependencies = [
+  "dataclasses;python_version<'3.7'",
+  "importlib_resources;python_version<'3.9'",
+]
 dynamic = ["version"]
 
 [project.urls]

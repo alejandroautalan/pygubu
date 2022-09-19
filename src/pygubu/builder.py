@@ -35,18 +35,21 @@ class Builder(object):
         self.root = None
         self.objects = {}
         self.tkvariables = {}
-        self._resource_paths = []
         self.translator = translator
 
     def add_resource_path(self, path):
         """Add additional path to the resources paths."""
-        self._resource_paths.append(path)
+        StockImage.add_resource_path(path)
+
+    def add_resource_package(self, pkg: str):
+        StockImage.add_resource_package(pkg)
 
     def get_image(self, path):
         """Return tk image corresponding to name which is taken form path."""
         image = ""
         name = Path(path).name
-        self.__load_image(path)
+        if not StockImage.is_registered(name):
+            StockImage.find_and_register(name)
         try:
             image = StockImage.get(name)
         except StockImageException:
@@ -58,35 +61,14 @@ class Builder(object):
         """Return path to use as iconbitmap property."""
         image = None
         name = Path(path).name
-        self.__load_image(path)
+        if not StockImage.is_registered(name):
+            StockImage.find_and_register(name)
         try:
             image = StockImage.as_iconbitmap(name)
         except StockImageException:
             # TODO: notify something here.
             pass
         return image
-
-    def __load_image(self, path):
-        name = Path(path).name
-        if not StockImage.is_registered(name):
-            ipath = self.__find_image(path)
-            if ipath is not None:
-                StockImage.register(name, ipath)
-            else:
-                msg = "Image '%s' not found in resource paths."
-                logger.warning(msg, name)
-
-    def __find_image(self, relpath):
-        image_path = None
-        pattern = f"*{relpath}"
-        for rp in self._resource_paths:
-            for p in Path(rp).glob("**/*"):
-                if p.is_file() and p.match(pattern):
-                    image_path = p
-                    break
-            if image_path is not None:
-                break
-        return image_path
 
     def get_variable(self, varname):
         """Return a tk variable created with 'create_variable' method."""
