@@ -104,7 +104,7 @@ class TKToplevel(BuilderObject):
     #
     def _code_set_property(self, targetid, pname, value, code_bag):
         if pname in ("geometry", "overrideredirect", "title"):
-            line = "{0}.{1}('{2}')".format(targetid, pname, value)
+            line = f'{targetid}.{pname}("{value}")'
             code_bag[pname] = (line,)
         elif pname == "resizable":
             p1, p2 = self.RESIZABLE[value]
@@ -117,7 +117,7 @@ class TKToplevel(BuilderObject):
                 code_bag[pname] = (line,)
         elif pname == "iconbitmap":
             bitmap = self.builder.code_create_iconbitmap(value)
-            line = "{0}.iconbitmap('{1}')".format(targetid, bitmap)
+            line = f'{targetid}.iconbitmap("{bitmap}")'
             code_bag[pname] = (line,)
         elif pname == "iconphoto":
             image = self.builder.code_create_image(value)
@@ -571,13 +571,13 @@ class TKText(BuilderObject):
             if state_value == tk.DISABLED:
                 lines.extend(
                     (
-                        f"{targetid}.configure(state='normal')",
-                        f"{targetid}.insert('0.0', _text_)",
-                        f"{targetid}.configure(state='disabled')",
+                        f'{targetid}.configure(state="normal")',
+                        f'{targetid}.insert("0.0", _text_)',
+                        f'{targetid}.configure(state="disabled")',
                     )
                 )
             else:
-                lines.append(f"{targetid}.insert('0.0', _text_)")
+                lines.append(f'{targetid}.insert("0.0", _text_)')
             code_bag[pname] = lines
         else:
             super(TKText, self)._code_set_property(
@@ -993,7 +993,7 @@ class TKMenu(BuilderObject):
             props = ""
             if bag:
                 props = ", " + ", ".join(bag)
-            line = f"{targetid}.add('{itemtype}'{props})"
+            line = f'{targetid}.add("{itemtype}"{props})'
             lines.append(line)
         return lines
 
@@ -1327,7 +1327,7 @@ class TKMenuitemSubmenu(TKMenuitem):
             props = ""
             if bag:
                 props = ", " + ", ".join(bag)
-            line = f"{targetid}.add('{itemtype}'{props})"
+            line = f'{targetid}.add("{itemtype}"{props})'
             lines.append(line)
         return lines
 

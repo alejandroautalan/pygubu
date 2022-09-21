@@ -416,9 +416,9 @@ class TTKTreeviewBO(TTKWidgetBO):
             if "#0" in columns:
                 columns.remove("#0")
             displaycolumns = self._dcolumns
-            line = "{0}_cols = {1}".format(targetid, repr(columns))
+            line = f"{targetid}_cols = {repr(columns)}"
             lines.append(line)
-            line = "{0}_dcols = {1}".format(targetid, repr(displaycolumns))
+            line = f"{targetid}_dcols = {repr(displaycolumns)}"
             lines.append(line)
             line = "{0}.configure(columns={0}_cols, displaycolumns={0}_dcols)"
             line = line.format(targetid)
@@ -429,10 +429,10 @@ class TTKTreeviewBO(TTKWidgetBO):
                 )
                 bag = []
                 for pname in kwp:
-                    s = "{0}={1}".format(pname, code_bag[pname])
+                    s = f"{pname}={code_bag[pname]}"
                     bag.append(s)
                 kwargs = ",".join(bag)
-                line = "{0}.column('{1}', {2})".format(targetid, col, kwargs)
+                line = f'{targetid}.column("{col}", {kwargs})'
                 lines.append(line)
         if self._headings:
             for col in self._headings:
@@ -441,10 +441,10 @@ class TTKTreeviewBO(TTKWidgetBO):
                 )
                 bag = []
                 for pname in kwp:
-                    s = "{0}={1}".format(pname, code_bag[pname])
+                    s = f"{pname}={code_bag[pname]}"
                     bag.append(s)
                 kwargs = ",".join(bag)
-                line = "{0}.heading('{1}', {2})".format(targetid, col, kwargs)
+                line = f'{targetid}.heading("{col}", {kwargs})'
                 lines.append(line)
 
         return lines
@@ -527,12 +527,12 @@ class TTKNotebookTab(TTKWidgetBO):
         )
         kwbag = []
         for pname in kw:
-            arg = "{0}={1}".format(pname, code_bag[pname])
+            arg = f"{pname}={code_bag[pname]}"
             kwbag.append(arg)
         kwargs = ""
         if kwbag:
-            kwargs = ", {0}".format(", ".join(kwbag))
-        line = "{0}.add({1}{2})".format(targetid, childid, kwargs)
+            kwargs = f", {', '.join(kwbag)}"
+        line = f"{targetid}.add({childid}{kwargs})"
         return [line]
 
 

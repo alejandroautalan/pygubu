@@ -409,7 +409,7 @@ class BuilderObject(object):
                 lines.append(line)
             if manager == "grid" and "anchor" in container_prop:
                 value = container_prop.get("anchor")
-                line = f"{targetid}.{manager}_anchor('{value}')"
+                line = f'{targetid}.{manager}_anchor("{value}")'
                 lines.append(line)
 
             rowbag = defaultdict(list)
@@ -494,7 +494,7 @@ class BuilderObject(object):
             propvalue = (
                 f"{value}"
                 if value.isnumeric() or isfloat(value)
-                else f"'{value}'"
+                else f'"{value}"'
             )
         return propvalue
 
@@ -603,7 +603,7 @@ class BuilderObject(object):
             )
             add_arg = "+" if bind.add else ""
             line = (
-                f"{target}.bind('{bind.sequence}', {cb_name}, add='{add_arg}')"
+                f'{target}.bind("{bind.sequence}", {cb_name}, add="{add_arg}")'
             )
             lines.append(line)
         return lines
@@ -614,7 +614,7 @@ class BuilderObject(object):
         fvalue = (
             f"{pvalue}"
             if pvalue.isnumeric() or isfloat(pvalue)
-            else f"'{pvalue}'"
+            else f'"{pvalue}"'
         )
         return fvalue
 
@@ -650,14 +650,14 @@ class EntryBaseBO(BuilderObject):
             fval = self.builder.code_translate_str(value)
             lines = [
                 f"_text_ = {fval}",
-                f"{targetid}.delete('0', 'end')",
-                f"{targetid}.insert('0', _text_)",
+                f'{targetid}.delete("0", "end")',
+                f'{targetid}.insert("0", _text_)',
             ]
             if "state" in self.wmeta.properties:
                 state_value = self.wmeta.properties["state"]
                 if state_value != "normal":
-                    lines.insert(1, f"{targetid}['state'] = 'normal'")
-                    line = f"{targetid}['state'] = '{state_value}'"
+                    lines.insert(1, f'{targetid}["state"] = "normal"')
+                    line = f'{targetid}["state"] = "{state_value}"'
                     lines.append(line)
             code_bag[pname] = lines
         else:
@@ -723,7 +723,7 @@ class PanedWindowPaneBO(BuilderObject):
         config = []
         masterid = self.code_child_master()
         for pname, val in self.wmeta.properties.items():
-            line = f"{pname}='{val}'"
+            line = f'{pname}="{val}"'
             config.append(line)
         kw = ""
         lines = []

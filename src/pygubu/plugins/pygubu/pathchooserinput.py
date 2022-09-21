@@ -25,9 +25,9 @@ class PathChooserInputBuilder(BuilderObject):
 
     def _code_set_property(self, targetid, pname, value, code_bag):
         if pname == "type":
-            code_bag[pname] = "'{0}'".format(value)
+            code_bag[pname] = '"{0}"'.format(value)
         elif pname in ("initialdir", "mustexist", "title"):
-            code_bag[pname] = "'{0}'".format(value)
+            code_bag[pname] = '"{0}"'.format(value)
         elif pname == "textvariable":
             code_bag[pname] = self._code_set_tkvariable_property(pname, value)
         else:
