@@ -573,18 +573,19 @@ class BuilderObject(object):
 
     def _code_connect_command(self, cmd_pname, cmd, cbname):
         target = self.code_identifier()
-        args = self._code_define_callback_args(cmd_pname, cmd)
+        args = cmd["args"]
+        args = args.split() if args else None
         lines = []
         cmdtype = cmd["cbtype"]
         if args is not None:
             if cmdtype == CB_TYPES.WITH_WID:
                 wid = self.wmeta.identifier
-                fdef = f"_wcmd = lambda wid='{wid}': {cbname}(wid)"
+                fdef = f'_wcmd = lambda wid="{wid}": {cbname}(wid)'
                 cbname = "_wcmd"
                 lines.append(fdef)
             if cmdtype == CB_TYPES.ENTRY_VALIDATE:
                 original_cb = cbname
-                tk_args = [f"'%{a}'" for a in args]
+                tk_args = [f'"{a}"' for a in args]
                 tk_args = ",".join(tk_args)
                 fdef = f"_validatecmd = ({target}.register({original_cb}), {tk_args})"
                 cbname = "_validatecmd"
