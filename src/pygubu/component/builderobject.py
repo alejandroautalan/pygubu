@@ -104,6 +104,11 @@ class BuilderObject(object):
         else:
             cls.allowed_children = cls.allowed_children + (builder_uid,)
 
+    @staticmethod
+    def configure_for_preview(widget):
+        """Make widget just display with minimal functionality."""
+        pass
+
     def __init__(self, builder, wmeta):
         super(BuilderObject, self).__init__()
         self.widget = None
