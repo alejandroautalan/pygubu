@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.26.1
+
+  * Hotfix for alejandroautalan/pygubu-designer#153
+
 Changes for version 0.26
 
   * Allow pygubu to use importlib.resources module.  refs #269
