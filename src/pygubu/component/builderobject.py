@@ -80,7 +80,12 @@ class BuilderObject(object):
     command_properties = tuple()
     allow_bindings = True
     tkvar_properties = ("listvariable", "textvariable", "variable")
-    tkimage_properties = ("image", "selectimage", "iconphoto")
+    tkimage_properties = (
+        "image",
+        "selectimage",
+        "iconphoto",
+        "backgroundimage",
+    )
     tkfont_properties = ("font",)
     virtual_events = tuple()
 

@@ -16,6 +16,9 @@ logger = logging.getLogger(__name__)
 #
 # tkinter widgets
 #
+_toplevel_87 = tuple()
+if tk.TkVersion >= 8.7:
+    _toplevel_87 = ("backgroundimage", "tile")
 
 
 class TKToplevel(BuilderObject):
@@ -42,7 +45,7 @@ class TKToplevel(BuilderObject):
         "container",
         "height",
         "width",
-    )
+    ) + _toplevel_87
     OPTIONS_CUSTOM = (
         "title",
         "geometry",
