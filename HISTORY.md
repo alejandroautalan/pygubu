@@ -1,6 +1,12 @@
 History
 =======
 
+Changes for version 0.26
+
+  * Allow pygubu to use importlib.resources module.  refs #269
+  * Code generation: Fix callback registration arguments.
+  * Builder object, new static method configure_for_preview.
+
 Changes for version 0.25.1
 
   * Fix Menubutton code generation. refs alejandroautalan/pygubu-designer#151
