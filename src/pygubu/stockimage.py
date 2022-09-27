@@ -98,7 +98,7 @@ class CacheItem:
         ...
 
 
-@dataclass(slots=True)
+@dataclass
 class ImgFromData(CacheItem):
     data: Any = None
     format: str = None
@@ -107,7 +107,7 @@ class ImgFromData(CacheItem):
         tk.PhotoImage(format=self.format, data=self.data)
 
 
-@dataclass(slots=True)
+@dataclass
 class ImgCreated(CacheItem):
     image: Any = None
 
@@ -115,7 +115,7 @@ class ImgCreated(CacheItem):
         return self.image
 
 
-@dataclass(slots=True)
+@dataclass
 class ImgFromPath(CacheItem):
     fpath: Any = None
 
