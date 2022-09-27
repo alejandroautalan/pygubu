@@ -583,7 +583,7 @@ class BuilderObject(object):
 
     def _code_connect_command(self, cmd_pname, cmd, cbname):
         target = self.code_identifier()
-        args = cmd["args"]
+        args = cmd.get("args", "")
         args = args.split() if args else None
         lines = []
         cmdtype = cmd["cbtype"]
