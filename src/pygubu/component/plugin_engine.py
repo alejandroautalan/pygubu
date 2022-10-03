@@ -10,6 +10,7 @@ class PluginRegistry(ABCMeta):
             "BuilderLoaderPlugin",
         ):
             PluginRegistry.plugins.append(cls)
+            print(f"Registering: {cls}")
 
 
 class IPluginBase(ABC, metaclass=PluginRegistry):
@@ -19,7 +20,7 @@ class IPluginBase(ABC, metaclass=PluginRegistry):
         ...
 
 
-class BuilderLoaderPlugin(IPluginBase):
+class IBuilderLoaderPlugin:
     @abstractmethod
     def get_module_for(self, identifier: str) -> str:
         "Return module name for specified identifier."
@@ -34,3 +35,11 @@ class BuilderLoaderPlugin(IPluginBase):
     def can_load(self, identifier: str) -> bool:
         "Return if this loader can manage specified identifier."
         ...
+
+
+class IDesignerPlugin:
+    pass
+
+
+class BuilderLoaderPlugin(IBuilderLoaderPlugin, IPluginBase):
+    pass

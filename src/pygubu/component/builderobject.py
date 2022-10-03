@@ -177,7 +177,7 @@ class BuilderObject(object):
                 logger.debug("processing property %s value", pname)
                 propvalue = self._process_property_value(pname, value)
                 logger.debug("setting property %s = %s", pname, propvalue)
-                target_widget[pname] = propvalue
+                target_widget.configure(**{pname: propvalue})
             except Exception as e:
                 msg = "Failed to set property '%s' on class '%s'. Error: %s"
                 logger.error(msg, pname, repr(self.class_), str(e))

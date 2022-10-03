@@ -2,7 +2,7 @@ import importlib
 import pkgutil
 import pygubu.plugins
 
-from .plugin_engine import PluginRegistry, BuilderLoaderPlugin
+from .plugin_engine import PluginRegistry, IBuilderLoaderPlugin
 
 
 def iter_namespace(ns_pkg):
@@ -33,5 +33,5 @@ class PluginManager:
         return (
             plugin
             for plugin in cls.plugins
-            if isinstance(plugin, BuilderLoaderPlugin)
+            if isinstance(plugin, IBuilderLoaderPlugin)
         )
