@@ -14,7 +14,7 @@ from ..customtkinter import _designer_tab_label, _plugin_uid
 
 class CTkBaseMixin:
     def _process_property_value(self, pname, value):
-        if pname == "hover":
+        if pname in ("hover", "dynamic_resizing"):
             return tk.getboolean(value)
         if pname in (
             "border_width",
@@ -31,6 +31,7 @@ class CTkBaseMixin:
     def _code_process_property_value(self, targetid, pname, value: str):
         if pname in (
             "hover",
+            "dynamic_resizing",
             "border_width",
             "from_",
             "to",
