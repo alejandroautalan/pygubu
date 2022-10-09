@@ -7,6 +7,7 @@ from pygubu.i18n import _
 from pygubu.plugins.tk.tkstdwidgets import TKFrame as TKFrameBO
 from pygubu.plugins.tk.tkstdwidgets import TKLabel as TKLabelBO
 from pygubu.plugins.tk.tkstdwidgets import TKEntry as TKEntryBO
+from pygubu.plugins.tk.tkstdwidgets import TKCanvas as TKCanvasBO
 from customtkinter import (
     CTkFrame,
     CTkLabel,
@@ -19,10 +20,17 @@ from customtkinter import (
     CTkCheckBox,
     CTkRadioButton,
     CTkSwitch,
+    CTkTextbox,
+    CTkCanvas,
+    CTkScrollbar,
 )
 
 from ..customtkinter import _designer_tab_label, _plugin_uid
 from .ctkbase import CTkBaseMixin
+
+GCONTAINER = 0
+GINPUT = 1
+GDISPLAY = 2
 
 
 class CTkFrameBO(CTkBaseMixin, TKFrameBO):
@@ -45,7 +53,7 @@ register_widget(
     CTkFrameBO,
     "CTkFrame",
     ("ttk", _designer_tab_label),
-    group=0,
+    group=GCONTAINER,
 )
 register_custom_property(_builder_uid, "bg_color", "colorentry")
 register_custom_property(_builder_uid, "fg_color", "colorentry")
@@ -74,7 +82,7 @@ register_widget(
     CTkLabelBO,
     "CTkLabel",
     ("ttk", _designer_tab_label),
-    group=1,
+    group=GDISPLAY,
 )
 register_custom_property(_builder_uid, "bg_color", "colorentry")
 register_custom_property(_builder_uid, "fg_color", "colorentry")
@@ -107,7 +115,7 @@ register_widget(
     CTkProgressBarBO,
     "CTkProgressBar",
     ("ttk", _designer_tab_label),
-    group=1,
+    group=GDISPLAY,
 )
 
 
@@ -146,7 +154,7 @@ register_widget(
     CTkButtonBO,
     "CTkButton",
     ("ttk", _designer_tab_label),
-    group=1,
+    group=GINPUT,
 )
 
 register_custom_property(_builder_uid, "bg_color", "colorentry")
@@ -203,7 +211,7 @@ register_widget(
     CTkSliderBO,
     "CTkSlider",
     ("ttk", _designer_tab_label),
-    group=1,
+    group=GINPUT,
 )
 
 register_custom_property(_builder_uid, "bg_color", "colorentry")
@@ -257,7 +265,7 @@ register_widget(
     CTkEntryBO,
     "CTkEntry",
     ("ttk", _designer_tab_label),
-    group=1,
+    group=GINPUT,
 )
 
 register_custom_property(_builder_uid, "bg_color", "colorentry")
@@ -307,7 +315,7 @@ register_widget(
     CTkOptionMenuBO,
     "CTkOptionMenu",
     ("ttk", _designer_tab_label),
-    group=1,
+    group=GINPUT,
 )
 register_custom_property(_builder_uid, "bg_color", "colorentry")
 register_custom_property(_builder_uid, "fg_color", "colorentry")
@@ -381,7 +389,7 @@ register_widget(
     CTkComboBoxBO,
     "CTkComboBox",
     ("ttk", _designer_tab_label),
-    group=1,
+    group=GINPUT,
 )
 register_custom_property(_builder_uid, "bg_color", "colorentry")
 register_custom_property(_builder_uid, "fg_color", "colorentry")
@@ -464,7 +472,7 @@ register_widget(
     CTkCheckBoxBO,
     "CTkCheckBox",
     ("ttk", _designer_tab_label),
-    group=1,
+    group=GINPUT,
 )
 
 register_custom_property(_builder_uid, "bg_color", "colorentry")
@@ -529,7 +537,7 @@ register_widget(
     CTkRadioButtonBO,
     "CTkRadioButton",
     ("ttk", _designer_tab_label),
-    group=1,
+    group=GINPUT,
 )
 
 register_custom_property(_builder_uid, "bg_color", "colorentry")
@@ -598,7 +606,7 @@ register_widget(
     CTkSwitchBO,
     "CTkSwitch",
     ("ttk", _designer_tab_label),
-    group=1,
+    group=GINPUT,
 )
 
 register_custom_property(_builder_uid, "bg_color", "colorentry")
@@ -626,3 +634,80 @@ register_custom_property(_builder_uid, "progress_color", "colorentry")
 register_custom_property(_builder_uid, "button_color", "colorentry")
 register_custom_property(_builder_uid, "button_hover_color", "colorentry")
 register_custom_property(_builder_uid, "button_length", "colorentry")
+
+
+class CTkTextboxBO(CTkBaseMixin, BuilderObject):
+    class_ = CTkTextbox
+    OPTIONS_SPECIFIC = (
+        "width",
+        "height",
+    )
+    OPTIONS_CUSTOM = (
+        "bg_color",
+        "fg_color",
+        "border_color",
+        "border_width",
+        "corner_radius",
+        "text_font",
+        "text_color",
+    )
+    properties = OPTIONS_SPECIFIC + OPTIONS_CUSTOM
+
+
+_builder_uid = f"{_plugin_uid}.CTkTextbox"
+register_widget(
+    _builder_uid,
+    CTkTextboxBO,
+    "CTkTextbox",
+    ("ttk", _designer_tab_label),
+    group=GINPUT,
+)
+register_custom_property(_builder_uid, "bg_color", "colorentry")
+register_custom_property(_builder_uid, "fg_color", "colorentry")
+register_custom_property(_builder_uid, "border_color", "colorentry")
+register_custom_property(_builder_uid, "border_width", "entry")
+register_custom_property(_builder_uid, "corner_radius", "entry")
+register_custom_property(_builder_uid, "text_font", "fontentry")
+register_custom_property(_builder_uid, "text_color", "colorentry")
+
+
+class CTkCanvasBO(CTkBaseMixin, TKCanvasBO):
+    class_ = CTkCanvas
+
+
+_builder_uid = f"{_plugin_uid}.CTkCanvas"
+register_widget(
+    _builder_uid,
+    CTkCanvasBO,
+    "CTkCanvas",
+    ("ttk", _designer_tab_label),
+    group=GDISPLAY,
+)
+
+
+class CTkScrollbarBO(CTkBaseMixin, BuilderObject):
+    class_ = CTkScrollbar
+    OPTIONS_SPECIFIC = ("width", "height", "orientation", "command")
+    OPTIONS_CUSTOM = (
+        "bg_color",
+        "fg_color",
+        "border_color",
+        "border_width",
+        "corner_radius",
+        "scrollbar_color",
+        "scrollbar_hover_color",
+        "border_spacing",
+        "minimum_pixel_length",
+        "hover",
+    )
+    properties = OPTIONS_SPECIFIC + OPTIONS_CUSTOM
+
+
+_builder_uid = f"{_plugin_uid}.CTkScrollbar"
+register_widget(
+    _builder_uid,
+    CTkScrollbarBO,
+    "CTkScrollbar",
+    ("ttk", _designer_tab_label),
+    group=GINPUT,
+)
