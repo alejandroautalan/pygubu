@@ -164,6 +164,11 @@ class TTKCombobox(TTKWidgetBO):
     )
     virtual_events = ("<<ComboboxSelected>>",)
 
+    def _code_process_property_value(self, targetid, pname, value: str):
+        if pname == "values":
+            return self.code_escape_str(value)
+        return super()._code_process_property_value(targetid, pname, value)
+
 
 register_widget(
     "ttk.Combobox", TTKCombobox, "Combobox", (_("Control & Display"), "ttk")
