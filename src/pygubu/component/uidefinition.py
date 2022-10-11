@@ -174,7 +174,10 @@ class UIDefinition(object):
                     meta.container_properties[pname] = p.text
                 else:
                     # GRID RC PROPERTY
-                    line = GridRCLine(ptype, p.get("id"), pname, p.text)
+                    pvalue = (
+                        "" if p.text is None else p.text
+                    )  # fix malformed xml saved
+                    line = GridRCLine(ptype, p.get("id"), pname, pvalue)
                     meta.gridrc_properties.append(line)
 
     def __load_layout_v1_0(self, element, meta):

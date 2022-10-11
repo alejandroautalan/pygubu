@@ -501,9 +501,10 @@ class BuilderObject(object):
             propvalue = self.builder.code_translate_str(value)
         # default processing
         if propvalue is None:
+            pvalue_str = str(value)
             propvalue = (
-                f"{value}"
-                if value.isnumeric() or isfloat(value)
+                pvalue_str
+                if pvalue_str.isnumeric() or isfloat(pvalue_str)
                 else f'"{value}"'
             )
         return propvalue
@@ -621,9 +622,10 @@ class BuilderObject(object):
     def _code_process_layout_property(
         self, manager: str, pname: str, pvalue: str
     ) -> str:
+        pvalue_str = str(pvalue)
         fvalue = (
-            f"{pvalue}"
-            if pvalue.isnumeric() or isfloat(pvalue)
+            pvalue_str
+            if pvalue_str.isnumeric() or isfloat(pvalue_str)
             else f'"{pvalue}"'
         )
         return fvalue
