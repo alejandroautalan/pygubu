@@ -80,6 +80,27 @@ class TableCanvasBuilder(BuilderObject):
         pvalue = f"{pvalue}"
         return super()._code_process_property_value(targetid, pname, pvalue)
 
+    @staticmethod
+    def configure_for_preview(widget):
+        """Make widget just display with minimal functionality."""
+
+        def _no_op(event=None):
+            pass
+
+        seqlist = (
+            "<Button-1>",
+            "<Button-2>",
+            "<Button-3>",
+            "<Button-4>",
+            "<Button-5>",
+            "<MouseWheel>" "<Double-Button-1>",
+            "<Control-Button-1>",
+            "<Shift-Button-1>",
+            "<B1-Motion>",
+        )
+        for seq in seqlist:
+            widget.bind(seq, _no_op)
+
 
 _builder_uid = f"{_plugin_uid}.TableCanvas"
 register_widget(
