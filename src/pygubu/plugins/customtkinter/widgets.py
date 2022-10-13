@@ -204,6 +204,17 @@ class CTkSliderBO(CTkBaseMixin, BuilderObject):
     properties = OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     ro_properties = ("orient", "button_length")
 
+    @staticmethod
+    def configure_for_preview(widget):
+        """Make widget just display with minimal functionality."""
+
+        def _no_op(event=None):
+            pass
+
+        seqlist = ("<Enter>", "<Leave>", "<Button-1>", "<B1-Motion>")
+        for seq in seqlist:
+            widget.canvas.bind(seq, _no_op)
+
 
 _builder_uid = f"{_plugin_uid}.CTkSlider"
 register_widget(
@@ -258,6 +269,17 @@ class CTkEntryBO(CTkBaseMixin, TKEntryBO):
         else:
             super()._set_property(target_widget, pname, value)
 
+    @staticmethod
+    def configure_for_preview(widget):
+        """Make widget just display with minimal functionality."""
+
+        def _no_op(event=None):
+            pass
+
+        seqlist = ("<FocusOut>", "<FocusIn>")
+        for seq in seqlist:
+            widget.canvas.bind(seq, _no_op)
+
 
 _builder_uid = f"{_plugin_uid}.CTkEntry"
 register_widget(
@@ -307,6 +329,18 @@ class CTkOptionMenuBO(CTkBaseMixin, BuilderObject):
 
     def _code_define_callback_args(self, cmd_pname, cmd):
         return ("current_value",)
+
+    @staticmethod
+    def configure_for_preview(widget):
+        """Make widget just display with minimal functionality."""
+
+        def _no_op(event=None):
+            pass
+
+        seqlist = ("<Enter>", "<Leave>", "<Button-1>")
+        for seq in seqlist:
+            widget.canvas.bind(seq, _no_op)
+            widget.text_label.bind(seq, _no_op)
 
 
 _builder_uid = f"{_plugin_uid}.CTkOptionMenu"
@@ -381,6 +415,20 @@ class CTkComboBoxBO(CTkBaseMixin, BuilderObject):
 
     def _code_define_callback_args(self, cmd_pname, cmd):
         return ("value",)
+
+    @staticmethod
+    def configure_for_preview(widget):
+        """Make widget just display with minimal functionality."""
+
+        def _no_op(event=None):
+            pass
+
+        widget.canvas.tag_bind("right_parts", "<Enter>", _no_op)
+        widget.canvas.tag_bind("dropdown_arrow", "<Enter>", _no_op)
+        widget.canvas.tag_bind("right_parts", "<Leave>", _no_op)
+        widget.canvas.tag_bind("dropdown_arrow", "<Leave>", _no_op)
+        widget.canvas.tag_bind("right_parts", "<Button-1>", _no_op)
+        widget.canvas.tag_bind("dropdown_arrow", "<Button-1>", _no_op)
 
 
 _builder_uid = f"{_plugin_uid}.CTkComboBox"
