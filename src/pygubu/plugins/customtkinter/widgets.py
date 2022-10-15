@@ -55,11 +55,6 @@ register_widget(
     ("ttk", _designer_tab_label),
     group=GCONTAINER,
 )
-register_custom_property(_builder_uid, "bg_color", "colorentry")
-register_custom_property(_builder_uid, "fg_color", "colorentry")
-register_custom_property(_builder_uid, "border_color", "colorentry")
-register_custom_property(_builder_uid, "border_width", "entry")
-register_custom_property(_builder_uid, "corner_radius", "entry")
 
 
 class CTkLabelBO(CTkBaseMixin, TKLabelBO):
@@ -84,11 +79,6 @@ register_widget(
     ("ttk", _designer_tab_label),
     group=GDISPLAY,
 )
-register_custom_property(_builder_uid, "bg_color", "colorentry")
-register_custom_property(_builder_uid, "fg_color", "colorentry")
-register_custom_property(_builder_uid, "border_color", "colorentry")
-register_custom_property(_builder_uid, "border_width", "entry")
-register_custom_property(_builder_uid, "corner_radius", "entry")
 
 
 class CTkProgressBarBO(CTkBaseMixin, BuilderObject):
@@ -157,23 +147,6 @@ register_widget(
     group=GINPUT,
 )
 
-register_custom_property(_builder_uid, "bg_color", "colorentry")
-register_custom_property(_builder_uid, "fg_color", "colorentry")
-register_custom_property(_builder_uid, "border_color", "colorentry")
-register_custom_property(_builder_uid, "border_width", "entry")
-register_custom_property(_builder_uid, "corner_radius", "entry")
-register_custom_property(_builder_uid, "hover_color", "colorentry")
-register_custom_property(_builder_uid, "text_color", "colorentry")
-register_custom_property(_builder_uid, "text_color_disabled", "colorentry")
-register_custom_property(_builder_uid, "text_font", "fontentry")
-register_custom_property(
-    _builder_uid,
-    "hover",
-    "choice",
-    values=("", "True", "False"),
-    state="readonly",
-)
-
 
 class CTkSliderBO(CTkBaseMixin, BuilderObject):
     class_ = CTkSlider
@@ -224,18 +197,6 @@ register_widget(
     ("ttk", _designer_tab_label),
     group=GINPUT,
 )
-
-register_custom_property(_builder_uid, "bg_color", "colorentry")
-register_custom_property(_builder_uid, "fg_color", "colorentry")
-register_custom_property(_builder_uid, "border_color", "colorentry")
-register_custom_property(_builder_uid, "border_width", "entry")
-register_custom_property(_builder_uid, "corner_radius", "entry")
-register_custom_property(_builder_uid, "progress_color", "colorentry")
-register_custom_property(_builder_uid, "button_color", "colorentry")
-register_custom_property(_builder_uid, "button_hover_color", "colorentry")
-register_custom_property(_builder_uid, "button_corner_radius", "entry")
-register_custom_property(_builder_uid, "button_length", "entry")
-register_custom_property(_builder_uid, "number_of_steps", "entry")
 
 
 class CTkEntryBO(CTkBaseMixin, TKEntryBO):
@@ -290,16 +251,6 @@ register_widget(
     group=GINPUT,
 )
 
-register_custom_property(_builder_uid, "bg_color", "colorentry")
-register_custom_property(_builder_uid, "fg_color", "colorentry")
-register_custom_property(_builder_uid, "border_color", "colorentry")
-register_custom_property(_builder_uid, "border_width", "entry")
-register_custom_property(_builder_uid, "corner_radius", "entry")
-register_custom_property(_builder_uid, "text_color", "colorentry")
-register_custom_property(_builder_uid, "placeholder_text_color", "colorentry")
-register_custom_property(_builder_uid, "text_font", "fontentry")
-register_custom_property(_builder_uid, "placeholder_text", "entry")
-
 
 class CTkOptionMenuBO(CTkBaseMixin, BuilderObject):
     class_ = CTkOptionMenu
@@ -351,36 +302,6 @@ register_widget(
     ("ttk", _designer_tab_label),
     group=GINPUT,
 )
-register_custom_property(_builder_uid, "bg_color", "colorentry")
-register_custom_property(_builder_uid, "fg_color", "colorentry")
-register_custom_property(_builder_uid, "button_color", "colorentry")
-register_custom_property(_builder_uid, "button_hover_color", "colorentry")
-register_custom_property(_builder_uid, "text_color", "colorentry")
-register_custom_property(_builder_uid, "text_color_disabled", "colorentry")
-register_custom_property(_builder_uid, "dropdown_hover_color", "colorentry")
-register_custom_property(_builder_uid, "dropdown_text_color", "colorentry")
-register_custom_property(_builder_uid, "dropdown_color", "colorentry")
-register_custom_property(_builder_uid, "width", "dimensionentry")
-register_custom_property(_builder_uid, "height", "dimensionentry")
-register_custom_property(_builder_uid, "corner_radius", "entry")
-register_custom_property(_builder_uid, "text_font", "fontentry")
-register_custom_property(
-    _builder_uid,
-    "state",
-    "choice",
-    values=("", "normal", "active", "disabled"),
-    state="readonly",
-)
-register_custom_property(
-    _builder_uid,
-    "dynamic_resizing",
-    "choice",
-    values=("", "True", "False"),
-    state="readonly",
-)
-register_custom_property(_builder_uid, "command", "simplecommandentry")
-register_custom_property(_builder_uid, "variable", "tkvarentry")
-register_custom_property(_builder_uid, "values", "entry")
 
 
 class CTkComboBoxBO(CTkBaseMixin, BuilderObject):
@@ -439,46 +360,6 @@ register_widget(
     ("ttk", _designer_tab_label),
     group=GINPUT,
 )
-register_custom_property(_builder_uid, "bg_color", "colorentry")
-register_custom_property(_builder_uid, "fg_color", "colorentry")
-register_custom_property(_builder_uid, "border_color", "colorentry")
-register_custom_property(_builder_uid, "border_width", "entry")
-register_custom_property(_builder_uid, "button_color", "colorentry")
-register_custom_property(_builder_uid, "button_hover_color", "colorentry")
-register_custom_property(_builder_uid, "text_color", "colorentry")
-register_custom_property(_builder_uid, "text_color_disabled", "colorentry")
-register_custom_property(_builder_uid, "dropdown_hover_color", "colorentry")
-register_custom_property(_builder_uid, "dropdown_text_color", "colorentry")
-register_custom_property(_builder_uid, "dropdown_color", "colorentry")
-register_custom_property(_builder_uid, "width", "dimensionentry")
-register_custom_property(_builder_uid, "height", "dimensionentry")
-register_custom_property(_builder_uid, "corner_radius", "entry")
-register_custom_property(_builder_uid, "text_font", "fontentry")
-register_custom_property(_builder_uid, "dropdown_text_font", "fontentry")
-register_custom_property(
-    _builder_uid,
-    "state",
-    "choice",
-    values=("", "normal", "active", "disabled"),
-    state="readonly",
-)
-register_custom_property(
-    _builder_uid,
-    "dynamic_resizing",
-    "choice",
-    values=("", "True", "False"),
-    state="readonly",
-)
-register_custom_property(_builder_uid, "command", "simplecommandentry")
-register_custom_property(_builder_uid, "variable", "tkvarentry")
-register_custom_property(_builder_uid, "values", "entry")
-register_custom_property(
-    _builder_uid,
-    "hover",
-    "choice",
-    values=("", "True", "False"),
-    state="readonly",
-)
 
 
 class CTkCheckBoxBO(CTkBaseMixin, BuilderObject):
@@ -523,28 +404,6 @@ register_widget(
     group=GINPUT,
 )
 
-register_custom_property(_builder_uid, "bg_color", "colorentry")
-register_custom_property(_builder_uid, "fg_color", "colorentry")
-register_custom_property(_builder_uid, "border_color", "colorentry")
-register_custom_property(_builder_uid, "border_width", "entry")
-register_custom_property(_builder_uid, "text", "text")
-register_custom_property(_builder_uid, "text_font", "fontentry")
-register_custom_property(_builder_uid, "text_color", "colorentry")
-register_custom_property(_builder_uid, "text_color_disabled", "colorentry")
-register_custom_property(_builder_uid, "checkmark_color", "colorentry")
-register_custom_property(_builder_uid, "width", "dimensionentry")
-register_custom_property(_builder_uid, "height", "dimensionentry")
-register_custom_property(_builder_uid, "corner_radius", "entry")
-register_custom_property(_builder_uid, "command", "simplecommandentry")
-register_custom_property(
-    _builder_uid,
-    "hover",
-    "choice",
-    values=("", "True", "False"),
-    state="readonly",
-)
-register_custom_property(_builder_uid, "hover_color", "colorentry")
-
 
 class CTkRadioButtonBO(CTkBaseMixin, BuilderObject):
     class_ = CTkRadioButton
@@ -587,28 +446,6 @@ register_widget(
     ("ttk", _designer_tab_label),
     group=GINPUT,
 )
-
-register_custom_property(_builder_uid, "bg_color", "colorentry")
-register_custom_property(_builder_uid, "fg_color", "colorentry")
-register_custom_property(_builder_uid, "border_color", "colorentry")
-register_custom_property(_builder_uid, "border_width", "entry")
-register_custom_property(_builder_uid, "text", "text")
-register_custom_property(_builder_uid, "text_font", "fontentry")
-register_custom_property(_builder_uid, "text_color", "colorentry")
-register_custom_property(_builder_uid, "text_color_disabled", "colorentry")
-register_custom_property(_builder_uid, "checkmark_color", "colorentry")
-register_custom_property(_builder_uid, "width", "dimensionentry")
-register_custom_property(_builder_uid, "height", "dimensionentry")
-register_custom_property(_builder_uid, "corner_radius", "entry")
-register_custom_property(_builder_uid, "command", "simplecommandentry")
-register_custom_property(
-    _builder_uid,
-    "hover",
-    "choice",
-    values=("", "True", "False"),
-    state="readonly",
-)
-register_custom_property(_builder_uid, "hover_color", "colorentry")
 
 
 class CTkSwitchBO(CTkBaseMixin, BuilderObject):
@@ -657,32 +494,6 @@ register_widget(
     group=GINPUT,
 )
 
-register_custom_property(_builder_uid, "bg_color", "colorentry")
-register_custom_property(_builder_uid, "fg_color", "colorentry")
-register_custom_property(_builder_uid, "border_color", "colorentry")
-register_custom_property(_builder_uid, "border_width", "entry")
-register_custom_property(_builder_uid, "text", "text")
-register_custom_property(_builder_uid, "text_font", "fontentry")
-register_custom_property(_builder_uid, "text_color", "colorentry")
-register_custom_property(_builder_uid, "text_color_disabled", "colorentry")
-register_custom_property(_builder_uid, "checkmark_color", "colorentry")
-register_custom_property(_builder_uid, "width", "dimensionentry")
-register_custom_property(_builder_uid, "height", "dimensionentry")
-register_custom_property(_builder_uid, "corner_radius", "entry")
-register_custom_property(_builder_uid, "command", "simplecommandentry")
-register_custom_property(
-    _builder_uid,
-    "hover",
-    "choice",
-    values=("", "True", "False"),
-    state="readonly",
-)
-register_custom_property(_builder_uid, "hover_color", "colorentry")
-register_custom_property(_builder_uid, "progress_color", "colorentry")
-register_custom_property(_builder_uid, "button_color", "colorentry")
-register_custom_property(_builder_uid, "button_hover_color", "colorentry")
-register_custom_property(_builder_uid, "button_length", "colorentry")
-
 
 class CTkTextboxBO(CTkBaseMixin, BuilderObject):
     class_ = CTkTextbox
@@ -710,13 +521,6 @@ register_widget(
     ("ttk", _designer_tab_label),
     group=GINPUT,
 )
-register_custom_property(_builder_uid, "bg_color", "colorentry")
-register_custom_property(_builder_uid, "fg_color", "colorentry")
-register_custom_property(_builder_uid, "border_color", "colorentry")
-register_custom_property(_builder_uid, "border_width", "entry")
-register_custom_property(_builder_uid, "corner_radius", "entry")
-register_custom_property(_builder_uid, "text_font", "fontentry")
-register_custom_property(_builder_uid, "text_color", "colorentry")
 
 
 class CTkCanvasBO(CTkBaseMixin, TKCanvasBO):

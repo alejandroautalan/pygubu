@@ -42,3 +42,67 @@ class CTkBaseMixin:
         ):
             return super()._process_property_value(pname, value)
         return super()._code_process_property_value(targetid, pname, value)
+
+
+# I will register here all common properties used by customtkinter widgets
+# so I don't have to repeat for each one (notice the .* at end of _builder_uid):
+_builder_uid = f"{_plugin_uid}.*"
+register_custom_property(_builder_uid, "bg_color", "colorentry")
+register_custom_property(_builder_uid, "border_color", "colorentry")
+register_custom_property(_builder_uid, "border_width", "entry")
+register_custom_property(_builder_uid, "button_color", "colorentry")
+register_custom_property(_builder_uid, "button_hover_color", "colorentry")
+register_custom_property(_builder_uid, "button_corner_radius", "entry")
+register_custom_property(_builder_uid, "button_length", "entry")
+
+register_custom_property(_builder_uid, "checkmark_color", "colorentry")
+register_custom_property(_builder_uid, "command", "simplecommandentry")
+register_custom_property(_builder_uid, "corner_radius", "entry")
+
+register_custom_property(_builder_uid, "dropdown_color", "colorentry")
+register_custom_property(_builder_uid, "dropdown_hover_color", "colorentry")
+register_custom_property(_builder_uid, "dropdown_text_color", "colorentry")
+register_custom_property(_builder_uid, "dropdown_text_font", "fontentry")
+register_custom_property(
+    _builder_uid,
+    "dynamic_resizing",
+    "choice",
+    values=("", "True", "False"),
+    state="readonly",
+)
+
+register_custom_property(_builder_uid, "fg_color", "colorentry")
+
+register_custom_property(_builder_uid, "height", "dimensionentry")
+register_custom_property(
+    _builder_uid,
+    "hover",
+    "choice",
+    values=("", "True", "False"),
+    state="readonly",
+)
+register_custom_property(_builder_uid, "hover_color", "colorentry")
+
+register_custom_property(_builder_uid, "number_of_steps", "entry")
+
+register_custom_property(_builder_uid, "placeholder_text", "entry")
+register_custom_property(_builder_uid, "placeholder_text_color", "colorentry")
+register_custom_property(_builder_uid, "progress_color", "colorentry")
+
+register_custom_property(
+    _builder_uid,
+    "state",
+    "choice",
+    values=("", "normal", "active", "disabled"),
+    state="readonly",
+)
+
+register_custom_property(_builder_uid, "text", "text")
+register_custom_property(_builder_uid, "text_color", "colorentry")
+register_custom_property(_builder_uid, "text_color_disabled", "colorentry")
+register_custom_property(_builder_uid, "text_font", "fontentry")
+
+register_custom_property(_builder_uid, "values", "entry")
+register_custom_property(_builder_uid, "variable", "tkvarentry")
+
+register_custom_property(_builder_uid, "width", "dimensionentry")
