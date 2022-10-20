@@ -32,9 +32,9 @@ class CTkBuilderLoader(IBuilderLoaderPlugin, IPluginBase):
     def can_load(self, identifier: str) -> bool:
         return identifier.startswith("customtkinter.")
 
+    def get_designer_plugin(self):
+        """Load class that implements IDesignerPlugin"""
+        from ._designer import CTkDesignerPlugin
 
-class CTkDesignerPlugin(IDesignerPlugin, IPluginBase):
-    def do_activate(self) -> bool:
-        spec = importlib.util.find_spec("customtkinter")
-        print(">> Activating Custom Tkinter designer plugin")
-        return True if spec is not None else False
+        print("Loading designer plugin class")
+        return CTkDesignerPlugin()

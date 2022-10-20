@@ -2,7 +2,7 @@ import importlib
 import pkgutil
 import pygubu.plugins
 
-from .plugin_engine import PluginRegistry, IBuilderLoaderPlugin
+from .plugin_engine import PluginRegistry, IBuilderLoaderPlugin, IDesignerPlugin
 
 
 def iter_namespace(ns_pkg):
@@ -17,6 +17,7 @@ def iter_namespace(ns_pkg):
 
 class PluginManager:
     plugins = []
+    designer_plugins = []
 
     @classmethod
     def load_plugins(cls):
@@ -35,3 +36,10 @@ class PluginManager:
             for plugin in cls.plugins
             if isinstance(plugin, IBuilderLoaderPlugin)
         )
+
+    @classmethod
+    def load_designer_plugins(cls):
+        for plugin in cls.plugins:
+            helper = plugin.get_designer_plugin()
+            if helper:
+                cls.designer_plugins.append(helper)
