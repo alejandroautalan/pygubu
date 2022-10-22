@@ -26,3 +26,10 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
 
     def can_load(self, identifier: str) -> bool:
         return identifier in self.builders
+
+    def get_designer_plugin(self):
+        """Load class that implements IDesignerPlugin"""
+        from .designer.designerplugin import PygubuDesignerPlugin
+
+        print("Loading Pygubu Core designer plugin class")
+        return PygubuDesignerPlugin()
