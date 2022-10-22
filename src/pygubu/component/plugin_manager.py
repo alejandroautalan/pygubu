@@ -43,3 +43,25 @@ class PluginManager:
             helper = plugin.get_designer_plugin()
             if helper:
                 cls.designer_plugins.append(helper)
+
+    @classmethod
+    def get_preview_builder_for(cls, builder_uid: str):
+        builder = None
+        for plugin in cls.designer_plugins:
+            builder = plugin.get_preview_builder(builder_uid)
+            if builder is not None:
+                break
+        return builder
+
+    @classmethod
+    def get_toplevel_preview_for(
+        cls, builder_uid, widget_id, builder, top_master
+    ):
+        top_preview = None
+        for plugin in cls.designer_plugins:
+            top_preview = plugin.get_toplevel_preview_for(
+                builder_uid, widget_id, builder, top_master
+            )
+            if top_preview is not None:
+                break
+        return top_preview

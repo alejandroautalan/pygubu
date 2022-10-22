@@ -14,8 +14,16 @@ class PluginRegistry(ABCMeta):
             print(f"Registering: {cls}")
 
 
-class IDesignerPlugin:
-    pass
+class IDesignerPlugin(ABC):
+    @abstractmethod
+    def get_preview_builder(self, builder_uid: str):
+        ...
+
+    @abstractmethod
+    def get_toplevel_preview_for(
+        self, builder_uid: str, widget_id: str, builder, top_master
+    ):
+        ...
 
 
 class IPluginBase(ABC, metaclass=PluginRegistry):
@@ -29,7 +37,7 @@ class IPluginBase(ABC, metaclass=PluginRegistry):
         return None
 
 
-class IBuilderLoaderPlugin:
+class IBuilderLoaderPlugin(ABC):
     @abstractmethod
     def get_module_for(self, identifier: str) -> str:
         "Return module name for specified identifier."
