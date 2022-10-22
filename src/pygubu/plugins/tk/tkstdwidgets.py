@@ -956,7 +956,7 @@ class TKMenu(BuilderObject):
         super().__init__(builder, wdescr)
         self._menuitems = None
 
-    def layout(self):
+    def layout(self, target=None):
         pass
 
     #
@@ -1071,7 +1071,7 @@ class TKMenuitem(BuilderObject):
     def configure(self):
         pass
 
-    def layout(self):
+    def layout(self, target=None):
         pass
 
     def _connect_command(self, cpname, callback):
@@ -1234,7 +1234,7 @@ class TKMenuitemSubmenu(TKMenuitem):
     def configure(self):
         pass
 
-    def layout(self):
+    def layout(self, target=None):
         pass
 
     def _connect_command(self, cpname, callback):
