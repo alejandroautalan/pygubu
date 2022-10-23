@@ -242,14 +242,13 @@ class ScrolledFrame(ttk.Frame):
             # interior.grid_columnconfigure(3, minsize = 0)
 
     def configure(self, cnf=None, **kw):
-        args = tk._cnfmerge((cnf, kw))
+        if cnf:
+            return self._framecls.configure(self, cnf, **kw)
         key = "usemousewheel"
-        if key in args:
-            self.usemousewheel = tk.getboolean(args[key])
-            del args[key]
+        if key in kw:
+            self.usemousewheel = tk.getboolean(kw.pop(key))
             self._configure_mousewheel()
-        # super(ScrolledFrameBase, self).configure(args)
-        self._framecls.configure(self, **args)
+        return self._framecls.configure(self, cnf, **kw)
 
     config = configure
 

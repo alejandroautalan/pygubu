@@ -83,11 +83,12 @@ class Combobox(ttk.Combobox):
         self._txtvarcb = var.trace(mode="w", callback=on_txtvar_changed)
 
     def configure(self, cnf=None, **kw):
-        args = tk._cnfmerge((cnf, kw))
+        if cnf:
+            return super().configure(cnf, **kw)
         key = "values"
-        if key in args:
-            self.choices = args[key]
-            args[key] = self.__choices2tkvalues(self.choices)
+        if key in kw:
+            self.choices = kw[key]
+            kw[key] = self.__choices2tkvalues(self.choices)
             # clear variables:
             keyvar = self.__options["keyvariable"]
             if keyvar is not None:
@@ -96,21 +97,21 @@ class Combobox(ttk.Combobox):
             if txtvar is not None:
                 txtvar.set("")
         key = "keyvariable"
-        if key in args:
-            value = args.pop(key)
+        if key in kw:
+            value = kw.pop(key)
             self.__config_keyvar(value)
             return
         key = "textvariable"
-        if key in args:
-            value = args[key]
+        if key in kw:
+            value = kw[key]
             self.__config_txtvar(value)
 
         # only readonly and disabled supported
         key = "state"
-        if key in args:
-            if args[key] not in ("readonly", "disabled"):
-                args[key] = "readonly"
-        return super().configure(**args)
+        if key in kw:
+            if kw[key] not in ("readonly", "disabled"):
+                kw[key] = "readonly"
+        return super().configure(cnf, **kw)
 
     config = configure
 

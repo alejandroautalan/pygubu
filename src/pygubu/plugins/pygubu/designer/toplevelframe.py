@@ -13,13 +13,11 @@ class ToplevelFramePreview(tk.Frame):
         print("HOLA!")
 
     def configure(self, cnf=None, **kw):
-        if kw:
-            cnf = tk._cnfmerge((cnf, kw))
-        elif cnf:
-            cnf = tk._cnfmerge(cnf)
+        if cnf:
+            return super().configure(cnf, **kw)
         key = "width"
-        if key in cnf:
-            value = int(cnf[key])
+        if key in kw:
+            value = int(kw[key])
             minsize = self.tl_attrs.get("minsize", None)
             maxsize = self.tl_attrs.get("maxsize", None)
             #            print(value, minsize, maxsize)
@@ -34,12 +32,12 @@ class ToplevelFramePreview(tk.Frame):
                 if resizable and not TKToplevel.RESIZABLE[resizable][0]:
                     remove = True
             if remove:
-                cnf.pop(key)
+                kw.pop(key)
             else:
                 self._w_set = True
         key = "height"
-        if key in cnf:
-            value = int(cnf[key])
+        if key in kw:
+            value = int(kw[key])
             minsize = self.tl_attrs.get("minsize", None)
             maxsize = self.tl_attrs.get("maxsize", None)
             #            print(value, minsize, maxsize)
@@ -53,15 +51,14 @@ class ToplevelFramePreview(tk.Frame):
                 if resizable and not TKToplevel.RESIZABLE[resizable][1]:
                     remove = True
             if remove:
-                cnf.pop(key)
+                kw.pop(key)
             else:
                 self._h_set = True
         key = "menu"
-        if key in cnf:
+        if key in kw:
             # No menu preview available
-            cnf.pop(key)
-
-        return super().configure(**cnf)
+            kw.pop(key)
+        return super().configure(cnf, **kw)
 
 
 class ToplevelFramePreviewBO(BuilderObject):
