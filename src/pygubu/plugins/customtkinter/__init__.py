@@ -9,10 +9,25 @@ _plugin_uid = "customtkinter"
 
 class CTkBuilderLoader(IBuilderLoaderPlugin, IPluginBase):
     module_map = {
-        "pygubu.plugins.customtkinter.windows": (f"{_plugin_uid}.CTkToplevel",),
+        "pygubu.plugins.customtkinter.windows": (
+            f"{_plugin_uid}.CTkToplevel",
+            f"{_plugin_uid}.CTk",
+        ),
         "pygubu.plugins.customtkinter.widgets": (
             f"{_plugin_uid}.CTkFrame",
             f"{_plugin_uid}.CTkLabel",
+            f"{_plugin_uid}.CTkProgressBar",
+            f"{_plugin_uid}.CTkButton",
+            f"{_plugin_uid}.CTkSlider",
+            f"{_plugin_uid}.CTkEntry",
+            f"{_plugin_uid}.CTkOptionMenu",
+            f"{_plugin_uid}.CTkComboBox",
+            f"{_plugin_uid}.CTkCheckBox",
+            f"{_plugin_uid}.CTkRadioButton",
+            f"{_plugin_uid}.CTkSwitch",
+            f"{_plugin_uid}.CTkTextbox",
+            f"{_plugin_uid}.CTkCanvas",
+            f"{_plugin_uid}.CTkScrollbar",
         ),
     }
 
@@ -34,7 +49,7 @@ class CTkBuilderLoader(IBuilderLoaderPlugin, IPluginBase):
 
     def get_designer_plugin(self):
         """Load class that implements IDesignerPlugin"""
-        from ._designer import CTkDesignerPlugin
+        from .designer.designerplugin import CTkDesignerPlugin
 
-        print("Loading designer plugin class")
+        print("Loading Custom Tkinter designer plugin class")
         return CTkDesignerPlugin()
