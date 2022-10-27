@@ -15,15 +15,20 @@ class PluginRegistry(ABCMeta):
 
 
 class IDesignerPlugin(ABC):
-    @abstractmethod
     def get_preview_builder(self, builder_uid: str):
-        ...
+        """Return a BuilderObject subclass used to build a preview
+        for the target builder_uid"""
+        return None
 
-    @abstractmethod
     def get_toplevel_preview_for(
         self, builder_uid: str, widget_id: str, builder, top_master
     ):
-        ...
+        """Return a Toplevel with the target widget_id rendered inside."""
+        return None
+
+    def configure_for_preview(self, builder_uid: str, widget):
+        """Make widget just display with minimal functionality."""
+        pass
 
 
 class IPluginBase(ABC, metaclass=PluginRegistry):

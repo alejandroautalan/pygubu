@@ -19,3 +19,7 @@ class PygubuDesignerPlugin(IDesignerPlugin):
             dialog.run()
             top = dialog.toplevel
         return top
+
+    def configure_for_preview(self, builder_uid: str, widget):
+        """Make widget just display with minimal functionality."""
+        pass

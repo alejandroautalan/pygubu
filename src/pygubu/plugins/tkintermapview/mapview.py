@@ -24,28 +24,6 @@ class TkinterMapViewBuilder(BuilderObject):
             return self._process_property_value(pname, value)
         return super()._code_process_property_value(targetid, pname, value)
 
-    @staticmethod
-    def configure_for_preview(widget):
-        """Make widget just display with minimal functionality."""
-
-        def _no_op(event=None):
-            pass
-
-        seqlist = (
-            "<B1-Motion>",
-            "<Button-1>",
-            "<Button-2>",
-            "<Button-3>",
-            "<Button-4>",
-            "<Button-5>",
-            "<ButtonRelease-1>",
-            "<MouseWheel>",
-        )
-        for seq in seqlist:
-            widget.canvas.bind(seq, _no_op)
-        widget.button_zoom_in.command = _no_op
-        widget.button_zoom_out.command = _no_op
-
 
 _builder_uid = f"{_plugin_uid}.TkinterMapView"
 register_widget(

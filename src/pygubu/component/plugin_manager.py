@@ -65,3 +65,8 @@ class PluginManager:
             if top_preview is not None:
                 break
         return top_preview
+
+    @classmethod
+    def configure_for_preview(cls, builder_uid: str, target):
+        for plugin in cls.designer_plugins:
+            plugin.configure_for_preview(builder_uid, target)
