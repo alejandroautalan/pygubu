@@ -106,3 +106,11 @@ register_custom_property(_builder_uid, "values", "entry")
 register_custom_property(_builder_uid, "variable", "tkvarentry")
 
 register_custom_property(_builder_uid, "width", "dimensionentry")
+
+register_custom_property(
+    _builder_uid,
+    "appearance_mode",
+    "choice",
+    values=("", "dark", "light"),
+    state="readonly",
+)
