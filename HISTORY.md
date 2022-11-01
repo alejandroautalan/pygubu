@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.26.2
+
+  * Fix for issues alejandroautalan/pygubu-designer#154, alejandroautalan/pygubu-designer#155
+
 Changes for version 0.26.1
 
   * Hotfix for alejandroautalan/pygubu-designer#153
