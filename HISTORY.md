@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version ??
+
+  * Builder object, REMOVED configure_for_preview method.
+
 Changes for version 0.26.1
 
   * Hotfix for alejandroautalan/pygubu-designer#153
