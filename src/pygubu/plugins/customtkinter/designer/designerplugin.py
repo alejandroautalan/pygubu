@@ -1,13 +1,16 @@
 from pygubu.api.v1 import IPluginBase, IDesignerPlugin
-from .preview import CTkToplevelPreviewBO, CTkPreviewBO
+from .preview import CTkToplevelPreviewBO, CTkPreviewBO, CTkFramePreviewBO
+from ..ctkbase import _plugin_uid
 
 
 class CTkDesignerPlugin(IDesignerPlugin):
     def get_preview_builder(self, builder_uid: str):
-        if builder_uid == "customtkinter.CTkToplevel":
+        if builder_uid == f"{_plugin_uid}.CTkToplevel":
             return CTkToplevelPreviewBO
-        if builder_uid == "customtkinter.CTk":
+        if builder_uid == f"{_plugin_uid}.CTk":
             return CTkPreviewBO
+        if builder_uid == f"{_plugin_uid}.CTkFrame":
+            return CTkFramePreviewBO
         return None
 
     def get_toplevel_preview_for(

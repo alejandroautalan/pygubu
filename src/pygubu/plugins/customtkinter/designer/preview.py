@@ -6,13 +6,24 @@ from pygubu.plugins.pygubu.designer.basehelpers import (
     ToplevelPreviewFactory,
     ToplevelPreviewMixin,
 )
+from ..widgets import CTkFrameBO
+
+
+# CTkFrame has a hidden canvas inside. So, to make it clickable on preview
+# we need a hack.
+
+
+class CTkFrameForPreview(CTkFrame):
+    def winfo_children(self):
+        return super(tk.Frame, self).winfo_children()
+
 
 #
 # Preview classes for CTKToplevel
 #
 CTKToplevelPreview = ToplevelPreviewFactory(
     "CTKToplevelPreview",
-    (ToplevelPreviewMixin, CTkFrame, object),
+    (ToplevelPreviewMixin, CTkFrameForPreview, object),
     {},
 )
 
@@ -27,7 +38,7 @@ class CTkToplevelPreviewBO(ToplevelPreviewBaseBO):
 #
 CTKPreview = ToplevelPreviewFactory(
     "CTKPreview",
-    (ToplevelPreviewMixin, CTkFrame, object),
+    (ToplevelPreviewMixin, CTkFrameForPreview, object),
     {},
 )
 
@@ -42,3 +53,7 @@ class CTkPreviewBO(ToplevelPreviewBaseBO):
             set_appearance_mode(value)
         else:
             return super()._set_property(target_widget, pname, value)
+
+
+class CTkFramePreviewBO(CTkFrameBO):
+    class_ = CTkFrameForPreview
