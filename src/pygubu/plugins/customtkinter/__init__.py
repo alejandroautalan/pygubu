@@ -51,5 +51,4 @@ class CTkBuilderLoader(IBuilderLoaderPlugin, IPluginBase):
         """Load class that implements IDesignerPlugin"""
         from .designer.designerplugin import CTkDesignerPlugin
 
-        print("Loading Custom Tkinter designer plugin class")
         return CTkDesignerPlugin()

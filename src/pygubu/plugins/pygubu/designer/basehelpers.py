@@ -13,7 +13,6 @@ class ToplevelPreviewMixin(object):
         self.tl_attrs = {}
         self._w_set = False
         self._h_set = False
-        print("HOLA!")
 
     def configure(self, cnf=None, **kw):
         if cnf:

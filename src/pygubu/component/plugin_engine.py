@@ -11,7 +11,6 @@ class PluginRegistry(ABCMeta):
             "BuilderLoaderPlugin",
         ):
             PluginRegistry.plugins.append(cls)
-            print(f"Registering: {cls}")
 
 
 class IDesignerPlugin(ABC):

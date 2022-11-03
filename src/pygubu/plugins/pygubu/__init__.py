@@ -31,5 +31,4 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         """Load class that implements IDesignerPlugin"""
         from .designer.designerplugin import PygubuDesignerPlugin
 
-        print("Loading Pygubu Core designer plugin class")
         return PygubuDesignerPlugin()
