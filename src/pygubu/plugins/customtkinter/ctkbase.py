@@ -43,11 +43,19 @@ class CTkBaseMixin:
             return super()._process_property_value(pname, value)
         return super()._code_process_property_value(targetid, pname, value)
 
+    def code_imports(self):
+        return [("customtkinter", self.class_.__name__)]
+
 
 # I will register here all common properties used by customtkinter widgets
 # so I don't have to repeat for each one (notice the .* at end of _builder_uid):
 _builder_uid = f"{_plugin_uid}.*"
-register_custom_property(_builder_uid, "bg_color", "colorentry")
+register_custom_property(
+    _builder_uid,
+    "bg_color",
+    "colorentry",
+    help=_("Color behind the widget if it has rounded corners."),
+)
 register_custom_property(_builder_uid, "border_color", "colorentry")
 register_custom_property(_builder_uid, "border_width", "entry")
 register_custom_property(_builder_uid, "button_color", "colorentry")
@@ -71,7 +79,9 @@ register_custom_property(
     state="readonly",
 )
 
-register_custom_property(_builder_uid, "fg_color", "colorentry")
+register_custom_property(
+    _builder_uid, "fg_color", "colorentry", help=_("Main color of the widget.")
+)
 
 register_custom_property(_builder_uid, "height", "dimensionentry")
 register_custom_property(

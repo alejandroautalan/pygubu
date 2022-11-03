@@ -50,6 +50,9 @@ class CTkToplevelBO(TKToplevelBO):
         # Call realize from BuilderObject not Toplevel.
         return super(TKToplevelBO, self).realize(parent)
 
+    def code_imports(self):
+        return [("customtkinter", self.class_.__name__)]
+
 
 _builder_uid = f"{_plugin_uid}.CTkToplevel"
 register_widget(
