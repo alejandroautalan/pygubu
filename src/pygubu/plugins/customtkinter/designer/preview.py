@@ -1,5 +1,5 @@
 import tkinter as tk
-from customtkinter import CTkFrame, set_appearance_mode
+from customtkinter import CTkFrame, set_appearance_mode, set_default_color_theme
 from pygubu.api.v1 import BuilderObject
 from pygubu.plugins.pygubu.designer.basehelpers import (
     ToplevelPreviewBaseBO,
@@ -51,6 +51,8 @@ class CTkPreviewBO(ToplevelPreviewBaseBO):
     def _set_property(self, target_widget, pname, value):
         if pname == "appearance_mode":
             set_appearance_mode(value)
+        elif pname == "color_theme":
+            set_default_color_theme(value)
         else:
             return super()._set_property(target_widget, pname, value)
 

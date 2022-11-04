@@ -124,3 +124,12 @@ register_custom_property(
     values=("", "dark", "light"),
     state="readonly",
 )
+
+register_custom_property(
+    _builder_uid,
+    "color_theme",
+    "choice",
+    values=("", "blue", "green", "dark-blue", "sweetkind"),
+    state="readonly",
+    help=_("Default color theme."),
+)
