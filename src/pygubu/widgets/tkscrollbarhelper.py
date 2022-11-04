@@ -79,13 +79,13 @@ class ScrollbarHelperBase(object):
         self._configure_mousewheel()
 
     def configure(self, cnf=None, **kw):
-        args = tk._cnfmerge((cnf, kw))
+        if cnf:
+            return super().configure(cnf, **kw)
         key = "usemousewheel"
-        if key in args:
-            self.usemousewheel = tk.getboolean(args[key])
-            del args[key]
+        if key in kw:
+            self.usemousewheel = tk.getboolean(kw.pop(key))
             self._configure_mousewheel()
-        super().configure(**args)
+        return super().configure(cnf, **kw)
 
     config = configure
 

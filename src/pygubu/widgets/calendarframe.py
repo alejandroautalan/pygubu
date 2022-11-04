@@ -121,7 +121,8 @@ class CalendarFrame(ttk.Frame):
         self.__build_ui()
 
     def configure(self, cnf=None, **kw):
-        args = tk._cnfmerge((cnf, kw))
+        if cnf:
+            return super().configure(cnf, **kw)
         color_change = False
         for key in (
             "calendarfg",
@@ -133,12 +134,12 @@ class CalendarFrame(ttk.Frame):
             "markbg",
             "markfg",
         ):
-            if key in args:
-                self.__options[key] = args.pop(key)
+            if key in kw:
+                self.__options[key] = kw.pop(key)
                 color_change = True
         key = "state"
-        if key in args:
-            value = args.pop(key)
+        if key in kw:
+            value = kw.pop(key)
             self.__options[key] = value
             self._canvas.config(state=value)
             for w in self._topframe.winfo_children():
@@ -147,13 +148,13 @@ class CalendarFrame(ttk.Frame):
 
         calendar_change = False
         key = "locale"
-        if key in args:
-            value = locale.normalize(args.pop(key))
+        if key in kw:
+            value = locale.normalize(kw.pop(key))
             self.__options[key] = value
             calendar_change = True
         key = "firstweekday"
-        if key in args:
-            value = args.pop(key)
+        if key in kw:
+            value = kw.pop(key)
             self.__options[key] = int(value)
             calendar_change = True
         if calendar_change:
@@ -161,15 +162,15 @@ class CalendarFrame(ttk.Frame):
 
         date_change = False
         for key in ("year", "month"):
-            if key in args:
-                self.__options[key] = int(args.pop(key))
+            if key in kw:
+                self.__options[key] = int(kw.pop(key))
                 date_change = True
         if date_change:
             self._reconfigure_date()
 
         if color_change or calendar_change or date_change:
             self._redraw_calendar()
-        ttk.Frame.configure(self, args)
+        return super().configure(cnf, **kw)
 
     config = configure
 

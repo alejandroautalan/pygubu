@@ -191,14 +191,20 @@ class Builder(object):
                     logger.debug(msg, _module)
                     raise e
 
+    def is_mapped(self, builder_uid):
+        return builder_uid in CLASS_MAP
+
+    def _get_builder_for(self, builder_uid):
+        return CLASS_MAP[builder_uid].builder
+
     def _realize(self, master, wmeta):
         """Builds a widget from widget metadata using master as parent."""
 
-        if wmeta.classname not in CLASS_MAP:
+        if not self.is_mapped(wmeta.classname):
             self._import_class(wmeta.classname)
 
-        if wmeta.classname in CLASS_MAP:
-            bclass = CLASS_MAP[wmeta.classname].builder
+        if self.is_mapped(wmeta.classname):
+            bclass = self._get_builder_for(wmeta.classname)
             parent = bclass.factory(self, wmeta)
             self._pre_realize(parent)
             parent.realize(master)

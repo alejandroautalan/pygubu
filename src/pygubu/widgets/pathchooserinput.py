@@ -33,7 +33,7 @@ class PathChooserInput(ttk.Frame):
     DIR = "directory"
 
     def __init__(self, master=None, **kw):
-        ttk.Frame.__init__(self, master, **kw)
+        super().__init__(master, **kw)
         self._choose = self.FILE
         self._oldvalue = ""
         self._state = "normal"
@@ -61,41 +61,36 @@ class PathChooserInput(ttk.Frame):
         self.columnconfigure(0, weight=1)
 
     def configure(self, cnf=None, **kw):
-        args = tk._cnfmerge((cnf, kw))
+        if cnf:
+            return super().configure(cnf, **kw)
         key = "type"
-        if key in args:
-            self._choose = args[key]
-            del args[key]
+        if key in kw:
+            self._choose = kw.pop(key)
         key = "image"
-        if key in args:
-            self.folder_button.configure(image=args[key])
-            del args[key]
+        if key in kw:
+            self.folder_button.configure(image=kw.pop(key))
         key = "path"
-        if key in args:
+        if key in kw:
             self.entry.delete(0, "end")
-            self.entry.insert(0, args[key])
+            self.entry.insert(0, kw.pop(key))
             self._generate_changed_event()
-            del args[key]
         key = "textvariable"
-        if key in args:
-            self.entry.configure(textvariable=args[key])
+        if key in kw:
+            self.entry.configure(textvariable=kw.pop(key))
             self._generate_changed_event()
-            del args[key]
         key = "state"
-        if key in args:
-            value = args[key]
+        if key in kw:
+            value = kw.pop(key)
             self.entry.config(state=value)
             if value in ("disabled", "readonly"):
                 self.folder_button.config(state="disabled")
             else:
                 self.folder_button.config(state=value)
-            del args[key]
         # dialog options
-        for key in tuple(args.keys()):
+        for key in tuple(kw.keys()):
             if key in self._fdoptions:
-                self._fdoptions[key] = args[key]
-                args.pop(key)
-        ttk.Frame.configure(self, args)
+                self._fdoptions[key] = kw.pop(key)
+        return super().configure(cnf, **kw)
 
     config = configure
 
@@ -118,7 +113,7 @@ class PathChooserInput(ttk.Frame):
         # dialog options
         if key in self._fdoptions:
             return self._fdoptions[key]
-        return ttk.Frame.cget(self, key)
+        return super().cget(key)
 
     __getitem__ = cget
 

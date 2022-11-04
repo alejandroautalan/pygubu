@@ -109,11 +109,6 @@ class BuilderObject(object):
         else:
             cls.allowed_children = cls.allowed_children + (builder_uid,)
 
-    @staticmethod
-    def configure_for_preview(widget):
-        """Make widget just display with minimal functionality."""
-        pass
-
     def __init__(self, builder, wmeta):
         super(BuilderObject, self).__init__()
         self.widget = None
@@ -177,7 +172,7 @@ class BuilderObject(object):
                 logger.debug("processing property %s value", pname)
                 propvalue = self._process_property_value(pname, value)
                 logger.debug("setting property %s = %s", pname, propvalue)
-                target_widget[pname] = propvalue
+                target_widget.configure(**{pname: propvalue})
             except Exception as e:
                 msg = "Failed to set property '%s' on class '%s'. Error: %s"
                 logger.error(msg, pname, repr(self.class_), str(e))
@@ -205,23 +200,29 @@ class BuilderObject(object):
 
         # container layout
         if self.container_layout:
-            properties = self.wmeta.container_properties
-            propagate = properties.get("propagate", "true")
-            propagate = tk.getboolean(propagate)
-            anchor = properties.get("anchor", None)
+            self._container_layout(
+                target,
+                self.wmeta.container_manager,
+                self.wmeta.container_properties,
+            )
 
-            container_manager = self.wmeta.container_manager
-            if container_manager == "grid":
-                if anchor:
-                    target.grid_anchor(anchor)
-                if not propagate:
-                    target.grid_propagate(0)
-                self._gridrc_config(target)
-            elif container_manager == "pack":
-                if not propagate:
-                    target.pack_propagate(0)
-            elif container_manager is None:
-                raise Exception("Container Manager is none :(")
+    def _container_layout(self, target, container_manager, properties):
+        # Do container layout
+        propagate = properties.get("propagate", "true")
+        propagate = tk.getboolean(propagate)
+        anchor = properties.get("anchor", None)
+
+        if container_manager == "grid":
+            if anchor:
+                target.grid_anchor(anchor)
+            if not propagate:
+                target.grid_propagate(0)
+            self._gridrc_config(target)
+        elif container_manager == "pack":
+            if not propagate:
+                target.pack_propagate(0)
+        elif container_manager is None:
+            raise Exception("Container Manager is none :(")
 
     def _gridrc_config(self, target):
         # configure grid row/col properties:

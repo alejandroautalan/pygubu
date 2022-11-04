@@ -4,6 +4,8 @@ repos:
     hooks:
       - id: check-added-large-files
       - id: check-merge-conflict
+        # exclude files where underlines are not distinguishable from merge conflicts
+        exclude: HISTORY\.md$|\.pot?$
       - id: debug-statements
       - id: detect-private-key
       - id: end-of-file-fixer

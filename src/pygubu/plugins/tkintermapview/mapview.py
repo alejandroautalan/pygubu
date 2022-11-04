@@ -24,26 +24,8 @@ class TkinterMapViewBuilder(BuilderObject):
             return self._process_property_value(pname, value)
         return super()._code_process_property_value(targetid, pname, value)
 
-    @staticmethod
-    def configure_for_preview(widget):
-        """Make widget just display with minimal functionality."""
 
-        def _no_op(event):
-            pass
-
-        widget.canvas.bind("<B1-Motion>", _no_op)
-        widget.canvas.bind("<Button-1>", _no_op)
-        widget.canvas.bind("<ButtonRelease-1>", _no_op)
-        widget.canvas.bind("<MouseWheel>", _no_op)
-        widget.canvas.bind("<Button-4>", _no_op)
-        widget.canvas.bind("<Button-5>", _no_op)
-
-    # TODO: when the widget is clicked in designer, is not get
-    #   selected. Maybe add some class method like
-    #   configure_click_for_select ? or something?
-
-
-_builder_uid = f"{_plugin_uid}.mapview"
+_builder_uid = f"{_plugin_uid}.TkinterMapView"
 register_widget(
     _builder_uid,
     TkinterMapViewBuilder,

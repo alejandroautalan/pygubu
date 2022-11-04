@@ -506,10 +506,10 @@ class TTKNotebookTab(TTKWidgetBO):
         self.widget = parent.get_child_master()
         return self.widget
 
-    def configure(self):
+    def configure(self, target=None):
         pass
 
-    def layout(self):
+    def layout(self, target=None):
         pass
 
     def add_child(self, bobject):
@@ -617,10 +617,10 @@ class TTKTreeviewColumnBO(TTKWidgetBO):
         cprops = self._get_column_properties(col_props)
         parent.set_column(column_id, cprops, is_visible)
 
-    def configure(self):
+    def configure(self, target=None):
         pass
 
-    def layout(self):
+    def layout(self, target=None):
         pass
 
     def _connect_command(self, cpname, callback):

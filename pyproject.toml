@@ -45,7 +45,10 @@ tkinterweb = ['tkinterweb']
 tkintertable = ['tkintertable']
 tkcalendar = ['tkcalendar']
 awesometkinter = ['AwesomeTkinter']
-all = ['AwesomeTkinter', 'tkintertable', 'tksheet', 'ttkwidgets', 'tkinterweb', 'tkcalendar']
+customtkinter = ['customtkinter']
+tkintermapview = ['tkintermapview']
+all = ['AwesomeTkinter', 'tkintertable', 'tksheet', 'ttkwidgets', 'tkinterweb',
+       'tkcalendar', 'customtkinter', 'tkintermapview']
 
 [project.entry-points."pyinstaller40"]
 hook-dirs = "pygubu.__pyinstaller:get_hook_dirs"
