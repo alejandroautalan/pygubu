@@ -1,9 +1,10 @@
 History
 =======
 
-Changes for version ??
+Changes for version 0.27
 
   * Builder object, REMOVED configure_for_preview method.
+  * Added support for: customtkinter, tkintermapview
 
 Changes for version 0.26.2
 
