@@ -59,6 +59,22 @@ register_widget(
     group=-1,
 )
 
+_maxsize_help = _("Set the maximum window size.")
+_minsize_help = _("Set the minimum window size.")
+
+register_custom_property(
+    _builder_uid,
+    "minsize",
+    "whentry",
+    help=_minsize_help,
+)
+register_custom_property(
+    _builder_uid,
+    "maxsize",
+    "whentry",
+    help=_maxsize_help,
+)
+
 
 class CTkToplevelBO(TKToplevelBO):
     class_ = CTkToplevel
@@ -80,4 +96,17 @@ register_widget(
     "CTkToplevel",
     ("ttk", _designer_tab_label),
     group=-1,
+)
+
+register_custom_property(
+    _builder_uid,
+    "minsize",
+    "whentry",
+    help=_minsize_help,
+)
+register_custom_property(
+    _builder_uid,
+    "maxsize",
+    "whentry",
+    help=_maxsize_help,
 )
