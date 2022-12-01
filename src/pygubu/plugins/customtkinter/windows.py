@@ -21,9 +21,9 @@ class CTkBO(TKToplevelBO):
     )
     ro_properties = TKToplevelBO.ro_properties + ("background", "fg_color")
 
-    def realize(self, parent):
+    def realize(self, parent, extra_init_args: dict = None):
         # Call realize from BuilderObject not Toplevel.
-        return super(TKToplevelBO, self).realize(parent)
+        return super(TKToplevelBO, self).realize(parent, extra_init_args)
 
     def _set_property(self, target_widget, pname, value):
         if pname == "appearance_mode":
@@ -81,9 +81,9 @@ class CTkToplevelBO(TKToplevelBO):
     properties = TKToplevelBO.properties + ("fg_color",)
     ro_properties = TKToplevelBO.ro_properties + ("background", "fg_color")
 
-    def realize(self, parent):
+    def realize(self, parent, extra_init_args: dict = None):
         # Call realize from BuilderObject not Toplevel.
-        return super(TKToplevelBO, self).realize(parent)
+        return super(TKToplevelBO, self).realize(parent, extra_init_args)
 
     def code_imports(self):
         return [("customtkinter", self.class_.__name__)]

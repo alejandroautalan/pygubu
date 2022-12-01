@@ -116,13 +116,13 @@ class BuilderObject(object):
         self.wmeta = wmeta
         self._code_identifier = None
 
-    def realize(self, parent):
-        args = self._get_init_args()
+    def realize(self, parent, extra_init_args: dict = None):
+        args = self._get_init_args(extra_init_args)
         master = parent.get_child_master()
         self.widget = self.class_(master, **args)
         return self.widget
 
-    def _get_init_args(self):
+    def _get_init_args(self, extra_init_args: dict = None):
         """Creates dict with properties marked as readonly"""
 
         args = {}
@@ -132,6 +132,9 @@ class BuilderObject(object):
                     rop, self.wmeta.properties[rop]
                 )
                 args[rop] = pvalue
+        if extra_init_args is not None:
+            for key, value in extra_init_args.items():
+                args[key] = value
         return args
 
     def configure(self, target=None):
@@ -687,9 +690,9 @@ class PanedWindowBO(BuilderObject):
     properties = []
     ro_properties = ("orient",)
 
-    def realize(self, parent):
+    def realize(self, parent, extra_init_args: dict = None):
         master = parent.get_child_master()
-        args = self._get_init_args()
+        args = self._get_init_args(extra_init_args)
         if "orient" not in args:
             args["orient"] = "vertical"
         self.widget = self.class_(master, **args)
@@ -706,7 +709,7 @@ class PanedWindowPaneBO(BuilderObject):
     layout_required = False
     allow_bindings = False
 
-    def realize(self, parent):
+    def realize(self, parent, extra_init_args: dict = None):
         self.widget = parent.get_child_master()
         return self.widget
 
