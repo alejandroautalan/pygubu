@@ -1,15 +1,27 @@
 import tkinter as tk
+import customtkinter
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
     register_custom_property,
 )
 from pygubu.i18n import _
-
 from pygubu.plugins.tk.tkstdwidgets import TKFrame as TKFrameBO
-
-from customtkinter import CTkBaseClass
 from ..customtkinter import _designer_tab_label, _plugin_uid
+
+
+ctk_version = tuple(int(v) for v in customtkinter.__version__.split("."))
+
+if ctk_version >= (5, 0, 0):
+    from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
+else:
+    from customtkinter import CTkBaseClass
+
+
+# Groups for ordering buttons in designer palette.
+GCONTAINER = 0
+GINPUT = 1
+GDISPLAY = 2
 
 
 class CTkBaseMixin:
@@ -98,6 +110,21 @@ register_custom_property(_builder_uid, "number_of_steps", "entry")
 register_custom_property(_builder_uid, "placeholder_text", "entry")
 register_custom_property(_builder_uid, "placeholder_text_color", "colorentry")
 register_custom_property(_builder_uid, "progress_color", "colorentry")
+register_custom_property(
+    _builder_uid, "segmented_button_fg_color", "colorentry"
+)
+register_custom_property(
+    _builder_uid, "segmented_button_selected_color", "colorentry"
+)
+register_custom_property(
+    _builder_uid, "segmented_button_selected_hover_color", "colorentry"
+)
+register_custom_property(
+    _builder_uid, "segmented_button_unselected_color", "colorentry"
+)
+register_custom_property(
+    _builder_uid, "segmented_button_unselected_hover_color", "colorentry"
+)
 
 register_custom_property(
     _builder_uid,

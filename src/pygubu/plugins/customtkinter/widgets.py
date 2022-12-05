@@ -7,7 +7,6 @@ from pygubu.i18n import _
 from pygubu.plugins.tk.tkstdwidgets import TKFrame as TKFrameBO
 from pygubu.plugins.tk.tkstdwidgets import TKLabel as TKLabelBO
 from pygubu.plugins.tk.tkstdwidgets import TKEntry as TKEntryBO
-from pygubu.plugins.tk.tkstdwidgets import TKCanvas as TKCanvasBO
 from customtkinter import (
     CTkFrame,
     CTkLabel,
@@ -21,16 +20,14 @@ from customtkinter import (
     CTkRadioButton,
     CTkSwitch,
     CTkTextbox,
-    CTkCanvas,
     CTkScrollbar,
 )
 
 from ..customtkinter import _designer_tab_label, _plugin_uid
-from .ctkbase import CTkBaseMixin
+from .ctkbase import CTkBaseMixin, ctk_version, GCONTAINER, GDISPLAY, GINPUT
 
-GCONTAINER = 0
-GINPUT = 1
-GDISPLAY = 2
+if ctk_version >= (5, 0, 0):
+    import pygubu.plugins.customtkinter.tabview
 
 
 class CTkFrameBO(CTkBaseMixin, TKFrameBO):
@@ -472,20 +469,6 @@ register_widget(
     "CTkTextbox",
     ("ttk", _designer_tab_label),
     group=GINPUT,
-)
-
-
-class CTkCanvasBO(CTkBaseMixin, TKCanvasBO):
-    class_ = CTkCanvas
-
-
-_builder_uid = f"{_plugin_uid}.CTkCanvas"
-register_widget(
-    _builder_uid,
-    CTkCanvasBO,
-    "CTkCanvas",
-    ("ttk", _designer_tab_label),
-    group=GDISPLAY,
 )
 
 
