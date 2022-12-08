@@ -502,7 +502,7 @@ class TTKNotebookTab(TTKWidgetBO):
     maxchildren = 1
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
-    def realize(self, parent):
+    def realize(self, parent, extra_init_args: dict = None):
         self.widget = parent.get_child_master()
         return self.widget
 
@@ -573,7 +573,7 @@ class TTKTreeviewColumnBO(TTKWidgetBO):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     command_properties = ("command",)
 
-    def realize(self, parent):
+    def realize(self, parent, extra_init_args: dict = None):
         self.widget = parent.get_child_master()
         col_props = dict(self.wmeta.properties)  # copy properties
         self._setup_column(parent, col_props)

@@ -71,8 +71,8 @@ class ColorSquareBO(TKCanvas):
     ro_properties = OPTIONS_CUSTOM + ("height", "width")
     virtual_events = ("<<ColorChanged>>",)
 
-    def realize(self, parent):
-        args = self._get_init_args()
+    def realize(self, parent, extra_init_args: dict = None):
+        args = self._get_init_args(extra_init_args)
         master = parent.get_child_master()
         hue_value = args.pop("hue", 0)
         self.widget = self.class_(master, hue_value, **args)

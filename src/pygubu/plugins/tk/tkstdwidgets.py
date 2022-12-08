@@ -65,8 +65,8 @@ class TKToplevel(BuilderObject):
         "none": (False, False),
     }
 
-    def realize(self, parent):
-        args = self._get_init_args()
+    def realize(self, parent, extra_init_args: dict = None):
+        args = self._get_init_args(extra_init_args)
         master = parent.get_child_master()
         if master is None and tk._default_root is None:
             self.widget = tk.Tk()
@@ -1039,7 +1039,7 @@ class TKMenuitem(BuilderObject):
     command_properties = ("command",)
     allow_bindings = False
 
-    def realize(self, parent):
+    def realize(self, parent, extra_init_args: dict = None):
         self.widget = master = parent.get_child_master()
         itemproperties = dict(self.wmeta.properties)
         self._setup_item_properties(itemproperties)
@@ -1201,7 +1201,7 @@ class TKMenuitemSubmenu(TKMenuitem):
         super().__init__(builder, wdescr)
         self._menuitems = None
 
-    def realize(self, parent):
+    def realize(self, parent, extra_init_args: dict = None):
         master = parent.get_child_master()
         self._setup_item_index(parent)
 
@@ -1461,7 +1461,7 @@ class TKLabelwidgetBO(BuilderObject):
     layout_required = False
     allow_bindings = False
 
-    def realize(self, parent):
+    def realize(self, parent, extra_init_args: dict = None):
         self.widget = parent.get_child_master()
         return self.widget
 
@@ -1506,7 +1506,7 @@ class ToplevelMenuHelperBO(BuilderObject):
     layout_required = False
     allow_bindings = False
 
-    def realize(self, parent):
+    def realize(self, parent, extra_init_args: dict = None):
         self.widget = parent.get_child_master()
         return self.widget
 
@@ -1551,8 +1551,8 @@ class TKOptionMenu(BuilderObject):
     command_properties = ("command",)
     ro_properties = ("variable", "value", "values")
 
-    def realize(self, parent):
-        args = self._get_init_args()
+    def realize(self, parent, extra_init_args: dict = None):
+        args = self._get_init_args(extra_init_args)
         master = parent.get_child_master()
         variable = args.pop("variable", None)
         value = args.pop("value", None)

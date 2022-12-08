@@ -134,7 +134,7 @@ class Builder(object):
         """Load ui definition from xml.etree.Element node."""
         self.uidefinition.add_xmlnode(element)
 
-    def get_object(self, name, master=None):
+    def get_object(self, name, master=None, extra_init_args: dict = None):
         """Find and create the widget named name.
         Use master as parent. If widget was already created, return
         that instance."""
@@ -147,7 +147,7 @@ class Builder(object):
                 rmeta = WidgetMeta("root", "root")
                 root = BuilderObject(self, rmeta)
                 root.widget = master
-                bobject = self._realize(root, wmeta)
+                bobject = self._realize(root, wmeta, extra_init_args)
                 widget = bobject.widget
         if widget is None:
             msg = 'Widget "{0}" not defined.'.format(name)
@@ -197,7 +197,7 @@ class Builder(object):
     def _get_builder_for(self, builder_uid):
         return CLASS_MAP[builder_uid].builder
 
-    def _realize(self, master, wmeta):
+    def _realize(self, master, wmeta, extra_init_args: dict = None):
         """Builds a widget from widget metadata using master as parent."""
 
         if not self.is_mapped(wmeta.classname):
@@ -207,7 +207,7 @@ class Builder(object):
             bclass = self._get_builder_for(wmeta.classname)
             parent = bclass.factory(self, wmeta)
             self._pre_realize(parent)
-            parent.realize(master)
+            parent.realize(master, extra_init_args)
             parent.configure()
 
             self.objects[wmeta.identifier] = parent
