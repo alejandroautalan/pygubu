@@ -1,6 +1,6 @@
 from pygubu.api.v1 import IPluginBase, IDesignerPlugin
 from .preview import CTkToplevelPreviewBO, CTkPreviewBO, CTkFramePreviewBO
-from ..ctkbase import _plugin_uid
+from ..ctkbase import _plugin_uid, ctk_version_is_gte_5
 
 
 class CTkDesignerPlugin(IDesignerPlugin):
@@ -28,23 +28,32 @@ class CTkDesignerPlugin(IDesignerPlugin):
         def _no_op(event=None):
             pass
 
+        widget_canvas = (
+            widget._canvas if ctk_version_is_gte_5 else widget.canvas
+        )
+
         if builder_uid.endswith(".CTKEntry"):
             seqlist = ("<FocusOut>", "<FocusIn>")
             for seq in seqlist:
-                widget.canvas.bind(seq, _no_op)
+                widget_canvas.bind(seq, _no_op)
         elif builder_uid.endswith(".CTkSlider"):
             seqlist = ("<Enter>", "<Leave>", "<Button-1>", "<B1-Motion>")
             for seq in seqlist:
-                widget.canvas.bind(seq, _no_op)
+                widget_canvas.bind(seq, _no_op)
         elif builder_uid.endswith(".CTkOptionMenu"):
             seqlist = ("<Enter>", "<Leave>", "<Button-1>")
+            text_label = (
+                widget._text_label
+                if ctk_version_is_gte_5
+                else widget.text_label
+            )
             for seq in seqlist:
-                widget.canvas.bind(seq, _no_op)
-                widget.text_label.bind(seq, _no_op)
+                widget_canvas.bind(seq, _no_op)
+                text_label.bind(seq, _no_op)
         elif builder_uid.endswith(".CTkComboBox"):
-            widget.canvas.tag_bind("right_parts", "<Enter>", _no_op)
-            widget.canvas.tag_bind("dropdown_arrow", "<Enter>", _no_op)
-            widget.canvas.tag_bind("right_parts", "<Leave>", _no_op)
-            widget.canvas.tag_bind("dropdown_arrow", "<Leave>", _no_op)
-            widget.canvas.tag_bind("right_parts", "<Button-1>", _no_op)
-            widget.canvas.tag_bind("dropdown_arrow", "<Button-1>", _no_op)
+            widget_canvas.tag_bind("right_parts", "<Enter>", _no_op)
+            widget_canvas.tag_bind("dropdown_arrow", "<Enter>", _no_op)
+            widget_canvas.tag_bind("right_parts", "<Leave>", _no_op)
+            widget_canvas.tag_bind("dropdown_arrow", "<Leave>", _no_op)
+            widget_canvas.tag_bind("right_parts", "<Button-1>", _no_op)
+            widget_canvas.tag_bind("dropdown_arrow", "<Button-1>", _no_op)

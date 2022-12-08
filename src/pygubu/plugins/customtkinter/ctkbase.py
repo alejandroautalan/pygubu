@@ -11,8 +11,9 @@ from ..customtkinter import _designer_tab_label, _plugin_uid
 
 
 ctk_version = tuple(int(v) for v in customtkinter.__version__.split("."))
+ctk_version_is_gte_5 = ctk_version >= (5, 0, 0)
 
-if ctk_version >= (5, 0, 0):
+if ctk_version_is_gte_5:
     from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 else:
     from customtkinter import CTkBaseClass
@@ -124,6 +125,14 @@ register_custom_property(
 )
 register_custom_property(
     _builder_uid, "segmented_button_unselected_hover_color", "colorentry"
+)
+register_custom_property(
+    _builder_uid,
+    "orientation",
+    "choice",
+    values=("vertical", "horizontal"),
+    state="readonly",
+    default_value="horizontal",
 )
 
 register_custom_property(
