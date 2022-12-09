@@ -9,6 +9,7 @@ from pygubu.component.builderobject import (
     EntryBaseBO,
     PanedWindowBO,
     PanedWindowPaneBO,
+    OptionMenuBaseMixin,
 )
 
 
@@ -686,3 +687,55 @@ if tk.TkVersion >= 8.6:
     register_widget(
         "ttk.Spinbox", TTKSpinboxBO, "Spinbox", (_("Control & Display"), "ttk")
     )
+
+
+class OptionMenuBO(OptionMenuBaseMixin, BuilderObject):
+    class_ = ttk.OptionMenu
+    properties = (
+        "style",
+        "direction",
+        "command",
+        "variable",
+        "value",
+        "values",
+    )
+    command_properties = ("command",)
+    ro_properties = ("variable", "value", "values")
+
+
+register_widget(
+    "ttk.OptionMenu",
+    OptionMenuBO,
+    "OptionMenu",
+    (_("Control & Display"), "ttk"),
+)
+
+
+class LabeledScaleBO(BuilderObject):
+    class_ = ttk.LabeledScale
+    properties = (
+        "compound",
+        "variable",
+        "from_",
+        "to",
+    )
+    ro_properties = ("variable", "from_", "to")
+    virtual_events = ("<<RangeChanged>>",)
+
+    def _connect_binding(self, sequence: str, callback, add):
+        print("connecting scale", sequence, callback, add)
+        self.widget.scale.bind(sequence, callback, add)
+
+    def _code_connect_binding(
+        self, target: str, sequence: str, callback: str, add_arg: str
+    ):
+        scale = f"{target}.scale"
+        return super()._code_connect_binding(scale, sequence, callback, "+")
+
+
+register_widget(
+    "ttk.LabeledScale",
+    LabeledScaleBO,
+    "LabeledScale",
+    (_("Control & Display"), "ttk"),
+)

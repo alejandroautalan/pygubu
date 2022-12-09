@@ -9,6 +9,7 @@ from pygubu.component.builderobject import (
     EntryBaseBO,
     PanedWindowBO,
     PanedWindowPaneBO,
+    OptionMenuBaseMixin,
 )
 
 logger = logging.getLogger(__name__)
@@ -1543,106 +1544,16 @@ register_widget(
 )
 
 
-class TKOptionMenu(BuilderObject):
+class TKOptionMenu(OptionMenuBaseMixin, BuilderObject):
     class_ = tk.OptionMenu
-    OPTIONS_STANDARD = tuple()
-    OPTIONS_SPECIFIC = ("command", "variable", "value", "values")
-    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+    properties = ("command", "variable", "value", "values")
     command_properties = ("command",)
     ro_properties = ("variable", "value", "values")
-
-    def realize(self, parent, extra_init_args: dict = None):
-        args = self._get_init_args(extra_init_args)
-        master = parent.get_child_master()
-        variable = args.pop("variable", None)
-        value = args.pop("value", None)
-        if variable is None:
-            varname = "{0}__var".format(self.wmeta.identifier)
-            variable = self.builder.create_variable(varname)
-        if value is not None:
-            variable.set(value)
-        values = args.pop("values", "")
-        if values is not None:
-            values = values.split(",")
-
-        class _cb_proxy(object):
-            def __init__(self):
-                super(_cb_proxy, self).__init__()
-                self.callback = None
-
-            def __call__(self, arg1):
-                if self.callback is not None:
-                    self.callback(arg1)
-
-        cb_proxy = _cb_proxy()
-        self.widget = self.class_(master, variable, *values, command=cb_proxy)
-        self.widget._cb_proxy = cb_proxy
-        return self.widget
-
-    def _connect_command(self, cmd_pname, callback):
-        if cmd_pname == "command":
-            self.widget._cb_proxy.callback = callback
-
-    #
-    # Code generation methods
-    #
-    def code_realize(self, boparent, code_identifier=None):
-        import json
-
-        if code_identifier is not None:
-            self._code_identifier = code_identifier
-        lines = []
-        master = boparent.code_child_master()
-        init_args = self._code_get_init_args(self.code_identifier())
-        command_arg = None
-        variable_arg = None
-        # value_arg = None
-
-        # command property
-        pname = "command"
-        if pname in self.wmeta.properties:
-            value = json.loads(self.wmeta.properties[pname])
-            cmdname = value["value"]
-            cmdtype = value["type"]
-            args = ("option",)
-            pvalue = self.builder.code_create_callback(
-                self.code_identifier(), cmdname, cmdtype, args
-            )
-            command_arg = f"{pvalue}"
-
-        # Value property
-        # Not used in code generation.
-        # Already setup in _code_get_init_args
-
-        # Variable property
-        pname = "variable"
-        varname = "__tkvar"
-        if pname in init_args:
-            varname = init_args[pname]
-        variable_arg = varname
-
-        # values property
-        pname = "values"
-        om_values = []
-        if pname in self.wmeta.properties:
-            value = self.wmeta.properties["values"]
-            om_values = value.split(",")
-        line = f"__values = {om_values}"
-        lines.append(line)
-        s = f"{self.code_identifier()} = {self._code_class_name()}({master}, {variable_arg}, *__values, command={command_arg})"
-        lines.append(s)
-        return lines
-
-    def code_configure(self, targetid=None):
-        return []
-
-    def code_connect_commands(self):
-        return []
 
 
 register_widget(
     "tk.OptionMenu",
     TKOptionMenu,
     "OptionMenu",
-    (_("Control & Display"), "tk", "ttk"),
+    (_("Control & Display"), "tk"),
 )
