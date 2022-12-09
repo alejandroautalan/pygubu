@@ -1,5 +1,10 @@
 import tkinter as tk
-from customtkinter import CTkFrame, set_appearance_mode, set_default_color_theme
+from customtkinter import (
+    CTkFrame,
+    set_appearance_mode,
+    set_default_color_theme,
+    CTkTabview,
+)
 from pygubu.api.v1 import BuilderObject
 from pygubu.plugins.pygubu.designer.basehelpers import (
     ToplevelPreviewBaseBO,
@@ -7,15 +12,36 @@ from pygubu.plugins.pygubu.designer.basehelpers import (
     ToplevelPreviewMixin,
 )
 from ..widgets import CTkFrameBO
+from ..tabview import CTkTabviewBO
 
 
-# CTkFrame has a hidden canvas inside. So, to make it clickable on preview
-# we need a hack.
-
-
+#
+# Preview class for CTkFrame
+#
 class CTkFrameForPreview(CTkFrame):
     def winfo_children(self):
+        # CTkFrame has a hidden canvas inside. So, to make it clickable on preview
+        # we need a hack.
         return super(tk.Frame, self).winfo_children()
+
+
+class CTkFramePreviewBO(CTkFrameBO):
+    class_ = CTkFrameForPreview
+
+
+#
+# Preview class for Tabview
+#
+class CTkTabviewForPreview(CTkTabview):
+    #    def winfo_children(self):
+    #        return super(tk.Frame, self).winfo_children()
+
+    def bind(self, sequence=None, func=None, add=None):
+        return super(tk.Frame, self).bind(sequence, func, add)
+
+
+class CTkTabviewForPreviewBO(CTkTabviewBO):
+    class_ = CTkTabviewForPreview
 
 
 #
@@ -55,7 +81,3 @@ class CTkPreviewBO(ToplevelPreviewBaseBO):
             set_default_color_theme(value)
         else:
             return super()._set_property(target_widget, pname, value)
-
-
-class CTkFramePreviewBO(CTkFrameBO):
-    class_ = CTkFrameForPreview

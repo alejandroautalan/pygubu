@@ -1,5 +1,10 @@
 from pygubu.api.v1 import IPluginBase, IDesignerPlugin
-from .preview import CTkToplevelPreviewBO, CTkPreviewBO, CTkFramePreviewBO
+from .preview import (
+    CTkToplevelPreviewBO,
+    CTkPreviewBO,
+    CTkFramePreviewBO,
+    CTkTabviewForPreviewBO,
+)
 from ..ctkbase import _plugin_uid
 
 
@@ -11,6 +16,8 @@ class CTkDesignerPlugin(IDesignerPlugin):
             return CTkPreviewBO
         if builder_uid == f"{_plugin_uid}.CTkFrame":
             return CTkFramePreviewBO
+        if builder_uid == f"{_plugin_uid}.CTkTabview":
+            return CTkTabviewForPreviewBO
         return None
 
     def get_toplevel_preview_for(
@@ -24,6 +31,9 @@ class CTkDesignerPlugin(IDesignerPlugin):
 
     def configure_for_preview(self, builder_uid: str, widget):
         """Make widget just display with minimal functionality."""
+
+        if not builder_uid.startswith(f"{_plugin_uid}."):
+            return
 
         def _no_op(event=None):
             pass
