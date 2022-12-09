@@ -300,6 +300,9 @@ class BuilderObject(object):
         else:
             return None
 
+    def _connect_binding(self, sequence: str, callback, add):
+        self.widget.bind(sequence, callback, add)
+
     def connect_bindings(self, cb_bag):
         notconnected = []
 
@@ -308,7 +311,7 @@ class BuilderObject(object):
                 cb_name = bind.handler
                 if cb_name in cb_bag:
                     callback = cb_bag[cb_name]
-                    self.widget.bind(bind.sequence, callback, add=bind.add)
+                    self._connect_binding(bind.sequence, callback, add=bind.add)
                 else:
                     notconnected.append(cb_name)
         else:
@@ -316,7 +319,7 @@ class BuilderObject(object):
                 cb_name = bind.handler
                 if hasattr(cb_bag, cb_name):
                     callback = getattr(cb_bag, cb_name)
-                    self.widget.bind(bind.sequence, callback, add=bind.add)
+                    self._connect_binding(bind.sequence, callback, add=bind.add)
                 else:
                     notconnected.append(cb_name)
         if notconnected:
@@ -609,6 +612,11 @@ class BuilderObject(object):
         lines.append(line)
         return lines
 
+    def _code_connect_binding(
+        self, target: str, sequence: str, callback: str, add_arg: str
+    ):
+        return f'{target}.bind("{sequence}", {callback}, add="{add_arg}")'
+
     def code_connect_bindings(self):
         lines = []
         target = self.code_identifier()
@@ -617,8 +625,8 @@ class BuilderObject(object):
                 target, bind.handler, CB_TYPES.BIND_EVENT
             )
             add_arg = "+" if bind.add else ""
-            line = (
-                f'{target}.bind("{bind.sequence}", {cb_name}, add="{add_arg}")'
+            line = self._code_connect_binding(
+                target, bind.sequence, cb_name, add_arg
             )
             lines.append(line)
         return lines
@@ -748,3 +756,104 @@ class PanedWindowPaneBO(BuilderObject):
         line = f"{masterid}.add({childid}{kw})"
         lines.append(line)
         return lines
+
+
+#
+# Base mixin for OptionMenu
+#
+class OptionMenuBaseMixin:
+    def realize(self, parent, extra_init_args: dict = None):
+        args = self._get_init_args(extra_init_args)
+        master = parent.get_child_master()
+        variable = args.pop("variable", None)
+        value = args.pop("value", None)
+        if variable is None:
+            varname = "{0}__var".format(self.wmeta.identifier)
+            variable = self.builder.create_variable(varname)
+        if value is not None:
+            variable.set(value)
+        values = args.pop("values", "")
+        if values is not None:
+            values = values.split(",")
+
+        class _cb_proxy(object):
+            def __init__(self):
+                super(_cb_proxy, self).__init__()
+                self.callback = None
+
+            def __call__(self, arg1):
+                if self.callback is not None:
+                    self.callback(arg1)
+
+        cb_proxy = _cb_proxy()
+        self.widget = self.class_(master, variable, *values, command=cb_proxy)
+        self.widget._cb_proxy = cb_proxy
+        return self.widget
+
+    def _connect_command(self, cmd_pname, callback):
+        if cmd_pname == "command":
+            self.widget._cb_proxy.callback = callback
+        else:
+            super()._connect_comman(cmd_pname, callback)
+
+    #
+    # Code generation methods
+    #
+    def code_realize(self, boparent, code_identifier=None):
+        import json
+
+        if code_identifier is not None:
+            self._code_identifier = code_identifier
+        lines = []
+        master = boparent.code_child_master()
+        init_args = self._code_get_init_args(self.code_identifier())
+        command_arg = None
+        variable_arg = None
+        # value_arg = None
+
+        # command property
+        pname = "command"
+        if pname in self.wmeta.properties:
+            value = json.loads(self.wmeta.properties[pname])
+            cmdname = value["value"]
+            cmdtype = value["type"]
+            args = ("option",)
+            pvalue = self.builder.code_create_callback(
+                self.code_identifier(), cmdname, cmdtype, args
+            )
+            command_arg = f"{pvalue}"
+
+        # Value property
+        #
+        # Already setup in _code_get_init_args if set by user.
+        # But if not:
+        var_value = init_args.get("value", None)
+
+        # Variable property
+        pname = "variable"
+        varname = "__tkvar"
+        if pname in init_args:
+            varname = init_args[pname]
+        else:
+            str_val = "" if var_value is None else var_value
+            line = f"__tkvar = tk.StringVar(value={str_val})"
+            lines.append(line)
+        variable_arg = varname
+
+        # values property
+        pname = "values"
+        om_values = []
+        if pname in self.wmeta.properties:
+            value = self.wmeta.properties["values"]
+            om_values = value.split(",")
+        line = f"__values = {om_values}"
+        lines.append(line)
+        s = f"{self.code_identifier()} = {self._code_class_name()}({master}, {variable_arg}, *__values, command={command_arg})"
+        lines.append(s)
+        return lines
+
+    def code_configure(self, targetid=None):
+        return []
+
+    def code_connect_commands(self):
+        return []
