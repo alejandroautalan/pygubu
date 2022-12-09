@@ -94,7 +94,7 @@ class PitType(Enum):
 
 @dataclass
 class CacheItem:
-    def create_tkimage(self):
+    def create_image(self):
         ...
 
 
@@ -103,7 +103,7 @@ class ImgFromData(CacheItem):
     data: Any = None
     format: str = None
 
-    def create_tkimage(self):
+    def create_image(self, custom_loader=None):
         tk.PhotoImage(format=self.format, data=self.data)
 
 
@@ -111,7 +111,7 @@ class ImgFromData(CacheItem):
 class ImgCreated(CacheItem):
     image: Any = None
 
-    def create_tkimage(self):
+    def create_image(self, custom_loader=None):
         return self.image
 
 
@@ -130,9 +130,11 @@ class ImgFromPath(CacheItem):
             msg = f"Error loading {self.fpath}, image format not supported."
             raise ImageFormatNotSupportedError(msg)
 
-    def create_tkimage(self):
+    def create_image(self, custom_loader=None):
         file_ext = self.fpath.suffix.lower()
-        if file_ext in TK_PHOTO_FORMATS:
+        if custom_loader is not None:
+            img = custom_loader(PitType.PATH, self.fpath)
+        elif file_ext in TK_PHOTO_FORMATS:
             img = tk.PhotoImage(file=self.fpath)
         elif file_ext in TK_BITMAP_FORMATS:
             img = tk.BitmapImage(file=self.fpath)
@@ -143,11 +145,13 @@ class ImgFromPath(CacheItem):
 
 @dataclass
 class ImgFromPackage(ImgFromPath):
-    def create_tkimage(self):
+    def create_image(self, custom_loader=None):
         file_ext = Path(str(self.fpath)).suffix.lower()
 
         with resources.as_file(self.fpath) as file:
-            if file_ext in TK_PHOTO_FORMATS:
+            if custom_loader is not None:
+                img = custom_loader(PitType.PACKAGE, file)
+            elif file_ext in TK_PHOTO_FORMATS:
                 img = tk.PhotoImage(file=file)
             elif file_ext in TK_BITMAP_FORMATS:
                 img = tk.BitmapImage(file=file)
@@ -274,13 +278,13 @@ class StockImage:
                     cls.register_from_package(image_id, pkg_path)
 
     @classmethod
-    def _load_image(cls, image_id):
+    def _load_image(cls, image_id, custom_loader=None):
         """Load image from file or return the cached instance."""
 
         cache_info = cls._stock[image_id]
         img = None
         try:
-            img = cache_info.create_tkimage()
+            img = cache_info.create_image(custom_loader)
         except ImageFormatNotSupportedError:
             msg = "Error loading image %s, try installing Pillow module."
             logger.error(msg, image_id)
@@ -291,7 +295,7 @@ class StockImage:
         return img
 
     @classmethod
-    def get(cls, image_id):
+    def get(cls, image_id, custom_loader=None):
         """Get image previously registered with key image_id.
         If key not exist, raise StockImageException
         """
@@ -300,7 +304,7 @@ class StockImage:
             logger.info("Resource %s is in cache.", image_id)
             return cls._cached[image_id]
         if image_id in cls._stock:
-            img = cls._load_image(image_id)
+            img = cls._load_image(image_id, custom_loader)
             return img
         else:
             raise StockImageException(f"StockImage: {image_id} not registered.")

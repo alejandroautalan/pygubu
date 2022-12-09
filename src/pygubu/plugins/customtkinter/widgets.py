@@ -26,27 +26,24 @@ from customtkinter import (
 from ..customtkinter import _designer_tab_label, _plugin_uid
 from .ctkbase import (
     CTkBaseMixin,
-    ctk_version_is_gte_5,
     GCONTAINER,
     GDISPLAY,
     GINPUT,
 )
 
-if ctk_version_is_gte_5:
-    import pygubu.plugins.customtkinter.tabview
+import pygubu.plugins.customtkinter.tabview
 
 
 class CTkFrameBO(CTkBaseMixin, TKFrameBO):
     class_ = CTkFrame
-    OPTIONS_CUSTOM = (
+    properties = (
+        "width",
+        "height",
         "bg_color",
         "fg_color",
         "border_color",
         "border_width",
         "corner_radius",
-    )
-    properties = (
-        TKFrameBO.OPTIONS_STANDARD + TKFrameBO.OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     )
 
 
@@ -100,17 +97,9 @@ class CTkProgressBarBO(CTkBaseMixin, BuilderObject):
         "progress_color",
         "determinate_speed",
         "indeterminate_speed",
+        "orientation",
     )
-    ro_properties = tuple()
-
-
-if ctk_version_is_gte_5:
-    # orient property was renamed in 5.0
-    CTkProgressBarBO.properties += ("orientation",)
-    CTkProgressBarBO.ro_properties = ("orientation",)
-else:
-    CTkProgressBarBO.properties += ("orient",)
-    CTkProgressBarBO.ro_properties = ("orient",)
+    ro_properties = ("orientation",)
 
 
 _builder_uid = f"{_plugin_uid}.CTkProgressBar"
@@ -144,14 +133,10 @@ class CTkButtonBO(CTkBaseMixin, BuilderObject):
         "text_color",
         "text_color_disabled",
         "hover",
+        "font",
     )
     ro_properties = ("hover",)
 
-
-if ctk_version_is_gte_5:
-    CTkButtonBO.properties += ("font",)
-else:
-    CTkButtonBO.properties += ("text_font",)
 
 _builder_uid = f"{_plugin_uid}.CTkButton"
 register_widget(
@@ -185,17 +170,13 @@ class CTkSliderBO(CTkBaseMixin, BuilderObject):
         "button_corner_radius",
         "button_length",
         "number_of_steps",
+        "orientation",
     )
-    ro_properties = ("button_length",)
+    ro_properties = (
+        "orientation",
+        "button_length",
+    )
 
-
-if ctk_version_is_gte_5:
-    # orient property was renamed in 5.0
-    CTkSliderBO.properties += ("orientation",)
-    CTkSliderBO.ro_properties = ("orientation", "button_length")
-else:
-    CTkSliderBO.properties += ("orient",)
-    CTkSliderBO.ro_properties = ("orient", "button_length")
 
 _builder_uid = f"{_plugin_uid}.CTkSlider"
 register_widget(
@@ -219,16 +200,14 @@ class CTkEntryBO(CTkBaseMixin, TKEntryBO):
         "text_color",
         "placeholder_text_color",
         "placeholder_text",
+        "font",
     )
     properties = (
         TKEntryBO.OPTIONS_STANDARD + TKEntryBO.OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     )
 
     def _set_property(self, target_widget, pname, value):
-        if ctk_version_is_gte_5:
-            real_entry = target_widget._entry
-        else:
-            real_entry = target_widget.entry
+        real_entry = target_widget._entry
         if pname == "text":
             wstate = str(real_entry["state"])
             if wstate != "normal":
@@ -240,11 +219,6 @@ class CTkEntryBO(CTkBaseMixin, TKEntryBO):
         else:
             super()._set_property(target_widget, pname, value)
 
-
-if ctk_version_is_gte_5:
-    CTkEntryBO.properties += ("font",)
-else:
-    CTkEntryBO.properties += ("text_font",)
 
 _builder_uid = f"{_plugin_uid}.CTkEntry"
 register_widget(
@@ -277,17 +251,13 @@ class CTkOptionMenuBO(CTkBaseMixin, BuilderObject):
         "corner_radius",
         "state",
         "dynamic_resizing",
+        "font",
     )
     command_properties = ("command",)
 
     def _code_define_callback_args(self, cmd_pname, cmd):
         return ("current_value",)
 
-
-if ctk_version_is_gte_5:
-    CTkOptionMenuBO.properties += ("font",)
-else:
-    CTkOptionMenuBO.properties += ("text_font",)
 
 _builder_uid = f"{_plugin_uid}.CTkOptionMenu"
 register_widget(
@@ -323,6 +293,7 @@ class CTkComboBoxBO(CTkBaseMixin, BuilderObject):
         "dropdown_text_font",
         "state",
         "hover",
+        "font",
     )
     command_properties = ("command",)
     ro_properties = ("hover",)
@@ -330,11 +301,6 @@ class CTkComboBoxBO(CTkBaseMixin, BuilderObject):
     def _code_define_callback_args(self, cmd_pname, cmd):
         return ("value",)
 
-
-if ctk_version_is_gte_5:
-    CTkComboBoxBO.properties += ("font",)
-else:
-    CTkComboBoxBO.properties += ("text_font",)
 
 _builder_uid = f"{_plugin_uid}.CTkComboBox"
 register_widget(
@@ -370,15 +336,11 @@ class CTkCheckBoxBO(CTkBaseMixin, BuilderObject):
         "corner_radius",
         "hover",
         "hover_color",
+        "font",
     )
     command_properties = ("command",)
     ro_properties = ("hover",)
 
-
-if ctk_version_is_gte_5:
-    CTkCheckBoxBO.properties += ("font",)
-else:
-    CTkCheckBoxBO.properties += ("text_font",)
 
 _builder_uid = f"{_plugin_uid}.CTkCheckBox"
 register_widget(
@@ -414,15 +376,11 @@ class CTkRadioButtonBO(CTkBaseMixin, BuilderObject):
         "corner_radius",
         "hover",
         "hover_color",
+        "font",
     )
     command_properties = ("command",)
     ro_properties = ("hover",)
 
-
-if ctk_version_is_gte_5:
-    CTkRadioButtonBO.properties += ("font",)
-else:
-    CTkRadioButtonBO.properties += ("text_font",)
 
 _builder_uid = f"{_plugin_uid}.CTkRadioButton"
 register_widget(
@@ -462,15 +420,11 @@ class CTkSwitchBO(CTkBaseMixin, BuilderObject):
         "button_color",
         "button_hover_color",
         "button_length",
+        "font",
     )
     command_properties = ("command",)
     ro_properties = ("hover", "text_color", "text_color_disabled")
 
-
-if ctk_version_is_gte_5:
-    CTkSwitchBO.properties += ("font",)
-else:
-    CTkSwitchBO.properties += ("text_font",)
 
 _builder_uid = f"{_plugin_uid}.CTkSwitch"
 register_widget(
@@ -493,13 +447,9 @@ class CTkTextboxBO(CTkBaseMixin, BuilderObject):
         "border_width",
         "corner_radius",
         "text_color",
+        "font",
     )
 
-
-if ctk_version_is_gte_5:
-    CTkTextboxBO.properties += ("font",)
-else:
-    CTkTextboxBO.properties += ("text_font",)
 
 _builder_uid = f"{_plugin_uid}.CTkTextbox"
 register_widget(

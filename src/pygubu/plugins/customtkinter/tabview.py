@@ -5,7 +5,7 @@ from pygubu.api.v1 import (
 )
 from pygubu.i18n import _
 from ..customtkinter import _designer_tab_label, _plugin_uid
-from .ctkbase import CTkBaseMixin, ctk_version, GCONTAINER
+from .ctkbase import CTkBaseMixin, GCONTAINER
 
 from customtkinter import CTkTabview
 

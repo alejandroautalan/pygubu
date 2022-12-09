@@ -45,7 +45,7 @@ tkinterweb = ['tkinterweb']
 tkintertable = ['tkintertable']
 tkcalendar = ['tkcalendar']
 awesometkinter = ['AwesomeTkinter']
-customtkinter = ['customtkinter']
+customtkinter = ['customtkinter >=5.0.2']
 tkintermapview = ['tkintermapview']
 all = ['AwesomeTkinter', 'tkintertable', 'tksheet', 'ttkwidgets', 'tkinterweb',
        'tkcalendar', 'customtkinter', 'tkintermapview']

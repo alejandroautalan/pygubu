@@ -1,5 +1,6 @@
 import tkinter as tk
 import customtkinter
+from pathlib import Path
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
@@ -7,22 +8,22 @@ from pygubu.api.v1 import (
 )
 from pygubu.i18n import _
 from pygubu.plugins.tk.tkstdwidgets import TKFrame as TKFrameBO
+from pygubu.utils.font import tkfontstr_to_dict
+from pygubu.stockimage import StockImage, PitType
 from ..customtkinter import _designer_tab_label, _plugin_uid
-
-
-ctk_version = tuple(int(v) for v in customtkinter.__version__.split("."))
-ctk_version_is_gte_5 = ctk_version >= (5, 0, 0)
-
-if ctk_version_is_gte_5:
-    from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
-else:
-    from customtkinter import CTkBaseClass
+from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
+from customtkinter import CTkFont, CTkImage
+from PIL import Image
 
 
 # Groups for ordering buttons in designer palette.
 GCONTAINER = 0
 GINPUT = 1
 GDISPLAY = 2
+
+
+def ctk_image_loader(source_type, source):
+    return CTkImage(Image.open(source))
 
 
 class CTkBaseMixin:
@@ -39,6 +40,25 @@ class CTkBaseMixin:
             "number_of_steps",
         ):
             return float(value)
+        if pname == "font":
+            fdesc = tkfontstr_to_dict(value)
+            _modifiers = (
+                [] if fdesc["modifiers"] is None else fdesc["modifiers"]
+            )
+            family = fdesc["family"]
+            size = None if fdesc["size"] is None else int(fdesc["size"])
+            weight = "bold" if "bold" in _modifiers else None
+            slant = "italic" if "italic" in _modifiers else "roman"
+            underline = True if "underline" in _modifiers else False
+            overstrike = True if "overstrike" in _modifiers else False
+            _font = CTkFont(family, size, weight, slant, underline, overstrike)
+            return _font
+        if pname == "image":
+            name = Path(value).name
+            if not StockImage.is_registered(name):
+                StockImage.find_and_register(name)
+            img = StockImage.get(value, ctk_image_loader)
+            return img
         return super()._process_property_value(pname, value)
 
     def _code_process_property_value(self, targetid, pname, value: str):
@@ -146,7 +166,6 @@ register_custom_property(
 register_custom_property(_builder_uid, "text", "text")
 register_custom_property(_builder_uid, "text_color", "colorentry")
 register_custom_property(_builder_uid, "text_color_disabled", "colorentry")
-register_custom_property(_builder_uid, "text_font", "fontentry")
 
 register_custom_property(_builder_uid, "values", "entry")
 register_custom_property(_builder_uid, "variable", "tkvarentry")

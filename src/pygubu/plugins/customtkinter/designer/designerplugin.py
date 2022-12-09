@@ -1,6 +1,6 @@
 from pygubu.api.v1 import IPluginBase, IDesignerPlugin
 from .preview import CTkToplevelPreviewBO, CTkPreviewBO, CTkFramePreviewBO
-from ..ctkbase import _plugin_uid, ctk_version_is_gte_5
+from ..ctkbase import _plugin_uid
 
 
 class CTkDesignerPlugin(IDesignerPlugin):
@@ -28,10 +28,7 @@ class CTkDesignerPlugin(IDesignerPlugin):
         def _no_op(event=None):
             pass
 
-        widget_canvas = (
-            widget._canvas if ctk_version_is_gte_5 else widget.canvas
-        )
-
+        widget_canvas = widget._canvas
         if builder_uid.endswith(".CTKEntry"):
             seqlist = ("<FocusOut>", "<FocusIn>")
             for seq in seqlist:
@@ -42,14 +39,9 @@ class CTkDesignerPlugin(IDesignerPlugin):
                 widget_canvas.bind(seq, _no_op)
         elif builder_uid.endswith(".CTkOptionMenu"):
             seqlist = ("<Enter>", "<Leave>", "<Button-1>")
-            text_label = (
-                widget._text_label
-                if ctk_version_is_gte_5
-                else widget.text_label
-            )
             for seq in seqlist:
                 widget_canvas.bind(seq, _no_op)
-                text_label.bind(seq, _no_op)
+                widget._text_label.bind(seq, _no_op)
         elif builder_uid.endswith(".CTkComboBox"):
             widget_canvas.tag_bind("right_parts", "<Enter>", _no_op)
             widget_canvas.tag_bind("dropdown_arrow", "<Enter>", _no_op)
