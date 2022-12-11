@@ -70,3 +70,8 @@ class PluginManager:
     def configure_for_preview(cls, builder_uid: str, target):
         for plugin in cls.designer_plugins:
             plugin.configure_for_preview(builder_uid, target)
+
+    @classmethod
+    def ensure_visibility_in_preview(cls, builder, selected_uid: str):
+        for plugin in cls.designer_plugins:
+            plugin.ensure_visibility_in_preview(builder, selected_uid)
