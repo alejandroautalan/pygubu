@@ -29,6 +29,14 @@ class IDesignerPlugin(ABC):
         """Make widget just display with minimal functionality."""
         pass
 
+    def ensure_visibility_in_preview(self, builder, selected_uid: str):
+        """Ensure visibility of selected_uid in preview.
+        Usage example:
+            Activate a tab of a Notebook if the selected widget is
+            inside the notebook.
+        """
+        pass
+
 
 class IPluginBase(ABC, metaclass=PluginRegistry):
     @abstractmethod
