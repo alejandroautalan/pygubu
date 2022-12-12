@@ -1,6 +1,14 @@
 History
 =======
 
+Changes for version 0.28
+
+  * Added ttk.OptionMenu and ttk.LabeledScale
+    (alejandroautalan/pygubu-designer#178)
+  * Fixed issues when working with Notebook tabs.
+  * Restrict customtkinter plugin to customtkinter < 5
+    (next version will only support customtkinter >= 5)
+
 Changes for version 0.27
 
   * Builder object, REMOVED configure_for_preview method.
