@@ -763,16 +763,18 @@ class PanedWindowPaneBO(BuilderObject):
 #
 class OptionMenuBaseMixin:
     def realize(self, parent, extra_init_args: dict = None):
-        args = self._get_init_args(extra_init_args)
+        init_args = self._get_init_args(extra_init_args)
         master = parent.get_child_master()
-        variable = args.pop("variable", None)
-        value = args.pop("value", None)
+
+        # prepare init args
+        variable = init_args.pop("variable", None)
+        value = init_args.pop("value", None)
         if variable is None:
             varname = "{0}__var".format(self.wmeta.identifier)
             variable = self.builder.create_variable(varname)
         if value is not None:
             variable.set(value)
-        values = args.pop("values", "")
+        values = init_args.pop("values", "")
         if values is not None:
             values = values.split(",")
 
@@ -786,15 +788,24 @@ class OptionMenuBaseMixin:
                     self.callback(arg1)
 
         cb_proxy = _cb_proxy()
-        self.widget = self.class_(master, variable, *values, command=cb_proxy)
+
+        # tk.OptionMenu and ttk.OptionMenu differ on constructor
+        # class so, move code to method than can be overriden
+
+        self.widget = self._create_option_menu(
+            master, variable, value, values, cb_proxy
+        )
         self.widget._cb_proxy = cb_proxy
         return self.widget
+
+    def _create_option_menu(self, master, variable, value, values, command):
+        return self.class_(master, variable, *values, command=command)
 
     def _connect_command(self, cmd_pname, callback):
         if cmd_pname == "command":
             self.widget._cb_proxy.callback = callback
         else:
-            super()._connect_comman(cmd_pname, callback)
+            super()._connect_command(cmd_pname, callback)
 
     #
     # Code generation methods
@@ -848,9 +859,27 @@ class OptionMenuBaseMixin:
             om_values = value.split(",")
         line = f"__values = {om_values}"
         lines.append(line)
-        s = f"{self.code_identifier()} = {self._code_class_name()}({master}, {variable_arg}, *__values, command={command_arg})"
+        s = self._code_create_optionmenu(
+            self.code_identifier(),
+            self._code_class_name(),
+            master,
+            var_value,
+            variable_arg,
+            command_arg,
+        )
         lines.append(s)
         return lines
+
+    def _code_create_optionmenu(
+        self,
+        identifier,
+        classname,
+        master,
+        value_arg,
+        variable_arg,
+        command_arg,
+    ):
+        return f"{identifier} = {classname}({master}, {variable_arg}, *__values, command={command_arg})"
 
     def code_configure(self, targetid=None):
         return []
