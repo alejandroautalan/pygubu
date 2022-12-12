@@ -702,6 +702,20 @@ class OptionMenuBO(OptionMenuBaseMixin, BuilderObject):
     command_properties = ("command",)
     ro_properties = ("variable", "value", "values")
 
+    def _create_option_menu(self, master, variable, value, values, command):
+        return self.class_(master, variable, value, *values, command=command)
+
+    def _code_create_optionmenu(
+        self,
+        identifier,
+        classname,
+        master,
+        value_arg,
+        variable_arg,
+        command_arg,
+    ):
+        return f"{identifier} = {classname}({master}, {variable_arg}, {value_arg}, *__values, command={command_arg})"
+
 
 register_widget(
     "ttk.OptionMenu",
@@ -719,11 +733,10 @@ class LabeledScaleBO(BuilderObject):
         "from_",
         "to",
     )
-    ro_properties = ("variable", "from_", "to")
+    ro_properties = ("compound", "from_", "to", "variable")
     virtual_events = ("<<RangeChanged>>",)
 
     def _connect_binding(self, sequence: str, callback, add):
-        print("connecting scale", sequence, callback, add)
         self.widget.scale.bind(sequence, callback, add)
 
     def _code_connect_binding(
