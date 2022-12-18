@@ -79,6 +79,14 @@ class TKToplevel(BuilderObject):
     # we marked this widget as not allowed to edit layoutu
     #    pass
 
+    def _process_property_value(self, pname, value):
+        if pname in ("maxsize", "minsize"):
+            if "|" in value:
+                w, h = value.split("|")
+                value = (int(w), int(h))
+            return value
+        return super()._process_property_value(pname, value)
+
     def _set_property(self, target_widget, pname, value):
         method_props = ("geometry", "overrideredirect", "title")
         if pname in method_props:
@@ -87,13 +95,13 @@ class TKToplevel(BuilderObject):
         elif pname == "resizable" and value:
             target_widget.resizable(*self.RESIZABLE[value])
         elif pname == "maxsize":
-            if "|" in value:
-                w, h = value.split("|")
-                target_widget.maxsize(w, h)
+            maxsize = self._process_property_value(pname, value)
+            if isinstance(maxsize, tuple):
+                target_widget.maxsize(maxsize[0], maxsize[1])
         elif pname == "minsize":
-            if "|" in value:
-                w, h = value.split("|")
-                target_widget.minsize(w, h)
+            minsize = self._process_property_value(pname, value)
+            if isinstance(minsize, tuple):
+                target_widget.minsize(minsize[0], minsize[1])
         elif pname == "iconphoto":
             icon = self.builder.get_image(value)
             target_widget.iconphoto(True, icon)

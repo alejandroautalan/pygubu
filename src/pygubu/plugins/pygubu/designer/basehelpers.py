@@ -100,7 +100,15 @@ class ToplevelPreviewBaseBO(BuilderObject):
         dim = dimvalue.split("+")[0]
         dim = dim.split("-")[0]
         w, h = dim.split("x")
-        return (w, h)
+        return (int(w), int(h))
+
+    def _process_property_value(self, pname, value):
+        if pname in ("maxsize", "minsize"):
+            if "|" in value:
+                w, h = value.split("|")
+                value = (int(w), int(h))
+            return value
+        return super()._process_property_value(pname, value)
 
     def _set_property(self, target_widget, pname, value):
         tw = target_widget
@@ -114,19 +122,20 @@ class ToplevelPreviewBaseBO(BuilderObject):
         if pname in method_props:
             pass
         elif pname in ("maxsize", "minsize"):
-            if not value:
+            pvalue = self._process_property_value(pname, value)
+            if not pvalue:
                 del tw.tl_attrs[pname]
-            elif "|" in value:
-                w, h = value.split("|")
-                if w and h:
-                    tw.tl_attrs[pname] = (int(w), int(h))
+            else:
+                if isinstance(pvalue, tuple):
+                    tw.tl_attrs[pname] = pvalue
                 else:
                     del tw.tl_attrs[pname]
         elif pname == "geometry":
             if value:
                 w, h = self._get_dimwh(value)
                 if w and h:
-                    tw.tl_attrs["minsize"] = (int(w), int(h))
+                    w, h = int(w), int(h)
+                    tw.tl_attrs["minsize"] = (w, h)
                     tw._h_set = tw._w_set = False
                     tw.configure(width=w, height=h)
         elif pname == "resizable":
