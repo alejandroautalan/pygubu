@@ -310,9 +310,9 @@ class StockImage:
         """Get image path for use in iconbitmap property"""
         img = None
         if image_id in cls._stock:
-            data = cls._stock[image_id]
-            if data["type"] not in ("stock", "data", "image"):
-                fpath = data["filename"]
+            cache_item = cls._stock[image_id]
+            if isinstance(cache_item, ImgFromPath):
+                fpath = cache_item.fpath
                 file_ext = fpath.suffix.lower()
 
                 if file_ext in TK_BITMAP_FORMATS:
