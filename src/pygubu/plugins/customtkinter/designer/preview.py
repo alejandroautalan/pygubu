@@ -58,6 +58,10 @@ class CTkToplevelPreviewBO(ToplevelPreviewBaseBO):
     class_ = CTKToplevelPreview
     ro_properties = ToplevelPreviewBaseBO.ro_properties + ("background",)
 
+    def _process_property_value(self, pname, value):
+        if pname in ("width", "height"):
+            return int(value)
+
 
 #
 # Preview classes for CTK
@@ -72,7 +76,7 @@ CTKPreview = ToplevelPreviewFactory(
 class CTkPreviewBO(ToplevelPreviewBaseBO):
     class_ = CTKPreview
     properties = ToplevelPreviewBaseBO.properties + ("appearance_mode",)
-    ro_properties = ToplevelPreviewBaseBO.ro_properties + ("background",)
+    ro_properties = ToplevelPreviewBaseBO.ro_properties + ("fg_color",)
 
     def _set_property(self, target_widget, pname, value):
         if pname == "appearance_mode":
