@@ -120,12 +120,36 @@ register_custom_property(
 
 class CTkToplevelBO(TKToplevelBO):
     class_ = CTkToplevel
-    properties = TKToplevelBO.properties + ("fg_color",)
-    ro_properties = TKToplevelBO.ro_properties + ("background", "fg_color")
+    properties = (
+        "borderwidth",
+        "cursor",
+        "padx",
+        "pady",
+        "relief",
+        "takefocus",
+        "class_",
+        "height",
+        "width",
+        # CUSTOM OPTIONS,
+        "title",
+        "geometry",
+        "overrideredirect",
+        "minsize",
+        "maxsize",
+        "resizable",
+        "iconbitmap",
+        "iconphoto",
+        # CUSTOMTKINTER options,
+        "fg_color",
+    )
+    ro_properties = ("fg_color",)
 
     def realize(self, parent, extra_init_args: dict = None):
-        # Call realize from BuilderObject not Toplevel.
-        return super(TKToplevelBO, self).realize(parent, extra_init_args)
+        kwargs = self._get_init_args(extra_init_args)
+        fg_color = kwargs.pop("fg_color", None)
+        master = parent.get_child_master()
+        self.widget = self.class_(master, fg_color=fg_color, **kwargs)
+        return self.widget
 
     def code_imports(self):
         return [("customtkinter", self.class_.__name__)]

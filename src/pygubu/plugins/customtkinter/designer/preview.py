@@ -56,7 +56,10 @@ CTKToplevelPreview = ToplevelPreviewFactory(
 
 class CTkToplevelPreviewBO(ToplevelPreviewBaseBO):
     class_ = CTKToplevelPreview
-    ro_properties = ToplevelPreviewBaseBO.ro_properties + ("background",)
+    ro_properties = ToplevelPreviewBaseBO.ro_properties + (
+        "background",
+        "fg_color",
+    )
 
     def _process_property_value(self, pname, value):
         if pname in ("width", "height"):
