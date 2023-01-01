@@ -1,4 +1,5 @@
 # encoding: utf-8
+import tkinter as tk
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
@@ -10,7 +11,7 @@ from pygubu.widgets.pathchooserinput import PathChooserInput
 
 class PathChooserInputBuilder(BuilderObject):
     class_ = PathChooserInput
-    OPTIONS_CUSTOM = (
+    properties = (
         "type",
         "path",
         "image",
@@ -20,20 +21,17 @@ class PathChooserInputBuilder(BuilderObject):
         "mustexist",
         "title",
     )
-    properties = OPTIONS_CUSTOM
     virtual_events = ("<<PathChooserPathChanged>>",)
 
-    def _code_set_property(self, targetid, pname, value, code_bag):
-        if pname == "type":
-            code_bag[pname] = '"{0}"'.format(value)
-        elif pname in ("initialdir", "mustexist", "title"):
-            code_bag[pname] = '"{0}"'.format(value)
-        elif pname == "textvariable":
-            code_bag[pname] = self._code_set_tkvariable_property(pname, value)
-        else:
-            super(PathChooserInputBuilder, self)._code_set_property(
-                targetid, pname, value, code_bag
-            )
+    def _process_property_value(self, pname, value):
+        if pname == "mustexist":
+            return tk.getboolean(value)
+        return super()._process_property_value(pname, value)
+
+    def _code_process_property_value(self, targetid, pname, value: str):
+        if pname == "mustexist":
+            return self._process_property_value(pname, value)
+        return super()._code_process_property_value(targetid, pname, value)
 
 
 _builder_id = "pygubu.builder.widgets.pathchooserinput"
@@ -74,13 +72,14 @@ register_custom_property(
     help=_help,
 )
 
-_help = "Dialog option. Determines if path must exist for directory dialog."
+_help = "Dialog option. Determines if path must exist for directory and file dialogs. The default value is True."
 register_custom_property(
     _builder_id,
     "mustexist",
     "choice",
-    values=("", "false", "true"),
+    values=("", "true", "false"),
     state="readonly",
+    default_value="true",
     help=_help,
 )
 
