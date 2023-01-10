@@ -1,4 +1,5 @@
 from pygubu.api.v1 import IDesignerPlugin
+from pygubu.utils.widget import crop_widget
 from .toplevelframe import ToplevelFramePreviewBO
 
 
@@ -22,7 +23,9 @@ class PygubuDesignerPlugin(IDesignerPlugin):
 
     def configure_for_preview(self, builder_uid: str, widget):
         """Make widget just display with minimal functionality."""
-        pass
+        if builder_uid.endswith(".pathchooserinput"):
+            crop_widget(widget.entry)
+            crop_widget(widget.folder_button)
 
     def ensure_visibility_in_preview(self, builder, selected_uid: str):
         """Ensure visibility of selected_uid in preview.

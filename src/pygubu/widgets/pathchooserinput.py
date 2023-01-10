@@ -13,7 +13,7 @@ class PathChooserInput(ttk.Frame):
       initialdir: str
       filetypes: iterable
       title: str
-      mustexist: str
+      mustexist: bool
 
     Usage Example:
         # Choose File:
@@ -24,7 +24,7 @@ class PathChooserInput(ttk.Frame):
 
         # Choose directory:
         pcidir = PathChooserInput(framex)
-        pcidir.config(initialdir='/usr/local', mustexist='true',
+        pcidir.config(initialdir='/usr/local', mustexist=True,
                       title='Choose a directory:', type='directory')
         pcidir.pack(fill='x', side='top')
     """
@@ -40,7 +40,7 @@ class PathChooserInput(ttk.Frame):
         self._fdoptions = {
             "filetypes": tuple(),
             "initialdir": None,
-            "mustexist": False,
+            "mustexist": True,
             "title": None,
         }
         # subwidgets
@@ -143,8 +143,11 @@ class PathChooserInput(ttk.Frame):
         if fdoptions["initialdir"] is None:
             fdoptions["initialdir"] = self.cget("path")
         if self._choose == self.FILE:
-            fdoptions.pop("mustexist")
-            fname = filedialog.askopenfilename(**fdoptions)
+            must_exists = fdoptions.pop("mustexist")
+            if must_exists:
+                fname = filedialog.askopenfilename(**fdoptions)
+            else:
+                fname = filedialog.asksaveasfilename(**fdoptions)
         else:
             fdoptions.pop("filetypes")
             fname = filedialog.askdirectory(**fdoptions)
