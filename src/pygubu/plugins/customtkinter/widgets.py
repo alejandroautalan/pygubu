@@ -59,15 +59,23 @@ register_widget(
 
 class CTkLabelBO(CTkBaseMixin, TKLabelBO):
     class_ = CTkLabel
-    OPTIONS_CUSTOM = (
+    properties = (
+        "cursor",
+        "justify",
+        "font",
+        "padx",
+        "pady",
+        "state",
+        "takefocus",
+        "text",
+        "textvariable",
+        "underline",
+        # CTK properties
         "bg_color",
         "fg_color",
         "border_color",
         "border_width",
         "corner_radius",
-    )
-    properties = (
-        TKLabelBO.OPTIONS_STANDARD + TKLabelBO.OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     )
 
 
@@ -109,6 +117,10 @@ register_widget(
     "CTkProgressBar",
     ("ttk", _designer_tab_label),
     group=GDISPLAY,
+)
+
+register_custom_property(
+    _builder_uid, "variable", "tkvarentry", type_choices=("int", "double")
 )
 
 
@@ -187,11 +199,39 @@ register_widget(
     group=GINPUT,
 )
 
+register_custom_property(
+    _builder_uid, "variable", "tkvarentry", type_choices=("int", "double")
+)
+
 
 class CTkEntryBO(CTkBaseMixin, TKEntryBO):
     class_ = CTkEntry
     allow_bindings = False
-    OPTIONS_CUSTOM = TKEntryBO.OPTIONS_CUSTOM + (
+    properties = (
+        "borderwidth",
+        "cursor",
+        "exportselection",
+        "font",
+        "insertborderwidth",
+        "insertofftime",
+        "insertontime",
+        "insertwidth",
+        "justify",
+        "selectborderwidth",
+        "takefocus",
+        "textvariable",
+        "xscrollcommand",
+        # specific
+        "invalidcommand",
+        "readonlybackground",
+        "show",
+        "state",
+        "validate",
+        "validatecommand",
+        "width",
+        # custom
+        "text",
+        # CTK options
         "bg_color",
         "fg_color",
         "border_color",
@@ -200,22 +240,11 @@ class CTkEntryBO(CTkBaseMixin, TKEntryBO):
         "text_color",
         "placeholder_text_color",
         "placeholder_text",
-        "font",
-    )
-    properties = (
-        TKEntryBO.OPTIONS_STANDARD + TKEntryBO.OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     )
 
     def _set_property(self, target_widget, pname, value):
-        real_entry = target_widget._entry
         if pname == "text":
-            wstate = str(real_entry["state"])
-            if wstate != "normal":
-                # change state temporarily
-                real_entry["state"] = "normal"
-            real_entry.delete(0, "end")
-            real_entry.insert(0, value)
-            real_entry["state"] = wstate
+            super()._set_property(target_widget._entry, pname, value)
         else:
             super()._set_property(target_widget, pname, value)
 

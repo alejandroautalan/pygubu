@@ -5,6 +5,7 @@ from customtkinter import (
     set_default_color_theme,
     CTkTabview,
 )
+from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 from pygubu.api.v1 import BuilderObject
 from pygubu.plugins.pygubu.designer.basehelpers import (
     ToplevelPreviewBaseBO,
@@ -47,9 +48,23 @@ class CTkTabviewForPreviewBO(CTkTabviewBO):
 #
 # Preview classes for CTKToplevel
 #
+
+
+class CTKToplevelPreviewMixin:
+    def configure(self, cnf=None, **kw):
+        if cnf:
+            return super().configure(cnf, **kw)
+        # configure properties not supported by CtkFrame but yes by CtkToplevel
+        props = ("borderwidth", "highlightbackground", "highlightthickness")
+        for pname in props:
+            if pname in kw:
+                super(CTkBaseClass, self).configure(**{pname: kw.pop(pname)})
+        return super().configure(cnf, **kw)
+
+
 CTKToplevelPreview = ToplevelPreviewFactory(
     "CTKToplevelPreview",
-    (ToplevelPreviewMixin, CTkFrameForPreview, object),
+    (CTKToplevelPreviewMixin, ToplevelPreviewMixin, CTkFrameForPreview, object),
     {},
 )
 
@@ -64,14 +79,27 @@ class CTkToplevelPreviewBO(ToplevelPreviewBaseBO):
     def _process_property_value(self, pname, value):
         if pname in ("width", "height"):
             return int(value)
+        return super()._process_property_value(pname, value)
 
 
 #
 # Preview classes for CTK
 #
+class CTKPreviewMixin:
+    def configure(self, cnf=None, **kw):
+        if cnf:
+            return super().configure(cnf, **kw)
+        # configure properties not supported by CtkFrame but yes by Ctk
+        props = ("padx", "pady", "relief", "takefocus")
+        for pname in props:
+            if pname in kw:
+                super(CTkBaseClass, self).configure(**{pname: kw.pop(pname)})
+        return super().configure(cnf, **kw)
+
+
 CTKPreview = ToplevelPreviewFactory(
     "CTKPreview",
-    (ToplevelPreviewMixin, CTkFrameForPreview, object),
+    (CTKPreviewMixin, ToplevelPreviewMixin, CTkFrameForPreview, object),
     {},
 )
 
