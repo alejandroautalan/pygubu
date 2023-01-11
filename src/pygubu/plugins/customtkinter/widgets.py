@@ -1,27 +1,15 @@
+import customtkinter as ctk
+
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
     register_custom_property,
 )
 from pygubu.i18n import _
+from pygubu.utils.datatrans import ListDTO
 from pygubu.plugins.tk.tkstdwidgets import TKFrame as TKFrameBO
 from pygubu.plugins.tk.tkstdwidgets import TKLabel as TKLabelBO
 from pygubu.plugins.tk.tkstdwidgets import TKEntry as TKEntryBO
-from customtkinter import (
-    CTkFrame,
-    CTkLabel,
-    CTkButton,
-    CTkProgressBar,
-    CTkSlider,
-    CTkEntry,
-    CTkOptionMenu,
-    CTkComboBox,
-    CTkCheckBox,
-    CTkRadioButton,
-    CTkSwitch,
-    CTkTextbox,
-    CTkScrollbar,
-)
 
 from ..customtkinter import _designer_tab_label, _plugin_uid
 from .ctkbase import (
@@ -35,7 +23,7 @@ import pygubu.plugins.customtkinter.tabview
 
 
 class CTkFrameBO(CTkBaseMixin, TKFrameBO):
-    class_ = CTkFrame
+    class_ = ctk.CTkFrame
     properties = (
         "width",
         "height",
@@ -58,7 +46,7 @@ register_widget(
 
 
 class CTkLabelBO(CTkBaseMixin, TKLabelBO):
-    class_ = CTkLabel
+    class_ = ctk.CTkLabel
     properties = (
         "cursor",
         "justify",
@@ -90,7 +78,7 @@ register_widget(
 
 
 class CTkProgressBarBO(CTkBaseMixin, BuilderObject):
-    class_ = CTkProgressBar
+    class_ = ctk.CTkProgressBar
     allow_bindings = False
     properties = (
         "width",
@@ -120,12 +108,16 @@ register_widget(
 )
 
 register_custom_property(
-    _builder_uid, "variable", "tkvarentry", type_choices=("int", "double")
+    _builder_uid,
+    "variable",
+    "tkvarentry",
+    type_choices=("int", "double"),
+    default_value="int:",
 )
 
 
 class CTkButtonBO(CTkBaseMixin, BuilderObject):
-    class_ = CTkButton
+    class_ = ctk.CTkButton
     allow_bindings = False
     properties = (
         "text",
@@ -161,7 +153,7 @@ register_widget(
 
 
 class CTkSliderBO(CTkBaseMixin, BuilderObject):
-    class_ = CTkSlider
+    class_ = ctk.CTkSlider
     allow_bindings = False
     properties = (
         "width",
@@ -200,12 +192,16 @@ register_widget(
 )
 
 register_custom_property(
-    _builder_uid, "variable", "tkvarentry", type_choices=("int", "double")
+    _builder_uid,
+    "variable",
+    "tkvarentry",
+    type_choices=("int", "double"),
+    default_value="int:",
 )
 
 
 class CTkEntryBO(CTkBaseMixin, TKEntryBO):
-    class_ = CTkEntry
+    class_ = ctk.CTkEntry
     allow_bindings = False
     properties = (
         "borderwidth",
@@ -259,8 +255,11 @@ register_widget(
 )
 
 
+_list_dto = ListDTO()
+
+
 class CTkOptionMenuBO(CTkBaseMixin, BuilderObject):
-    class_ = CTkOptionMenu
+    class_ = ctk.CTkOptionMenu
     allow_bindings = False
     properties = (
         "command",
@@ -284,11 +283,21 @@ class CTkOptionMenuBO(CTkBaseMixin, BuilderObject):
     )
     command_properties = ("command",)
 
+    def _process_property_value(self, pname, value):
+        if pname == "values":
+            return _list_dto.transform(value)
+        return super()._process_property_value(pname, value)
+
     def _code_define_callback_args(self, cmd_pname, cmd):
         return ("current_value",)
 
 
 _builder_uid = f"{_plugin_uid}.CTkOptionMenu"
+_ctk_values_help = _(
+    "Specifies the list of values to display. "
+    "In code you can pass any iterable. "
+    'In Designer, a json like list: ["item1", "item2"]'
+)
 register_widget(
     _builder_uid,
     CTkOptionMenuBO,
@@ -296,10 +305,18 @@ register_widget(
     ("ttk", _designer_tab_label),
     group=GINPUT,
 )
+register_custom_property(_builder_uid, "values", "entry", help=_ctk_values_help)
+register_custom_property(
+    _builder_uid,
+    "state",
+    "choice",
+    values=("", "normal", "disabled", "readonly"),
+    state="readonly",
+)
 
 
 class CTkComboBoxBO(CTkBaseMixin, BuilderObject):
-    class_ = CTkComboBox
+    class_ = ctk.CTkComboBox
     allow_bindings = False
     properties = (
         "command",
@@ -327,6 +344,11 @@ class CTkComboBoxBO(CTkBaseMixin, BuilderObject):
     command_properties = ("command",)
     ro_properties = ("hover",)
 
+    def _process_property_value(self, pname, value):
+        if pname == "values":
+            return _list_dto.transform(value)
+        return super()._process_property_value(pname, value)
+
     def _code_define_callback_args(self, cmd_pname, cmd):
         return ("value",)
 
@@ -339,15 +361,22 @@ register_widget(
     ("ttk", _designer_tab_label),
     group=GINPUT,
 )
+register_custom_property(_builder_uid, "values", "entry", help=_ctk_values_help)
+register_custom_property(
+    _builder_uid,
+    "state",
+    "choice",
+    values=("", "normal", "disabled", "readonly"),
+    state="readonly",
+)
 
 
 class CTkCheckBoxBO(CTkBaseMixin, BuilderObject):
-    class_ = CTkCheckBox
+    class_ = ctk.CTkCheckBox
     allow_bindings = False
     properties = (
         "textvariable",
         "command",
-        "variable",
         "variable",
         "onvalue",
         "offvalue",
@@ -368,7 +397,7 @@ class CTkCheckBoxBO(CTkBaseMixin, BuilderObject):
         "font",
     )
     command_properties = ("command",)
-    ro_properties = ("hover",)
+    ro_properties = ("hover", "onvalue", "offvalue")
 
 
 _builder_uid = f"{_plugin_uid}.CTkCheckBox"
@@ -382,15 +411,12 @@ register_widget(
 
 
 class CTkRadioButtonBO(CTkBaseMixin, BuilderObject):
-    class_ = CTkRadioButton
+    class_ = ctk.CTkRadioButton
     allow_bindings = False
     properties = (
         "textvariable",
         "command",
         "variable",
-        "variable",
-        "onvalue",
-        "offvalue",
         "state",
         "width",
         "height",
@@ -406,9 +432,10 @@ class CTkRadioButtonBO(CTkBaseMixin, BuilderObject):
         "hover",
         "hover_color",
         "font",
+        "value",
     )
     command_properties = ("command",)
-    ro_properties = ("hover",)
+    ro_properties = ("hover", "value")
 
 
 _builder_uid = f"{_plugin_uid}.CTkRadioButton"
@@ -422,12 +449,11 @@ register_widget(
 
 
 class CTkSwitchBO(CTkBaseMixin, BuilderObject):
-    class_ = CTkSwitch
+    class_ = ctk.CTkSwitch
     allow_bindings = False
     properties = (
         "textvariable",
         "command",
-        "variable",
         "variable",
         "onvalue",
         "offvalue",
@@ -452,7 +478,13 @@ class CTkSwitchBO(CTkBaseMixin, BuilderObject):
         "font",
     )
     command_properties = ("command",)
-    ro_properties = ("hover", "text_color", "text_color_disabled")
+    ro_properties = (
+        "onvalue",
+        "offvalue",
+        "hover",
+        "text_color",
+        "text_color_disabled",
+    )
 
 
 _builder_uid = f"{_plugin_uid}.CTkSwitch"
@@ -466,8 +498,28 @@ register_widget(
 
 
 class CTkTextboxBO(CTkBaseMixin, BuilderObject):
-    class_ = CTkTextbox
+    class_ = ctk.CTkTextbox
     properties = (
+        "autoseparators",
+        "cursor",
+        "exportselection",
+        "insertborderwidth",
+        "insertofftime",
+        "insertontime",
+        "insertwidth",
+        "maxundo",
+        "padx",
+        "pady",
+        "selectborderwidth",
+        "spacing1",
+        "spacing2",
+        "spacing3",
+        "state",
+        "tabs",
+        "takefocus",
+        "undo",
+        "wrap",
+        # ctk
         "width",
         "height",
         "bg_color",
@@ -477,7 +529,22 @@ class CTkTextboxBO(CTkBaseMixin, BuilderObject):
         "corner_radius",
         "text_color",
         "font",
+        # custom
+        "text",
     )
+
+    def _set_property(self, target_widget, pname, value):
+        if pname == "text":
+            target_widget = target_widget._textbox
+            state = target_widget.cget("state")
+            if state == ctk.DISABLED:
+                target_widget.configure(state=ctk.NORMAL)
+                target_widget.insert("0.0", value)
+                target_widget.configure(state=ctk.DISABLED)
+            else:
+                target_widget.insert("0.0", value)
+        else:
+            super()._set_property(target_widget, pname, value)
 
 
 _builder_uid = f"{_plugin_uid}.CTkTextbox"
@@ -489,11 +556,23 @@ register_widget(
     group=GINPUT,
 )
 
+register_custom_property(
+    _builder_uid,
+    "wrap",
+    "choice",
+    values=("", ctk.CHAR, ctk.WORD, ctk.NONE),
+    state="readonly",
+)
+
 
 class CTkScrollbarBO(CTkBaseMixin, BuilderObject):
-    class_ = CTkScrollbar
-    OPTIONS_SPECIFIC = ("width", "height", "orientation", "command")
-    OPTIONS_CUSTOM = (
+    class_ = ctk.CTkScrollbar
+    properties = (
+        "width",
+        "height",
+        "orientation",
+        "command",
+        # CTK
         "bg_color",
         "fg_color",
         "border_color",
@@ -505,7 +584,8 @@ class CTkScrollbarBO(CTkBaseMixin, BuilderObject):
         "minimum_pixel_length",
         "hover",
     )
-    properties = OPTIONS_SPECIFIC + OPTIONS_CUSTOM
+    ro_properties = ("orientation",)
+    command_properties = ("command",)
 
 
 _builder_uid = f"{_plugin_uid}.CTkScrollbar"
@@ -515,4 +595,18 @@ register_widget(
     "CTkScrollbar",
     ("ttk", _designer_tab_label),
     group=GINPUT,
+)
+
+register_custom_property(
+    _builder_uid,
+    "orientation",
+    "choice",
+    values=("vertical", "horizontal"),
+    state="readonly",
+    default_value="vertical",
+)
+register_custom_property(
+    _builder_uid,
+    "command",
+    "scrollcommandentry",
 )
