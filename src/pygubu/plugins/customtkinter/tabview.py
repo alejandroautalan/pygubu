@@ -48,6 +48,7 @@ register_widget(
 class CTkTabviewTabBO(BuilderObject):
     class_ = None
     container = True
+    container_layout = True
     layout_required = False
     allow_bindings = False
     allowed_parents = (f"{_plugin_uid}.CTkTabview",)
@@ -62,9 +63,6 @@ class CTkTabviewTabBO(BuilderObject):
         return self.widget
 
     def configure(self, target=None):
-        pass
-
-    def layout(self, target=None):
         pass
 
     #
