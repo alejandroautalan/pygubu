@@ -48,6 +48,7 @@ register_widget(
 class CTkLabelBO(CTkBaseMixin, TKLabelBO):
     class_ = ctk.CTkLabel
     properties = (
+        "anchor",
         "cursor",
         "justify",
         "font",
@@ -112,7 +113,7 @@ register_custom_property(
     "variable",
     "tkvarentry",
     type_choices=("int", "double"),
-    default_value="int:",
+    type_default="int",
 )
 
 
@@ -139,6 +140,7 @@ class CTkButtonBO(CTkBaseMixin, BuilderObject):
         "hover",
         "font",
     )
+    command_properties = ("command",)
     ro_properties = ("hover",)
 
 
@@ -196,7 +198,7 @@ register_custom_property(
     "variable",
     "tkvarentry",
     type_choices=("int", "double"),
-    default_value="int:",
+    type_default="int",
 )
 
 
@@ -291,6 +293,11 @@ class CTkOptionMenuBO(CTkBaseMixin, BuilderObject):
     def _code_define_callback_args(self, cmd_pname, cmd):
         return ("current_value",)
 
+    def _code_process_property_value(self, targetid, pname, value: str):
+        if pname == "values":
+            return super()._process_property_value(pname, value)
+        return super()._code_process_property_value(targetid, pname, value)
+
 
 _builder_uid = f"{_plugin_uid}.CTkOptionMenu"
 _ctk_values_help = _(
@@ -351,6 +358,11 @@ class CTkComboBoxBO(CTkBaseMixin, BuilderObject):
 
     def _code_define_callback_args(self, cmd_pname, cmd):
         return ("value",)
+
+    def _code_process_property_value(self, targetid, pname, value: str):
+        if pname == "values":
+            return super()._process_property_value(pname, value)
+        return super()._code_process_property_value(targetid, pname, value)
 
 
 _builder_uid = f"{_plugin_uid}.CTkComboBox"
@@ -546,6 +558,29 @@ class CTkTextboxBO(CTkBaseMixin, BuilderObject):
         else:
             super()._set_property(target_widget, pname, value)
 
+    def _code_set_property(self, targetid, pname, value, code_bag):
+        if pname == "text":
+            state_value = ""
+            if "state" in self.wmeta.properties:
+                state_value = self.wmeta.properties["state"]
+            sval = self.builder.code_translate_str(value)
+            lines = [
+                f"_text_ = {sval}",
+            ]
+            if state_value == ctk.DISABLED:
+                lines.extend(
+                    (
+                        f'{targetid}.configure(state="normal")',
+                        f'{targetid}.insert("0.0", _text_)',
+                        f'{targetid}.configure(state="disabled")',
+                    )
+                )
+            else:
+                lines.append(f'{targetid}.insert("0.0", _text_)')
+            code_bag[pname] = lines
+        else:
+            super()._code_set_property(targetid, pname, value, code_bag)
+
 
 _builder_uid = f"{_plugin_uid}.CTkTextbox"
 register_widget(
@@ -610,3 +645,62 @@ register_custom_property(
     "command",
     "scrollcommandentry",
 )
+
+
+class CTkSegmentedButtonBO(CTkBaseMixin, BuilderObject):
+    class_ = ctk.CTkSegmentedButton
+    allow_bindings = False
+    properties = (
+        "width",
+        "height",
+        "textvariable",
+        "image",
+        "compound",
+        "state",
+        "command",
+        "bg_color",
+        "fg_color",
+        "border_color",
+        "border_width",
+        "corner_radius",
+        "hover_color",
+        "text_color",
+        "text_color_disabled",
+        "hover",
+        "font",
+        "dynamic_resizing",
+        "variable",
+        "values",
+        "selected_color",
+        "selected_hover_color",
+        "unselected_color",
+        "unselected_hover_color",
+        "background_corner_colors",
+    )
+    command_properties = ("command",)
+    ro_properties = ("hover",)
+
+    def _process_property_value(self, pname, value):
+        if pname == "values":
+            return _list_dto.transform(value)
+        return super()._process_property_value(pname, value)
+
+    def _code_define_callback_args(self, cmd_pname, cmd):
+        return ("current_value",)
+
+    def _code_process_property_value(self, targetid, pname, value: str):
+        if pname == "values":
+            return super()._process_property_value(pname, value)
+        return super()._code_process_property_value(targetid, pname, value)
+
+
+_builder_uid = f"{_plugin_uid}.CTkSegmentedButton"
+register_widget(
+    _builder_uid,
+    CTkSegmentedButtonBO,
+    "CTkSegmentedButton",
+    ("ttk", _designer_tab_label),
+    group=GINPUT,
+)
+
+register_custom_property(_builder_uid, "values", "entry", help=_ctk_values_help)

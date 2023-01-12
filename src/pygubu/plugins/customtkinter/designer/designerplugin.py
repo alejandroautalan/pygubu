@@ -5,6 +5,7 @@ from .preview import (
     CTkPreviewBO,
     CTkFramePreviewBO,
     CTkTabviewForPreviewBO,
+    CTkSegmentedButtonForPreviewBO,
 )
 from ..ctkbase import _plugin_uid
 
@@ -19,6 +20,8 @@ class CTkDesignerPlugin(IDesignerPlugin):
             return CTkFramePreviewBO
         if builder_uid == f"{_plugin_uid}.CTkTabview":
             return CTkTabviewForPreviewBO
+        if builder_uid == f"{_plugin_uid}.CTkSegmentedButton":
+            return CTkSegmentedButtonForPreviewBO
         return None
 
     def get_toplevel_preview_for(
