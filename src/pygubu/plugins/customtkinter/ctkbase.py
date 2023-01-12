@@ -18,8 +18,8 @@ from PIL import Image
 
 # Groups for ordering buttons in designer palette.
 GCONTAINER = 0
-GINPUT = 1
-GDISPLAY = 2
+GDISPLAY = 1
+GINPUT = 2
 
 
 def ctk_image_loader(source_type, source):
