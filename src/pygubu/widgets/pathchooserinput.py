@@ -7,6 +7,12 @@ from tkinter import filedialog
 class PathChooserInput(ttk.Frame):
     """Allows to choose a file or directory.
 
+    Encapsulates the usage of the functions:
+
+        filedialog.askopenfilename()
+        filedialog.asksaveasfilename(**fdoptions)
+        filedialog.askdirectory()
+
     Generates <<PathChooserPathChanged>> event when the path is changed.
 
     Dialog options:
@@ -14,13 +20,29 @@ class PathChooserInput(ttk.Frame):
       filetypes: iterable
       title: str
       mustexist: bool
+      defaultextension: str
 
     Usage Example:
-        # Choose File:
+        # Choose filename for open:
         pcifile = PathChooserInput(framex)
-        pcifile.config(initialdir='/home', title='Choose a file:', type='file')
-        pcifile.config(filetypes=[('text files-', '.txt'), ('uifiles', '.ui')])
+        pcifile.config(
+            initialdir='/home',
+            title='Open file:',
+            type='file',
+            filetypes=[('text files-', '.txt'), ('uifiles', '.ui')]
+            )
         pcifile.pack(fill='x', side='top')
+
+        # Choose filename for save:
+        pcofile = PathChooserInput(framex)
+        pcofile.config(
+            initialdir='/home',
+            title='Save to:',
+            type='file',
+            mustexist=False,
+            defaultextension=".txt",
+            )
+        pcofile.pack(fill='x', side='top')
 
         # Choose directory:
         pcidir = PathChooserInput(framex)
@@ -42,6 +64,7 @@ class PathChooserInput(ttk.Frame):
             "initialdir": None,
             "mustexist": True,
             "title": None,
+            "defaultextension": None,
         }
         # subwidgets
         self.entry = o = ttk.Entry(self, state=self._state)
@@ -118,7 +141,6 @@ class PathChooserInput(ttk.Frame):
     __getitem__ = cget
 
     def _is_changed(self):
-        #        print(repr(self._oldvalue), ':', repr(self.entry.get()))
         if self._oldvalue != self.entry.get():
             return True
         return False
@@ -150,6 +172,7 @@ class PathChooserInput(ttk.Frame):
                 fname = filedialog.asksaveasfilename(**fdoptions)
         else:
             fdoptions.pop("filetypes")
+            fdoptions.pop("defaultextension")
             fname = filedialog.askdirectory(**fdoptions)
         if fname:
             self.configure(path=fname)
