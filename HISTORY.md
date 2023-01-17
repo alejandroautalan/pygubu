@@ -1,6 +1,11 @@
 History
 =======
 
+Changes for version 0.29
+
+  * Fixes for PathChooserInput. refs #278, alejandroautalan/pygubu-designer#145
+  * Fixes for ToplevelPreviewBaseBO (for plugins)
+
 Changes for version 0.28
 
   * Added ttk.OptionMenu and ttk.LabeledScale
