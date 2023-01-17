@@ -1,6 +1,12 @@
 History
 =======
 
+Changes for next version:
+
+  * Add support to customtkinter 5.
+    Customtkinter changed a lot from 4.6 to 5.
+    The plugin will support only the latest version.
+
 Changes for version 0.29
 
   * Fixes for PathChooserInput. refs #278, alejandroautalan/pygubu-designer#145
