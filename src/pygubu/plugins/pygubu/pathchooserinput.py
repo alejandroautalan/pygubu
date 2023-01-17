@@ -20,6 +20,7 @@ class PathChooserInputBuilder(BuilderObject):
         "initialdir",
         "mustexist",
         "title",
+        "defaultextension",
     )
     virtual_events = ("<<PathChooserPathChanged>>",)
 
@@ -53,16 +54,16 @@ register_custom_property(
     help=_help,
 )
 
-_help = "Initial path value."
+_help = _("Initial path value.")
 register_custom_property(_builder_id, "path", "entry", help=_help)
 
-_help = "Image for the button."
+_help = _("Image for the button.")
 register_custom_property(_builder_id, "image", "imageentry", help=_help)
 
-_help = "Tk variable associated to the path property."
+_help = _("Tk variable associated to the path property.")
 register_custom_property(_builder_id, "textvariable", "tkvarentry", help=_help)
 
-_help = "Path entry state."
+_help = _("Path entry state.")
 register_custom_property(
     _builder_id,
     "state",
@@ -72,7 +73,9 @@ register_custom_property(
     help=_help,
 )
 
-_help = "Dialog option. Determines if path must exist for directory and file dialogs. The default value is True."
+_help = _(
+    "Dialog option. Determines if path must exist for directory and file dialogs. The default value is True."
+)
 register_custom_property(
     _builder_id,
     "mustexist",
@@ -83,8 +86,11 @@ register_custom_property(
     help=_help,
 )
 
-_help = "Dialog option. Sets initial directory."
+_help = _("Dialog option. Sets initial directory.")
 register_custom_property(_builder_id, "initialdir", "entry", help=_help)
 
-_help = "Dialog option. Sets dialog title."
+_help = _("Dialog option. Sets dialog title.")
 register_custom_property(_builder_id, "title", "entry", help=_help)
+
+_help = _("Dialog option. Sets default file extension.")
+register_custom_property(_builder_id, "defaultextension", "entry", help=_help)
