@@ -4,8 +4,8 @@ from pygubu.api.v1 import BuilderObject
 class AutocompleteBaseBO(BuilderObject):
     init_completevalues = True
 
-    def _get_init_args(self):
-        args = super(AutocompleteBaseBO, self)._get_init_args()
+    def _get_init_args(self, extra_init_args: dict = None):
+        args = super()._get_init_args(extra_init_args)
         if self.init_completevalues:
             prop = "completevalues"
             if prop not in self.wmeta.properties:
@@ -40,8 +40,8 @@ class CallbakInitArgMixin:
     So create a mixin class to configure the callback with a trick.
     """
 
-    def _get_init_args(self):
-        args = super(CallbakInitArgMixin, self)._get_init_args()
+    def _get_init_args(self, extra_init_args: dict = None):
+        args = super()._get_init_args(extra_init_args)
 
         class CBProxy:
             def __init__(self):
