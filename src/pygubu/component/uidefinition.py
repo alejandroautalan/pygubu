@@ -42,13 +42,13 @@ class UIDefinition(object):
         "tearoffcommand",
     )
 
-    def __init__(self, wmetaclass=None, translator=None):
+    def __init__(self, wmetaclass=None, translator=None, author=None):
         super(UIDefinition, self).__init__()
         self.tree = None
         self.root = None
-        self._latest_version = "1.3"
+        self._latest_version = "1.4"
         self.version = self._latest_version
-        self.author = ""
+        self.author = "" if author is None else author
         self._ignore_properties = (
             "command_id_arg",
             "idtocommand",
@@ -59,7 +59,32 @@ class UIDefinition(object):
         if wmetaclass is None:
             self.wmetaclass = WidgetMeta
         self.translator = translator
+        self._code_options = {}
         self.__create()
+
+    @property
+    def code_options(self) -> dict:
+        return self._code_options
+
+    @code_options.setter
+    def code_options(self, bag: dict):
+        self._code_options = bag
+
+    def _load_code_options(self):
+        xpath = ".//code-options"
+        node: ET.Element = self.tree.find(xpath)
+        if node is not None:
+            self._code_options = node.attrib.copy()
+
+    def _save_code_options(self):
+        xpath = ".//code-options"
+        node: ET.Element = self.root.find(xpath)
+        if node is None:
+            node = ET.Element("code-options")
+            self.root.append(node)
+        node.clear()
+        for key, value in self._code_options.items():
+            node.attrib[key] = str(value)
 
     def _prop_from_xml(self, pnode, element):
         pname = pnode.get("name")
@@ -239,7 +264,7 @@ class UIDefinition(object):
         parent_layout = None
 
         xpath = ".//*[@id='{0}']/../..".format(elemid)
-        parent = self.root.find(xpath)
+        parent = self.interfaces.find(xpath)
         if parent is not None:
             parent_layout = parent.find("./layout")
             if parent_layout is not None:
@@ -386,29 +411,39 @@ class UIDefinition(object):
     def __create(self):
         # Version 1.0: start of schema versioning, implements multiple layout managers
         # Version 1.1: remove idtocommand and command_id_arg properties
-        self.root = root = ET.Element("interface")
+        # Version 1.4: new project structure.
+        self.root = root = ET.Element("project")
         root.set("version", self._latest_version)
         if self.author:
             root.set("author", self.author)
+        self.interfaces = ET.Element("interfaces")
+        root.append(self.interfaces)
         self.tree = ET.ElementTree(root)
 
     def _tree_load(self, tree, default_version=None):
         if default_version is None:
             default_version = ""
         self.tree = tree
-        self.root = tree.getroot()
-        self.version = self.root.get("version", default_version)
-        self.author = self.root.get("author", "")
+        root: ET.Element = tree.getroot()
+        version = root.get("version", default_version)
+        author = root.get("author", "")
+        if root.tag == "interface":
+            old_root = root
+            root = ET.Element("project")
+            root.set("version", self._latest_version)
+            self.interfaces = ET.Element("interfaces")
+            for child in old_root:
+                self.interfaces.append(child)
+        else:
+            self.interfaces = root.find("./interfaces")
+        self.root = root
+        self.version = version
+        self.author = author
+        self._load_code_options()
 
     def load_file(self, file_or_filename):
-        etree = None
-        # python2 issues
-        try:
-            etree = ET.parse(file_or_filename)
-        except ET.ParseError:
-            parser = ET.XMLParser(encoding="UTF-8")
-            etree = ET.parse(file_or_filename, parser)
-        self._tree_load(etree)
+        tree = ET.parse(file_or_filename)
+        self._tree_load(tree)
 
     def load_from_string(self, source, version=None):
         tree = ET.ElementTree(ET.fromstring(source))
@@ -421,7 +456,7 @@ class UIDefinition(object):
 
     def add_xmlnode(self, node, parent=None):
         if parent is None:
-            self.root.append(node)
+            self.interfaces.append(node)
         else:
             parent.append(node)
         return node
@@ -439,6 +474,7 @@ class UIDefinition(object):
         return '<UIFile xml="{0}">'.format(self.__str__())
 
     def save(self, file_or_filename):
+        self._save_code_options()
         indent(self.root)
         self.tree.write(
             file_or_filename, xml_declaration=True, encoding="utf-8"
@@ -454,7 +490,7 @@ class UIDefinition(object):
 
     def widgets(self):
         xpath = "./object"
-        children = self.root.findall(xpath)
+        children = self.interfaces.findall(xpath)
         for child in children:
             wmeta = self.xmlnode_to_widget(child)
             yield wmeta
@@ -471,7 +507,7 @@ class UIDefinition(object):
 
     def replace_widget(self, identifier, rootmeta):
         xpath = ".//object[@id='{0}']".format(identifier)
-        parent = self.root.find(xpath + "/..")
+        parent = self.interfaces.find(xpath + "/..")
         target = parent.find(xpath)
 
         if parent is not None:
