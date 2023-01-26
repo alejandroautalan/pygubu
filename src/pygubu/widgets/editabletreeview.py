@@ -110,13 +110,22 @@ class EditableTreeview(ttk.Treeview):
         <Motion>
     If you need them use add=True when calling bind method.
 
-    It Generates two virtual events:
+    It Generates three virtual events:
         <<TreeviewInplaceEdit>>
         <<TreeviewCellEdited>>
-    The first is used to configure cell editors.
-    The second is called after a cell was changed.
+        <<TreeviewEditorsUnfocused>>
+
+    <<TreeviewInplaceEdit>> is emitted and used to configure cell editors.
+    <<TreeviewCellEdited>> is emitted after a cell was changed.
+    <<TreeviewEditorsUnfocused>> is emitted when user clicks in treeview
+    white area where no rows are rendered.
+
     You can know wich cell is being configured or edited, using:
         get_event_info()
+
+    To quickly get data from tree columns you can use:
+        get_value(col, item)
+
     """
 
     def __init__(self, master=None, **kw):
@@ -150,6 +159,14 @@ class EditableTreeview(ttk.Treeview):
         r = self.identify_region(event.x, event.y)
         if r in ("separator", "header"):
             self._header_clicked = True
+        elif r in ("tree", "cell"):
+            if not self._editors_show:
+                self._schedule_update()
+        elif r == "nothing":
+            if self._editors_show:
+                self.__clear_inplace_widgets()
+                self._curfocus = None
+                self.event_generate("<<TreeviewEditorsUnfocused>>")
         self._last_column_clicked = self.identify_column(event.x)
 
     def __on_mouse_motion(self, event):
@@ -261,6 +278,10 @@ class EditableTreeview(ttk.Treeview):
 
     def get_event_info(self):
         return self.__event_info
+
+    def get_value(self, col, item):
+        """Return data value of tree item at the specified column index."""
+        return self.__get_value(col, item)
 
     def __get_value(self, col, item):
         if col == "#0":

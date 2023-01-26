@@ -14,6 +14,7 @@ class EditableTreeviewBO(TTKTreeviewBO):
     virtual_events = TTKTreeviewBO.virtual_events + (
         "<<TreeviewInplaceEdit>>",
         "<<TreeviewCellEdited>>",
+        "<<TreeviewEditorsUnfocused>>",
     )
 
 
