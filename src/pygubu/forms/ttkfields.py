@@ -1,45 +1,16 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import pygubu.forms.validators as validators
+import pygubu.forms.fields as fields
 from .exceptions import ValidationError
 from .forms import BaseFormMixin
-from .fields import Field, FieldInfoDisplay
 
 
 class Form(BaseFormMixin, ttk.Frame):
     ...
 
 
-class TkVariableBasedField(Field):
-    tkvar_pname = "textvariable"
-    tkvar_class = tk.StringVar
-
-    def __init__(self, *args, **kw):
-        user_var = kw.get(self.tkvar_pname, None)
-        if user_var is None:
-            self._data_var = self.tkvar_class()
-            kw[self.tkvar_pname] = self._data_var
-        elif isinstance(user_var, self.tkvar_class):
-            self._data_var = user_var
-        else:
-            raise ValueError("Incorrect type for data variable")
-
-        super().__init__(*args, **kw)
-
-    @property
-    def disabled(self):
-        return "disabled" == self.cget("state")
-
-    @property
-    def data(self):
-        return self._data_var.get()
-
-    @data.setter
-    def data(self, value):
-        self._data_var.set(value)
-
-
-class LabelField(TkVariableBasedField, ttk.Label):
+class LabelField(fields.TkVariableBasedField, ttk.Label):
     def __init__(self, *args, **kw):
         kw["required"] = False
         super().__init__(*args, **kw)
@@ -51,36 +22,17 @@ class LabelField(TkVariableBasedField, ttk.Label):
         pass
 
 
-class CharField(TkVariableBasedField, ttk.Entry):
-    def __init__(
-        self,
-        *args,
-        max_length=None,
-        min_length=None,
-        strip=True,
-        empty_value="",
-        **kw,
-    ):
-
-        self.max_length = max_length
-        self.min_length = min_length
-        self.strip = strip
-        self.empty_value = empty_value
-
+class CharField(fields.CharFieldMixin, fields.TkVariableBasedField, ttk.Entry):
+    def __init__(self, *args, **kw):
         kw["validate"] = kw.get("validate", "focusout")
-        kw["validatecommand"] = self._self_validate
+        kw["validatecommand"] = self._entry_validate
+        print("CharField init")
         super().__init__(*args, **kw)
 
-        if min_length is not None:
-            self.validators.append(
-                validators.MinLengthValidator(int(min_length))
-            )
-        if max_length is not None:
-            self.validators.append(
-                validators.MaxLengthValidator(int(max_length))
-            )
-
-    def _self_validate(self):
+    def _entry_validate(self):
+        """Tcl command to validate entry and mark it as invalid.
+        If using ttkbootstrap, this will add visual error hint for entry.
+        """
         try:
             self.clean(self.data)
             return True
@@ -94,7 +46,68 @@ class CharField(TkVariableBasedField, ttk.Entry):
         ttk.Entry.validate(self)
 
 
-class LabelFieldInfo(FieldInfoDisplay, ttk.Label):
+class CharComboField(
+    fields.ChoiceFieldMixin,
+    fields.CharFieldMixin,
+    fields.TkVariableBasedField,
+    ttk.Combobox,
+):
+    def __init__(self, *args, **kw):
+        kw["validate"] = kw.get("validate", "focusout")
+        kw["validatecommand"] = self._entry_validate
+        super().__init__(*args, **kw)
+        self.configure(values=self._choices)
+
+    def validate(self, value):
+        return fields.TkVariableBasedField.validate(self, value)
+
+    def _entry_validate(self):
+        """Tcl command to validate entry and mark it as invalid.
+        If using ttkbootstrap, this will add visual error hint for entry.
+        """
+        try:
+            self.clean(self.data)
+            return True
+        except ValidationError:
+            return False
+
+    def mark_invalid(self):
+        ttk.Combobox.validate(self)
+
+    def clear_invalid(self):
+        ttk.Combobox.validate(self)
+
+
+class ChoiceField(
+    fields.ChoiceFieldMixin, fields.TkVariableBasedField, ttk.Combobox
+):
+    def __init__(self, *args, **kw):
+        state = kw.get("state", "readonly")
+        state = state if state != "normal" else "readonly"
+        kw["state"] = state
+        kw["validate"] = kw.get("validate", "focusout")
+        kw["validatecommand"] = self._entry_validate
+        super().__init__(*args, **kw)
+        self.configure(values=self._choices)
+
+    def _entry_validate(self):
+        """Tcl command to validate entry and mark it as invalid.
+        If using ttkbootstrap, this will add visual error hint for entry.
+        """
+        try:
+            self.clean(self.data)
+            return True
+        except ValidationError:
+            return False
+
+    def mark_invalid(self):
+        ttk.Combobox.validate(self)
+
+    def clear_invalid(self):
+        ttk.Combobox.validate(self)
+
+
+class LabelFieldInfo(fields.FieldInfoDisplay, ttk.Label):
     """Used to display help and errors messages for the associated form field."""
 
     def __init__(self, *args, **kw):
