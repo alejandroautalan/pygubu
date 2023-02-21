@@ -9,29 +9,12 @@ import pygubu.plugins.ttk.ttkstdwidgets as ttkw
 from pygubu.i18n import _
 from pygubu.utils.datatrans import ListDTO
 from pygubu.forms.fields import Field
+from .base import FieldMixin
 
 
-_plugin_uid = "pygubu.forms"
-_designer_tabs = ("ttk", _("Pygubu-Forms"))
+_plugin_uid = "pygubu.forms.ttk"
+_designer_tabs = ("ttk", _("Pygubu Forms"))
 _list_dto = ListDTO()
-
-
-class FieldMixin:
-    """Manages base field properties."""
-
-    base_properties = ("fname", "initial", "required", "help_text")
-
-    def _get_init_args(self, extra_init_args: dict = None):
-        args = super()._get_init_args(extra_init_args)
-        name = args.get("fname", None)
-        if not name:
-            args["fname"] = self.wmeta.identifier
-        return args
-
-    def _process_property_value(self, pname, value):
-        if pname == "required":
-            return tk.getboolean(value)
-        return super()._process_property_value(pname, value)
 
 
 class FormBO(FieldMixin, ttkw.TTKFrame):
@@ -42,7 +25,6 @@ class FormBO(FieldMixin, ttkw.TTKFrame):
     def add_child(self, bobject):
         if issubclass(bobject.class_, Field):
             self.widget.add_field(bobject.widget)
-            print(f"Field {bobject.widget.fname} added")
 
 
 _builder_uid = f"{_plugin_uid}.Form"

@@ -1,5 +1,7 @@
+from typing import Optional
+
 from .fields import Field, FieldInfoDisplay
-from .exceptions import ValidationError
+from .exceptions import ValidationError, FormError
 from .validators import EMPTY_VALUES
 
 
@@ -17,9 +19,11 @@ class BaseFormMixin:
         if use_required_attribute is not None:
             self.use_required_attribute = use_required_attribute
         self.fields = {}
+        self._initialized = False
         self.is_bound = False
         self._errors = None
         self._fields_scanned = False
+        self._fields_initial = {}
         self._info_displays = {}
         super().__init__(*args, **kw)
 
@@ -88,11 +92,17 @@ class BaseFormMixin:
 
     def has_changed(self):
         """Return True if data differs from initial."""
-        return bool(self.changed_data)
+        return self.is_bound and bool(self.changed_data)
 
-    # @cached_property
+    @property
     def changed_data(self):
-        return [name for name, bf in self._bound_items() if bf._has_changed()]
+        if self.is_bound:
+            return [
+                name
+                for name, f in self._iter_fields()
+                if f.has_changed(self._fields_initial[name])
+            ]
+        return []
 
     def add_error(self, field, error):
         self._errors[field] = error
@@ -125,17 +135,27 @@ class BaseFormMixin:
     def add_field(self, field):
         self.fields[field.fname] = field
 
-    def edit(self, data: dict):
+    def edit(self, data: dict, initial: Optional[dict] = None):
+        """Intializes form to edit data values."""
+        self._initialized = True
+        self._fields_initial = {}
+        if initial is None:
+            initial = {}
         for name, field in self._iter_fields():
-            if name in data:
-                field.data = data[name]
-            else:
-                field.data = "" if field.initial is None else field.initial
+            field_initial = initial.get(name, field.initial)
+            field_initial = "" if field_initial is None else field_initial
+            self._fields_initial[name] = field_initial
+            field.data = data.get(name, field_initial)
             if name in self._info_displays:
                 self._info_displays[name].clear()
 
     def submit(self):
-        self.is_bound = True
-        for name in self._info_displays:
-            self._info_displays[name].clear()
-        self.full_clean()
+        if self._initialized:
+            self.is_bound = True
+            for name in self._info_displays:
+                self._info_displays[name].clear()
+            self.full_clean()
+        else:
+            raise FormError(
+                "Form initialization error. Call form.edit() before submit"
+            )

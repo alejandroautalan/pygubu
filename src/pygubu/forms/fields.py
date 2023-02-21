@@ -74,6 +74,23 @@ class Field:
         self.run_validators(value)
         return value
 
+    def has_changed(self, initial):
+        """Return True if data differs from initial."""
+        # Always return False if the field is disabled since self.data
+        # always uses the initial value in this case.
+        if self.disabled:
+            return False
+        try:
+            data = self.to_python(self.data)
+        except ValidationError:
+            return True
+        # For purposes of seeing whether something has changed, None is
+        # the same as an empty string, if the data or initial value we get
+        # is None, replace it with ''.
+        initial_value = initial if initial is not None else ""
+        data_value = data if data is not None else ""
+        return initial_value != data_value
+
     #
     # -------------------
     #
@@ -90,6 +107,7 @@ class Field:
 
     @property
     def data(self):
+        # NOTE: should return initial if field is disabled.
         raise NotImplementedError
 
     @data.setter
@@ -172,6 +190,16 @@ class CharFieldMixin:
             self.validators.append(
                 validators.MaxLengthValidator(int(max_length))
             )
+
+    def to_python(self, value):
+        """Return a string."""
+        if value not in self.empty_values:
+            value = str(value)
+            if self.strip:
+                value = value.strip()
+        if value in self.empty_values:
+            return self.empty_value
+        return value
 
 
 class ChoiceFieldMixin:

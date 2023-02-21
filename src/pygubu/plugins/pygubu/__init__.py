@@ -29,10 +29,15 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.plugins.pygubu.tkscrolledframe": (
             "pygubu.builder.widgets.tkscrolledframe",
         ),
-        "pygubu.plugins.pygubu.forms": (
-            "pygubu.forms.Form",
-            "pygubu.forms.CharField",
-            "pygubu.forms.FieldInfoLabel",
+        "pygubu.plugins.pygubu.forms.ttkforms": (
+            "pygubu.forms.ttk.Form",
+            "pygubu.forms.ttk.CharField",
+            "pygubu.forms.ttk.LabelFieldInfo",
+            "pygubu.forms.ttk.ChoiceField",
+            "pygubu.forms.ttk.CharComboField",
+        ),
+        "pygubu.plugins.pygubu.forms.pgwf": (
+            "pygubu.forms.pgwf.ChoiceKeyField",
         ),
     }
 

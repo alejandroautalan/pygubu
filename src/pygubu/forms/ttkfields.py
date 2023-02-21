@@ -15,6 +15,18 @@ class LabelField(fields.TkVariableBasedField, ttk.Label):
         kw["required"] = False
         super().__init__(*args, **kw)
 
+    def to_python(self, value):
+        """Return a string."""
+        if value not in self.empty_values:
+            value = str(value)
+        else:
+            value = ""
+        return value
+
+    def has_changed(self, initial):
+        """Return True if data differs from initial."""
+        return self.to_python(initial) != self.to_python(self.data)
+
     def mark_invalid(self):
         pass
 

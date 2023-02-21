@@ -1,6 +1,10 @@
 NON_FIELD_ERRORS = "__all__"
 
 
+class FormError(Exception):
+    pass
+
+
 class ValidationError(Exception):
     """An error while validating data."""
 
