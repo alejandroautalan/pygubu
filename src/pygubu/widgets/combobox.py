@@ -10,18 +10,12 @@ class Combobox(ttk.Combobox):
     A ttk.Combobox that accepts a list of (key, label) pair of options.
     """
 
-    def __init__(self, master=None, **kw):
+    def __init__(self, *args, keyvariable=None, textvariable=None, **kw):
         self._keyvarcb = None
         self._txtvarcb = None
         self._choices = OrderedDict()
-
-        self.__options = options = {
-            "keyvariable": None,
-            "textvariable": None,
-        }
-        # remove custom options from kw before initialization
-        for k, v in options.items():
-            options[k] = kw.pop(k, v)
+        self._keyvar = tk.StringVar() if keyvariable is None else keyvariable
+        self._txtvar = tk.StringVar() if textvariable is None else textvariable
 
         key = "values"
         if key in kw:
@@ -33,54 +27,52 @@ class Combobox(ttk.Combobox):
         # only normal/disabled supported
         # normal is converted to readonly
         key = "state"
-        if key in kw:
-            if kw[key] not in ("readonly", "disabled"):
-                kw[key] = "readonly"
-        else:
-            kw[key] = "readonly"
+        state = kw.get(key, "readonly")
+        if state not in ("readonly", "disabled"):
+            state = "readonly"
+        kw[key] = state
+        kw["textvariable"] = self._txtvar
 
-        super().__init__(master, **kw)
+        super().__init__(*args, **kw)
 
-        self.__config_keyvar(options["keyvariable"])
-        self.configure(textvariable=options["textvariable"])
+        self.__config_keyvar(self._keyvar)
+        self.__config_txtvar(self._txtvar)
 
     def __config_keyvar(self, var):
         if var is None:
             return
 
         def on_keyvar_changed(varname, elementname, mode):
-            nvalue = self.__options["keyvariable"].get()
+            nvalue = self._keyvar.get()
             if nvalue in self._choices:
                 self.current(nvalue)
 
-        keyvar = self.__options["keyvariable"]
+        keyvar = self._keyvar
         if self._keyvarcb is not None:
             keyvar.trace_vdelete("w", self._keyvarcb)
-        self.__options["keyvariable"] = var
+        self._keyvar = var
         self._keyvarcb = var.trace(mode="w", callback=on_keyvar_changed)
 
-        # A textvariable is needed if keyvariable is set
-        txtvar = self.cget("textvariable")
-        if not txtvar:
-            var = tk.StringVar()
-            self.configure(textvariable=var)
-        else:
-            self.__config_txtvar(txtvar)
-
     def __config_txtvar(self, var):
-        keyvar = self.__options["keyvariable"]
+        keyvar = self._keyvar
         if var is None or keyvar is None:
             return
 
         def on_txtvar_changed(varname, elementname, mode):
             ckey = self.current()
-            keyvar.set(ckey)
+            if ckey is not None:
+                self._keyvar.set(ckey)
 
-        txtvar = self.cget("textvariable")
+        txtvar = self._txtvar
         if txtvar and self._txtvarcb is not None:
             txtvar.trace_vdelete("w", self._txtvarcb)
-        self.__options["textvariable"] = var
+        self._txtvar = var
         self._txtvarcb = var.trace(mode="w", callback=on_txtvar_changed)
+
+    def _delayed_clear_vars(self):
+        # clear variables:
+        self._keyvar.set("")
+        self._txtvar.set("")
 
     def configure(self, cnf=None, **kw):
         if cnf:
@@ -89,18 +81,12 @@ class Combobox(ttk.Combobox):
         if key in kw:
             self.choices = kw[key]
             kw[key] = self.__choices2tkvalues(self.choices)
-            # clear variables:
-            keyvar = self.__options["keyvariable"]
-            if keyvar is not None:
-                keyvar.set("")
-            txtvar = self.cget("textvariable")
-            if txtvar is not None:
-                txtvar.set("")
+            # clear vars after setting values
+            self.after_idle(self._delayed_clear_vars)
         key = "keyvariable"
         if key in kw:
             value = kw.pop(key)
             self.__config_keyvar(value)
-            return
         key = "textvariable"
         if key in kw:
             value = kw[key]
@@ -109,8 +95,10 @@ class Combobox(ttk.Combobox):
         # only readonly and disabled supported
         key = "state"
         if key in kw:
-            if kw[key] not in ("readonly", "disabled"):
-                kw[key] = "readonly"
+            state = kw.get(key, "readonly")
+            if state not in ("readonly", "disabled"):
+                state = "readonly"
+            kw[key] = state
         return super().configure(cnf, **kw)
 
     config = configure
@@ -121,10 +109,10 @@ class Combobox(ttk.Combobox):
             return json.dumps(self.choices)
         option = "keyvariable"
         if key == option:
-            return self.__options[key]
+            return self._keyvar
         option = "textvariable"
         if key == option:
-            return self.__options[key]
+            return self._txtvar
         return super().cget(key)
 
     def __obj2choices(self, values):
@@ -174,6 +162,9 @@ class Combobox(ttk.Combobox):
             self._choices[key] = value
 
     def current(self, key=None):
+        """Get the index of the current selection.
+        If key is given, return the index of the key.
+        """
         idx = super().current(None)
         index = -1
         ckey = None
@@ -205,6 +196,10 @@ if __name__ == "__main__":
         cbox = event.widget
         print("values:", cbox.cget("values"))
         print("current:", cbox.current())
+        var = cbox.cget("keyvariable")
+        print("keyvar: ", var.get())
+        var = cbox.cget("textvariable")
+        print("textvar: ", var.get())
 
     root = tk.Tk()
     txtvalues = '[["DNI", "Doc.Nac.Id."], ["LE", "Libreta Enrolamientox"]]'
@@ -226,7 +221,6 @@ if __name__ == "__main__":
     e.grid()
 
     var2 = tk.StringVar()
-    var2.set("A")
     e2 = ttk.Entry(root, textvariable=var2)
     e2.grid()
 
@@ -243,6 +237,7 @@ if __name__ == "__main__":
     c.grid()
 
     c.configure(keyvariable=var2)
+    var2.set("A")
 
     root.rowconfigure(0, weight=1)
     root.columnconfigure(0, weight=1)
