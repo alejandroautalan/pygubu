@@ -1,8 +1,10 @@
 import json
 import tkinter as tk
 import pygubu.forms.validators as validators
+from typing import Optional
 from pygubu.i18n import _
 from .exceptions import ValidationError, ValidationErrorList
+from .fieldm import FieldDataManager, FieldViewManager
 
 
 class Field:
@@ -28,6 +30,10 @@ class Field:
         self.initial = initial
         self.help_text = help_text
 
+        # Subclasess should set its own widget manager
+        self.data_manager: Optional[FieldDataManager] = None
+        self.view_manager: Optional[FieldViewManager] = None
+
         messages = {}
         for c in reversed(self.__class__.__mro__):
             messages.update(getattr(c, "default_error_messages", {}))
@@ -37,12 +43,6 @@ class Field:
         self.validators = [*self.default_validators, *validators]
         print("Field init")
         super().__init__(*args, **kw)
-
-    def prepare_value(self, value):
-        return value
-
-    def to_python(self, value):
-        return value
 
     def validate(self, value):
         if value in self.empty_values and self.required:
@@ -69,7 +69,7 @@ class Field:
         Validate the given value and return its "cleaned" value as an
         appropriate Python object. Raise ValidationError for any errors.
         """
-        value = self.to_python(value)
+        value = self.data_manager.to_python(self.data_manager.data)
         self.validate(value)
         self.run_validators(value)
         return value
@@ -81,7 +81,7 @@ class Field:
         if self.disabled:
             return False
         try:
-            data = self.to_python(self.data)
+            data = self.data_manager.to_python(self.data_manager.data)
         except ValidationError:
             return True
         # For purposes of seeing whether something has changed, None is
@@ -95,44 +95,27 @@ class Field:
     # -------------------
     #
 
-    def mark_invalid(self):
-        raise NotImplementedError
-
-    def clear_invalid(self):
-        raise NotImplementedError
+    def mark_invalid(self, state: bool):
+        self.view_manager.mark_invalid(state)
 
     @property
     def disabled(self):
-        return False
+        return self.view_manager.disabled
 
     @property
     def data(self):
+        if self.data_manager is None:
+            raise RuntimeError("Data manager not set")
         # NOTE: should return initial if field is disabled.
-        raise NotImplementedError
+        if self.disabled:
+            return self.initial
+        return self.data_manager.data
 
     @data.setter
     def data(self, value):
-        raise NotImplementedError
-
-
-class InfoDisplay:
-    def __init__(self, *args, fname: str, **kw):
-        self.fname = fname
-        super().__init__(*args, **kw)
-
-    def show_error(self, error):
-        raise NotImplementedError
-
-    def clear(self):
-        raise NotImplementedError
-
-
-class FieldInfoDisplay(InfoDisplay):
-    ...
-
-
-class FormInfoDisplay(InfoDisplay):
-    ...
+        if self.data_manager is None:
+            raise RuntimeError("Data manager not set")
+        self.data_manager.data = value
 
 
 class TkVariableBasedField(Field):
@@ -150,18 +133,6 @@ class TkVariableBasedField(Field):
             raise ValueError("Incorrect type for data variable")
 
         super().__init__(*args, **kw)
-
-    @property
-    def disabled(self):
-        return "disabled" == self.cget("state")
-
-    @property
-    def data(self):
-        return self._data_var.get()
-
-    @data.setter
-    def data(self, value):
-        self._data_var.set(value)
 
 
 class CharFieldMixin:
@@ -191,25 +162,21 @@ class CharFieldMixin:
                 validators.MaxLengthValidator(int(max_length))
             )
 
-    def to_python(self, value):
-        """Return a string."""
-        if value not in self.empty_values:
-            value = str(value)
-            if self.strip:
-                value = value.strip()
-        if value in self.empty_values:
-            return self.empty_value
-        return value
-
 
 class ChoiceFieldMixin:
+    choices_pname = "choices"
+    choices_pop = True  # Remove property from kw or not.
     default_error_messages = {
         "invalid_choice": _(
             "Select a valid choice. %(value)s is not one of the available choices."
         ),
     }
 
-    def __init__(self, *args, choices=None, **kw):
+    def __init__(self, *args, **kw):
+        if self.choices_pop:
+            choices = kw.pop(self.choices_pname, None)
+        else:
+            choices = kw.get(self.choices_pname, None)
         self._choices = [] if choices is None else self._strto_choices(choices)
         super().__init__(*args, **kw)
 

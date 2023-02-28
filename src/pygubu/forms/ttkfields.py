@@ -2,6 +2,8 @@ import tkinter as tk
 import tkinter.ttk as ttk
 import pygubu.forms.validators as validators
 import pygubu.forms.fields as fields
+import pygubu.forms.fieldinfo as fieldinfo
+import pygubu.forms.fieldm as fieldm
 from .exceptions import ValidationError
 from .forms import BaseFormMixin
 
@@ -11,35 +13,56 @@ class Form(BaseFormMixin, ttk.Frame):
 
 
 class LabelField(fields.TkVariableBasedField, ttk.Label):
+    class DataManager(fieldm.TkvarFDM):
+        def to_python(self, value):
+            """Return a string."""
+            if value not in self.field.empty_values:
+                value = str(value)
+            else:
+                value = ""
+            return value
+
+    class ViewManager(fieldm.FieldViewManager):
+        ...
+
     def __init__(self, *args, **kw):
         kw["required"] = False
         super().__init__(*args, **kw)
 
-    def to_python(self, value):
-        """Return a string."""
-        if value not in self.empty_values:
-            value = str(value)
-        else:
-            value = ""
-        return value
+        self.data_manager = self.DataManager(self, variable=self._data_var)
+        self.view_manager = self.ViewManager(self)
 
     def has_changed(self, initial):
         """Return True if data differs from initial."""
-        return self.to_python(initial) != self.to_python(self.data)
-
-    def mark_invalid(self):
-        pass
-
-    def clear_invalid(self):
-        pass
+        return self.data_manager.to_python(
+            initial
+        ) != self.data_manager.to_python(self.data)
 
 
 class CharField(fields.CharFieldMixin, fields.TkVariableBasedField, ttk.Entry):
+    class DataManager(fieldm.TkvarFDM):
+        def to_python(self, value):
+            """Return a string."""
+            if value not in self.field.empty_values:
+                value = str(value)
+                if self.field.strip:
+                    value = value.strip()
+            if value in self.field.empty_values:
+                return self.field.empty_value
+            return value
+
+    class ViewManager(fieldm.FieldViewManager):
+        def mark_invalid(self, state: bool):
+            ttk.Entry.validate(self.field)
+
     def __init__(self, *args, **kw):
         kw["validate"] = kw.get("validate", "focusout")
         kw["validatecommand"] = self._entry_validate
         print("CharField init")
         super().__init__(*args, **kw)
+
+        self.data_manager = self.DataManager(self, variable=self._data_var)
+        self.view_manager = self.ViewManager(self)
 
     def _entry_validate(self):
         """Tcl command to validate entry and mark it as invalid.
@@ -51,12 +74,6 @@ class CharField(fields.CharFieldMixin, fields.TkVariableBasedField, ttk.Entry):
         except ValidationError:
             return False
 
-    def mark_invalid(self):
-        ttk.Entry.validate(self)
-
-    def clear_invalid(self):
-        ttk.Entry.validate(self)
-
 
 class CharComboField(
     fields.ChoiceFieldMixin,
@@ -64,10 +81,21 @@ class CharComboField(
     fields.TkVariableBasedField,
     ttk.Combobox,
 ):
+    class DataManager(CharField.DataManager):
+        ...
+
+    class ViewManager(fieldm.FieldViewManager):
+        def mark_invalid(self, state: bool):
+            ttk.Combobox.validate(self.field)
+
     def __init__(self, *args, **kw):
         kw["validate"] = kw.get("validate", "focusout")
         kw["validatecommand"] = self._entry_validate
         super().__init__(*args, **kw)
+
+        self.data_manager = self.DataManager(self, variable=self._data_var)
+        self.view_manager = self.ViewManager(self)
+
         self.configure(values=self._choices)
 
     def validate(self, value):
@@ -83,23 +111,29 @@ class CharComboField(
         except ValidationError:
             return False
 
-    def mark_invalid(self):
-        ttk.Combobox.validate(self)
-
-    def clear_invalid(self):
-        ttk.Combobox.validate(self)
-
 
 class ChoiceField(
     fields.ChoiceFieldMixin, fields.TkVariableBasedField, ttk.Combobox
 ):
+    class DataManager(fieldm.TkvarFDM):
+        ...
+
+    class ViewManager(fieldm.FieldViewManager):
+        def mark_invalid(self, state: bool):
+            ttk.Combobox.validate(self.field)
+
     def __init__(self, *args, **kw):
         state = kw.get("state", "readonly")
         state = state if state != "normal" else "readonly"
         kw["state"] = state
         kw["validate"] = kw.get("validate", "focusout")
         kw["validatecommand"] = self._entry_validate
+
         super().__init__(*args, **kw)
+
+        self.data_manager = self.DataManager(self, variable=self._data_var)
+        self.view_manager = self.ViewManager(self)
+
         self.configure(values=self._choices)
 
     def _entry_validate(self):
@@ -112,14 +146,8 @@ class ChoiceField(
         except ValidationError:
             return False
 
-    def mark_invalid(self):
-        ttk.Combobox.validate(self)
 
-    def clear_invalid(self):
-        ttk.Combobox.validate(self)
-
-
-class LabelFieldInfo(fields.FieldInfoDisplay, ttk.Label):
+class LabelFieldInfo(fieldinfo.FieldInfoDisplay, ttk.Label):
     """Used to display help and errors messages for the associated form field."""
 
     def __init__(self, *args, **kw):

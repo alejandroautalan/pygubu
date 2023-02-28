@@ -1,6 +1,7 @@
 from typing import Optional
 
-from .fields import Field, FieldInfoDisplay
+from .fields import Field
+from .fieldinfo import FieldInfoDisplay
 from .exceptions import ValidationError, FormError
 from .validators import EMPTY_VALUES
 
@@ -63,7 +64,7 @@ class BaseFormMixin:
                 self.cleaned_data[name] = value
             except ValidationError as e:
                 self.add_error(name, e)
-                field.mark_invalid()
+                field.mark_invalid(True)
 
     def _clean_form(self):
         try:
