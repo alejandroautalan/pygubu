@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions
+    url: https://github.com/alejandroautalan/pygubu-designer/discussions
+    about: "Ask a question in the discussion forum"
+  - name: Documentation
+    url: https://github.com/alejandroautalan/pygubu-designer/wiki
+    about: "Pygubu Designer's documentation"
