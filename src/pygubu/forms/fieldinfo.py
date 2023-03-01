@@ -1,3 +1,6 @@
+"""Base clases to display form field information."""
+
+
 class InfoDisplay:
     def __init__(self, *args, fname: str, **kw):
         self.fname = fname

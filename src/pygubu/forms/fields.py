@@ -1,3 +1,5 @@
+"""Base clases for form field definition."""
+
 import json
 import tkinter as tk
 import pygubu.forms.validators as validators
@@ -45,10 +47,13 @@ class Field:
         super().__init__(*args, **kw)
 
     def validate(self, value):
+        # Default required validation
         if value in self.empty_values and self.required:
             raise ValidationError(
                 self.error_messages["required"], code="required"
             )
+        # Trigger specific field validation
+        self.data_manager.validate(value)
 
     def run_validators(self, value):
         if value in self.empty_values:
@@ -96,10 +101,14 @@ class Field:
     #
 
     def mark_invalid(self, state: bool):
+        if self.view_manager is None:
+            raise RuntimeError("View manager not set")
         self.view_manager.mark_invalid(state)
 
     @property
     def disabled(self):
+        if self.view_manager is None:
+            raise RuntimeError("View manager not set")
         return self.view_manager.disabled
 
     @property
@@ -180,18 +189,14 @@ class ChoiceFieldMixin:
         self._choices = [] if choices is None else self._strto_choices(choices)
         super().__init__(*args, **kw)
 
-    def validate(self, value):
+    def validate_choice(self, value):
         """Validate that the input is in self._choices."""
-        super().validate(value)
-        if value and not self.valid_value(value):
+        if value and not (value in self._choices):
             raise ValidationError(
                 self.error_messages["invalid_choice"],
                 code="invalid_choice",
                 params={"value": value},
             )
-
-    def valid_value(self, value):
-        return value in self._choices
 
     def _strto_choices(self, value):
         if isinstance(value, list):

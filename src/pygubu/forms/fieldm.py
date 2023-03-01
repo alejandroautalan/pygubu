@@ -1,3 +1,5 @@
+"""Base clases for field data and view manipulation."""
+
 import tkinter as tk
 
 
@@ -13,16 +15,21 @@ class FieldDataManager(FieldManager):
 
     def set_value(self, value):
         # will set the value in the widget format
-        ...
+        raise NotImplementedError
 
     def get_value(self):
         # Get value in the widget
-        ...
+        raise NotImplementedError
 
     def to_python(self, value):
         # will return a python object representation of value"
-        # should return ValidationError if value can't be conveted.
-        ...
+        # should raise ValidationError if value can't be conveted.
+        return value
+
+    def validate(self, value):
+        # field specific validation.
+        # should raise ValidationError if invalid
+        pass
 
     @property
     def data(self):
@@ -36,7 +43,7 @@ class FieldDataManager(FieldManager):
 class FieldViewManager(FieldManager):
     def mark_invalid(self, state: bool):
         # Visually mark the widget as invalid depending on state parameter.
-        ...
+        raise NotImplementedError
 
     def is_disabled(self) -> bool:
         # Asume parent class of field is a tk.Widget
