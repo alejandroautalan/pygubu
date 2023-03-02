@@ -1,8 +1,13 @@
 History
 =======
 
-Changes for next version:
+Changes for version 0.30:
 
+  * Editabletreeview: Hide editors when user clicks inside treeview area
+    with no rows. This generates <<TreeviewEditorsUnfocused>> event. refs #279
+  * Editabletreeview: Add method get_value(col, item) to quicky
+    access tree data. refs #279
+  * Fix error on ttkwidgets plugin (autocomplete widgets)
   * Add support to customtkinter 5.
     Customtkinter changed a lot from 4.6 to 5.
     The plugin will support only the latest version.
