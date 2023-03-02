@@ -178,10 +178,14 @@ class CTkSliderBO(CTkBaseMixin, BuilderObject):
         "number_of_steps",
         "orientation",
     )
+    command_properties = ("command",)
     ro_properties = (
         "orientation",
         "button_length",
     )
+
+    def _code_define_callback_args(self, cmd_pname, cmd):
+        return ("value",)
 
 
 _builder_uid = f"{_plugin_uid}.CTkSlider"
