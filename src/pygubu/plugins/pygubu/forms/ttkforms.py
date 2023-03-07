@@ -221,3 +221,104 @@ register_widget(
     _designer_tabs,
 )
 register_custom_property(_builder_uid, "choices", "entry", help=_choices_help)
+
+
+class BooleanCheckboxFieldBO(FieldMixin, BuilderObject):
+    class_ = ttkfields.BooleanCheckboxField
+    properties = (
+        "class_",
+        "cursor",
+        "takefocus",
+        "style",
+        "command",
+        # "offvalue",
+        # "onvalue",
+        "text",
+        "textvariable",
+        "underline",
+        "image",
+        "compound",
+        "width",
+        "variable",
+        "state",
+    ) + FieldMixin.base_properties
+    ro_properties = ("class_",) + FieldMixin.base_properties
+    command_properties = ("command",)
+
+
+_builder_uid = f"{_plugin_uid}.BooleanCheckboxField"
+register_widget(
+    _builder_uid,
+    BooleanCheckboxFieldBO,
+    "BooleanCheckboxField",
+    _designer_tabs,
+)
+
+register_custom_property(
+    _builder_uid,
+    "variable",
+    "tkvarentry",
+    type_choices=("boolean",),
+    type_default="boolean",
+)
+
+
+class TextFieldBO(FieldMixin, BuilderObject):
+    class_ = ttkfields.TextField
+    properties = (
+        "background",
+        "borderwidth",
+        "cursor",
+        "exportselection",
+        "font",
+        "foreground",
+        "highlightbackground",
+        "highlightcolor",
+        "highlightthickness",
+        "insertbackground",
+        "insertborderwidth",
+        "insertofftime",
+        "insertontime",
+        "insertwidth",
+        "padx",
+        "pady",
+        "relief",
+        "selectbackground",
+        "selectborderwidth",
+        "selectforeground",
+        "setgrid",
+        "takefocus",
+        "xscrollcommand",
+        "yscrollcommand",
+        #
+        "autoseparators",
+        "blockcursor",
+        "endline",
+        "height",
+        "inactiveselectbackground",
+        "insertunfocussed",
+        "maxundo",
+        "spacing1",
+        "spacing2",
+        "spacing3",
+        "startline",
+        "state",
+        "tabs",
+        "tabstyle",
+        "undo",
+        "width",
+        "wrap",
+    ) + FieldMixin.base_properties
+    ro_properties = FieldMixin.base_properties
+    command_properties = ("xscrollcommand", "yscrollcommand")
+
+
+_builder_uid = f"{_plugin_uid}.TextFieldBO"
+register_widget(
+    _builder_uid,
+    TextFieldBO,
+    "TextField",
+    _designer_tabs,
+)
+
+register_custom_property(_builder_uid, "initial", "text")
