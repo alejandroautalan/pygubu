@@ -13,15 +13,22 @@ class Form(BaseFormMixin, ttk.Frame):
     ...
 
 
-class LabelField(fields.TkVariableBasedField, ttk.Label):
+class LabelDisplayField(fields.TkVariableBasedField, ttk.Label):
+    """A Display only field using ttk.Label"""
+
     class DataManager(fieldm.TkvarFDM):
+        def __init__(self, *args, **kw):
+            self.original_data = None
+            super().__init__(*args, **kw)
+
         def to_python(self, value):
-            """Return a string."""
-            if value not in self.field.empty_values:
-                value = str(value)
-            else:
-                value = ""
-            return value
+            if self.original_data is None:
+                return value
+            return self.original_data
+
+        def set_value(self, value):
+            self.original_data = value
+            self.tkvar.set(str(value))
 
     class ViewManager(fieldm.FieldViewManager):
         ...
@@ -34,10 +41,8 @@ class LabelField(fields.TkVariableBasedField, ttk.Label):
         self.view_manager = self.ViewManager(self)
 
     def has_changed(self, initial):
-        """Return True if data differs from initial."""
-        return self.data_manager.to_python(
-            initial
-        ) != self.data_manager.to_python(self.data)
+        # Display only field, should never change
+        return False
 
 
 class CharField(fields.CharFieldMixin, fields.TkVariableBasedField, ttk.Entry):

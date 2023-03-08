@@ -36,17 +36,17 @@ register_widget(
 )
 
 
-class LabelFieldBO(FieldMixin, ttkw.TTKLabel):
-    class_ = ttkfields.LabelField
+class LabelDisplayFieldBO(FieldMixin, ttkw.TTKLabel):
+    class_ = ttkfields.LabelDisplayField
     properties = ttkw.TTKLabel.properties + ("fname",)
     ro_properties = ttkw.TTKLabel.ro_properties + ("fname",)
 
 
-_builder_uid = f"{_plugin_uid}.LabelField"
+_builder_uid = f"{_plugin_uid}.LabelDisplayField"
 register_widget(
     _builder_uid,
-    LabelFieldBO,
-    "LabelField",
+    LabelDisplayFieldBO,
+    "LabelDisplayField",
     _designer_tabs,
 )
 
