@@ -25,17 +25,24 @@ class Builder(object):
     ----------
     translator: callable
         function used to process translatable strings.
+
+    on_first_object: Callable[[tkinter.Widget], None]
+        if specified, the function will be called just after the
+        first object is created.
+        Usefult to set styles and setup the option database when
+        the first Tk object is created.
     """
 
     TK_VARIABLE_TYPES = ("string", "int", "boolean", "double")
 
-    def __init__(self, translator=None):
-        super(Builder, self).__init__()
+    def __init__(self, translator=None, *, on_first_object=None):
+        super().__init__()
         self.uidefinition = UIDefinition(translator=translator)
         self.root = None
         self.objects = {}
         self.tkvariables = {}
         self.translator = translator
+        self.on_first_object = on_first_object  # On first object callback
 
     def add_resource_path(self, path):
         """Add additional path to the resources paths."""
@@ -209,6 +216,9 @@ class Builder(object):
             self._pre_realize(parent)
             parent.realize(master, extra_init_args)
             parent.configure()
+
+            if not self.objects and self.on_first_object is not None:
+                self.on_first_object(parent.widget)
 
             self.objects[wmeta.identifier] = parent
 
