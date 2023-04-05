@@ -1,12 +1,30 @@
 from typing import Optional
-
-from .fields import Field
-from .fieldinfo import FieldInfoDisplay
-from .exceptions import ValidationError, FormError
-from .validators import EMPTY_VALUES
+from .validators import ValidationError
+from .fields import FieldBase
+from .exceptions import FormError
 
 
-class BaseFormMixin:
+class FormInfoBase:
+    def __init__(self, *args, fname: str, **kw):
+        self.fname = fname
+        super().__init__(*args, **kw)
+
+    def show_error(self, error):
+        raise NotImplementedError
+
+    def clear(self):
+        raise NotImplementedError
+
+
+class FieldInfo(FormInfoBase):
+    pass
+
+
+class FormInfo(FormInfoBase):
+    pass
+
+
+class FormBase:
     def __init__(
         self,
         *args,
@@ -16,16 +34,15 @@ class BaseFormMixin:
         **kw,
     ):
         self.fname = fname
+        self.fields = {}
         self.empty_permitted = empty_permitted
+
         if use_required_attribute is not None:
             self.use_required_attribute = use_required_attribute
-        self.fields = {}
-        self._initialized = False
+
         self.is_bound = False
         self._errors = None
-        self._fields_scanned = False
         self._fields_initial = {}
-        self._info_displays = {}
         super().__init__(*args, **kw)
 
     @property
@@ -107,31 +124,13 @@ class BaseFormMixin:
 
     def add_error(self, field, error):
         self._errors[field] = error
-        if field in self._info_displays:
-            self._info_displays[field].show_error(error)
 
     #
     # ---------
     #
     def _iter_fields(self, force_scan=False):
-        if self._fields_scanned is False or force_scan:
-            print("Searching for fields in iter function.")
-            self._find_fields()
         for name, field in self.fields.items():
             yield name, field
-        self._fields_scanned = True
-
-    def _find_fields(self, master=None):
-        if master is None:
-            master = self
-        for widget in master.winfo_children():
-            if isinstance(widget, Field):
-                self.fields[widget.fname] = widget
-                print(f"Field Found: {widget.fname}")
-            elif isinstance(widget, FieldInfoDisplay):
-                self._info_displays[widget.fname] = widget
-            else:
-                self._find_fields(widget)
 
     def add_field(self, field):
         self.fields[field.fname] = field
@@ -147,16 +146,58 @@ class BaseFormMixin:
             field_initial = "" if field_initial is None else field_initial
             self._fields_initial[name] = field_initial
             field.data = data.get(name, field_initial)
-            if name in self._info_displays:
-                self._info_displays[name].clear()
+            self._edit_field_init(field)
+
+    def _edit_field_init(self, field):
+        pass
+
+    def _submit_init(self):
+        pass
 
     def submit(self):
         if self._initialized:
             self.is_bound = True
-            for name in self._info_displays:
-                self._info_displays[name].clear()
+            self._submit_init()
             self.full_clean()
         else:
             raise FormError(
                 "Form initialization error. Call form.edit() before submit"
             )
+
+
+class FormWidget(FormBase):
+    def __init__(self, *args, **kw):
+        self._fields_scanned = False
+        self._fields_initial = {}
+        self._info_displays = {}
+        super().__init__(*args, **kw)
+
+    def _iter_fields(self, force_scan=False):
+        if self._fields_scanned is False or force_scan:
+            print("Searching for fields in iter function.")
+            self._find_fields()
+        for name, field in self.fields.items():
+            yield name, field
+        self._fields_scanned = True
+
+    def _find_fields(self, master=None):
+        if master is None:
+            master = self
+        for widget in master.winfo_children():
+            if isinstance(widget, FieldBase):
+                self.fields[widget.fname] = widget
+                print(f"Field Found: {widget.fname}")
+            elif isinstance(widget, FieldInfo):
+                self._info_displays[widget.fname] = widget
+            else:
+                self._find_fields(widget)
+
+    def _edit_field_init(self, field):
+        if field.fname in self._info_displays:
+            self._info_displays[field.fname].clear()
+
+    def _submit_init(self):
+        for name, field in self._iter_fields():
+            field.mark_invalid(False)
+        for name in self._info_displays:
+            self._info_displays[name].clear()

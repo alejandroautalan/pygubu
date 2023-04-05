@@ -30,15 +30,15 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             "pygubu.builder.widgets.tkscrolledframe",
         ),
         "pygubu.plugins.pygubu.forms.ttkforms": (
-            "pygubu.forms.ttk.Form",
-            "pygubu.forms.ttk.CharField",
+            "pygubu.forms.ttk.FrameForm",
+            "pygubu.forms.ttk.EntryCharField",
             "pygubu.forms.ttk.LabelFieldInfo",
-            "pygubu.forms.ttk.ChoiceField",
-            "pygubu.forms.ttk.CharComboField",
+            "pygubu.forms.ttk.LabelDisplayField",
+            #    "pygubu.forms.ttk.CharComboField",
         ),
-        "pygubu.plugins.pygubu.forms.pgwf": (
-            "pygubu.forms.pgwf.ChoiceKeyField",
-        ),
+        # "pygubu.plugins.pygubu.forms.pgwf": (
+        #    "pygubu.forms.pgwf.ChoiceKeyField",
+        # ),
     }
 
     def do_activate(self) -> bool:

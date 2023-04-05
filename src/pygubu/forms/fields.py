@@ -1,15 +1,11 @@
-"""Base clases for form field definition."""
-
-import json
-import tkinter as tk
+import math
 import pygubu.forms.validators as validators
-from typing import Optional
 from pygubu.i18n import _
 from .exceptions import ValidationError, ValidationErrorList
-from .fieldm import FieldDataManager, FieldViewManager
+from .widgets import FieldWidget, ChoiceWidget
 
 
-class Field:
+class FieldBase(FieldWidget):
     default_validators = []
     default_error_messages = {
         "required": _("This field is required."),
@@ -32,10 +28,6 @@ class Field:
         self.initial = initial
         self.help_text = help_text
 
-        # Subclasess should set its own widget manager
-        self.data_manager: Optional[FieldDataManager] = None
-        self.view_manager: Optional[FieldViewManager] = None
-
         messages = {}
         for c in reversed(self.__class__.__mro__):
             messages.update(getattr(c, "default_error_messages", {}))
@@ -53,7 +45,7 @@ class Field:
                 self.error_messages["required"], code="required"
             )
         # Trigger specific field validation
-        self.data_manager.validate(value)
+        self.wdata.validate(value)
 
     def run_validators(self, value):
         if value in self.empty_values:
@@ -74,7 +66,7 @@ class Field:
         Validate the given value and return its "cleaned" value as an
         appropriate Python object. Raise ValidationError for any errors.
         """
-        value = self.data_manager.to_python(self.data_manager.data)
+        value = self.__to_python(self.wdata.data)
         self.validate(value)
         self.run_validators(value)
         return value
@@ -86,7 +78,7 @@ class Field:
         if self.disabled:
             return False
         try:
-            data = self.data_manager.to_python(self.data_manager.data)
+            data = self.__to_python(self.wdata.data)
         except ValidationError:
             return True
         # For purposes of seeing whether something has changed, None is
@@ -96,55 +88,42 @@ class Field:
         data_value = data if data is not None else ""
         return initial_value != data_value
 
-    #
-    # -------------------
-    #
+    def __to_python(self, value):
+        # Trigger default field to_python and user to_python
+        return self.wdata.to_python(self.to_python(value))
 
-    def mark_invalid(self, state: bool):
-        if self.view_manager is None:
-            raise RuntimeError("View manager not set")
-        self.view_manager.mark_invalid(state)
-
-    @property
-    def disabled(self):
-        if self.view_manager is None:
-            raise RuntimeError("View manager not set")
-        return self.view_manager.disabled
+    def to_python(self, value):
+        return value
 
     @property
     def data(self):
-        if self.data_manager is None:
+        if self.wdata is None:
             raise RuntimeError("Data manager not set")
         # NOTE: should return initial if field is disabled.
         if self.disabled:
             return self.initial
-        return self.data_manager.data
+        return self.wdata.data
 
     @data.setter
     def data(self, value):
-        if self.data_manager is None:
+        if self.wdata is None:
             raise RuntimeError("Data manager not set")
-        self.data_manager.data = value
+        self.wdata.data = value
 
 
-class TkVariableBasedField(Field):
-    tkvar_pname = "textvariable"
-    tkvar_class = tk.StringVar
+class DisplayField(FieldBase):
+    """A Display only field"""
 
     def __init__(self, *args, **kw):
-        user_var = kw.get(self.tkvar_pname, None)
-        if user_var is None:
-            self._data_var = self.tkvar_class()
-            kw[self.tkvar_pname] = self._data_var
-        elif isinstance(user_var, self.tkvar_class):
-            self._data_var = user_var
-        else:
-            raise ValueError("Incorrect type for data variable")
-
+        kw["required"] = False
         super().__init__(*args, **kw)
 
+    def has_changed(self, initial):
+        # Display only field, should never change
+        return False
 
-class CharFieldMixin:
+
+class CharField(FieldBase):
     def __init__(
         self,
         *args,
@@ -171,44 +150,147 @@ class CharFieldMixin:
                 validators.MaxLengthValidator(int(max_length))
             )
 
+    def to_python(self, value):
+        """Return a string."""
+        if value not in self.empty_values:
+            value = str(value)
+            if self.strip:
+                value = value.strip()
+        if value in self.empty_values:
+            return self.empty_value
+        return value
 
-class ChoiceFieldMixin:
-    choices_pname = "choices"
-    choices_pop = True  # Remove property from kw or not.
+
+class IntegerField(FieldBase):
+    default_error_messages = {
+        "invalid": _("Enter a whole number."),
+    }
+    # re_decimal = _lazy_re_compile(r"\.0*\s*$")
+
+    def __init__(
+        self, *args, max_value=None, min_value=None, step_size=None, **kw
+    ):
+        self.max_value, self.min_value, self.step_size = (
+            max_value,
+            min_value,
+            step_size,
+        )
+
+        # if kwargs.get("localize") and self.widget == NumberInput:
+        #    # Localized number input is not well supported on most browsers
+        #    kwargs.setdefault("widget", super().widget)
+        super().__init__(*args, **kw)
+
+        if max_value is not None:
+            self.validators.append(validators.MaxValueValidator(max_value))
+        if min_value is not None:
+            self.validators.append(validators.MinValueValidator(min_value))
+        if step_size is not None:
+            self.validators.append(validators.StepValueValidator(step_size))
+
+    def to_python(self, value):
+        """
+        Validate that int() can be called on the input. Return the result
+        of int() or None for empty values.
+        """
+        value = super().to_python(value)
+        if value in self.empty_values:
+            return None
+        # if self.localize:
+        #    value = formats.sanitize_separators(value)
+        # Strip trailing decimal and zeros.
+        try:
+            # value = int(self.re_decimal.sub("", str(value)))
+            value = int(str(value))
+        except (ValueError, TypeError):
+            raise ValidationError(
+                self.error_messages["invalid"], code="invalid"
+            )
+        return value
+
+
+class FloatField(IntegerField):
+    default_error_messages = {
+        "invalid": _("Enter a number."),
+    }
+
+    def to_python(self, value):
+        """
+        Validate that float() can be called on the input. Return the result
+        of float() or None for empty values.
+        """
+        value = super(IntegerField, self).to_python(value)
+        if value in self.empty_values:
+            return None
+        # if self.localize:
+        #    value = formats.sanitize_separators(value)
+        try:
+            value = float(value)
+        except (ValueError, TypeError):
+            raise ValidationError(
+                self.error_messages["invalid"], code="invalid"
+            )
+        return value
+
+    def validate(self, value):
+        super().validate(value)
+        if value in self.empty_values:
+            return
+        if not math.isfinite(value):
+            raise ValidationError(
+                self.error_messages["invalid"], code="invalid"
+            )
+
+
+class BooleanField(FieldBase):
+    def to_python(self, value):
+        """Return a Python boolean object."""
+        # Explicitly check for the string 'False', which is what a hidden field
+        # will submit for False. Also check for '0', since this is what
+        # RadioSelect will provide. Because bool("True") == bool('1') == True,
+        # we don't need to handle that explicitly.
+        if isinstance(value, str) and value.lower() in ("false", "0"):
+            value = False
+        else:
+            value = bool(value)
+        return super().to_python(value)
+
+    def validate(self, value):
+        print("validating value:", value)
+        if not value and self.required:
+            raise ValidationError(
+                self.error_messages["required"], code="required"
+            )
+        # Trigger specific field validation
+        self.wdata.validate(value)
+
+    def has_changed(self, initial):
+        if self.disabled:
+            return False
+        # Sometimes data or initial may be a string equivalent of a boolean
+        # so we should run it through to_python first to get a boolean value
+        return self.to_python(initial) != self.to_python(self.wdata.data)
+
+
+class ChoiceField(FieldBase, ChoiceWidget):
     default_error_messages = {
         "invalid_choice": _(
             "Select a valid choice. %(value)s is not one of the available choices."
         ),
     }
 
-    def __init__(self, *args, **kw):
-        if self.choices_pop:
-            choices = kw.pop(self.choices_pname, None)
-        else:
-            choices = kw.get(self.choices_pname, None)
-        self._choices = [] if choices is None else self._strto_choices(choices)
-        super().__init__(*args, **kw)
+    def to_python(self, value):
+        """Return a string."""
+        if value in self.empty_values:
+            return ""
+        return str(value)
 
-    def validate_choice(self, value):
-        """Validate that the input is in self._choices."""
-        if value and not (value in self._choices):
+    def validate(self, value):
+        """Validate that the input is in self.choices."""
+        super().validate(value)
+        if value and not self.valid_value(value):
             raise ValidationError(
                 self.error_messages["invalid_choice"],
                 code="invalid_choice",
                 params={"value": value},
             )
-
-    def _strto_choices(self, value):
-        if isinstance(value, list):
-            return value
-        elif isinstance(value, str):
-            try:
-                choices = json.loads(value)
-                if isinstance(choices, list):
-                    return choices
-                else:
-                    raise ValueError("Json value must be a list")
-            except json.JSONDecodeError:
-                raise ValueError("Can't decode json value")
-        else:
-            raise ValueError("Value must be a list or json string")

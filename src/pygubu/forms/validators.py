@@ -1,3 +1,4 @@
+import math
 from pygubu.i18n import _
 from .exceptions import ValidationError
 
@@ -89,3 +90,11 @@ class MaxLengthValidator(BaseValidator):
 
     def clean(self, x):
         return len(x)
+
+
+class StepValueValidator(BaseValidator):
+    message = _("Ensure this value is a multiple of step size %(limit_value)s.")
+    code = "step_size"
+
+    def compare(self, a, b):
+        return not math.isclose(math.remainder(a, b), 0, abs_tol=1e-9)

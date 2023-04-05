@@ -1,7 +1,8 @@
 import tkinter as tk
+from pygubu.api.v1 import BuilderObject, register_custom_property
 
 
-class FieldMixin:
+class FieldBOMixin:
     """Manages base field properties."""
 
     base_properties = ("fname", "initial", "required", "help_text")
@@ -17,3 +18,25 @@ class FieldMixin:
         if pname == "required":
             return tk.getboolean(value)
         return super()._process_property_value(pname, value)
+
+
+register_custom_property("pygubu.forms.*", "fname", "identifierentry")
+register_custom_property("pygubu.forms.*", "initial", "entry")
+register_custom_property(
+    "pygubu.forms.*",
+    "required",
+    "choice",
+    values=("", "false", "true"),
+    state="readonly",
+)
+register_custom_property("pygubu.forms.*", "help_text", "entry")
+register_custom_property("pygubu.forms.*", "max_length", "naturalnumber")
+register_custom_property("pygubu.forms.*", "min_length", "naturalnumber")
+register_custom_property(
+    "pygubu.forms.*",
+    "strip",
+    "choice",
+    values=("", "false", "true"),
+    state="readonly",
+)
+register_custom_property("pygubu.forms.*", "empty_value", "entry")

@@ -4,12 +4,13 @@ from pygubu.api.v1 import (
     register_widget,
     register_custom_property,
 )
-import pygubu.forms.ttkfields as ttkfields
+import pygubu.forms.ttkforms as ttkforms
+import pygubu.plugins.tk.tkstdwidgets as tkw
 import pygubu.plugins.ttk.ttkstdwidgets as ttkw
 from pygubu.i18n import _
 from pygubu.utils.datatrans import ListDTO
-from pygubu.forms.fields import Field
-from .base import FieldMixin
+from pygubu.forms.fields import FieldBase
+from .base import FieldBOMixin
 
 
 _plugin_uid = "pygubu.forms.ttk"
@@ -17,106 +18,27 @@ _designer_tabs = ("ttk", _("Pygubu Forms"))
 _list_dto = ListDTO()
 
 
-class FormBO(FieldMixin, ttkw.TTKFrame):
-    class_ = ttkfields.Form
+class FrameFormBO(FieldBOMixin, ttkw.TTKFrame):
+    class_ = ttkforms.FrameForm
     properties = ttkw.TTKFrame.properties + ("fname",)
     ro_properties = ttkw.TTKFrame.ro_properties + ("fname",)
 
     def add_child(self, bobject):
-        if issubclass(bobject.class_, Field):
+        if issubclass(bobject.class_, FieldBase):
             self.widget.add_field(bobject.widget)
 
 
-_builder_uid = f"{_plugin_uid}.Form"
+_builder_uid = f"{_plugin_uid}.FrameForm"
 register_widget(
     _builder_uid,
-    FormBO,
+    FrameFormBO,
     "Form",
     _designer_tabs,
 )
 
 
-class LabelDisplayFieldBO(FieldMixin, ttkw.TTKLabel):
-    class_ = ttkfields.LabelDisplayField
-    properties = ttkw.TTKLabel.properties + ("fname",)
-    ro_properties = ttkw.TTKLabel.ro_properties + ("fname",)
-
-
-_builder_uid = f"{_plugin_uid}.LabelDisplayField"
-register_widget(
-    _builder_uid,
-    LabelDisplayFieldBO,
-    "LabelDisplayField",
-    _designer_tabs,
-)
-
-
-class CharFieldBO(FieldMixin, ttkw.TTKEntry):
-    class_ = ttkfields.CharField
-    properties = (
-        "class_",
-        "cursor",
-        "takefocus",
-        "style",
-        "exportselection",
-        "font",
-        "justify",
-        "show",
-        "state",
-        "textvariable",
-        "validate",
-        "width",
-        # Field
-        "max_length",
-        "min_length",
-        "strip",
-        "empty_value",
-    ) + FieldMixin.base_properties
-    ro_properties = (
-        "max_length",
-        "min_length",
-        "strip",
-        "empty_value",
-    ) + FieldMixin.base_properties
-
-    def _process_property_value(self, pname, value):
-        if pname == "strip":
-            return tk.getboolean(value)
-        return super()._process_property_value(pname, value)
-
-
-_builder_uid = f"{_plugin_uid}.CharField"
-register_widget(
-    _builder_uid,
-    CharFieldBO,
-    "CharField",
-    _designer_tabs,
-)
-
-register_custom_property("pygubu.forms.*", "fname", "identifierentry")
-register_custom_property("pygubu.forms.*", "initial", "entry")
-register_custom_property(
-    "pygubu.forms.*",
-    "required",
-    "choice",
-    values=("", "false", "true"),
-    state="readonly",
-)
-register_custom_property("pygubu.forms.*", "help_text", "entry")
-register_custom_property("pygubu.forms.*", "max_length", "naturalnumber")
-register_custom_property("pygubu.forms.*", "min_length", "naturalnumber")
-register_custom_property(
-    "pygubu.forms.*",
-    "strip",
-    "choice",
-    values=("", "false", "true"),
-    state="readonly",
-)
-register_custom_property("pygubu.forms.*", "empty_value", "entry")
-
-
-class LabelFieldInfoBO(FieldMixin, ttkw.TTKLabel):
-    class_ = ttkfields.LabelFieldInfo
+class LabelFieldInfoBO(FieldBOMixin, ttkw.TTKLabel):
+    class_ = ttkforms.LabelFieldInfo
     properties = ttkw.TTKLabel.properties + ("fname",)
     ro_properties = ttkw.TTKLabel.ro_properties + ("fname",)
 
@@ -130,195 +52,120 @@ register_widget(
 )
 
 
-class ChoiceFieldBO(FieldMixin, ttkw.TTKCombobox):
-    class_ = ttkfields.ChoiceField
+class LabelDisplayFieldBO(FieldBOMixin, ttkw.TTKLabel):
+    class_ = ttkforms.LabelDisplayField
+    properties = ttkw.TTKLabel.properties + ("fname",)
+    ro_properties = ttkw.TTKLabel.ro_properties + ("fname",)
+
+
+_builder_uid = f"{_plugin_uid}.LabelDisplayField"
+register_widget(
+    _builder_uid,
+    LabelDisplayFieldBO,
+    "LabelDisplayField",
+    _designer_tabs,
+)
+
+
+_entry_charfield_props = (
+    "class_",
+    "cursor",
+    "takefocus",
+    "style",
+    "exportselection",
+    "font",
+    "justify",
+    "show",
+    "state",
+    "textvariable",
+    "validate",
+    "width",
+)
+
+_char_field_props = (
+    "max_length",
+    "min_length",
+    "strip",
+    "empty_value",
+)
+
+
+class EntryCharFieldBO(FieldBOMixin, ttkw.TTKEntry):
+    class_ = ttkforms.EntryCharField
     properties = (
-        "class_",
-        "cursor",
-        "takefocus",
-        "style" "exportselection",
-        "justify",
-        "height",
-        "postcommand",
-        "state",
-        "width",
-        # field props
-        "choices",
-    ) + FieldMixin.base_properties
-    ro_properties = (
-        "class_",
-        "choices",
-        "state",
-    ) + FieldMixin.base_properties
+        _entry_charfield_props
+        + _char_field_props
+        + FieldBOMixin.base_properties
+    )
+    ro_properties = _entry_charfield_props + FieldBOMixin.base_properties
 
     def _process_property_value(self, pname, value):
-        if pname == "choices":
-            return _list_dto.transform(value)
+        if pname == "strip":
+            return tk.getboolean(value)
         return super()._process_property_value(pname, value)
 
 
-_builder_uid = f"{_plugin_uid}.ChoiceField"
+_builder_uid = f"{_plugin_uid}.EntryCharField"
 register_widget(
     _builder_uid,
-    ChoiceFieldBO,
-    "ChoiceField",
+    EntryCharFieldBO,
+    "EntryCharField",
     _designer_tabs,
 )
 
-_choices_help = _(
-    "Specifies the list of values to display. "
-    "In code you can pass any iterable. "
-    'In Designer, a json like list: ["item1", "item2"]'
-)
-register_custom_property(_builder_uid, "choices", "entry", help=_choices_help)
 
-
-class CharComboFieldBO(FieldMixin, BuilderObject):
-    class_ = ttkfields.CharComboField
+class TextCharFieldBO(FieldBOMixin, tkw.TKText):
+    class_ = ttkforms.TextCharField
     properties = (
-        "class_",
-        "cursor",
-        "takefocus",
-        "style",
-        "exportselection",
-        "font",
-        "justify",
-        "show",
-        "state",
-        "textvariable",
-        "validate",
-        "width",
-        # Combobox
-        "height",
-        "postcommand",
-        # field props
-        "max_length",
-        "min_length",
-        "strip",
-        "empty_value",
-        "choices",
-    ) + FieldMixin.base_properties
-    ro_properties = (
-        "class_",
-        "max_length",
-        "min_length",
-        "strip",
-        "empty_value",
-        "choices",
-    ) + FieldMixin.base_properties
+        tkw.TKText.properties + _char_field_props + FieldBOMixin.base_properties
+    )
+    ro_properties = _entry_charfield_props + FieldBOMixin.base_properties
 
     def _process_property_value(self, pname, value):
-        if pname == "choices":
-            return _list_dto.transform(value)
+        if pname == "strip":
+            return tk.getboolean(value)
         return super()._process_property_value(pname, value)
 
 
-_builder_uid = f"{_plugin_uid}.CharComboField"
+_builder_uid = f"{_plugin_uid}.TextCharField"
 register_widget(
     _builder_uid,
-    CharComboFieldBO,
-    "CharComboField",
+    TextCharFieldBO,
+    "TextCharField",
     _designer_tabs,
 )
-register_custom_property(_builder_uid, "choices", "entry", help=_choices_help)
 
 
-class BooleanCheckboxFieldBO(FieldMixin, BuilderObject):
-    class_ = ttkfields.BooleanCheckboxField
+class EntryIntegerFieldBO(FieldBOMixin, ttkw.TTKEntry):
+    class_ = ttkforms.EntryIntegerField
+    _field_props = (
+        "max_value",
+        "min_value",
+        "step_size",
+    )
     properties = (
-        "class_",
-        "cursor",
-        "takefocus",
-        "style",
-        "command",
-        # "offvalue",
-        # "onvalue",
-        "text",
-        "textvariable",
-        "underline",
-        "image",
-        "compound",
-        "width",
-        "variable",
-        "state",
-    ) + FieldMixin.base_properties
-    ro_properties = ("class_",) + FieldMixin.base_properties
-    command_properties = ("command",)
+        _entry_charfield_props + _field_props + FieldBOMixin.base_properties
+    )
+    ro_properties = _field_props + FieldBOMixin.base_properties
 
 
-_builder_uid = f"{_plugin_uid}.BooleanCheckboxField"
+_builder_uid = f"{_plugin_uid}.EntryIntegerField"
 register_widget(
     _builder_uid,
-    BooleanCheckboxFieldBO,
-    "BooleanCheckboxField",
+    EntryIntegerFieldBO,
+    "EntryIntegerField",
     _designer_tabs,
 )
 
-register_custom_property(
-    _builder_uid,
-    "variable",
-    "tkvarentry",
-    type_choices=("boolean",),
-    type_default="boolean",
-)
+
+class EntryFloatFieldBO(EntryIntegerFieldBO):
+    class_ = ttkforms.EntryFloatField
 
 
-class TextFieldBO(FieldMixin, BuilderObject):
-    class_ = ttkfields.TextField
-    properties = (
-        "background",
-        "borderwidth",
-        "cursor",
-        "exportselection",
-        "font",
-        "foreground",
-        "highlightbackground",
-        "highlightcolor",
-        "highlightthickness",
-        "insertbackground",
-        "insertborderwidth",
-        "insertofftime",
-        "insertontime",
-        "insertwidth",
-        "padx",
-        "pady",
-        "relief",
-        "selectbackground",
-        "selectborderwidth",
-        "selectforeground",
-        "setgrid",
-        "takefocus",
-        "xscrollcommand",
-        "yscrollcommand",
-        #
-        "autoseparators",
-        "blockcursor",
-        "endline",
-        "height",
-        "inactiveselectbackground",
-        "insertunfocussed",
-        "maxundo",
-        "spacing1",
-        "spacing2",
-        "spacing3",
-        "startline",
-        "state",
-        "tabs",
-        "tabstyle",
-        "undo",
-        "width",
-        "wrap",
-    ) + FieldMixin.base_properties
-    ro_properties = FieldMixin.base_properties
-    command_properties = ("xscrollcommand", "yscrollcommand")
-
-
-_builder_uid = f"{_plugin_uid}.TextFieldBO"
+_builder_uid = f"{_plugin_uid}.EntryFloatField"
 register_widget(
     _builder_uid,
-    TextFieldBO,
-    "TextField",
+    EntryFloatFieldBO,
+    "EntryFloatField",
     _designer_tabs,
 )
-
-register_custom_property(_builder_uid, "initial", "text")
