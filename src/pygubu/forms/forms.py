@@ -11,6 +11,9 @@ class FormInfoBase:
 
     def show_error(self, error):
         raise NotImplementedError
+    
+    def show_help(self, message):
+        raise NotImplementedError    
 
     def clear(self):
         raise NotImplementedError
@@ -194,7 +197,11 @@ class FormWidget(FormBase):
 
     def _edit_field_init(self, field):
         if field.fname in self._info_displays:
-            self._info_displays[field.fname].clear()
+            field_info = self._info_displays[field.fname]
+            field_info.clear()
+            if field.help_text:
+                
+            field_info.show_help()
 
     def _submit_init(self):
         for name, field in self._iter_fields():
