@@ -169,3 +169,16 @@ register_widget(
     "EntryFloatField",
     _designer_tabs,
 )
+
+
+class CheckbuttonBoolFieldBO(FieldBOMixin, ttkw.TTKCheckbutton):
+    class_ = ttkforms.CheckbuttonBoolField
+
+
+_builder_uid = f"{_plugin_uid}.CheckbuttonBoolField"
+register_widget(
+    _builder_uid,
+    CheckbuttonBoolFieldBO,
+    "CheckbuttonBoolField",
+    _designer_tabs,
+)
