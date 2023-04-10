@@ -32,6 +32,10 @@ class LabelFieldInfo(FieldInfo, HideableMixin, ttk.Label):
         self.hidden = False
         self.configure(text=error.message)
 
+    def show_help(self, message):
+        self.hidden = False
+        self.configure(text=message)
+
     def clear(self):
         self.configure(text="")
         self.hidden = True
