@@ -24,7 +24,10 @@ class TkVarBasedWidget(FieldWidget):
             print(
                 f"setting {self._field.fname} value to:: {value}, type: {type(value)}"
             )
-            self._field._data_var.set(value)
+            try:
+                self._field._data_var.set(value)
+            except tk.TclError:
+                pass
 
         def get_value(self):
             return self._field._data_var.get()

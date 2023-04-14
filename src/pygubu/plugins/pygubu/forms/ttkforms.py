@@ -173,6 +173,13 @@ register_widget(
 
 class CheckbuttonBoolFieldBO(FieldBOMixin, ttkw.TTKCheckbutton):
     class_ = ttkforms.CheckbuttonBoolField
+    properties = (
+        tuple(set(ttkw.TTKCheckbutton.properties) - {"onvalue", "offvalue"})
+        + FieldBOMixin.base_properties
+    )
+    ro_properties = (
+        ttkw.TTKCheckbutton.ro_properties + FieldBOMixin.base_properties
+    )
 
 
 _builder_uid = f"{_plugin_uid}.CheckbuttonBoolField"
@@ -181,4 +188,12 @@ register_widget(
     CheckbuttonBoolFieldBO,
     "CheckbuttonBoolField",
     _designer_tabs,
+)
+
+register_custom_property(
+    _builder_uid,
+    "variable",
+    "tkvarentry",
+    type_choices=("boolean",),
+    type_default="boolean",
 )
