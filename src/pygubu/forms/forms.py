@@ -79,7 +79,7 @@ class FormBase:
 
     def _clean_fields(self):
         for name, field in self._iter_fields():
-            value = field.initial if field.disabled else field.data
+            value = field.initial if field.wis_disabled() else field.data
             try:
                 value = field.clean(value)
                 self.cleaned_data[name] = value
@@ -208,7 +208,7 @@ class FormWidget(FormBase):
                 field_info.show_help(field.help_text)
 
     def _field_clean_error(self, field, error):
-        field.mark_invalid(True)
+        field.wmark_invalid(True)
         field_info = self._info_displays.get(field.fname, None)
         if field_info is not None:
             field_info.show_error(error)
@@ -222,6 +222,6 @@ class FormWidget(FormBase):
 
     def _submit_init(self):
         for name, field in self._iter_fields():
-            field.mark_invalid(False)
+            field.wmark_invalid(False)
         for name in self._info_displays:
             self._info_displays[name].clear()

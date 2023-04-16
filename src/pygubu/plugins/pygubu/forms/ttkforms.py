@@ -52,17 +52,32 @@ register_widget(
 )
 
 
-class LabelDisplayFieldBO(FieldBOMixin, ttkw.TTKLabel):
-    class_ = ttkforms.LabelDisplayField
+class LabelFieldBO(FieldBOMixin, ttkw.TTKLabel):
+    class_ = ttkforms.LabelField
     properties = ttkw.TTKLabel.properties + ("fname",)
     ro_properties = ttkw.TTKLabel.ro_properties + ("fname",)
 
 
-_builder_uid = f"{_plugin_uid}.LabelDisplayField"
+_builder_uid = f"{_plugin_uid}.LabelField"
 register_widget(
     _builder_uid,
-    LabelDisplayFieldBO,
-    "LabelDisplayField",
+    LabelFieldBO,
+    "LabelField",
+    _designer_tabs,
+)
+
+
+class EntryFieldBO(FieldBOMixin, ttkw.TTKEntry):
+    class_ = ttkforms.EntryField
+    properties = ttkw.TTKEntry.properties + FieldBOMixin.base_properties
+    ro_properties = ttkw.TTKEntry.ro_properties + FieldBOMixin.base_properties
+
+
+_builder_uid = f"{_plugin_uid}.EntryField"
+register_widget(
+    _builder_uid,
+    EntryFieldBO,
+    "EntryField",
     _designer_tabs,
 )
 
@@ -87,113 +102,4 @@ _char_field_props = (
     "min_length",
     "strip",
     "empty_value",
-)
-
-
-class EntryCharFieldBO(FieldBOMixin, ttkw.TTKEntry):
-    class_ = ttkforms.EntryCharField
-    properties = (
-        _entry_charfield_props
-        + _char_field_props
-        + FieldBOMixin.base_properties
-    )
-    ro_properties = _entry_charfield_props + FieldBOMixin.base_properties
-
-    def _process_property_value(self, pname, value):
-        if pname == "strip":
-            return tk.getboolean(value)
-        return super()._process_property_value(pname, value)
-
-
-_builder_uid = f"{_plugin_uid}.EntryCharField"
-register_widget(
-    _builder_uid,
-    EntryCharFieldBO,
-    "EntryCharField",
-    _designer_tabs,
-)
-
-
-class TextCharFieldBO(FieldBOMixin, tkw.TKText):
-    class_ = ttkforms.TextCharField
-    properties = (
-        tkw.TKText.properties + _char_field_props + FieldBOMixin.base_properties
-    )
-    ro_properties = _entry_charfield_props + FieldBOMixin.base_properties
-
-    def _process_property_value(self, pname, value):
-        if pname == "strip":
-            return tk.getboolean(value)
-        return super()._process_property_value(pname, value)
-
-
-_builder_uid = f"{_plugin_uid}.TextCharField"
-register_widget(
-    _builder_uid,
-    TextCharFieldBO,
-    "TextCharField",
-    _designer_tabs,
-)
-
-
-class EntryIntegerFieldBO(FieldBOMixin, ttkw.TTKEntry):
-    class_ = ttkforms.EntryIntegerField
-    _field_props = (
-        "max_value",
-        "min_value",
-        "step_size",
-    )
-    properties = (
-        _entry_charfield_props + _field_props + FieldBOMixin.base_properties
-    )
-    ro_properties = _field_props + FieldBOMixin.base_properties
-
-
-_builder_uid = f"{_plugin_uid}.EntryIntegerField"
-register_widget(
-    _builder_uid,
-    EntryIntegerFieldBO,
-    "EntryIntegerField",
-    _designer_tabs,
-)
-
-
-class EntryFloatFieldBO(EntryIntegerFieldBO):
-    class_ = ttkforms.EntryFloatField
-
-
-_builder_uid = f"{_plugin_uid}.EntryFloatField"
-register_widget(
-    _builder_uid,
-    EntryFloatFieldBO,
-    "EntryFloatField",
-    _designer_tabs,
-)
-
-
-class CheckbuttonBoolFieldBO(FieldBOMixin, ttkw.TTKCheckbutton):
-    class_ = ttkforms.CheckbuttonBoolField
-    properties = (
-        tuple(set(ttkw.TTKCheckbutton.properties) - {"onvalue", "offvalue"})
-        + FieldBOMixin.base_properties
-    )
-    ro_properties = (
-        ttkw.TTKCheckbutton.ro_properties + FieldBOMixin.base_properties
-    )
-
-
-_builder_uid = f"{_plugin_uid}.CheckbuttonBoolField"
-register_widget(
-    _builder_uid,
-    CheckbuttonBoolFieldBO,
-    "CheckbuttonBoolField",
-    _designer_tabs,
-)
-
-register_custom_property(
-    _builder_uid,
-    "variable",
-    "tkvarentry",
-    type_choices=("boolean",),
-    type_default="boolean",
 )

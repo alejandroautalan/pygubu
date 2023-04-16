@@ -1,36 +1,20 @@
 import tkinter as tk
-from .fields import FieldWidget
-from .widgets import DataManager, ViewManager
+from .widgets import FieldWidget
 from .validators import EMPTY_VALUES
 
 
-class DefaultViewManager(ViewManager):
-    def mark_invalid(self, state: bool):
-        # Let user customize this ? Now, do Nothing
-        pass
+class TkWidgetBase(FieldWidget):
+    def wmark_invalid(self, state: bool):
+        # Visually mark the widget as invalid depending on state parameter.
+        print("TODO > mark invalid state")
 
-    def is_disabled(self) -> bool:
-        return "disabled" == self._field.cget("state")
+    def wis_disabled(self) -> bool:
+        return "disabled" == self.cget("state")
 
 
-class TkVarBasedWidget(FieldWidget):
+class TkVarBasedWidget(TkWidgetBase):
     tkvar_pname = "textvariable"
     tkvar_class = tk.StringVar
-
-    class DataManager(DataManager):
-        def set_value(self, value):
-            if value in EMPTY_VALUES:
-                value = ""
-            print(
-                f"setting {self._field.fname} value to:: {value}, type: {type(value)}"
-            )
-            try:
-                self._field._data_var.set(value)
-            except tk.TclError:
-                pass
-
-        def get_value(self):
-            return self._field._data_var.get()
 
     def __init__(self, *args, **kw):
         user_var = kw.get(self.tkvar_pname, None)
@@ -44,20 +28,14 @@ class TkVarBasedWidget(FieldWidget):
 
         super().__init__(*args, **kw)
 
+    def wset_value(self, value):
+        if value in EMPTY_VALUES:
+            value = ""
+        print(f"setting {self.fname} value to:: {value}, type: {type(value)}")
+        try:
+            self._data_var.set(value)
+        except tk.TclError:
+            pass
 
-class TextWidget(FieldWidget, tk.Text):
-    class DataManager(DataManager):
-        def set_value(self, value):
-            state = self._field.cget("state")
-            if state == tk.DISABLED:
-                self._field.configure(state=tk.NORMAL)
-                self._field.insert("0.0", value)
-                self._field.configure(state=tk.DISABLED)
-            else:
-                self._field.insert("0.0", value)
-
-        def get_value(self):
-            return self._field.get("0.0", "end-1c")
-
-    class ViewManager(DefaultViewManager):
-        pass
+    def wget_value(self):
+        return self._data_var.get()
