@@ -31,11 +31,11 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         ),
         "pygubu.plugins.pygubu.forms.ttkforms": (
             "pygubu.forms.ttk.FrameForm",
-            "pygubu.forms.ttk.EntryCharField",
+            "pygubu.forms.ttk.LabelField",
+            "pygubu.forms.ttk.EntryField",
             "pygubu.forms.ttk.LabelFieldInfo",
-            "pygubu.forms.ttk.LabelDisplayField",
-            #    "pygubu.forms.ttk.CharComboField",
         ),
+        "pygubu.plugins.pygubu.forms.tkforms": ("pygubu.forms.tk.TextField",),
         # "pygubu.plugins.pygubu.forms.pgwf": (
         #    "pygubu.forms.pgwf.ChoiceKeyField",
         # ),

@@ -1,6 +1,7 @@
 import tkinter as tk
 from .widgets import FieldWidget
 from .validators import EMPTY_VALUES
+from .fields import FieldBase, DisplayField
 
 
 class TkWidgetBase(FieldWidget):
@@ -39,3 +40,17 @@ class TkVarBasedWidget(TkWidgetBase):
 
     def wget_value(self):
         return self._data_var.get()
+
+
+class TextField(FieldBase, TkWidgetBase, tk.Text):
+    def wset_value(self, value):
+        state = self.cget("state")
+        if state == tk.DISABLED:
+            self.configure(state=tk.NORMAL)
+            self.insert("0.0", value)
+            self.configure(state=tk.DISABLED)
+        else:
+            self.insert("0.0", value)
+
+    def wget_value(self):
+        return self.get("0.0", "end-1c")
