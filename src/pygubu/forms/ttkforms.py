@@ -51,3 +51,7 @@ class LabelField(DisplayField, TkVarBasedWidget, ttk.Label):
     def wset_value(self, value):
         self.original_data = value
         super().wset_value(str(value))
+
+
+class CheckbuttonField(FieldBase, TkVarBasedWidget, ttk.Checkbutton):
+    tkvar_pname = "variable"

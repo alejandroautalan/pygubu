@@ -82,6 +82,23 @@ register_widget(
 )
 
 
+class CheckbuttonFieldBO(FieldBOMixin, ttkw.TTKCheckbutton):
+    class_ = ttkforms.CheckbuttonField
+    properties = ttkw.TTKCheckbutton.properties + FieldBOMixin.base_properties
+    ro_properties = (
+        ttkw.TTKCheckbutton.ro_properties + FieldBOMixin.base_properties
+    )
+
+
+_builder_uid = f"{_plugin_uid}.CheckbuttonField"
+register_widget(
+    _builder_uid,
+    CheckbuttonFieldBO,
+    "CheckbuttonField",
+    _designer_tabs,
+)
+
+
 _entry_charfield_props = (
     "class_",
     "cursor",
