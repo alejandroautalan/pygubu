@@ -3,6 +3,7 @@ import pygubu.forms.validators as validators
 from pygubu.i18n import _
 from .exceptions import ValidationError, ValidationErrorList
 from .widgets import FieldWidget
+from .transformer import NoopTransfomer
 
 
 class FieldBase(FieldWidget):
@@ -16,7 +17,6 @@ class FieldBase(FieldWidget):
         self,
         *args,
         fname,
-        fdata_type=None,
         required=True,
         initial=None,
         help_text="",
@@ -24,8 +24,9 @@ class FieldBase(FieldWidget):
         validators=(),
         **kw,
     ):
+        self.model_transfomer = NoopTransfomer()
+        self.view_transformer = NoopTransfomer()
         self.fname = fname
-        self.fdata_type = fdata_type
         self.required = required
         self.initial = initial
         self.help_text = help_text
@@ -66,7 +67,7 @@ class FieldBase(FieldWidget):
         Validate the given value and return its "cleaned" value as an
         appropriate Python object. Raise ValidationError for any errors.
         """
-        value = self.to_python(self.wget_value())
+        value = self.view_transformer.reversetransform(self.wget_value())
         self.validate(value)
         self.run_validators(value)
         return value
@@ -78,7 +79,9 @@ class FieldBase(FieldWidget):
         if self.wis_disabled():
             return False
         try:
-            data = self.to_python(self.wget_value())
+            data = self.model_transfomer.reversetransform(
+                self.view_transformer.reversetransform(self.wget_value())
+            )
         except ValidationError:
             return True
         # For purposes of seeing whether something has changed, None is
@@ -88,19 +91,22 @@ class FieldBase(FieldWidget):
         data_value = data if data is not None else ""
         return initial_value != data_value
 
-    def to_python(self, value):
-        return value
-
     @property
     def data(self):
         # NOTE: should return initial if field is disabled.
         if self.wis_disabled():
             return self.initial
-        return self.wget_value()
+        return self.model_transfomer.reversetransform(
+            self.view_transformer.reversetransform(self.wget_value())
+        )
 
     @data.setter
     def data(self, value):
-        self.wset_value(value)
+        self.wset_value(
+            self.view_transformer.transform(
+                self.model_transfomer.transform(value)
+            )
+        )
 
 
 class DisplayField(FieldBase):

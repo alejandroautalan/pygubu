@@ -43,9 +43,7 @@ class LabelField(DisplayField, TkVarBasedWidget, ttk.Label):
         self.original_data = None
         super().__init__(*args, **kw)
 
-    def to_python(self, value):
-        if self.original_data is None:
-            return value
+    def wget_value(self):
         return self.original_data
 
     def wset_value(self, value):
