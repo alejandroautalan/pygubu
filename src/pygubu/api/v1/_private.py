@@ -59,3 +59,13 @@ def register_custom_property(
     if help is not None:
         description[builder_uid]["help"] = help
     register_property(prop_name, description)
+
+
+def copy_custom_property(from_builder_id, pname, to_builder_id):
+    if pname not in CUSTOM_PROPERTIES:
+        raise RuntimeError(f"Property {pname} not registered.")
+    elif from_builder_id not in CUSTOM_PROPERTIES[pname]:
+        raise RuntimeError(f"Builder ID {from_builder_id} not registered.")
+    else:
+        description = CUSTOM_PROPERTIES[pname][from_builder_id].copy()
+        CUSTOM_PROPERTIES[pname][to_builder_id] = description

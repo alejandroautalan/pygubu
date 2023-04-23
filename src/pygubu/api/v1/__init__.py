@@ -11,4 +11,5 @@ from ._private import (
     register_widget,
     register_property,
     register_custom_property,
+    copy_custom_property,
 )
