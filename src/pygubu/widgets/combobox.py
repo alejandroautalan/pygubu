@@ -71,8 +71,12 @@ class Combobox(ttk.Combobox):
 
     def _delayed_clear_vars(self):
         # clear variables:
-        self._keyvar.set("")
-        self._txtvar.set("")
+        self._clear_tkvar(self._keyvar)
+        self._clear_tkvar(self._txtvar)
+
+    def _clear_tkvar(self, variable):
+        if isinstance(variable, tk.StringVar):
+            variable.set("")
 
     def configure(self, cnf=None, **kw):
         if cnf:
