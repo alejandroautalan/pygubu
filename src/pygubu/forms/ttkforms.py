@@ -53,3 +53,7 @@ class LabelField(DisplayField, TkVarBasedWidget, ttk.Label):
 
 class CheckbuttonField(FieldBase, TkVarBasedWidget, ttk.Checkbutton):
     tkvar_pname = "variable"
+
+
+class ComboboxField(FieldBase, TkVarBasedWidget, ttk.Combobox):
+    pass

@@ -99,6 +99,23 @@ register_widget(
 )
 
 
+class ComboboxFieldBO(FieldBOMixin, ttkw.TTKCombobox):
+    class_ = ttkforms.ComboboxField
+    properties = ttkw.TTKCombobox.properties + FieldBOMixin.base_properties
+    ro_properties = (
+        ttkw.TTKCombobox.ro_properties + FieldBOMixin.base_properties
+    )
+
+
+_builder_uid = f"{_plugin_uid}.ComboboxField"
+register_widget(
+    _builder_uid,
+    ComboboxFieldBO,
+    "ComboboxField",
+    _designer_tabs,
+)
+
+
 _entry_charfield_props = (
     "class_",
     "cursor",
