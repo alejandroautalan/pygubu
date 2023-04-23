@@ -16,20 +16,20 @@ class FieldBase(FieldWidget):
     def __init__(
         self,
         *args,
-        fname,
-        required=True,
-        initial=None,
-        help_text="",
+        field_name,
+        field_required=True,
+        field_initial=None,
+        field_help="",
         error_messages=None,
         validators=(),
         **kw,
     ):
         self.model_transfomer = NoopTransfomer()
         self.view_transformer = NoopTransfomer()
-        self.fname = fname
-        self.required = required
-        self.initial = initial
-        self.help_text = help_text
+        self.field_name = field_name
+        self.field_required = field_required
+        self.field_initial = field_initial
+        self.field_help = field_help
 
         messages = {}
         for c in reversed(self.__class__.__mro__):
@@ -43,7 +43,7 @@ class FieldBase(FieldWidget):
 
     def validate(self, value):
         # Default required validation
-        if value in self.empty_values and self.required:
+        if value in self.empty_values and self.field_required:
             raise ValidationError(
                 self.error_messages["required"], code="required"
             )
@@ -95,7 +95,7 @@ class FieldBase(FieldWidget):
     def data(self):
         # NOTE: should return initial if field is disabled.
         if self.wis_disabled():
-            return self.initial
+            return self.field_initial
         return self.model_transfomer.reversetransform(
             self.view_transformer.reversetransform(self.wget_value())
         )
@@ -113,7 +113,7 @@ class DisplayField(FieldBase):
     """A Display only field"""
 
     def __init__(self, *args, **kw):
-        kw["required"] = False
+        kw["field_required"] = False
         super().__init__(*args, **kw)
 
     def has_changed(self, initial):

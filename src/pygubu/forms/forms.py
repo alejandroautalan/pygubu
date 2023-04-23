@@ -5,8 +5,8 @@ from .exceptions import FormError
 
 
 class FormInfoBase:
-    def __init__(self, *args, fname: str, **kw):
-        self.fname = fname
+    def __init__(self, *args, field_name: str, **kw):
+        self.field_name = field_name
         super().__init__(*args, **kw)
 
     def show_error(self, error):
@@ -31,12 +31,12 @@ class FormBase:
     def __init__(
         self,
         *args,
-        fname,
+        field_name,
         empty_permitted=False,
         use_required_attribute=None,
         **kw,
     ):
-        self.fname = fname
+        self.field_name = field_name
         self.fields = {}
         self.empty_permitted = empty_permitted
 
@@ -79,7 +79,7 @@ class FormBase:
 
     def _clean_fields(self):
         for name, field in self._iter_fields():
-            value = field.initial if field.wis_disabled() else field.data
+            value = field.field_initial if field.wis_disabled() else field.data
             try:
                 value = field.clean(value)
                 self.cleaned_data[name] = value
@@ -138,16 +138,16 @@ class FormBase:
             yield name, field
 
     def add_field(self, field):
-        self.fields[field.fname] = field
+        self.fields[field.field_name] = field
 
-    def edit(self, data: dict, initial: Optional[dict] = None):
+    def edit(self, data: dict, initial_bag: Optional[dict] = None):
         """Intializes form to edit data values."""
         self._initialized = True
         self._fields_initial = {}
-        if initial is None:
-            initial = {}
+        if initial_bag is None:
+            initial_bag = {}
         for name, field in self._iter_fields():
-            field_initial = initial.get(name, field.initial)
+            field_initial = initial_bag.get(name, field.field_initial)
             field_initial = "" if field_initial is None else field_initial
             self._fields_initial[name] = field_initial
             field.data = data.get(name, field_initial)
@@ -194,31 +194,31 @@ class FormWidget(FormBase):
             master = self
         for widget in master.winfo_children():
             if isinstance(widget, FieldBase):
-                self.fields[widget.fname] = widget
-                print(f"Field Found: {widget.fname}")
+                self.fields[widget.field_name] = widget
+                print(f"Field Found: {widget.field_name}")
             elif isinstance(widget, FieldInfo):
-                self._info_displays[widget.fname] = widget
+                self._info_displays[widget.field_name] = widget
             else:
                 self._find_fields(widget)
 
     def _field_clean_pass(self, field):
-        if field.help_text:
-            field_info = self._info_displays.get(field.fname, None)
+        if field.field_help:
+            field_info = self._info_displays.get(field.field_name, None)
             if field_info is not None:
-                field_info.show_help(field.help_text)
+                field_info.show_help(field.field_help)
 
     def _field_clean_error(self, field, error):
         field.wmark_invalid(True)
-        field_info = self._info_displays.get(field.fname, None)
+        field_info = self._info_displays.get(field.field_name, None)
         if field_info is not None:
             field_info.show_error(error)
 
     def _edit_field_init(self, field):
-        if field.fname in self._info_displays:
-            field_info = self._info_displays[field.fname]
+        if field.field_name in self._info_displays:
+            field_info = self._info_displays[field.field_name]
             field_info.clear()
-            if field.help_text:
-                field_info.show_help(field.help_text)
+            if field.field_help:
+                field_info.show_help(field.field_help)
 
     def _submit_init(self):
         for name, field in self._iter_fields():

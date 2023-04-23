@@ -42,7 +42,9 @@ class TkVarBasedWidget(TkWidgetBase):
     def wset_value(self, value):
         if value in EMPTY_VALUES:
             value = ""
-        print(f"setting {self.fname} value to:: {value}, type: {type(value)}")
+        print(
+            f"setting {self.field_name} value to:: {value}, type: {type(value)}"
+        )
         # for now do not hide any error:
         self._data_var.set(value)
 

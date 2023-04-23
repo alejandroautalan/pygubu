@@ -20,8 +20,8 @@ _list_dto = ListDTO()
 
 class FrameFormBO(FieldBOMixin, ttkw.TTKFrame):
     class_ = ttkforms.FrameForm
-    properties = ttkw.TTKFrame.properties + ("fname",)
-    ro_properties = ttkw.TTKFrame.ro_properties + ("fname",)
+    properties = ttkw.TTKFrame.properties + ("field_name",)
+    ro_properties = ttkw.TTKFrame.ro_properties + ("field_name",)
 
     def add_child(self, bobject):
         if issubclass(bobject.class_, FieldBase):
@@ -39,8 +39,8 @@ register_widget(
 
 class LabelFieldInfoBO(FieldBOMixin, ttkw.TTKLabel):
     class_ = ttkforms.LabelFieldInfo
-    properties = ttkw.TTKLabel.properties + ("fname",)
-    ro_properties = ttkw.TTKLabel.ro_properties + ("fname",)
+    properties = ttkw.TTKLabel.properties + ("field_name",)
+    ro_properties = ttkw.TTKLabel.ro_properties + ("field_name",)
 
 
 _builder_uid = f"{_plugin_uid}.LabelFieldInfo"
@@ -54,8 +54,8 @@ register_widget(
 
 class LabelFieldBO(FieldBOMixin, ttkw.TTKLabel):
     class_ = ttkforms.LabelField
-    properties = ttkw.TTKLabel.properties + ("fname",)
-    ro_properties = ttkw.TTKLabel.ro_properties + ("fname",)
+    properties = ttkw.TTKLabel.properties + FieldBOMixin.base_properties
+    ro_properties = ttkw.TTKLabel.ro_properties + FieldBOMixin.base_properties
 
 
 _builder_uid = f"{_plugin_uid}.LabelField"
