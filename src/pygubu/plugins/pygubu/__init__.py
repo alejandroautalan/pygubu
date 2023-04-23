@@ -36,7 +36,9 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             "pygubu.forms.ttk.LabelFieldInfo",
         ),
         "pygubu.plugins.pygubu.forms.tkforms": ("pygubu.forms.tk.TextField",),
-        # "pygubu.plugins.pygubu.forms.pgwf": (
+        "pygubu.plugins.pygubu.forms.pwforms": (
+            "pygubu.forms.pwforms.ComboboxField"
+        ),
         #    "pygubu.forms.pgwf.ChoiceKeyField",
         # ),
     }

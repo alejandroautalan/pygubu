@@ -24,6 +24,13 @@ register_widget(
     _builder_id, ComboboxBuilder, "Combobox", ("ttk", _("Pygubu Widgets"))
 )
 
+_help_values = _(
+    "In designer: json list of key, value pairs\n"
+    '    Example: [["A", "Option 1 Label"], ["B", "Option 2 Label"]]\n'
+    "In code: an iterable of key, value pairs"
+)
+register_custom_property(_builder_id, "values", "entry", help=_help_values)
+
 _help = "Tk variable associated to the key value."
 register_custom_property(_builder_id, "keyvariable", "tkvarentry", help=_help)
 _help = "Combobox state."
