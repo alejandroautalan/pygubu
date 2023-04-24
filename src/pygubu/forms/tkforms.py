@@ -49,7 +49,8 @@ class TkVarBasedWidget(TkWidgetBase):
         self._data_var.set(value)
 
     def wget_value(self):
-        return self._data_var.get()
+        # FIXME avoid TclErrors when using typed variables Int, Double, Boolean
+        return tk.Variable.get(self._data_var)
 
 
 class TextField(FieldBase, TkWidgetBase, tk.Text):
