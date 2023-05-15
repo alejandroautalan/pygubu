@@ -1,7 +1,7 @@
 """No UI forms"""
 
 from .forms import FormBase
-from .widgets import FieldWidget, DataManager, ViewManager, ChoiceWidget
+from .widgets import FieldWidget
 from .fields import (
     CharField as CharFieldBase,
     IntegerField as IntegerFieldBase,
@@ -14,27 +14,21 @@ class Form(FormBase):
 
 
 class NoUIWidget(FieldWidget):
-    class DataManager(DataManager):
-        def __init__(self, field):
-            super().__init__(field)
-            self._value = None
+    def __init__(self, *args, **kw):
+        self._value = None
+        super().__init__(*args, **kw)
 
-        def set_value(self, value):
-            # will set the value in the widget format
-            self._value = value
+    def wset_value(self, value):
+        self._value = value
 
-        def get_value(self):
-            return self._value
+    def wget_value(self):
+        return self._value
 
-    class ViewManager(ViewManager):
-        def mark_invalid(self, state: bool):
-            print(f"Field {self._field.fname} invalid: {state}")
+    def wmark_invalid(self, state: bool):
+        print(f"Field {self._field.fname} invalid: {state}")
 
-        def is_disabled(self) -> bool:
-            return False
-
-    data_manager = DataManager
-    view_manager = ViewManager
+    def wis_disabled(self) -> bool:
+        return False
 
 
 class CharField(CharFieldBase, NoUIWidget):
@@ -45,9 +39,9 @@ class IntegerField(IntegerFieldBase, NoUIWidget):
     pass
 
 
-class NoUIChoiceWidget(NoUIWidget, ChoiceWidget):
-    pass
+# class NoUIChoiceWidget(NoUIWidget, ChoiceWidget):
+#    pass
 
 
-class ChoiceField(ChoiceFieldBase, NoUIChoiceWidget):
-    pass
+# class ChoiceField(ChoiceFieldBase, NoUIChoiceWidget):
+#    pass
