@@ -137,3 +137,36 @@ _char_field_props = (
     "strip",
     "empty_value",
 )
+
+
+class CharFieldConfigBO(BuilderObject):
+    """
+    Temporarly save this class as example.
+    It will be converted to ConstrainConfig or something.
+    """
+
+    class_ = None
+    container = False
+    layout_required = False
+    allow_bindings = False
+    allowed_parents = (f"{_plugin_uid}.EntryField",)
+
+    def realize(self, parent, extra_init_args: dict = None):
+        self.widget = parent.get_child_master()
+        return self.widget
+
+    def configure(self, target=None):
+        pass
+
+    def layout(self, target=None):
+        pass
+
+
+_builder_uid = f"{_plugin_uid}.CharFieldConfig"
+register_widget(
+    _builder_uid,
+    CharFieldConfigBO,
+    "CharFieldConfig",
+    _designer_tabs,
+)
+EntryFieldBO.add_allowed_child(_builder_uid)
