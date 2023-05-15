@@ -24,7 +24,7 @@ class FieldBase(FieldWidget):
         validators=(),
         **kw,
     ):
-        self.model_transfomer = NoopTransfomer()
+        self.model_transformer = NoopTransfomer()
         self.view_transformer = NoopTransfomer()
         self.field_name = field_name
         self.field_required = field_required
@@ -67,7 +67,7 @@ class FieldBase(FieldWidget):
         Validate the given value and return its "cleaned" value as an
         appropriate Python object. Raise ValidationError for any errors.
         """
-        value = self.view_transformer.reversetransform(self.wget_value())
+        value = self.model_transformer.reversetransform(value)
         self.validate(value)
         self.run_validators(value)
         return value
@@ -79,7 +79,7 @@ class FieldBase(FieldWidget):
         if self.wis_disabled():
             return False
         try:
-            data = self.model_transfomer.reversetransform(
+            data = self.model_transformer.reversetransform(
                 self.view_transformer.reversetransform(self.wget_value())
             )
         except ValidationError:
@@ -96,15 +96,13 @@ class FieldBase(FieldWidget):
         # NOTE: should return initial if field is disabled.
         if self.wis_disabled():
             return self.field_initial
-        return self.model_transfomer.reversetransform(
-            self.view_transformer.reversetransform(self.wget_value())
-        )
+        return self.view_transformer.reversetransform(self.wget_value())
 
     @data.setter
     def data(self, value):
         self.wset_value(
             self.view_transformer.transform(
-                self.model_transfomer.transform(value)
+                self.model_transformer.transform(value)
             )
         )
 
