@@ -41,3 +41,7 @@ class ValidationErrorList(ValidationError):
     def messages(self):
         for error in self.error_list:
             yield error.code, error.message
+
+
+class TransformationError(ValidationError):
+    pass
