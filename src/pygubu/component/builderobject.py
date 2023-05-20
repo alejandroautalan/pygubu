@@ -502,10 +502,10 @@ class BuilderObject(object):
             propvalue = self._code_define_callback(pname, cmd)
         elif pname in self.tkimage_properties:
             propvalue = self.builder.code_create_image(value)
-        elif pname == "takefocus":
-            propvalue = str(tk.getboolean(value))
         elif pname in TRANSLATABLE_PROPERTIES:
             propvalue = self.builder.code_translate_str(value)
+        elif str(value).lower() in ("true", "false"):
+            propvalue = str(tk.getboolean(value))
         # default processing
         if propvalue is None:
             pvalue_str = str(value)
@@ -635,11 +635,14 @@ class BuilderObject(object):
         self, manager: str, pname: str, pvalue: str
     ) -> str:
         pvalue_str = str(pvalue)
-        fvalue = (
-            pvalue_str
-            if pvalue_str.isnumeric() or isfloat(pvalue_str)
-            else f'"{pvalue}"'
-        )
+        if pname in ("propagate", "expand"):
+            fvalue = str(tk.getboolean(pvalue))
+        else:
+            fvalue = (
+                pvalue_str
+                if pvalue_str.isnumeric() or isfloat(pvalue_str)
+                else f'"{pvalue}"'
+            )
         return fvalue
 
     def code_imports(self):
