@@ -51,6 +51,7 @@ class PygubuDesignerPlugin(IDesignerPlugin):
                     notebook = builder.objects[tab_id].widget
                     current_tab = builder.objects[child_id].widget
                     notebook.select(current_tab)
+                    notebook.update()
                     # Found, stop searching
                     break
             # check if selected_uid is inside this tab
@@ -65,5 +66,6 @@ class PygubuDesignerPlugin(IDesignerPlugin):
                 notebook = builder.objects[tab_id].widget
                 current_tab = builder.objects[child_id].widget
                 notebook.select(current_tab)
+                notebook.update()
                 # Found, stop searching
                 break
