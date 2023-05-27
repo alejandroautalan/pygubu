@@ -43,10 +43,10 @@ class TkVarBasedWidget(TkWidgetBase):
         if value in EMPTY_VALUES:
             value = ""
         print(
-            f"setting {self.field_name} value to:: {value}, type: {type(value)}"
+            f"setting {self.field_name} value to:: |{value}|, type: {type(value)}"
         )
-        # for now do not hide any error:
-        self._data_var.set(value)
+        # FIXME avoid TclErrors when using typed variables Int, Double, Boolean
+        tk.Variable.set(self._data_var, value)
 
     def wget_value(self):
         # FIXME avoid TclErrors when using typed variables Int, Double, Boolean
