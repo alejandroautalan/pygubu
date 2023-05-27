@@ -50,6 +50,7 @@ register_widget(
     "LabelFieldInfo",
     _designer_tabs,
 )
+register_custom_property(_builder_uid, "field_name", "fieldname_selector")
 
 
 class LabelFieldBO(FieldBOMixin, ttkw.TTKLabel):
@@ -113,6 +114,13 @@ register_widget(
     ComboboxFieldBO,
     "ComboboxField",
     _designer_tabs,
+)
+register_custom_property(
+    _builder_uid,
+    "state",
+    "choice",
+    values=("", "normal", "disabled", "readonly"),
+    state="readonly",
 )
 
 

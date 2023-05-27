@@ -25,7 +25,7 @@ class FieldBOMixin:
         return super()._process_property_value(pname, value)
 
 
-register_custom_property("pygubu.forms.*", "field_name", "identifierentry")
+register_custom_property("pygubu.forms.*", "field_name", "fieldname_entry")
 register_custom_property("pygubu.forms.*", "field_initial", "entry")
 register_custom_property(
     "pygubu.forms.*",
