@@ -45,6 +45,7 @@ class FormBase:
 
         self.is_bound = False
         self._errors = None
+        self._initialized = False
         self._fields_initial = {}
         self._info_displays = {}
         super().__init__(*args, **kw)
