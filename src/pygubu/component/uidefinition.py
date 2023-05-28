@@ -71,16 +71,16 @@ class UIDefinition(object):
         self._code_options = bag
 
     def _load_code_options(self):
-        xpath = ".//code-options"
+        xpath = ".//code_options"
         node: ET.Element = self.tree.find(xpath)
         if node is not None:
             self._code_options = node.attrib.copy()
 
     def _save_code_options(self):
-        xpath = ".//code-options"
+        xpath = ".//code_options"
         node: ET.Element = self.root.find(xpath)
         if node is None:
-            node = ET.Element("code-options")
+            node = ET.Element("code_options")
             self.root.append(node)
         node.clear()
         for key, value in self._code_options.items():
