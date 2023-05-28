@@ -12,6 +12,11 @@ from pygubu.utils.datatrans import ListDTO
 from pygubu.forms.fields import FieldBase
 from .base import FieldBOMixin
 
+# Groups for ordering buttons in designer palette.
+GROUP0: int = 0
+GROUP1: int = 10
+GROUP2: int = 20
+GROUP3: int = 30
 
 _plugin_uid = "pygubu.forms.ttk"
 _designer_tabs = ("ttk", _("Pygubu Forms"))
@@ -34,6 +39,7 @@ register_widget(
     FrameFormBO,
     "Form",
     _designer_tabs,
+    group=GROUP0,
 )
 
 
@@ -49,6 +55,7 @@ register_widget(
     LabelFieldInfoBO,
     "LabelFieldInfo",
     _designer_tabs,
+    group=GROUP1,
 )
 register_custom_property(_builder_uid, "field_name", "fieldname_selector")
 
@@ -65,6 +72,7 @@ register_widget(
     LabelFieldBO,
     "LabelField",
     _designer_tabs,
+    group=GROUP2,
 )
 
 
@@ -80,6 +88,7 @@ register_widget(
     EntryFieldBO,
     "EntryField",
     _designer_tabs,
+    group=GROUP2,
 )
 
 
@@ -97,6 +106,7 @@ register_widget(
     CheckbuttonFieldBO,
     "CheckbuttonField",
     _designer_tabs,
+    group=GROUP3,
 )
 
 
@@ -114,6 +124,7 @@ register_widget(
     ComboboxFieldBO,
     "ComboboxField",
     _designer_tabs,
+    group=GROUP3,
 )
 register_custom_property(
     _builder_uid,
@@ -176,5 +187,6 @@ register_widget(
     CharFieldConfigBO,
     "CharFieldConfig",
     _designer_tabs,
+    group=999,
 )
 EntryFieldBO.add_allowed_child(_builder_uid)
