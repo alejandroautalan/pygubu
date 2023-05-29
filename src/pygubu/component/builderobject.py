@@ -109,6 +109,26 @@ class BuilderObject(object):
         else:
             cls.allowed_children = cls.allowed_children + (builder_uid,)
 
+    @classmethod
+    def canbe_parent_of(cls, child_builder, classname):
+        allowed = True
+        if (
+            cls.allowed_children is not None
+            and classname not in cls.allowed_children
+        ):
+            allowed = False
+        return allowed
+
+    @classmethod
+    def canbe_child_of(cls, parent_builder, classname):
+        allowed = True
+        if (
+            cls.allowed_parents is not None
+            and classname not in cls.allowed_parents
+        ):
+            allowed = False
+        return allowed
+
     def __init__(self, builder, wmeta):
         super(BuilderObject, self).__init__()
         self.widget = None
