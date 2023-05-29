@@ -1,6 +1,11 @@
 History
 =======
 
+Changes for version 0.31:
+
+  * Allow to setup values for option database after first window created. refs #282
+  * Fix for widget highlighter offsets in preview, refs alejandroautalan/pygubu-designer#203
+
 Changes for version 0.30:
 
   * Editabletreeview: Hide editors when user clicks inside treeview area
