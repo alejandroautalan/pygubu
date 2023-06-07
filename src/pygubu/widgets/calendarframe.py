@@ -461,7 +461,7 @@ class CalendarFrame(ttk.Frame):
             if redraw:
                 rec = self._recmat[i]
                 canvas.coords(rec, x, y, x1, y1)
-                canvas.itemconfigure(rec, fill=options["calendarbg"])
+                canvas.itemconfigure(rec, fill=options["calendarbg"], activeoutline=options["selectbg"])
             else:
                 rec = canvas.create_rectangle(
                     x,
