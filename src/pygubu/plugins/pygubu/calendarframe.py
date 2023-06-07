@@ -60,9 +60,8 @@ register_custom_property(
     _builder_id,
     "month",
     "choice",
-    values=("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
+    values=("", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
     state="readonly",
-    default_value="1",
 )
 register_custom_property(_builder_id, "calendarfg", "colorentry")
 register_custom_property(_builder_id, "calendarbg", "colorentry")
