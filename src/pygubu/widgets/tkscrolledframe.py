@@ -247,7 +247,7 @@ class TkScrolledFrame(tk.Frame):
         if key in kw:
             self.usemousewheel = tk.getboolean(kw.pop(key))
             self._configure_mousewheel()
-        self._framecls.configure(self, cnf, **kw)
+        return self._framecls.configure(self, cnf, **kw)
 
     config = configure
 
