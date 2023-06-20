@@ -9,11 +9,20 @@ import tkinter.ttk as ttk
 import fixpath
 import pygubu
 import support
-from tkcalendar import Calendar, DateEntry
+from unittest.case import SkipTest
+
+has_tkcalendar = True
+try:
+    from tkcalendar import Calendar, DateEntry
+except ImportError:
+    has_tkcalendar = False
 
 
 class TestTkcalendarCalendar(unittest.TestCase):
     def setUp(self):
+        if not has_tkcalendar:
+            raise SkipTest("tkcalendar not installed")
+        
         support.root_deiconify()
         xmldata = "test_plugin_tkcalendar.ui"
         self.builder = builder = pygubu.Builder()
@@ -31,6 +40,9 @@ class TestTkcalendarCalendar(unittest.TestCase):
 
 class TestTkcalendarDateEntry(unittest.TestCase):
     def setUp(self):
+        if not has_tkcalendar:
+            raise SkipTest("tkcalendar not installed")
+        
         support.root_deiconify()
         xmldata = "test_plugin_tkcalendar.ui"
         self.builder = builder = pygubu.Builder()
