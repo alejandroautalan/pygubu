@@ -595,12 +595,12 @@ class BuilderObject(object):
         args = args.split() if args else None
         lines = []
         cmdtype = cmd["cbtype"]
+        if cmdtype == CB_TYPES.WITH_WID:
+            wid = self.wmeta.identifier
+            fdef = f'_wcmd = lambda wid="{wid}": {cbname}(wid)'
+            cbname = "_wcmd"
+            lines.append(fdef)
         if args is not None:
-            if cmdtype == CB_TYPES.WITH_WID:
-                wid = self.wmeta.identifier
-                fdef = f'_wcmd = lambda wid="{wid}": {cbname}(wid)'
-                cbname = "_wcmd"
-                lines.append(fdef)
             if cmdtype == CB_TYPES.ENTRY_VALIDATE:
                 original_cb = cbname
                 tk_args = [f'"{a}"' for a in args]
