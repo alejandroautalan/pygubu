@@ -57,7 +57,10 @@ class TKToplevel(BuilderObject):
         "iconbitmap",
         "iconphoto",
     )
-    ro_properties = ("container",)
+    ro_properties = (
+        "container",
+        "class_",
+    )
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     RESIZABLE = {
         "both": (True, True),
