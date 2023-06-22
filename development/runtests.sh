@@ -5,7 +5,7 @@ echo " Default Python 3: $python3bin "
 echo " version: $($python3bin --version)"
 echo " tk version :$($python3bin -c 'import tkinter; print(tkinter.TkVersion)')"
 
-cd tests; $python3bin -W default -m unittest; cd ..;
+cd tests; $python3bin -W default -m unittest -v; cd ..;
 
 #echo ""
 #echo "============="
