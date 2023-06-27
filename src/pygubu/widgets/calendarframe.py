@@ -5,6 +5,7 @@ import calendar
 import locale
 import tkinter as tk
 import tkinter.ttk as ttk
+import math
 
 imgp_data = (
     "R0lGODlhDAAMAIABAAAAAP///yH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEK"
@@ -52,11 +53,11 @@ class CalendarFrame(ttk.Frame):
     """Allows to choose a date in a calendar.
 
     WIDGET-SPECIFIC OPTIONS
-            locale, firstweekday, year, month
-            calendarfg, calendarbg,
+            locale, firstweekday, year, month,
+            calendarfg, calendarbg, linewidth,
             headerfg, headerbg,
             selectbg, selectfg,
-            markbg, markfg,
+            markbg, markfg
     Generates:
         <<CalendarFrameDateSelected>>
     """
@@ -86,8 +87,9 @@ class CalendarFrame(ttk.Frame):
             "selectbg": "#8000FF",
             "selectfg": "white",
             "state": "normal",
-            "markbg": "white",
-            "markfg": "blue",
+            "markbg": "#DDBBFF",
+            "markfg": "#8000FF",
+            "linewidth": 1,
         }
         # remove custom options from kw before initialization ttk.Frame
         for k, v in options.items():
@@ -133,6 +135,7 @@ class CalendarFrame(ttk.Frame):
             "selectfg",
             "markbg",
             "markfg",
+            "linewidth",
         ):
             if key in kw:
                 self.__options[key] = kw.pop(key)
@@ -169,6 +172,9 @@ class CalendarFrame(ttk.Frame):
             self._reconfigure_date()
 
         if color_change or calendar_change or date_change:
+            linewidth = int(self.__options["linewidth"])
+            for rec_i in self._recmat:
+                self._canvas.itemconfigure(rec_i, width=linewidth, activewidth=linewidth)
             self._redraw_calendar()
         return super().configure(cnf, **kw)
 
@@ -187,6 +193,7 @@ class CalendarFrame(ttk.Frame):
             "markbg",
             "markfg",
             "state",
+            "linewidth",
         ):
             return self.__options[key]
         option = "year"
@@ -231,7 +238,7 @@ class CalendarFrame(ttk.Frame):
         self._canvas.configure(
             background="#ffffff",
             borderwidth="0",
-            height="160",
+            height=24*7,
             highlightthickness="0",
         )
         self._canvas.configure(width="240")
@@ -340,6 +347,7 @@ class CalendarFrame(ttk.Frame):
                     or (None, month, day) in self._marked_days
                     or key in self._marked_days
                 ):
+                    marked = True
                     self._canvas.itemconfigure(
                         self._recmat[i],
                         fill=options["markbg"],
@@ -349,10 +357,12 @@ class CalendarFrame(ttk.Frame):
                         self._txtmat[i], fill=options["markfg"]
                     )
                     clear = False
+                else:
+                    marked = False
                 if key == today:
                     self._canvas.itemconfigure(
                         self._recmat[i],
-                        fill=options["selectfg"],
+                        fill=options["selectfg"] if not marked else None,
                         outline=options["selectbg"],
                     )
                     self._canvas.itemconfigure(
@@ -363,7 +373,7 @@ class CalendarFrame(ttk.Frame):
                     self._canvas.itemconfigure(
                         self._recmat[i],
                         fill=options["selectbg"],
-                        outline=options["selectbg"],
+                        outline=options["selectbg"] if not marked else None,
                     )
                     self._canvas.itemconfigure(
                         self._txtmat[i], fill=options["selectfg"]
@@ -414,6 +424,7 @@ class CalendarFrame(ttk.Frame):
     def _draw_calendar(self, canvas, redraw=False):
         """Draws calendar."""
         options = self.__options
+        linewidth = int(options["linewidth"])
         # Update labels:
         name = self._cal.formatmonthname(
             self._date.year, self._date.month, 0, withyear=False
@@ -436,8 +447,8 @@ class CalendarFrame(ttk.Frame):
             canvas.coords(self._rheader, 0, 0, cw, rowh)
         # Header text
         ox = 0
-        oy = rowh / 2.0
-        coffset = colw / 2.0
+        oy = rowh / 2.0 - 2
+        coffset = colw / 2.0 - ((linewidth / 2) - 1)
         cols = self._cal.formatweekheader(3).split()
         for i in range(0, 7):
             x = ox + i * colw + coffset
@@ -454,10 +465,10 @@ class CalendarFrame(ttk.Frame):
 
         # background matrix
         oy = rowh
-        ox = 0
+        ox = linewidth // 2
         for i, x, y, x1, y1 in matrix_coords(6, 7, rowh, colw, ox, oy):
-            x1 -= 1
-            y1 -= 1
+            x1 -= linewidth
+            y1 -= linewidth
             if redraw:
                 rec = self._recmat[i]
                 canvas.coords(rec, x, y, x1, y1)
@@ -468,11 +479,11 @@ class CalendarFrame(ttk.Frame):
                     y,
                     x1,
                     y1,
-                    width=1,
+                    width=linewidth,
                     fill=options["calendarbg"],
                     outline=options["calendarbg"],
                     activeoutline=options["selectbg"],
-                    activewidth=1,
+                    activewidth=linewidth,
                     tags="cell",
                 )
                 self._recmat[i] = rec
@@ -480,9 +491,9 @@ class CalendarFrame(ttk.Frame):
         # text matrix
         weeks = self._weeks
         # xoffset = colw / 2.0
-        yoffset = rowh / 2.0
+        yoffset = rowh / 2.0 - (math.floor(linewidth / 2))
         oy = rowh
-        ox = 0
+        ox = linewidth // 2
         for i, x, y, x1, y1 in matrix_coords(6, 7, rowh, colw, ox, oy):
             x += coffset
             y += yoffset
