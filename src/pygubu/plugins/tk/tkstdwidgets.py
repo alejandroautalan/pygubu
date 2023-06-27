@@ -10,6 +10,7 @@ from pygubu.component.builderobject import (
     PanedWindowBO,
     PanedWindowPaneBO,
     OptionMenuBaseMixin,
+    WmMixin,
 )
 
 logger = logging.getLogger(__name__)
@@ -22,7 +23,49 @@ if tk.TkVersion >= 8.7:
     _toplevel_87 = ("backgroundimage", "tile")
 
 
-class TKToplevel(BuilderObject):
+class TKRootBO(WmMixin, BuilderObject):
+    class_ = tk.Tk
+    container = True
+    layout_required = False
+    container_layout = True
+    allowed_parents = ("root",)
+    properties = (
+        # OPTIONS_STANDARD
+        "borderwidth",
+        "cursor",
+        "highlightbackground",
+        "highlightcolor",
+        "highlightthickness",
+        "padx",
+        "pady",
+        "relief",
+        "takefocus",
+        # OPTIONS_SPECIFIC
+        "baseName",
+        "className",
+        "background",
+        "height",
+        "width",
+        # WM OPTIONS
+        "title",
+        "geometry",
+        "overrideredirect",
+        "minsize",
+        "maxsize",
+        "resizable",
+        "iconbitmap",
+        "iconphoto",
+    ) + _toplevel_87
+    ro_properties = (
+        "baseName",
+        "className",
+    )
+
+
+register_widget("tk.Tk", TKRootBO, "Tk", (_("Containers"), "tk", "ttk"))
+
+
+class TKToplevel(WmMixin, BuilderObject):
     class_ = tk.Toplevel
     container = True
     layout_required = False
@@ -62,12 +105,6 @@ class TKToplevel(BuilderObject):
         "class_",
     )
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
-    RESIZABLE = {
-        "both": (True, True),
-        "horizontally": (True, False),
-        "vertically": (False, True),
-        "none": (False, False),
-    }
 
     def realize(self, parent, extra_init_args: dict = None):
         args = self._get_init_args(extra_init_args)
@@ -77,71 +114,6 @@ class TKToplevel(BuilderObject):
         else:
             self.widget = self.class_(master, **args)
         return self.widget
-
-    # def layout(self, target=None):
-    # we marked this widget as not allowed to edit layoutu
-    #    pass
-
-    def _process_property_value(self, pname, value):
-        if pname in ("maxsize", "minsize"):
-            if "|" in value:
-                w, h = value.split("|")
-                value = (int(w), int(h))
-            return value
-        return super()._process_property_value(pname, value)
-
-    def _set_property(self, target_widget, pname, value):
-        method_props = ("geometry", "overrideredirect", "title")
-        if pname in method_props:
-            method = getattr(target_widget, pname)
-            method(value)
-        elif pname == "resizable" and value:
-            target_widget.resizable(*self.RESIZABLE[value])
-        elif pname == "maxsize":
-            maxsize = self._process_property_value(pname, value)
-            if isinstance(maxsize, tuple):
-                target_widget.maxsize(maxsize[0], maxsize[1])
-        elif pname == "minsize":
-            minsize = self._process_property_value(pname, value)
-            if isinstance(minsize, tuple):
-                target_widget.minsize(minsize[0], minsize[1])
-        elif pname == "iconphoto":
-            icon = self.builder.get_image(value)
-            target_widget.iconphoto(True, icon)
-        elif pname == "iconbitmap":
-            icon = self.builder.get_iconbitmap(value)
-            target_widget.iconbitmap(icon)
-        else:
-            super(TKToplevel, self)._set_property(target_widget, pname, value)
-
-    #
-    # Code generation methods
-    #
-    def _code_set_property(self, targetid, pname, value, code_bag):
-        if pname in ("geometry", "overrideredirect", "title"):
-            line = f'{targetid}.{pname}("{value}")'
-            code_bag[pname] = (line,)
-        elif pname == "resizable":
-            p1, p2 = self.RESIZABLE[value]
-            line = "{0}.resizable({1}, {2})".format(targetid, p1, p2)
-            code_bag[pname] = (line,)
-        elif pname in ("maxsize", "minsize"):
-            if "|" in value:
-                w, h = value.split("|")
-                line = "{0}.{1}({2}, {3})".format(targetid, pname, w, h)
-                code_bag[pname] = (line,)
-        elif pname == "iconbitmap":
-            bitmap = self.builder.code_create_iconbitmap(value)
-            line = f'{targetid}.iconbitmap("{bitmap}")'
-            code_bag[pname] = (line,)
-        elif pname == "iconphoto":
-            image = self.builder.code_create_image(value)
-            line = "{0}.iconphoto(True, {1})".format(targetid, image)
-            code_bag[pname] = (line,)
-        else:
-            super(TKToplevel, self)._code_set_property(
-                targetid, pname, value, code_bag
-            )
 
 
 register_widget(
