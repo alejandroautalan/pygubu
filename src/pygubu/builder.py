@@ -210,6 +210,12 @@ class Builder(object):
         if not self.is_mapped(wmeta.classname):
             self._import_class(wmeta.classname)
 
+        if wmeta.is_named:
+            if not extra_init_args:
+                extra_init_args = { "name": wmeta.identifier }
+            if "name" not in extra_init_args:
+                extra_init_args["name"] = wmeta.identifier
+
         if self.is_mapped(wmeta.classname):
             bclass = self._get_builder_for(wmeta.classname)
             parent = bclass.factory(self, wmeta)
