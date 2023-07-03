@@ -5,7 +5,11 @@ from .toplevelframe import ToplevelFramePreviewBO
 
 class PygubuDesignerPlugin(IDesignerPlugin):
     def get_preview_builder(self, builder_uid: str):
-        if builder_uid in ("tk.Toplevel", "pygubu.builder.widgets.dialog"):
+        if builder_uid in (
+            "tk.Tk",
+            "tk.Toplevel",
+            "pygubu.builder.widgets.dialog",
+        ):
             return ToplevelFramePreviewBO
         return None
 
@@ -15,6 +19,8 @@ class PygubuDesignerPlugin(IDesignerPlugin):
         top = None
         if builder_uid == "tk.Toplevel":
             top = builder.get_object(widget_id, top_master)
+        elif builder_uid == "tk.Tk":
+            top = builder.get_object(widget_id)
         elif builder_uid == "pygubu.builder.widgets.dialog":
             dialog = builder.get_object(widget_id, top_master)
             dialog.run()
