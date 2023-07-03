@@ -159,7 +159,7 @@ register_custom_property(
     _builder_uid, "fg_color", "colorentry", help=_("Main color of the widget.")
 )
 
-register_custom_property(_builder_uid, "height", "dimensionentry")
+register_custom_property(_builder_uid, "height", "naturalnumber")
 register_custom_property(
     _builder_uid,
     "hover",
@@ -213,7 +213,7 @@ register_custom_property(_builder_uid, "text_color_disabled", "colorentry")
 register_custom_property(_builder_uid, "values", "entry")
 register_custom_property(_builder_uid, "variable", "tkvarentry")
 
-register_custom_property(_builder_uid, "width", "dimensionentry")
+register_custom_property(_builder_uid, "width", "naturalnumber")
 
 register_custom_property(
     _builder_uid,
