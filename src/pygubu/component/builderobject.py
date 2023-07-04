@@ -135,6 +135,16 @@ class BuilderObject(object):
         if extra_init_args is not None:
             for key, value in extra_init_args.items():
                 args[key] = value
+
+        # Set widget tcl name
+        # Note: tcl does not like capital letters for widget name
+        pname = "name"
+        if self.wmeta.is_named and issubclass(self.class_, tk.Widget):
+            if pname not in args:
+                args[pname] = str(self.wmeta.identifier).lower()
+                logger.debug(
+                    "Setting widget tcl name to: %s", self.wmeta.identifier
+                )
         return args
 
     def configure(self, target=None):
@@ -343,6 +353,18 @@ class BuilderObject(object):
                     code_identifier, rop, self.wmeta.properties[rop]
                 )
                 args[rop] = pvalue
+
+        # Set widget tcl name
+        # Note: tcl does not like capital letters for widget name
+        pname = "name"
+        if self.wmeta.is_named and issubclass(self.class_, tk.Widget):
+            if pname not in args:
+                pvalue = self._code_process_property_value(
+                    code_identifier, pname, str(self.wmeta.identifier).lower()
+                )
+                args[pname] = pvalue
+                logger.debug("Setting widget tcl name to: %s", pvalue)
+
         return args
 
     def code_realize(self, boparent, code_identifier=None):
