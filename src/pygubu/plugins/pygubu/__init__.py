@@ -1,3 +1,4 @@
+import os
 from pygubu.api.v1 import BuilderLoaderPlugin
 
 
@@ -29,21 +30,26 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.plugins.pygubu.tkscrolledframe": (
             "pygubu.builder.widgets.tkscrolledframe",
         ),
-        "pygubu.plugins.pygubu.forms.ttkforms": (
-            "pygubu.forms.ttk.FrameForm",
-            "pygubu.forms.ttk.LabelField",
-            "pygubu.forms.ttk.EntryField",
-            "pygubu.forms.ttk.LabelFieldInfo",
-        ),
-        "pygubu.plugins.pygubu.forms.tkforms": ("pygubu.forms.tk.TextField",),
-        "pygubu.plugins.pygubu.forms.pwforms": (
-            "pygubu.forms.pwforms.ComboboxField"
-        ),
-        #    "pygubu.forms.pgwf.ChoiceKeyField",
-        # ),
     }
 
     def do_activate(self) -> bool:
+        # Forms are not finished so include only for development
+        forms = {
+            "pygubu.plugins.pygubu.forms.ttkforms": (
+                "pygubu.forms.ttk.FrameForm",
+                "pygubu.forms.ttk.LabelField",
+                "pygubu.forms.ttk.EntryField",
+                "pygubu.forms.ttk.LabelFieldInfo",
+            ),
+            "pygubu.plugins.pygubu.forms.tkforms": (
+                "pygubu.forms.tk.TextField",
+            ),
+            "pygubu.plugins.pygubu.forms.pwforms": (
+                "pygubu.forms.pwforms.ComboboxField"
+            ),
+        }
+        if os.getenv("PYGUBU_ENABLE_FORMS"):
+            self.module_map.update(forms)
         return True
 
     def get_all_modules(self):
