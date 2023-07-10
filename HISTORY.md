@@ -1,6 +1,13 @@
 History
 =======
 
+Changes for version 0.32 (next)
+
+  * Fix callback argument for code generation in designer. refs alejandroautalan/pygubu-designer#205
+  * Fix for issue #284
+  * Fix for missed update of 'activeoutline' color in CalendarFrame widget #285 (BloodyRain2k)
+  * New "linewidth" option and visual fixes for CalendarFrame widget #286 (BloodyRain2k)
+
 Changes for version 0.31:
 
   * Allow to setup values for option database after first window created. refs #282

@@ -135,6 +135,16 @@ class BuilderObject(object):
         if extra_init_args is not None:
             for key, value in extra_init_args.items():
                 args[key] = value
+
+        # Set widget tcl name
+        # Note: tcl does not like capital letters for widget name
+        pname = "name"
+        if self.wmeta.is_named and issubclass(self.class_, tk.Widget):
+            if pname not in args:
+                args[pname] = str(self.wmeta.identifier).lower()
+                logger.debug(
+                    "Setting widget tcl name to: %s", self.wmeta.identifier
+                )
         return args
 
     def configure(self, target=None):
@@ -343,6 +353,18 @@ class BuilderObject(object):
                     code_identifier, rop, self.wmeta.properties[rop]
                 )
                 args[rop] = pvalue
+
+        # Set widget tcl name
+        # Note: tcl does not like capital letters for widget name
+        pname = "name"
+        if self.wmeta.is_named and issubclass(self.class_, tk.Widget):
+            if pname not in args:
+                pvalue = self._code_process_property_value(
+                    code_identifier, pname, str(self.wmeta.identifier).lower()
+                )
+                args[pname] = pvalue
+                logger.debug("Setting widget tcl name to: %s", pvalue)
+
         return args
 
     def code_realize(self, boparent, code_identifier=None):
@@ -759,6 +781,77 @@ class PanedWindowPaneBO(BuilderObject):
         line = f"{masterid}.add({childid}{kw})"
         lines.append(line)
         return lines
+
+
+#
+# Base mixin to process Wm options for Tk and toplevel
+#
+class WmMixin:
+    RESIZABLE = {
+        "both": (True, True),
+        "horizontally": (True, False),
+        "vertically": (False, True),
+        "none": (False, False),
+    }
+
+    def _process_property_value(self, pname, value):
+        if pname in ("maxsize", "minsize"):
+            if "|" in value:
+                w, h = value.split("|")
+                value = (int(w), int(h))
+            return value
+        return super()._process_property_value(pname, value)
+
+    def _set_property(self, target_widget, pname, value):
+        method_props = ("geometry", "overrideredirect", "title")
+        if pname in method_props:
+            method = getattr(target_widget, pname)
+            method(value)
+        elif pname == "resizable" and value:
+            target_widget.resizable(*self.RESIZABLE[value])
+        elif pname == "maxsize":
+            maxsize = self._process_property_value(pname, value)
+            if isinstance(maxsize, tuple):
+                target_widget.maxsize(maxsize[0], maxsize[1])
+        elif pname == "minsize":
+            minsize = self._process_property_value(pname, value)
+            if isinstance(minsize, tuple):
+                target_widget.minsize(minsize[0], minsize[1])
+        elif pname == "iconphoto":
+            icon = self.builder.get_image(value)
+            target_widget.iconphoto(True, icon)
+        elif pname == "iconbitmap":
+            icon = self.builder.get_iconbitmap(value)
+            target_widget.iconbitmap(icon)
+        else:
+            super()._set_property(target_widget, pname, value)
+
+    #
+    # Code generation methods
+    #
+    def _code_set_property(self, targetid, pname, value, code_bag):
+        if pname in ("geometry", "overrideredirect", "title"):
+            line = f'{targetid}.{pname}("{value}")'
+            code_bag[pname] = (line,)
+        elif pname == "resizable":
+            p1, p2 = self.RESIZABLE[value]
+            line = "{0}.resizable({1}, {2})".format(targetid, p1, p2)
+            code_bag[pname] = (line,)
+        elif pname in ("maxsize", "minsize"):
+            if "|" in value:
+                w, h = value.split("|")
+                line = "{0}.{1}({2}, {3})".format(targetid, pname, w, h)
+                code_bag[pname] = (line,)
+        elif pname == "iconbitmap":
+            bitmap = self.builder.code_create_iconbitmap(value)
+            line = f'{targetid}.iconbitmap("{bitmap}")'
+            code_bag[pname] = (line,)
+        elif pname == "iconphoto":
+            image = self.builder.code_create_image(value)
+            line = "{0}.iconphoto(True, {1})".format(targetid, image)
+            code_bag[pname] = (line,)
+        else:
+            super()._code_set_property(targetid, pname, value, code_bag)
 
 
 #

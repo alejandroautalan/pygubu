@@ -1,6 +1,7 @@
 from pygubu.api.v1 import register_widget, register_custom_property
 from pygubu.i18n import _
 from pygubu.plugins.tk.tkstdwidgets import TKToplevel as TKToplevelBO
+from pygubu.plugins.tk.tkstdwidgets import TKRootBO
 from customtkinter import (
     CTk,
     CTkToplevel,
@@ -12,7 +13,7 @@ from ..customtkinter import _designer_tab_label, _plugin_uid
 from .ctkbase import CTkBaseMixin
 
 
-class CTkBO(TKToplevelBO):
+class CTkBO(TKRootBO):
     class_ = CTk
     properties = (
         "cursor",

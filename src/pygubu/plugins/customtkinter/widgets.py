@@ -49,9 +49,12 @@ class CTkLabelBO(CTkBaseMixin, TKLabelBO):
     class_ = ctk.CTkLabel
     properties = (
         "anchor",
+        "compound",
         "cursor",
+        "image",
         "justify",
         "font",
+        "height",
         "padx",
         "pady",
         "state",
@@ -59,6 +62,7 @@ class CTkLabelBO(CTkBaseMixin, TKLabelBO):
         "text",
         "textvariable",
         "underline",
+        "width",
         # CTK properties
         "bg_color",
         "fg_color",
