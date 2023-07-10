@@ -1,3 +1,4 @@
+import os
 import tkinter as tk
 import customtkinter
 from pathlib import Path
@@ -9,11 +10,11 @@ from pygubu.api.v1 import (
 from pygubu.i18n import _
 from pygubu.plugins.tk.tkstdwidgets import TKFrame as TKFrameBO
 from pygubu.utils.font import tkfontstr_to_dict
-from pygubu.stockimage import StockImage, PitType
+from pygubu.stockimage import StockImage
 from ..customtkinter import _designer_tab_label, _plugin_uid
 from customtkinter.windows.widgets.core_widget_classes import CTkBaseClass
 from customtkinter import CTkFont, CTkImage
-from PIL import Image
+from PIL import Image, ImageTk
 
 
 # Groups for ordering buttons in designer palette.
@@ -22,7 +23,55 @@ GDISPLAY = 1
 GINPUT = 2
 
 
-def ctk_image_loader(source_type, source):
+_use_fixed_image_class = False
+
+if os.getenv("PYGUBU_DESIGNER_RUNNING"):
+    _use_fixed_image_class = True
+
+    class CTKImageFix(CTkImage):
+        "Fix loader for pygubu designer toplevel preview"
+
+        def __init__(
+            self,
+            light_image: "Image.Image" = None,
+            dark_image: "Image.Image" = None,
+            size=(20, 20),
+            tk_master=None,
+        ):
+            super().__init__(light_image, dark_image, size)
+            self._tk_master = tk_master
+
+        def _get_scaled_light_photo_image(
+            self, scaled_size
+        ) -> "ImageTk.PhotoImage":
+            if scaled_size in self._scaled_light_photo_images:
+                return self._scaled_light_photo_images[scaled_size]
+            else:
+                self._scaled_light_photo_images[
+                    scaled_size
+                ] = ImageTk.PhotoImage(
+                    self._light_image.resize(scaled_size),
+                    master=self._tk_master,
+                )
+                return self._scaled_light_photo_images[scaled_size]
+
+        def _get_scaled_dark_photo_image(
+            self, scaled_size
+        ) -> "ImageTk.PhotoImage":
+            if scaled_size in self._scaled_dark_photo_images:
+                return self._scaled_dark_photo_images[scaled_size]
+            else:
+                self._scaled_dark_photo_images[
+                    scaled_size
+                ] = ImageTk.PhotoImage(
+                    self._dark_image.resize(scaled_size), master=self._tk_master
+                )
+                return self._scaled_dark_photo_images[scaled_size]
+
+
+def ctk_image_loader(source_type, source, tk_master):
+    if _use_fixed_image_class:
+        return CTKImageFix(Image.open(source), tk_master=tk_master)
     return CTkImage(Image.open(source))
 
 
