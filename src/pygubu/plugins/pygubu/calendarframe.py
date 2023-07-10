@@ -26,6 +26,7 @@ class CalendarFrameBuilder(BuilderObject):
         "state",
         "markbg",
         "markfg",
+        "linewidth",
     )
     ro_properties = TTKFrame.ro_properties
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
@@ -62,6 +63,14 @@ register_custom_property(
     "choice",
     values=("", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
     state="readonly",
+)
+register_custom_property(
+    _builder_id,
+    "linewidth",
+    "choice",
+    values=("1", "2", "3", "4"),
+    state="readonly",
+    default_value="1",
 )
 register_custom_property(_builder_id, "calendarfg", "colorentry")
 register_custom_property(_builder_id, "calendarbg", "colorentry")
