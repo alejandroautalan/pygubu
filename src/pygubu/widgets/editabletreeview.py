@@ -2,6 +2,8 @@ import functools
 import tkinter as tk
 import tkinter.ttk as ttk
 from abc import ABC, abstractmethod
+from collections import defaultdict
+from enum import Enum
 
 
 class InplaceEditor(ABC):
@@ -94,6 +96,15 @@ class _CustomEditor(_VariableBasedEditor):
         return self._widget
 
 
+class _EditorType(Enum):
+    ENTRY = 1
+    CHECKBUTTON = 2
+    COMBOBOX = 3
+    SPINBOX = 4
+    CUSTOM_WIDGET = 5
+    CUSTOM_EDITOR = 6
+
+
 class EditableTreeview(ttk.Treeview):
     """A simple editable treeview
 
@@ -134,6 +145,7 @@ class EditableTreeview(ttk.Treeview):
         self._curfocus = None
         self._editors = {}
         self._editors_show = {}
+        self._editors_bag = defaultdict(dict)  # Multiple editors per row
         self._header_clicked = False
         self._header_dragged = False
         self._last_column_clicked = "#0"
@@ -242,6 +254,9 @@ class EditableTreeview(ttk.Treeview):
 
     def __updateWnds(self, event=None):
         if not self._curfocus:
+            for col, editor in self._editors.items():
+                editor.widget.place_forget()
+            self._update_callback_id = None
             return
         item = self._curfocus
         item_exists = self.exists(item)
@@ -283,6 +298,11 @@ class EditableTreeview(ttk.Treeview):
         """Return data value of tree item at the specified column index."""
         return self.__get_value(col, item)
 
+    # FIXME:
+    # def hide_editors(self):
+    #    self.__clear_inplace_widgets()
+    #
+
     def __get_value(self, col, item):
         if col == "#0":
             return self.item(item, "text")
@@ -315,49 +335,77 @@ class EditableTreeview(ttk.Treeview):
         self._editors_show[col] = True
 
     def inplace_entry(self, col, item):
-        if col not in self._editors:
-            self._editors[col] = _EntryEditor(self)
-        self._setup_editor(col, item, self._editors[col])
+        current_editor = None
+        if _EditorType.ENTRY not in self._editors_bag[col]:
+            current_editor = _EntryEditor(self)
+            self._editors_bag[col][_EditorType.ENTRY] = current_editor
+        else:
+            current_editor = self._editors_bag[col][_EditorType.ENTRY]
+        self._editors[col] = current_editor
+        self._setup_editor(col, item, current_editor)
 
     def inplace_checkbutton(self, col, item, onvalue="True", offvalue="False"):
-        if col not in self._editors:
+        current_editor = None
+        if _EditorType.CHECKBUTTON not in self._editors_bag[col]:
             svar = tk.StringVar()
-            self._editors[col] = _CheckbuttonEditor(
+            current_editor = _CheckbuttonEditor(
                 self,
                 textvariable=svar,
                 variable=svar,
                 onvalue=onvalue,
                 offvalue=offvalue,
             )
-        self._setup_editor(col, item, self._editors[col])
+            self._editors_bag[col][_EditorType.CHECKBUTTON] = current_editor
+        else:
+            current_editor = self._editors_bag[col][_EditorType.CHECKBUTTON]
+        self._editors[col] = current_editor
+        self._setup_editor(col, item, current_editor)
 
     def inplace_combobox(
         self, col, item, values, readonly=True, update_values=False
     ):
-        if col not in self._editors:
+        current_editor = None
+        if _EditorType.COMBOBOX not in self._editors_bag[col]:
             state = "readonly" if readonly else "normal"
-            self._editors[col] = _ComboboxEditor(
-                self, values=values, state=state
-            )
-        self._setup_editor(col, item, self._editors[col])
+            current_editor = _ComboboxEditor(self, values=values, state=state)
+            self._editors_bag[col][_EditorType.COMBOBOX] = current_editor
+        else:
+            current_editor = self._editors_bag[col][_EditorType.COMBOBOX]
+        self._editors[col] = current_editor
+        self._setup_editor(col, item, current_editor)
         if update_values:
-            self._editors[col].widget.configure(values=values)
+            current_editor.widget.configure(values=values)
 
     def inplace_spinbox(self, col, item, min, max, step):
-        if col not in self._editors:
-            self._editors[col] = _SpinboxEditor(
+        current_editor = None
+        if _EditorType.SPINBOX not in self._editors_bag[col]:
+            current_editor = _SpinboxEditor(
                 self, from_=min, to=max, increment=step
             )
-        self._setup_editor(col, item, self._editors[col])
+            self._editors_bag[col][_EditorType.SPINBOX] = current_editor
+        else:
+            current_editor = self._editors_bag[col][_EditorType.SPINBOX]
+        self._editors[col] = current_editor
+        self._setup_editor(col, item, current_editor)
 
     def inplace_custom(self, col, item, widget, stringvar=None):
-        if col not in self._editors:
+        current_editor = None
+        if _EditorType.CUSTOM_WIDGET not in self._editors_bag[col]:
             if stringvar is None:
                 stringvar = tk.StringVar()
-            self._editors[col] = _CustomEditor(widget, textvariable=stringvar)
-        self._setup_editor(col, item, self._editors[col])
+            current_editor = _CustomEditor(widget, textvariable=stringvar)
+            self._editors_bag[col][_EditorType.CUSTOM_WIDGET] = current_editor
+        else:
+            current_editor = self._editors_bag[col][_EditorType.CUSTOM_WIDGET]
+        self._editors[col] = current_editor
+        self._setup_editor(col, item, current_editor)
 
     def inplace_editor(self, col, item, editor: InplaceEditor):
-        if col not in self._editors:
-            self._editors[col] = editor
-        self._setup_editor(col, item, self._editors[col])
+        current_editor = None
+        if _EditorType.CUSTOM_EDITOR not in self._editors_bag[col]:
+            current_editor = editor
+            self._editors_bag[col][_EditorType.CUSTOM_EDITOR] = current_editor
+        else:
+            current_editor = self._editors_bag[col][_EditorType.CUSTOM_EDITOR]
+        self._editors[col] = current_editor
+        self._setup_editor(col, item, current_editor)
