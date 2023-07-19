@@ -111,7 +111,7 @@ class BuilderObject(object):
 
     @classmethod
     def canbe_parent_of(cls, child_builder, classname):
-        allowed = True
+        allowed = True if cls.container else False
         if (
             cls.allowed_children is not None
             and classname not in cls.allowed_children
