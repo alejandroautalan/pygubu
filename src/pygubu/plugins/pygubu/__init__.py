@@ -30,6 +30,9 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.plugins.pygubu.tkscrolledframe": (
             "pygubu.builder.widgets.tkscrolledframe",
         ),
+        "pygubu.plugins.pygubu.filterabletreeview": (
+            "pygubu.widgets.FilterableTreeview",
+        ),
     }
 
     def do_activate(self) -> bool:
