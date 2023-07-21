@@ -13,6 +13,7 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.builder.widgets.tkinterscrolledtext": "pygubu.plugins.pygubu.tkinterscrolledtext",
         "pygubu.builder.widgets.tkscrollbarhelper": "pygubu.plugins.pygubu.tkscrollbarhelper",
         "pygubu.builder.widgets.tkscrolledframe": "pygubu.plugins.pygubu.tkscrolledframe",
+        "pygubu.widgets.FilterableTreeview": "pygubu.plugins.pygubu.filterabletreeview",
     }
 
     def do_activate(self) -> bool:
