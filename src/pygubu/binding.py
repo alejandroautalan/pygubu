@@ -2,6 +2,7 @@ __all__ = ["remove_binding", "ApplicationLevelBindManager"]
 
 import logging
 import platform
+import tkinter as tk
 
 from pygubu.utils.widget import iter_to_toplevel
 
@@ -48,16 +49,28 @@ def remove_binding(widget, seq, index=None, funcid=None):
 
 
 class AppBindManagerBase(object):
+    # Acces to tk instance
+    master: tk.Widget = None
     # Mouse wheel support
     mw_listeners = []  # Mousewheel listeners
     mw_initialized = False
 
     @classmethod
     def on_mousewheel(cls, event):
-        for w in iter_to_toplevel(event.widget):
-            if w in cls.mw_listeners:
-                w.on_mousewheel(event)
-                break
+        widget_below = event.widget
+        if not isinstance(widget_below, tk.Widget):
+            try:
+                widget_below = cls.master.winfo_containing(
+                    event.x_root, event.y_root
+                )
+            except KeyError:
+                widget_below = None
+        if widget_below:
+            for w in iter_to_toplevel(widget_below):
+                if w in cls.mw_listeners:
+                    can_keep_scrolling = w.on_mousewheel(event)
+                    if can_keep_scrolling:
+                        break
 
     @classmethod
     def mousewheel_bind(cls, widget):
@@ -72,6 +85,7 @@ class AppBindManagerBase(object):
     @classmethod
     def init_mousewheel_binding(cls, master):
         if not cls.mw_initialized:
+            cls.master = master.winfo_toplevel()
             _os = platform.system()
             if _os in ("Linux", "OpenBSD", "FreeBSD"):
                 master.bind_all("<4>", cls.on_mousewheel, add="+")
@@ -97,10 +111,16 @@ class AppBindManagerBase(object):
         if _os in ("Linux", "OpenBSD", "FreeBSD"):
 
             def on_mousewheel(event):
+                can_keep_scrolling = True
                 if event.num == 4:
                     view_command("scroll", (-1) * factor, "units")
+                    scroll_rs = view_command()
+                    can_keep_scrolling = scroll_rs[0] != 0.0
                 elif event.num == 5:
                     view_command("scroll", factor, "units")
+                    scroll_rs = view_command()
+                    can_keep_scrolling = scroll_rs[1] != 1.0
+                return can_keep_scrolling
 
         elif _os == "Windows":
 
