@@ -114,38 +114,13 @@ class ScrollbarHelperBase(object):
             main_sb = self.vsb or self.hsb
             if main_sb:
                 cwidget.on_mousewheel = main_sb.on_mousewheel
-                bid = cwidget.bind(
-                    "<Enter>",
-                    lambda event: BindManager.mousewheel_bind(cwidget),
-                    add="+",
-                )
-                self._bindingids.append((cwidget, bid))
-                bid = cwidget.bind(
-                    "<Leave>",
-                    lambda event: BindManager.mousewheel_unbind(),
-                    add="+",
-                )
-                self._bindingids.append((cwidget, bid))
+                BindManager.mousewheel_bind(cwidget)
             for s in (self.vsb, self.hsb):
                 if s:
-                    bid = s.bind(
-                        "<Enter>",
-                        lambda event, scrollbar=s: BindManager.mousewheel_bind(
-                            scrollbar
-                        ),
-                        add="+",
-                    )
-                    self._bindingids.append((s, bid))
-                    if s != main_sb:
-                        bid = s.bind(
-                            "<Leave>",
-                            lambda event: BindManager.mousewheel_unbind(),
-                            add="+",
-                        )
-                        self._bindingids.append((s, bid))
+                    BindManager.mousewheel_bind(s)
         else:
-            for widget, bid in self._bindingids:
-                remove_binding(widget, bid)
+            for w in (cwidget, self.vsb, self.hsb):
+                BindManager.mousewheel_unbind(w)
 
 
 class ScrollbarHelperFactory(type):

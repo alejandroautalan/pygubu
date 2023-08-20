@@ -3,6 +3,9 @@ __all__ = ["remove_binding", "ApplicationLevelBindManager"]
 import logging
 import platform
 
+from pygubu.utils.widget import iter_to_toplevel
+
+
 logger = logging.getLogger(__name__)
 
 
@@ -44,46 +47,46 @@ def remove_binding(widget, seq, index=None, funcid=None):
         widget.bind(seq, "+" + x, 1)
 
 
-class ApplicationLevelBindManager(object):
+class AppBindManagerBase(object):
     # Mouse wheel support
-    mw_active_area = None
+    mw_listeners = []  # Mousewheel listeners
     mw_initialized = False
 
-    @staticmethod
-    def on_mousewheel(event):
-        if ApplicationLevelBindManager.mw_active_area:
-            ApplicationLevelBindManager.mw_active_area.on_mousewheel(event)
+    @classmethod
+    def on_mousewheel(cls, event):
+        for w in iter_to_toplevel(event.widget):
+            if w in cls.mw_listeners:
+                w.on_mousewheel(event)
+                break
 
-    @staticmethod
-    def mousewheel_bind(widget):
-        ApplicationLevelBindManager.mw_active_area = widget
+    @classmethod
+    def mousewheel_bind(cls, widget):
+        if widget not in cls.mw_listeners:
+            cls.mw_listeners.append(widget)
 
-    @staticmethod
-    def mousewheel_unbind():
-        ApplicationLevelBindManager.mw_active_area = None
+    @classmethod
+    def mousewheel_unbind(cls, widget):
+        if widget in cls.mw_listeners:
+            cls.mw_listeners.remove(widget)
 
-    @staticmethod
-    def init_mousewheel_binding(master):
-        if not ApplicationLevelBindManager.mw_initialized:
+    @classmethod
+    def init_mousewheel_binding(cls, master):
+        if not cls.mw_initialized:
             _os = platform.system()
             if _os in ("Linux", "OpenBSD", "FreeBSD"):
-                master.bind_all(
-                    "<4>", ApplicationLevelBindManager.on_mousewheel, add="+"
-                )
-                master.bind_all(
-                    "<5>", ApplicationLevelBindManager.on_mousewheel, add="+"
-                )
+                master.bind_all("<4>", cls.on_mousewheel, add="+")
+                master.bind_all("<5>", cls.on_mousewheel, add="+")
             else:
                 # Windows and MacOS
                 master.bind_all(
                     "<MouseWheel>",
-                    ApplicationLevelBindManager.on_mousewheel,
+                    cls.on_mousewheel,
                     add="+",
                 )
-            ApplicationLevelBindManager.mw_initialized = True
+            cls.mw_initialized = True
 
-    @staticmethod
-    def make_onmousewheel_cb(widget, orient, factor=1):
+    @classmethod
+    def make_onmousewheel_cb(cls, widget, orient, factor=1):
         """Create a callback to manage mousewheel events
 
         orient: string (posible values: ('x', 'y'))
@@ -117,3 +120,7 @@ class ApplicationLevelBindManager(object):
                 pass
 
         return on_mousewheel
+
+
+class ApplicationLevelBindManager(AppBindManagerBase):
+    ...
