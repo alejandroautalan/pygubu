@@ -128,11 +128,21 @@ class AppBindManagerBase(object):
                 view_command(
                     "scroll", (-1) * int((event.delta / 120) * factor), "units"
                 )
+                scroll_rs = view_command()
+                can_keep_scrolling = scroll_rs[0] != 0.0
+                if event.delta < 0:
+                    can_keep_scrolling = scroll_rs[1] != 1.0
+                return can_keep_scrolling
 
         elif _os == "Darwin":
 
             def on_mousewheel(event):
                 view_command("scroll", event.delta, "units")
+                scroll_rs = view_command()
+                can_keep_scrolling = scroll_rs[0] != 0.0
+                if event.delta < 0:
+                    can_keep_scrolling = scroll_rs[1] != 1.0
+                return can_keep_scrolling
 
         else:
             # FIXME: unknown platform scroll method
