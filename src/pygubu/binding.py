@@ -2,6 +2,10 @@ __all__ = ["remove_binding", "ApplicationLevelBindManager"]
 
 import logging
 import platform
+import tkinter as tk
+
+from pygubu.utils.widget import iter_to_toplevel
+
 
 logger = logging.getLogger(__name__)
 
@@ -44,46 +48,59 @@ def remove_binding(widget, seq, index=None, funcid=None):
         widget.bind(seq, "+" + x, 1)
 
 
-class ApplicationLevelBindManager(object):
+class AppBindManagerBase(object):
+    # Acces to tk instance
+    master: tk.Widget = None
     # Mouse wheel support
-    mw_active_area = None
+    mw_listeners = []  # Mousewheel listeners
     mw_initialized = False
 
-    @staticmethod
-    def on_mousewheel(event):
-        if ApplicationLevelBindManager.mw_active_area:
-            ApplicationLevelBindManager.mw_active_area.on_mousewheel(event)
+    @classmethod
+    def on_mousewheel(cls, event):
+        widget_below = event.widget
+        if not isinstance(widget_below, tk.Widget):
+            try:
+                widget_below = cls.master.winfo_containing(
+                    event.x_root, event.y_root
+                )
+            except KeyError:
+                widget_below = None
+        if widget_below:
+            for w in iter_to_toplevel(widget_below):
+                if w in cls.mw_listeners:
+                    can_keep_scrolling = w.on_mousewheel(event)
+                    if can_keep_scrolling:
+                        break
 
-    @staticmethod
-    def mousewheel_bind(widget):
-        ApplicationLevelBindManager.mw_active_area = widget
+    @classmethod
+    def mousewheel_bind(cls, widget):
+        if widget not in cls.mw_listeners:
+            cls.mw_listeners.append(widget)
 
-    @staticmethod
-    def mousewheel_unbind():
-        ApplicationLevelBindManager.mw_active_area = None
+    @classmethod
+    def mousewheel_unbind(cls, widget):
+        if widget in cls.mw_listeners:
+            cls.mw_listeners.remove(widget)
 
-    @staticmethod
-    def init_mousewheel_binding(master):
-        if not ApplicationLevelBindManager.mw_initialized:
+    @classmethod
+    def init_mousewheel_binding(cls, master):
+        if not cls.mw_initialized:
+            cls.master = master.winfo_toplevel()
             _os = platform.system()
             if _os in ("Linux", "OpenBSD", "FreeBSD"):
-                master.bind_all(
-                    "<4>", ApplicationLevelBindManager.on_mousewheel, add="+"
-                )
-                master.bind_all(
-                    "<5>", ApplicationLevelBindManager.on_mousewheel, add="+"
-                )
+                master.bind_all("<4>", cls.on_mousewheel, add="+")
+                master.bind_all("<5>", cls.on_mousewheel, add="+")
             else:
                 # Windows and MacOS
                 master.bind_all(
                     "<MouseWheel>",
-                    ApplicationLevelBindManager.on_mousewheel,
+                    cls.on_mousewheel,
                     add="+",
                 )
-            ApplicationLevelBindManager.mw_initialized = True
+            cls.mw_initialized = True
 
-    @staticmethod
-    def make_onmousewheel_cb(widget, orient, factor=1):
+    @classmethod
+    def make_onmousewheel_cb(cls, widget, orient, factor=1):
         """Create a callback to manage mousewheel events
 
         orient: string (posible values: ('x', 'y'))
@@ -94,10 +111,16 @@ class ApplicationLevelBindManager(object):
         if _os in ("Linux", "OpenBSD", "FreeBSD"):
 
             def on_mousewheel(event):
+                can_keep_scrolling = True
                 if event.num == 4:
                     view_command("scroll", (-1) * factor, "units")
+                    scroll_rs = view_command()
+                    can_keep_scrolling = scroll_rs[0] != 0.0
                 elif event.num == 5:
                     view_command("scroll", factor, "units")
+                    scroll_rs = view_command()
+                    can_keep_scrolling = scroll_rs[1] != 1.0
+                return can_keep_scrolling
 
         elif _os == "Windows":
 
@@ -105,11 +128,21 @@ class ApplicationLevelBindManager(object):
                 view_command(
                     "scroll", (-1) * int((event.delta / 120) * factor), "units"
                 )
+                scroll_rs = view_command()
+                can_keep_scrolling = scroll_rs[0] != 0.0
+                if event.delta < 0:
+                    can_keep_scrolling = scroll_rs[1] != 1.0
+                return can_keep_scrolling
 
         elif _os == "Darwin":
 
             def on_mousewheel(event):
                 view_command("scroll", event.delta, "units")
+                scroll_rs = view_command()
+                can_keep_scrolling = scroll_rs[0] != 0.0
+                if event.delta < 0:
+                    can_keep_scrolling = scroll_rs[1] != 1.0
+                return can_keep_scrolling
 
         else:
             # FIXME: unknown platform scroll method
@@ -117,3 +150,7 @@ class ApplicationLevelBindManager(object):
                 pass
 
         return on_mousewheel
+
+
+class ApplicationLevelBindManager(AppBindManagerBase):
+    ...

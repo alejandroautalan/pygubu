@@ -7,7 +7,7 @@ from pygubu.binding import (
 )
 
 
-class TkScrolledFrame(tk.Frame):
+class ScrolledFrameBase:
     VERTICAL = "vertical"
     HORIZONTAL = "horizontal"
     BOTH = "both"
@@ -19,8 +19,8 @@ class TkScrolledFrame(tk.Frame):
         self.usemousewheel = tk.getboolean(kw.pop("usemousewheel", False))
         self._bindingids = []
 
-        # super(ScrolledFrameBase, self).__init__(master, **kw)
-        self._framecls.__init__(self, master, **kw)
+        super().__init__(master, **kw)
+        # self._framecls.__init__(self, master, **kw)
 
         self._container = self._framecls(self, width=200, height=200)
         self._clipper = self._framecls(self._container, width=200, height=200)
@@ -276,46 +276,14 @@ class TkScrolledFrame(tk.Frame):
             main_sb = self.vsb or self.hsb
             if main_sb:
                 self.on_mousewheel = main_sb.on_mousewheel
-                bid = self.bind(
-                    "<Enter>",
-                    lambda event: BindManager.mousewheel_bind(self),
-                    add="+",
-                )
-                self._bindingids.append((self, bid))
-                bid = self.bind(
-                    "<Leave>",
-                    lambda event: BindManager.mousewheel_unbind(),
-                    add="+",
-                )
-                self._bindingids.append((self, bid))
+                BindManager.mousewheel_bind(self)
             for s in (self.vsb, self.hsb):
                 if s:
-                    bid = s.bind(
-                        "<Enter>",
-                        lambda event, scrollbar=s: BindManager.mousewheel_bind(
-                            scrollbar
-                        ),
-                        add="+",
-                    )
-                    self._bindingids.append((s, bid))
-                    if s != main_sb:
-                        bid = s.bind(
-                            "<Leave>",
-                            lambda event: BindManager.mousewheel_unbind(),
-                            add="+",
-                        )
-                        self._bindingids.append((s, bid))
+                    BindManager.mousewheel_bind(s)
         else:
-            for widget, bid in self._bindingids:
-                remove_binding(widget, bid)
+            for w in (self, self.vsb, self.hsb):
+                BindManager.mousewheel_unbind(w)
 
 
-# class TkScrolledFrameFactory(type):
-#    def __new__(cls, clsname, superclasses, attrs):
-#        return type.__new__(cls, str(clsname), superclasses, attrs)
-
-
-# TkScrolledFrame = TkScrolledFrameFactory('TkScrolledFrame',
-#                                       (ScrolledFrameBase, tk.Frame, object),
-#                                       {'_framecls':tk.Frame,
-#                                        '_sbarcls': tk.Scrollbar})
+class TkScrolledFrame(ScrolledFrameBase, tk.Frame):
+    ...
