@@ -33,6 +33,11 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.plugins.pygubu.filterabletreeview": (
             "pygubu.widgets.FilterableTreeview",
         ),
+        "pygubu.plugins.pygubu.dockfw": (
+            "pygubu.widgets.dockframe",
+            "pygubu.widgets.dockpane",
+            "pygubu.widgets.docktab",
+        ),
     }
 
     def do_activate(self) -> bool:
