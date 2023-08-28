@@ -44,9 +44,12 @@ class DockFrame(SlotFrame, IDockFrame):
         return pane
 
 
-class DockPane(ttk.Panedwindow, IDockPane):
-    ...
+class DockPane(SlotFrame, IDockPane):
+    def __init__(self, *args, orient="horizontal", **kw):
+        super().__init__(*args, **kw)
+        self.panedw = ttk.Panedwindow(self.fcenter, orient=orient)
+        self.panedw.pack(expand=True, fill=tk.BOTH)
 
 
-class DockTab(ttk.Frame, IDockWidget):
+class DockTab(SlotFrame, IDockWidget):
     ...

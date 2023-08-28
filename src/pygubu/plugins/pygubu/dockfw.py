@@ -20,6 +20,9 @@ class DockFrameBO(BuilderObject):
     def get_child_master(self):
         return self.widget.fcenter
 
+    def add_child(self, bobject):
+        bobject.widget.pack(expand=True, fill=tk.BOTH)
+
 
 _builder_id = "pygubu.widgets.dockframe"
 register_widget(
@@ -46,11 +49,11 @@ class DockPaneBO(BuilderObject):
     def add_child(self, bobject):
         if isinstance(bobject.widget, dockingfw.DockPane):
             print(f"Adding Dockpane: {bobject.widget}")
-            self.widget.add(bobject.widget, weight=1)
+            self.widget.panedw.add(bobject.widget, weight=1)
         else:
             print(f"Adding Notebook for: {bobject.widget}")
             nb = ttk.Notebook(self.widget)
-            self.widget.add(nb, weight=1)
+            self.widget.panedw.add(nb, weight=1)
             nb.add(bobject.widget, text=bobject.wmeta.identifier, sticky="nsew")
             dockingfw.DockingFramework.raise_tree(nb)
 
@@ -74,6 +77,9 @@ class DockTabBO(BuilderObject):
             allowed = True
         print("canbe_child", parent_builder, classname, allowed)
         return allowed
+
+    def get_child_master(self):
+        return self.widget.fcenter
 
 
 _builder_id = "pygubu.widgets.docktab"

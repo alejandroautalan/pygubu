@@ -17,19 +17,43 @@ class SlotFrameBase(ttk.Frame):
     def __init__(self, master=None, **kw):
         super().__init__(master, **kw)
         self.fn = SlotIndicator(
-            self, background="#003ed9", height=10, width=10, side="n", name="fn"
+            self,
+            cursor="top_side",
+            background="#003ed9",
+            height=15,
+            width=15,
+            side="n",
+            name="fn",
         )
         self.fn.grid(column=0, columnspan=3, row=0, sticky="ew")
         self.fs = SlotIndicator(
-            self, background="#003ed9", height=10, width=10, side="n", name="fs"
+            self,
+            cursor="bottom_side",
+            background="#003ed9",
+            height=15,
+            width=10,
+            side="s",
+            name="fs",
         )
         self.fs.grid(column=0, columnspan=3, row=2, sticky="ew")
         self.fe = SlotIndicator(
-            self, background="#003ed9", height=10, width=10, side="n", name="fe"
+            self,
+            cursor="right_side",
+            background="#003ed9",
+            height=15,
+            width=15,
+            side="e",
+            name="fe",
         )
         self.fe.grid(column=2, row=1, sticky="ns")
         self.fw = SlotIndicator(
-            self, background="#003ed9", height=10, width=10, side="n", name="fw"
+            self,
+            cursor="left_side",
+            background="#003ed9",
+            height=15,
+            width=15,
+            side="w",
+            name="fw",
         )
         self.fw.grid(column=0, row=1, sticky="ns")
         self.fcenter = ttk.Frame(self, name="fcenter")
@@ -58,6 +82,11 @@ class SlotFrame(SlotFrameBase):
             yield fi
 
     def indicators_visible(self, visible: bool):
+        if visible:
+            self.configure(padding=4)
+        else:
+            self.configure(padding=0)
+
         for f in self.iter_indicators():
             if visible:
                 f.grid()
