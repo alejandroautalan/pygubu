@@ -136,32 +136,59 @@ class DockingFramework:
             target_dock, target_pane, target_tab = cls._get_panes(
                 cls.indicator_active
             )
-            print("-" * 10)
-            print("source_dock", source_dock)
-            print("source_pane", source_pane)
-            print("source_tab", source_tab)
-            print("target_dock", target_dock)
-            print("target_pane", target_pane)
-            print("target_tab", target_tab)
-            print("-" * 10)
-            if source_pane == target_pane:
-                print("Move in Same pane, position:", cls.indicator_active.side)
-            if target_tab:
-                print(
-                    "Move relative to a tab, position:",
-                    cls.indicator_active.side,
-                )
-            if target_tab is None and target_pane is None:
-                print(
-                    "Move relative to docframe, position:",
-                    cls.indicator_active.side,
-                )
+            cls.apply_move(
+                source_dock,
+                source_pane,
+                source_tab,
+                target_dock,
+                target_pane,
+                target_tab,
+                cls.indicator_active.side,
+            )
 
         cls.current_dw.configure(cursor="arrow")
         cls.moving = False
         cls.current_tab = None
         cls.current_pane = None
         cls.current_dw = None
+
+    @classmethod
+    def apply_move(
+        cls,
+        source_dock,
+        source_pane,
+        source_tab,
+        target_dock,
+        target_pane,
+        target_tab,
+        side,
+    ):
+        print("-" * 10)
+        print("source_dock", source_dock)
+        print("source_pane", source_pane)
+        print("source_tab", source_tab)
+        print("target_dock", target_dock)
+        print("target_pane", target_pane)
+        print("target_tab", target_tab)
+        print("-" * 10)
+        if source_pane == target_pane:
+            print("Move in Same pane, position:", side)
+        if target_tab:
+            if side in "ew":
+                print(
+                    "Move Inside tab, position:",
+                    side,
+                )
+            else:
+                print(
+                    "Move relative to a tab, position:",
+                    side,
+                )
+        if target_tab is None and target_pane is None:
+            print(
+                "Move relative to docframe, position:",
+                side,
+            )
 
     @classmethod
     def raise_tree(cls, widget: tk.Widget):

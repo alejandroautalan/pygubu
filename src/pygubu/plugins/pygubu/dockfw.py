@@ -46,6 +46,12 @@ class DockPaneBO(BuilderObject):
         print("canbe_child", parent_builder, classname, allowed)
         return allowed
 
+    # Cant use this method now because we lost parenting information
+    # that's the reason why dock tcl implementation implementation
+    # had a parent-child mapping.
+    # def get_child_master(self):
+    #    return self.widget.winfo_toplevel()
+
     def add_child(self, bobject):
         if isinstance(bobject.widget, dockingfw.DockPane):
             print(f"Adding Dockpane: {bobject.widget}")
@@ -64,8 +70,8 @@ register_widget(
 )
 
 
-class DockTabBO(BuilderObject):
-    class_ = dockingfw.DockTab
+class DockWidgetBO(BuilderObject):
+    class_ = dockingfw.DockWidget
     container = True
     container_layout = True
     layout_required = False
@@ -82,5 +88,7 @@ class DockTabBO(BuilderObject):
         return self.widget.fcenter
 
 
-_builder_id = "pygubu.widgets.docktab"
-register_widget(_builder_id, DockTabBO, "DockTab", ("ttk", _("Pygubu Widgets")))
+_builder_id = "pygubu.widgets.dockwidget"
+register_widget(
+    _builder_id, DockWidgetBO, "DockWidget", ("ttk", _("Pygubu Widgets"))
+)

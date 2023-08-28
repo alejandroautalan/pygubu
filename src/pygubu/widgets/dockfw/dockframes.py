@@ -34,8 +34,8 @@ class DockFrame(SlotFrame, IDockFrame):
                     if not isinstance(w, ttk.Notebook):
                         child = self._serialize_pane(w)
                         pc.append(child)
-        elif isinstance(widget, DockTab):
-            pane["type"] = "docktab"
+        elif isinstance(widget, DockWidget):
+            pane["type"] = "dockwidget"
             pane["config"] = pconfig = OrderedDict()
             children = widget.winfo_children()
             if children:
@@ -51,5 +51,5 @@ class DockPane(SlotFrame, IDockPane):
         self.panedw.pack(expand=True, fill=tk.BOTH)
 
 
-class DockTab(SlotFrame, IDockWidget):
+class DockWidget(SlotFrame, IDockWidget):
     ...

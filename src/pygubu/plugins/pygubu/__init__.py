@@ -36,7 +36,7 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.plugins.pygubu.dockfw": (
             "pygubu.widgets.dockframe",
             "pygubu.widgets.dockpane",
-            "pygubu.widgets.docktab",
+            "pygubu.widgets.dockwidget",
         ),
     }
 
