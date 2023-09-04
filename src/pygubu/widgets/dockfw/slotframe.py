@@ -76,19 +76,22 @@ class SlotFrame(SlotFrameBase):
         super().__init__(*args, **kw)
         for i in self.iter_indicators():
             i.grid_remove()
+        self._indicators_visible = False
 
     def iter_indicators(self) -> tk.Widget:
         for fi in (self.fn, self.fs, self.fw, self.fe):
             yield fi
 
     def indicators_visible(self, visible: bool):
-        if visible:
-            self.configure(padding=4)
-        else:
-            self.configure(padding=0)
-
-        for f in self.iter_indicators():
+        if self._indicators_visible != visible:
+            self._indicators_visible = visible
             if visible:
-                f.grid()
+                self.configure(padding=4)
             else:
-                f.grid_remove()
+                self.configure(padding=0)
+
+            for f in self.iter_indicators():
+                if visible:
+                    f.grid()
+                else:
+                    f.grid_remove()
