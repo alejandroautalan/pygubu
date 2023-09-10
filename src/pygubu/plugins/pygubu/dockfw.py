@@ -8,20 +8,22 @@ from pygubu.api.v1 import (
 )
 from pygubu.i18n import _
 
-import pygubu.widgets.dockfw.dockframes as dockingfw
+import pygubu.widgets.dockfw.dockwidget as widgets
 
 
-class DockFrameBO(BuilderObject):
-    class_ = dockingfw.DockFrame
+class DockWidgetBaseBO(BuilderObject):
+    def _get_init_args(self, extra_init_args: dict = None):
+        args = super()._get_init_args(extra_init_args)
+        if "uid" not in args:
+            args["uid"] = self.wmeta.identifier
+        return args
+
+
+class DockFrameBO(DockWidgetBaseBO):
+    class_ = widgets.DockFrame
     container = True
     container_layout = False
     maxchildren = 1
-
-    def get_child_master(self):
-        return self.widget.fcenter
-
-    def add_child(self, bobject):
-        bobject.widget.pack(expand=True, fill=tk.BOTH)
 
 
 _builder_id = "pygubu.widgets.dockframe"
@@ -30,8 +32,8 @@ register_widget(
 )
 
 
-class DockPaneBO(BuilderObject):
-    class_ = dockingfw.DockPane
+class DockPaneBO(DockWidgetBaseBO):
+    class_ = widgets.DockPane
     container = True
     container_layout = False
     layout_required = False
@@ -46,22 +48,26 @@ class DockPaneBO(BuilderObject):
         print("canbe_child", parent_builder, classname, allowed)
         return allowed
 
-    # Cant use this method now because we lost parenting information
-    # that's the reason why dock tcl implementation implementation
-    # had a parent-child mapping.
-    # def get_child_master(self):
-    #    return self.widget.winfo_toplevel()
+    def __init__(self, builder, wmeta):
+        super().__init__(builder, wmeta)
+        self.pane_widget = None
 
-    def add_child(self, bobject):
-        if isinstance(bobject.widget, dockingfw.DockPane):
-            print(f"Adding Dockpane: {bobject.widget}")
-            self.widget.panedw.add(bobject.widget, weight=1)
-        else:
-            print(f"Adding Notebook for: {bobject.widget}")
-            nb = ttk.Notebook(self.widget)
-            self.widget.panedw.add(nb, weight=1)
-            nb.add(bobject.widget, text=bobject.wmeta.identifier, sticky="nsew")
-            dockingfw.DockingFramework.raise_tree(nb)
+    def realize(self, parent, extra_init_args: dict = None):
+        self.widget: widgets.DockFrame = parent.widget
+        args = self._get_init_args(extra_init_args)
+        if not self.widget.main_pane:
+            args["main_pane"] = True
+            print("Main pane created.")
+        self.pane_widget = self.widget.new_pane(**args)
+        if isinstance(parent, DockPaneBO):
+            parent.pane_widget.add_pane(self.pane_widget)
+        return self.widget
+
+    def configure(self, target=None):
+        pass
+
+    def layout(self, target=None):
+        pass
 
 
 _builder_id = "pygubu.widgets.dockpane"
@@ -70,8 +76,8 @@ register_widget(
 )
 
 
-class DockWidgetBO(BuilderObject):
-    class_ = dockingfw.DockWidget
+class DockWidgetBO(DockWidgetBaseBO):
+    class_ = widgets.DockWidget
     container = True
     container_layout = True
     layout_required = False
@@ -83,6 +89,13 @@ class DockWidgetBO(BuilderObject):
             allowed = True
         print("canbe_child", parent_builder, classname, allowed)
         return allowed
+
+    def realize(self, parent, extra_init_args: dict = None):
+        dock = parent.pane_widget.maindock
+        args = self._get_init_args(extra_init_args)
+        print("Creating new widget. Args: ", args)
+        self.widget = dock.new_widget(**args)
+        parent.pane_widget.add_widget(self.widget)
 
     def get_child_master(self):
         return self.widget.fcenter
