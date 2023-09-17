@@ -74,13 +74,10 @@ class DockingFramework:
 
     @classmethod
     def drag_start(cls, event: tk.Event):
-        print("drag_start")
         cls.curr_dockf, cls.curr_dpane, cls.curr_dwidget = cls.get_targets(
             event
         )
         cls.source_dwidget = cls.curr_dwidget
-        print("Tab clicked:", cls.curr_dockf, cls.curr_dpane, cls.curr_dwidget)
-        print("Source:", cls.source_dwidget)
 
     @classmethod
     def drag_motion(cls, event: tk.Event):
@@ -126,33 +123,33 @@ class DockingFramework:
 
     @classmethod
     def drag_end(cls, event):
-        if cls.moving:
-            cls.curr_dockf.indicators_visible(False)
-            if cls.curr_dpane:
-                cls.curr_dpane.indicators_visible(False)
-            cls.curr_dwidget.indicators_visible(False)
+        if cls.curr_dockf:
+            if cls.moving:
+                cls.curr_dockf.indicators_visible(False)
+                if cls.curr_dpane:
+                    cls.curr_dpane.indicators_visible(False)
+                cls.curr_dwidget.indicators_visible(False)
 
-            relative_to = None
-            side = None
-            if cls.indicator_active:
-                side = cls.indicator_active.side
-                target = cls.indicator_active.nametowidget(
-                    cls.indicator_active.winfo_parent()
-                )
-                relative_to = (
-                    "pane" if isinstance(target, IDockPane) else "widget"
-                )
+                relative_to = None
+                side = None
+                if cls.indicator_active:
+                    side = cls.indicator_active.side
+                    target = cls.indicator_active.nametowidget(
+                        cls.indicator_active.winfo_parent()
+                    )
+                    relative_to = (
+                        "pane" if isinstance(target, IDockPane) else "widget"
+                    )
 
-                # TODO: check for tab moves later here
-                cls.apply_move(
-                    cls.source_dwidget,
-                    cls.curr_dpane,
-                    cls.curr_dwidget,
-                    relative_to,
-                    side,
-                )
-
-        cls.curr_dockf.configure(cursor="arrow")
+                    # TODO: check for tab moves later here
+                    cls.apply_move(
+                        cls.source_dwidget,
+                        cls.curr_dpane,
+                        cls.curr_dwidget,
+                        relative_to,
+                        side,
+                    )
+            cls.curr_dockf.configure(cursor="arrow")
         cls.moving = False
         cls.curr_dwidget = None
 
