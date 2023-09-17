@@ -81,6 +81,8 @@ class DockWidgetBO(DockWidgetBaseBO):
     container = True
     container_layout = True
     layout_required = False
+    properties = ("as_tab",)
+    ro_properties = ("as_tab",)
 
     @classmethod
     def canbe_child_of(cls, parent_builder, classname):
@@ -90,18 +92,35 @@ class DockWidgetBO(DockWidgetBaseBO):
         print("canbe_child", parent_builder, classname, allowed)
         return allowed
 
+    def _process_property_value(self, pname, value):
+        if pname == "as_tab":
+            return tk.getboolean(value)
+        return super()._process_property_value(pname, value)
+
     def realize(self, parent, extra_init_args: dict = None):
         dock = parent.pane_widget.maindock
-        args = self._get_init_args(extra_init_args)
+        args: dict = self._get_init_args(extra_init_args)
+        tabbed = args.pop("as_tab", False)
         print("Creating new widget. Args: ", args)
         self.widget = dock.new_widget(**args)
-        parent.pane_widget.add_widget(self.widget)
+        parent.pane_widget.add_widget(self.widget, as_tab=tabbed)
 
     def get_child_master(self):
         return self.widget.fcenter
+
+    def configure(self, target=None):
+        pass
 
 
 _builder_id = "pygubu.widgets.dockwidget"
 register_widget(
     _builder_id, DockWidgetBO, "DockWidget", ("ttk", _("Pygubu Widgets"))
+)
+
+register_custom_property(
+    _builder_id,
+    "as_tab",
+    "choice",
+    values=("", "true", "false"),
+    state="readonly",
 )
