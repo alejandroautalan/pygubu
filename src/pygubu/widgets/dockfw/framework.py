@@ -29,12 +29,16 @@ def tab_below_mouse(noteb: ttk.Notebook, rootx: int, rooty: int):
 
 
 class DockingFramework:
-    curr_dockf = None
+    curr_dock = None
     curr_dpane = None
     curr_dwidget = None
+    bmouse_dock = None
+    bmouse_dpane = None
+    bmouse_dwidget = None
     source_dwidget = None
     moving = False
     indicator_active = None
+    cursor_default = "arrow"
     cursor_moving = "fleur"
     cursor_tab_target = "sb_down_arrow"
     indicator_bg_color = "#989cec"
@@ -46,7 +50,7 @@ class DockingFramework:
         widget.bind("<ButtonRelease-1>", cls.drag_end, add=True)
 
     @classmethod
-    def get_targets(cls, event: tk.Event):
+    def get_targets_below_mouse(cls, event: tk.Event):
         dock = None
         pane = None
         widget = None
@@ -78,19 +82,22 @@ class DockingFramework:
                     widget = selected
         if dock and widget and pane is None:
             pane = widget.parent_pane
-        return (dock, pane, widget)
+        cls.bmouse_dock = dock
+        cls.bmouse_dpane = pane
+        cls.bmouse_dwidget = widget
 
     @classmethod
     def drag_start(cls, event: tk.Event):
-        cls.curr_dockf, cls.curr_dpane, cls.curr_dwidget = cls.get_targets(
-            event
-        )
+        cls.get_targets_below_mouse(event)
+        cls.curr_dock = cls.bmouse_dock
+        cls.curr_dpane = cls.bmouse_dpane
+        cls.curr_dwidget = cls.bmouse_dwidget
         cls.source_dwidget = cls.curr_dwidget
 
     @classmethod
     def drag_motion(cls, event: tk.Event):
         if cls.moving is False:
-            cls.curr_dockf.indicators_visible(True)
+            cls.curr_dock.indicators_visible(True)
             cls.curr_dpane.indicators_visible(True)
             # cls.curr_dwidget.indicators_visible(True)
             cls.moving = True
@@ -98,20 +105,23 @@ class DockingFramework:
         widget_below = event.widget.winfo_containing(event.x_root, event.y_root)
         if not widget_below:
             return
-        _, below_dpane, below_dwidget = cls.get_targets(event)
 
-        if below_dpane is not None and cls.curr_dpane != below_dpane:
+        cls.get_targets_below_mouse(event)
+        if cls.bmouse_dpane is not None and cls.curr_dpane != cls.bmouse_dpane:
             if (
                 cls.curr_dpane is not None
-                and cls.curr_dpane != cls.curr_dockf.main_pane
+                and cls.curr_dpane != cls.curr_dock.main_pane
             ):
                 cls.curr_dpane.indicators_visible(False)
-            cls.curr_dpane = below_dpane
-            below_dpane.indicators_visible(True)
-        if below_dwidget is not None and cls.curr_dwidget != below_dwidget:
+            cls.curr_dpane = cls.bmouse_dpane
+            cls.curr_dpane.indicators_visible(True)
+        if (
+            cls.bmouse_dwidget is not None
+            and cls.curr_dwidget != cls.bmouse_dwidget
+        ):
             cls.curr_dwidget.indicators_visible(False)
-            cls.curr_dwidget = below_dwidget
-            below_dwidget.indicators_visible(True)
+            cls.curr_dwidget = cls.bmouse_dwidget
+            cls.curr_dwidget.indicators_visible(True)
 
         last_indicator = cls.indicator_active
         cls.indicator_active = None
@@ -123,9 +133,9 @@ class DockingFramework:
             if not hasattr(indicator, "_ocolor"):
                 indicator._ocolor = indicator.cget("background")
             indicator.configure(background=cls.indicator_bg_color)
-            cls.curr_dockf.configure(cursor=indicator.cget("cursor"))
+            cls.curr_dock.configure(cursor=indicator.cget("cursor"))
         else:
-            cls.curr_dockf.configure(cursor=cls.cursor_moving)
+            cls.curr_dock.configure(cursor=cls.cursor_moving)
         if (
             last_indicator
             and last_indicator != indicator
@@ -135,9 +145,9 @@ class DockingFramework:
 
     @classmethod
     def drag_end(cls, event):
-        if cls.curr_dockf:
+        if cls.curr_dock:
             if cls.moving:
-                cls.curr_dockf.indicators_visible(False)
+                cls.curr_dock.indicators_visible(False)
                 if cls.curr_dpane:
                     cls.curr_dpane.indicators_visible(False)
                 cls.curr_dwidget.indicators_visible(False)
@@ -161,7 +171,7 @@ class DockingFramework:
                         relative_to,
                         side,
                     )
-            cls.curr_dockf.configure(cursor="arrow")
+            cls.curr_dock.configure(cursor=cls.cursor_default)
         cls.moving = False
         cls.curr_dwidget = None
 
