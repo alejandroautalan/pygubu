@@ -17,6 +17,17 @@ class IDockWidget:
     ...
 
 
+def tab_below_mouse(noteb: ttk.Notebook, rootx: int, rooty: int):
+    # Is calculated this way because mouse motion events
+    # return negative values with respect to where the drag started.
+    x = rootx - noteb.winfo_rootx()
+    y = rooty - noteb.winfo_rooty()
+    tab_index = noteb.tk.call(noteb._w, "identify", "tab", x, y)
+    if not isinstance(tab_index, int):
+        tab_index = None
+    return tab_index
+
+
 class DockingFramework:
     initialized = False
     curr_dockf = None
@@ -25,6 +36,9 @@ class DockingFramework:
     source_dwidget = None
     moving = False
     indicator_active = None
+    cursor_moving = "fleur"
+    cursor_tab_target = "sb_down_arrow"
+    indicator_bg_color = "#989cec"
 
     @classmethod
     def init_binding(cls, master: tk.Widget):
@@ -84,7 +98,7 @@ class DockingFramework:
         if cls.moving is False:
             cls.curr_dockf.indicators_visible(True)
             cls.curr_dpane.indicators_visible(True)
-            cls.curr_dwidget.indicators_visible(True)
+            # cls.curr_dwidget.indicators_visible(True)
             cls.moving = True
 
         widget_below = event.widget.winfo_containing(event.x_root, event.y_root)
@@ -114,11 +128,15 @@ class DockingFramework:
         if indicator:
             if not hasattr(indicator, "_ocolor"):
                 indicator._ocolor = indicator.cget("background")
-            indicator.configure(background="#989cec")
+            indicator.configure(background=cls.indicator_bg_color)
             cls.curr_dockf.configure(cursor=indicator.cget("cursor"))
         else:
-            cls.curr_dockf.configure(cursor="fleur")
-        if last_indicator and last_indicator != indicator:
+            cls.curr_dockf.configure(cursor=cls.cursor_moving)
+        if (
+            last_indicator
+            and last_indicator != indicator
+            and last_indicator.winfo_exists()
+        ):
             last_indicator.configure(background=last_indicator._ocolor)
 
     @classmethod
@@ -162,15 +180,3 @@ class DockingFramework:
             dock._move_into_pane_side(src_dwidget, target_pane, side)
         else:
             dock._move_to_widget_side(src_dwidget, target_widget, side)
-
-    @classmethod
-    def raise_tree(cls, widget: tk.Widget):
-        if not isinstance(widget, tk.Canvas):
-            widget.tkraise()
-        class_ = str(widget.winfo_class())
-        if class_ == "TNotebook":
-            for tab in widget.tabs():
-                cls.raise_tree(widget.nametowidget(tab))
-        elif class_ == "TPanedwindow":
-            for pane in widget.panes():
-                cls.raise_tree(widget.nametowidget(pane))
