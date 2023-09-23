@@ -29,7 +29,6 @@ def tab_below_mouse(noteb: ttk.Notebook, rootx: int, rooty: int):
 
 
 class DockingFramework:
-    initialized = False
     curr_dockf = None
     curr_dpane = None
     curr_dwidget = None
@@ -41,15 +40,10 @@ class DockingFramework:
     indicator_bg_color = "#989cec"
 
     @classmethod
-    def init_binding(cls, master: tk.Widget):
-        if cls.initialized:
-            return
-        master.bind_class("TNotebook", "<Button-1>", cls.drag_start, add=True)
-        master.bind_class("TNotebook", "<B1-Motion>", cls.drag_motion, add=True)
-        master.bind_class(
-            "TNotebook", "<ButtonRelease-1>", cls.drag_end, add=True
-        )
-        cls.initialized = True
+    def init_binding(cls, widget: tk.Widget):
+        widget.bind("<Button-1>", cls.drag_start, add=True)
+        widget.bind("<B1-Motion>", cls.drag_motion, add=True)
+        widget.bind("<ButtonRelease-1>", cls.drag_end, add=True)
 
     @classmethod
     def get_targets(cls, event: tk.Event):

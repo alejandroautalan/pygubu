@@ -52,7 +52,6 @@ class DockPane(DockWidgetBase, IDockPane):
 class DockFrame(DockWidgetBase, IDockFrame):
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
-        DockingFramework.init_binding(self)
         self.dock_widgets: dict[str, DockWidget] = {}
         self._main_pane = None
 
@@ -78,6 +77,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
                 nb = self.nametowidget(panes[-1])
         if nb is None:
             nb = ttk.Notebook(self)
+            DockingFramework.init_binding(nb)
             # topane.panedw.add(nb, weight=1)
             topane.panedw.insert(position, nb, weight=1)
         nb.add(widget, text=widget.uid)
