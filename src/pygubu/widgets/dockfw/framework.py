@@ -92,11 +92,11 @@ class DockingFramework:
         cls.curr_dock = cls.bmouse_dock
         cls.curr_dpane = cls.bmouse_dpane
         cls.curr_dwidget = cls.bmouse_dwidget
-        cls.source_dwidget = cls.curr_dwidget
 
     @classmethod
     def drag_motion(cls, event: tk.Event):
         if cls.moving is False:
+            cls.source_dwidget = cls.curr_dwidget
             cls.curr_dock.indicators_visible(True)
             cls.curr_dpane.indicators_visible(True)
             # cls.curr_dwidget.indicators_visible(True)
@@ -118,6 +118,7 @@ class DockingFramework:
         if (
             cls.bmouse_dwidget is not None
             and cls.curr_dwidget != cls.bmouse_dwidget
+            and cls.bmouse_dwidget != cls.source_dwidget
         ):
             cls.curr_dwidget.indicators_visible(False)
             cls.curr_dwidget = cls.bmouse_dwidget
