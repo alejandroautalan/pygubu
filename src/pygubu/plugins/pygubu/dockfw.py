@@ -8,7 +8,7 @@ from pygubu.api.v1 import (
 )
 from pygubu.i18n import _
 
-import pygubu.widgets.dockfw.dockwidget as widgets
+import pygubu.widgets.dockfw.widgets as widgets
 
 
 class DockWidgetBaseBO(BuilderObject):
