@@ -250,6 +250,8 @@ class DockFrame(DockWidgetBase, IDockFrame):
                             tabs = widget.tabs()
                             if len(tabs) > 1:
                                 print("WARNING: multiple tabs not managed yet.")
+                                print("Aborting simplification.")
+                                return
                             widget = pane.nametowidget(widget.tabs()[0])
                         side = "n" if parent.orient == tk.VERTICAL else "w"
                         pos = self._get_position_in_pane(pane)
