@@ -36,11 +36,13 @@ class DockingFramework:
     bmouse_dpane = None
     bmouse_dwidget = None
     source_dwidget = None
+    source_tab_clicked = None
     moving = False
     indicator_active = None
     cursor_default = "arrow"
-    cursor_moving = "fleur"
+    cursor_moving = "hand1"
     cursor_tab_target = "sb_down_arrow"
+    cursor_showing = None
     indicator_bg_color = "#989cec"
 
     @classmethod
@@ -92,9 +94,14 @@ class DockingFramework:
         cls.curr_dock = cls.bmouse_dock
         cls.curr_dpane = cls.bmouse_dpane
         cls.curr_dwidget = cls.bmouse_dwidget
+        cls.source_tab_clicked = tab_below_mouse(
+            event.widget, event.x_root, event.y_root
+        )
 
     @classmethod
     def drag_motion(cls, event: tk.Event):
+        show_cursor = cls.cursor_moving
+
         if cls.moving is False:
             cls.source_dwidget = cls.curr_dwidget
             cls.curr_dock.indicators_visible(True)
@@ -118,11 +125,11 @@ class DockingFramework:
         if (
             cls.bmouse_dwidget is not None
             and cls.curr_dwidget != cls.bmouse_dwidget
-            and cls.bmouse_dwidget != cls.source_dwidget
         ):
             cls.curr_dwidget.indicators_visible(False)
             cls.curr_dwidget = cls.bmouse_dwidget
-            cls.curr_dwidget.indicators_visible(True)
+            if cls.curr_dwidget != cls.source_dwidget:
+                cls.curr_dwidget.indicators_visible(True)
 
         last_indicator = cls.indicator_active
         cls.indicator_active = None
@@ -134,15 +141,29 @@ class DockingFramework:
             if not hasattr(indicator, "_ocolor"):
                 indicator._ocolor = indicator.cget("background")
             indicator.configure(background=cls.indicator_bg_color)
-            cls.curr_dock.configure(cursor=indicator.cget("cursor"))
-        else:
-            cls.curr_dock.configure(cursor=cls.cursor_moving)
+            show_cursor = indicator.cget("cursor")
         if (
             last_indicator
             and last_indicator != indicator
             and last_indicator.winfo_exists()
         ):
             last_indicator.configure(background=last_indicator._ocolor)
+
+        if cls.bmouse_dwidget and isinstance(widget_below, ttk.Notebook):
+            tab_clicked = tab_below_mouse(
+                widget_below, event.x_root, event.y_root
+            )
+            if cls.bmouse_dwidget == cls.source_dwidget:
+                if (
+                    tab_clicked is not None
+                    and tab_clicked != cls.source_tab_clicked
+                ):
+                    show_cursor = show_cursor = cls.cursor_tab_target
+            elif tab_clicked is not None:
+                show_cursor = cls.cursor_tab_target
+
+        if cls.cursor_showing != show_cursor:
+            cls.curr_dock.configure(cursor=show_cursor)
 
     @classmethod
     def drag_end(cls, event):
@@ -152,36 +173,51 @@ class DockingFramework:
                 if cls.curr_dpane:
                     cls.curr_dpane.indicators_visible(False)
                 cls.curr_dwidget.indicators_visible(False)
+                # Execute move if any
+                cls.execute_move(event)
 
-                relative_to = None
-                side = None
-                if cls.indicator_active:
-                    side = cls.indicator_active.side
-                    target = cls.indicator_active.nametowidget(
-                        cls.indicator_active.winfo_parent()
-                    )
-                    relative_to = (
-                        "pane" if isinstance(target, IDockPane) else "widget"
-                    )
-
-                    # TODO: check for tab moves later here
-                    cls.apply_move(
-                        cls.source_dwidget,
-                        cls.curr_dpane,
-                        cls.curr_dwidget,
-                        relative_to,
-                        side,
-                    )
             cls.curr_dock.configure(cursor=cls.cursor_default)
         cls.moving = False
         cls.curr_dwidget = None
 
     @classmethod
-    def apply_move(
-        cls, src_dwidget, target_pane, target_widget, relative_to, side
-    ):
-        dock = src_dwidget.maindock
-        if relative_to == "pane":
-            dock._move_into_pane_side(src_dwidget, target_pane, side)
-        else:
-            dock._move_to_widget_side(src_dwidget, target_widget, side)
+    def execute_move(cls, event: tk.Event):
+        widget_below = event.widget.winfo_containing(event.x_root, event.y_root)
+        dock = cls.source_dwidget.maindock
+        relative_to = None
+        side = None
+        if cls.indicator_active:
+            side = cls.indicator_active.side
+            target = cls.indicator_active.nametowidget(
+                cls.indicator_active.winfo_parent()
+            )
+            relative_to = "pane" if isinstance(target, IDockPane) else "widget"
+            if relative_to == "pane":
+                dock._move_into_pane_side(
+                    cls.source_dwidget, cls.curr_dpane, side
+                )
+            else:
+                dock._move_to_widget_side(
+                    cls.source_dwidget, cls.curr_dwidget, side
+                )
+            return
+        if cls.curr_dwidget and isinstance(widget_below, ttk.Notebook):
+            move_inside = True
+            tab_below = tab_below_mouse(
+                widget_below, event.x_root, event.y_root
+            )
+            if tab_below is None:
+                # No move
+                print("No move posible.")
+                return
+            if cls.curr_dwidget == cls.source_dwidget:
+                # Move in same pane
+                if tab_below == cls.source_tab_clicked:
+                    move_inside = False
+            if move_inside:
+                print("move widget", cls.source_dwidget)
+                print("as tab of:", cls.curr_dwidget)
+                print("Position:", tab_below)
+                dock._move_into_widget_group(
+                    cls.curr_dwidget, cls.source_dwidget, tab_below
+                )

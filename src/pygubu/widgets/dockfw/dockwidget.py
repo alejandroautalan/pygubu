@@ -109,6 +109,22 @@ class DockFrame(DockWidgetBase, IDockFrame):
                     break
         return target
 
+    def _add_widget_to_group(self, tgroup, swidget, position=tk.END):
+        nb: ttk.Notebook = tgroup.noteb
+        nb.insert(position, swidget, text=swidget.uid)
+        nb.select(position)
+        swidget.noteb = nb
+        swidget.parent_pane = tgroup.parent_pane
+        swidget.tkraise()
+        self.dock_widgets[swidget.uid] = swidget
+
+    def _move_into_widget_group(self, twidget, swidget, position):
+        noteb = swidget.noteb
+        pane = swidget.parent_pane
+        self._add_widget_to_group(twidget, swidget, position)
+        self._clear_notebook(noteb)
+        self._clear_pane(pane)
+
     def _move_into_pane_side(self, swidget, tpane, side, position=None):
         print("Move to into pane side. position=", position)
 
@@ -126,6 +142,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
                 if side in simple_sides:
                     # reposition widget in same pane
                     print("Reposition widget in same pane. position=", position)
+                    # FIXME: if widget is in a group, must detach and re-insert widget?
                     tpane.panedw.insert(position, noteb)
                 else:
                     self._move_into_pane_side_complex(
