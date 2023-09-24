@@ -100,13 +100,15 @@ class DockingFramework:
 
     @classmethod
     def drag_motion(cls, event: tk.Event):
-        show_cursor = cls.cursor_moving
+        if cls.curr_dock is None:
+            # avoid errors on pygubu-designer preview
+            return
 
+        show_cursor = cls.cursor_moving
         if cls.moving is False:
             cls.source_dwidget = cls.curr_dwidget
             cls.curr_dock.indicators_visible(True)
             cls.curr_dpane.indicators_visible(True)
-            # cls.curr_dwidget.indicators_visible(True)
             cls.moving = True
 
         widget_below = event.widget.winfo_containing(event.x_root, event.y_root)
