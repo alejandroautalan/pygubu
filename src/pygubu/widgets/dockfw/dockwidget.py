@@ -142,8 +142,13 @@ class DockFrame(DockWidgetBase, IDockFrame):
                 if side in simple_sides:
                     # reposition widget in same pane
                     print("Reposition widget in same pane. position=", position)
-                    # FIXME: if widget is in a group, must detach and re-insert widget?
-                    tpane.panedw.insert(position, noteb)
+                    # if widget is in a group, must detach and re-insert widget
+                    if swidget.is_grouped:
+                        self._add_widget_to_pane(
+                            tpane, swidget, position=position
+                        )
+                    else:
+                        tpane.panedw.insert(position, noteb)
                 else:
                     self._move_into_pane_side_complex(
                         swidget, tpane, side, position
@@ -272,6 +277,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
             if pane.parent_pane:
                 parent = pane.parent_pane
                 if parent.orient == pane.orient:
+                    # FIXME: Pane can be simplified, try moving content to parent pane.?
                     print(
                         "Pane can be simplified, try moving content to parent pane."
                     )
@@ -299,4 +305,12 @@ class DockFrame(DockWidgetBase, IDockFrame):
 class DockWidget(DockWidgetBase, IDockWidget):
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
-        self.noteb = None
+        self.noteb: ttk.Notebook = None
+
+    @property
+    def is_grouped(self):
+        grouped = False
+        if self.noteb is not None:
+            if len(self.noteb.tabs()) > 1:
+                grouped = True
+        return grouped
