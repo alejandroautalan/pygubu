@@ -46,7 +46,6 @@ class DockPaneBO(DockWidgetBaseBO):
         allowed = False
         if parent_builder in (DockFrameBO, DockPaneBO):
             allowed = True
-        print("canbe_child", parent_builder, classname, allowed)
         return allowed
 
     def __init__(self, builder, wmeta):
@@ -58,7 +57,6 @@ class DockPaneBO(DockWidgetBaseBO):
         args = self._get_init_args(extra_init_args)
         if not self.widget.main_pane:
             args["main_pane"] = True
-            print("Main pane created.")
         self.pane_widget = self.widget.new_pane(**args)
         if isinstance(parent, DockPaneBO):
             parent.pane_widget.add_pane(self.pane_widget)
@@ -91,7 +89,6 @@ class DockWidgetBO(DockWidgetBaseBO):
         allowed = False
         if parent_builder is DockPaneBO:
             allowed = True
-        print("canbe_child", parent_builder, classname, allowed)
         return allowed
 
     def _process_property_value(self, pname, value):
@@ -103,7 +100,6 @@ class DockWidgetBO(DockWidgetBaseBO):
         dock = parent.pane_widget.maindock
         args: dict = self._get_init_args(extra_init_args)
         grouped = args.pop("grouped", False)
-        print("Creating new widget. Args: ", args)
         self.widget = dock.new_widget(**args)
         super().configure(target=self.widget)  # hack used here
         parent.pane_widget.add_widget(self.widget, grouped=grouped)

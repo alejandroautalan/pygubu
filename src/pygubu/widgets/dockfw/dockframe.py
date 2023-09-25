@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+import logging
 
 from pygubu.widgets.dockfw.dockwidget import (
     DockWidgetBase,
@@ -10,6 +11,9 @@ from pygubu.widgets.dockfw.framework import (
     DockingFramework,
     IDockFrame,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class DockFrame(DockWidgetBase, IDockFrame):
@@ -89,7 +93,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
         self._clear_pane(pane)
 
     def _move_into_pane_side(self, swidget, tpane, side, position=None):
-        print("Move to into pane side. position=", position)
+        logger.debug("Move to into pane side. position %s", position)
 
         move_in_same_pane = swidget.parent_pane == tpane
         simple_sides = "ns" if tpane.orient == tk.VERTICAL else "we"
@@ -107,10 +111,12 @@ class DockFrame(DockWidgetBase, IDockFrame):
                 elif tpane.count > 1:
                     # pane has more than the moving widget
                     # reposition widget in same pane
-                    print("Reposition widget in same pane. position=", position)
+                    logger.debug(
+                        "Reposition widget in same pane. position %s", position
+                    )
                     tpane.panedw.insert(position, noteb)
                 else:
-                    print("No need to move")
+                    logger.debug("No need to move")
             else:
                 self._move_into_pane_side_complex(
                     swidget, tpane, side, position
@@ -134,21 +140,21 @@ class DockFrame(DockWidgetBase, IDockFrame):
                 "ns" if parent_pane.orient == tk.VERTICAL else "we"
             )
             if in_sync:
-                print("Parent pane in sync, adding into parent")
+                logger.debug("Parent pane in sync, adding into parent.")
                 index = self._get_position_in_pane(tpane)
-                print("Pane position:", index, "side:", side)
+                logger.debug("Pane position: %s side: %s", index, side)
                 if side not in "nw":
                     index += 1
                     index = tk.END if index >= parent_pane.count else index
-                print("final index:", index)
+                logger.debug("final index: %s", index)
                 self._add_widget_to_pane(parent_pane, swidget, position=index)
                 move_to_new_pane = False
         if move_to_new_pane:
-            print("Moving to new pane.")
+            logger.debug("Moving to new pane.")
             self._move_to_new_pane(swidget, tpane, side)
 
     def _move_to_new_pane(self, swidget, tpane, side):
-        print("Move to new pane")
+        logger.debug("Move to new pane.")
         new_orient = (
             tk.HORIZONTAL if tpane.orient == tk.VERTICAL else tk.VERTICAL
         )
@@ -157,17 +163,15 @@ class DockFrame(DockWidgetBase, IDockFrame):
         parent_pane = tpane.parent_pane
         self._add_pane_to_pane(new_pane, tpane)
         if parent_pane:
-            panes = parent_pane.panedw.panes()
-            print("panes in parent pane:", panes)
             self._add_pane_to_pane(parent_pane, new_pane)
         new_pos = 0 if side in "nw" else tk.END
         self._add_widget_to_pane(new_pane, swidget, position=new_pos)
         self._raise_panes(new_pane)
 
     def _move_to_widget_side(self, swidget, twidget, side):
-        print("Move to widget side", side)
+        logger.debug("Move to widget side: %s", side)
         if swidget == twidget:
-            print("No move needed")
+            logger.debug("No move needed.")
             return
 
         tpane = twidget.parent_pane
@@ -179,7 +183,6 @@ class DockFrame(DockWidgetBase, IDockFrame):
             if side not in "nw":
                 index += 1
                 index = tk.END if index >= tpane.count else index
-            print("index:", index, "count:", tpane.count)
             self._move_into_pane_side(swidget, tpane, side, position=index)
         else:
             new_orient = (
@@ -200,8 +203,6 @@ class DockFrame(DockWidgetBase, IDockFrame):
             if pane:
                 panes: tuple = pane.panedw.panes()
                 index = panes.index(str(widget))
-                # if index == 0 and len(panes) > 0:
-                #    index = tk.END
         return index
 
     def _replace_widget_with_pane(self, widget, orient):
@@ -231,34 +232,38 @@ class DockFrame(DockWidgetBase, IDockFrame):
     def _clear_pane(self, pane):
         if pane.count == 0:
             pane.destroy()
-        else:
-            print("Simplify pane for:", pane, "parent:", pane.parent_pane)
-            # simplified = False
-            if pane.parent_pane:
-                parent = pane.parent_pane
-                if parent.orient == pane.orient:
-                    # FIXME: Pane can be simplified, try moving content to parent pane.?
-                    print(
-                        "Pane can be simplified, try moving content to parent pane."
+            return
+        logger.debug("Simplify pane for: %s parent: %s", pane, pane.parent_pane)
+        if pane.parent_pane:
+            parent = pane.parent_pane
+            if parent.orient == pane.orient:
+                # FIXME: Pane can be simplified, try moving content to parent pane.?
+                logger.debug(
+                    "Pane can be simplified, try moving content to parent pane."
+                )
+            else:
+                logger.debug(
+                    "Pane orients differ: %s %s", parent.orient, pane.orient
+                )
+                if pane.count == 1:
+                    logger.debug(
+                        "Pane can be simplified, pane has only one child."
                     )
-                else:
-                    print("Pane orients differ: ", parent.orient, pane.orient)
-                    if pane.count == 1:
-                        print("Pane can be simplified, pane has only one child")
-                        widget = pane.nametowidget(pane.panedw.panes()[0])
-                        if isinstance(widget, ttk.Notebook):
-                            tabs = widget.tabs()
-                            if len(tabs) > 1:
-                                print("WARNING: multiple tabs not managed yet.")
-                                print("Aborting simplification.")
-                                return
-                            widget = pane.nametowidget(widget.tabs()[0])
-                        side = "n" if parent.orient == tk.VERTICAL else "w"
-                        pos = self._get_position_in_pane(pane)
-                        print("Trying to move:", widget)
-                        if isinstance(widget, DockPane):
-                            self._add_pane_to_pane(parent, widget, position=pos)
-                        else:
-                            self._move_into_pane_side(
-                                widget, parent, side, position=pos
-                            )
+                    widget = pane.nametowidget(pane.panedw.panes()[0])
+                    if isinstance(widget, ttk.Notebook):
+                        tabs = widget.tabs()
+                        if len(tabs) > 1:
+                            # FIXME: simplify a pane with grouped widgets.
+                            logger.warn("Grouped widgets not managed yet.")
+                            logger.warn("Aborting simplification.")
+                            return
+                        widget = pane.nametowidget(widget.tabs()[0])
+                    side = "n" if parent.orient == tk.VERTICAL else "w"
+                    pos = self._get_position_in_pane(pane)
+                    logger.debug("Trying to move: %s", widget)
+                    if isinstance(widget, DockPane):
+                        self._add_pane_to_pane(parent, widget, position=pos)
+                    else:
+                        self._move_into_pane_side(
+                            widget, parent, side, position=pos
+                        )

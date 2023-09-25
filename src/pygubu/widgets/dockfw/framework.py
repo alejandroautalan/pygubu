@@ -1,8 +1,12 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+import logging
 
 from pygubu.utils.widget import iter_to_toplevel
 from pygubu.widgets.dockfw.slotframe import SlotIndicator
+
+
+logger = logging.getLogger(__name__)
 
 
 class IDockFrame:
@@ -210,16 +214,19 @@ class DockingFramework:
             )
             if tab_below is None:
                 # No move
-                print("No move posible.")
+                logger.debug("No move posible.")
                 return
             if cls.curr_dwidget == cls.source_dwidget:
                 # Move in same pane
                 if tab_below == cls.source_tab_clicked:
                     move_inside = False
             if move_inside:
-                print("move widget", cls.source_dwidget)
-                print("as tab of:", cls.curr_dwidget)
-                print("Position:", tab_below)
+                logger.debug(
+                    "Move %s into group of %s, position %s",
+                    cls.source_dwidget,
+                    cls.curr_dwidget,
+                    tab_below,
+                )
                 dock._move_into_widget_group(
                     cls.curr_dwidget, cls.source_dwidget, tab_below
                 )
