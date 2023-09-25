@@ -81,8 +81,8 @@ class DockWidgetBO(DockWidgetBaseBO):
     container = True
     container_layout = True
     layout_required = False
-    properties = ("as_tab",)
-    ro_properties = ("as_tab",)
+    properties = ("grouped", "title")
+    ro_properties = ("grouped",)
 
     @classmethod
     def canbe_child_of(cls, parent_builder, classname):
@@ -93,17 +93,18 @@ class DockWidgetBO(DockWidgetBaseBO):
         return allowed
 
     def _process_property_value(self, pname, value):
-        if pname == "as_tab":
+        if pname == "grouped":
             return tk.getboolean(value)
         return super()._process_property_value(pname, value)
 
     def realize(self, parent, extra_init_args: dict = None):
         dock = parent.pane_widget.maindock
         args: dict = self._get_init_args(extra_init_args)
-        tabbed = args.pop("as_tab", False)
+        grouped = args.pop("grouped", False)
         print("Creating new widget. Args: ", args)
         self.widget = dock.new_widget(**args)
-        parent.pane_widget.add_widget(self.widget, as_tab=tabbed)
+        super().configure(target=self.widget)  # hack used here
+        parent.pane_widget.add_widget(self.widget, grouped=grouped)
 
     def get_child_master(self):
         return self.widget.fcenter
@@ -119,7 +120,7 @@ register_widget(
 
 register_custom_property(
     _builder_id,
-    "as_tab",
+    "grouped",
     "choice",
     values=("", "true", "false"),
     state="readonly",

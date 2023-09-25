@@ -45,14 +45,15 @@ class DockPane(DockWidgetBase, IDockPane):
     def add_pane(self, pane):
         self.maindock._add_pane_to_pane(self, pane)
 
-    def add_widget(self, widget, as_tab=False):
-        self.maindock._add_widget_to_pane(self, widget, as_tab=as_tab)
+    def add_widget(self, widget, grouped=False):
+        self.maindock._add_widget_to_pane(self, widget, grouped=grouped)
 
 
 class DockWidget(DockWidgetBase, IDockWidget):
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
         self.noteb: ttk.Notebook = None
+        self._title = None
 
     @property
     def is_grouped(self):
@@ -61,3 +62,15 @@ class DockWidget(DockWidgetBase, IDockWidget):
             if len(self.noteb.tabs()) > 1:
                 grouped = True
         return grouped
+
+    @property
+    def title(self):
+        return self._title if self._title is not None else self.uid
+
+    def configure(self, cnf=None, **kw):
+        if cnf:
+            return super().configure(cnf, **kw)
+        key = "title"
+        if key in kw:
+            self._title = kw.pop(key)
+        return super().configure(cnf, **kw)
