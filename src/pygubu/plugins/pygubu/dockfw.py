@@ -26,7 +26,7 @@ class DockFrameBO(DockWidgetBaseBO):
     maxchildren = 1
 
 
-_builder_id = "pygubu.widgets.dockframe"
+_builder_id = dockframe_uid = "pygubu.widgets.dockframe"
 register_widget(
     _builder_id, DockFrameBO, "DockFrame", ("ttk", _("Pygubu Widgets"))
 )
@@ -39,6 +39,7 @@ class DockPaneBO(DockWidgetBaseBO):
     layout_required = False
     properties = ("orient",)
     ro_properties = properties
+    allowed_parents = (dockframe_uid,)
 
     @classmethod
     def canbe_child_of(cls, parent_builder, classname):
@@ -70,7 +71,7 @@ class DockPaneBO(DockWidgetBaseBO):
         pass
 
 
-_builder_id = "pygubu.widgets.dockpane"
+_builder_id = dockpane_uid = "pygubu.widgets.dockpane"
 register_widget(
     _builder_id, DockPaneBO, "DockPane", ("ttk", _("Pygubu Widgets"))
 )
@@ -83,6 +84,7 @@ class DockWidgetBO(DockWidgetBaseBO):
     layout_required = False
     properties = ("grouped", "title")
     ro_properties = ("grouped",)
+    allowed_parents = (dockframe_uid, dockpane_uid)
 
     @classmethod
     def canbe_child_of(cls, parent_builder, classname):
