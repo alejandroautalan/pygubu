@@ -364,7 +364,7 @@ class TTKTreeviewBO(TTKWidgetBO):
     )
     OPTIONS_SPECIFIC = ("height", "padding", "selectmode", "show")
     class_ = ttk.Treeview
-    container = False
+    container = True
     allowed_children = ("ttk.Treeview.Column",)
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     virtual_events = (
