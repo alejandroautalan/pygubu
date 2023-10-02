@@ -33,6 +33,9 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.plugins.pygubu.filterabletreeview": (
             "pygubu.widgets.FilterableTreeview",
         ),
+        "pygubu.plugins.pygubu.accordionframe": (
+            "pygubu.widgets.accordionframe",
+        ),
         "pygubu.plugins.pygubu.dockfw": (
             "pygubu.widgets.dockframe",
             "pygubu.widgets.dockpane",
