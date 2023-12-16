@@ -74,7 +74,7 @@ class TKScrolledFrameBO(BuilderObject):
 register_widget(
     "pygubu.builder.widgets.tkscrolledframe",
     TKScrolledFrameBO,
-    "ScrolledFrame",
+    "TkScrolledFrame",
     (_("Pygubu Widgets"), "tk"),
     group=0,
 )
