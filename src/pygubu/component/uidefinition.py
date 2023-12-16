@@ -59,31 +59,31 @@ class UIDefinition(object):
         if wmetaclass is None:
             self.wmetaclass = WidgetMeta
         self.translator = translator
-        self._code_options = {}
+        self._project_options = {}
         self.__create()
 
     @property
-    def code_options(self) -> dict:
-        return self._code_options
+    def project_options(self) -> dict:
+        return self._project_options
 
-    @code_options.setter
-    def code_options(self, bag: dict):
-        self._code_options = bag
+    @project_options.setter
+    def project_options(self, bag: dict):
+        self._project_options = bag
 
-    def _load_code_options(self):
-        xpath = ".//code_options"
+    def _load_project_options(self):
+        xpath = ".//project_options"
         node: ET.Element = self.tree.find(xpath)
         if node is not None:
-            self._code_options = node.attrib.copy()
+            self._project_options = node.attrib.copy()
 
-    def _save_code_options(self):
-        xpath = ".//code_options"
+    def _save_project_options(self):
+        xpath = ".//project_options"
         node: ET.Element = self.root.find(xpath)
         if node is None:
-            node = ET.Element("code_options")
+            node = ET.Element("project_options")
             self.root.append(node)
         node.clear()
-        for key, value in self._code_options.items():
+        for key, value in self._project_options.items():
             node.attrib[key] = str(value)
 
     def _prop_from_xml(self, pnode, element):
@@ -439,7 +439,7 @@ class UIDefinition(object):
         self.root = root
         self.version = version
         self.author = author
-        self._load_code_options()
+        self._load_project_options()
 
     def load_file(self, file_or_filename):
         tree = ET.parse(file_or_filename)
@@ -474,7 +474,7 @@ class UIDefinition(object):
         return '<UIFile xml="{0}">'.format(self.__str__())
 
     def save(self, file_or_filename):
-        self._save_code_options()
+        self._save_project_options()
         indent(self.root)
         self.tree.write(
             file_or_filename, xml_declaration=True, encoding="utf-8"
