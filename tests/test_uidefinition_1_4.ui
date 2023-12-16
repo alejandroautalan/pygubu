@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<project version="1.4" author="PygubuDesigner 0.36">
+  <interfaces>
+    <object class="ttk.Frame" id="fmain" named="True">
+      <property name="height">200</property>
+      <property name="width">200</property>
+      <layout manager="grid">
+        <property name="column">0</property>
+        <property name="row">0</property>
+      </layout>
+      <child>
+        <object class="ttk.Label" id="label1">
+          <property name="text" translatable="yes">Test UI definition 1.4</property>
+          <layout manager="pack">
+            <property name="side">top</property>
+          </layout>
+        </object>
+      </child>
+    </object>
+  </interfaces>
+  <project_options template="application" main_widget_id="" main_menu_id="" main_classname="TestUidefinition14" import_tkvariables="False" use_ttk_styledefinition_file="False" use_i18n="False" relative_path="true" output_path="" />
+</project>
