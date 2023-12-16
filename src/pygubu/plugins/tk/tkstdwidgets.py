@@ -62,7 +62,7 @@ class TKRootBO(WmMixin, BuilderObject):
     )
 
 
-register_widget("tk.Tk", TKRootBO, "Tk", (_("Containers"), "tk", "ttk"))
+register_widget("tk.Tk", TKRootBO, "tk.Tk", (_("Containers"), "tk", "ttk"))
 
 
 class TKToplevel(WmMixin, BuilderObject):
@@ -117,7 +117,7 @@ class TKToplevel(WmMixin, BuilderObject):
 
 
 register_widget(
-    "tk.Toplevel", TKToplevel, "Toplevel", (_("Containers"), "tk", "ttk")
+    "tk.Toplevel", TKToplevel, "tk.Toplevel", (_("Containers"), "tk", "ttk")
 )
 
 
@@ -147,7 +147,7 @@ class TKFrame(BuilderObject):
     ro_properties = ("class_", "container")
 
 
-register_widget("tk.Frame", TKFrame, "Frame", (_("Containers"), "tk"))
+register_widget("tk.Frame", TKFrame, "tk.Frame", (_("Containers"), "tk"))
 
 
 class TKLabel(BuilderObject):
@@ -184,7 +184,7 @@ class TKLabel(BuilderObject):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 
-register_widget("tk.Label", TKLabel, "Label", (_("Control & Display"), "tk"))
+register_widget("tk.Label", TKLabel, "tk.Label", (_("Control & Display"), "tk"))
 
 
 class TKLabelFrame(BuilderObject):
@@ -217,7 +217,7 @@ class TKLabelFrame(BuilderObject):
 
 
 register_widget(
-    "tk.LabelFrame", TKLabelFrame, "LabelFrame", (_("Containers"), "tk")
+    "tk.LabelFrame", TKLabelFrame, "tk.LabelFrame", (_("Containers"), "tk")
 )
 
 
@@ -268,7 +268,7 @@ class TKEntry(EntryBaseBO):
     )
 
 
-register_widget("tk.Entry", TKEntry, "Entry", (_("Control & Display"), "tk"))
+register_widget("tk.Entry", TKEntry, "tk.Entry", (_("Control & Display"), "tk"))
 
 
 class TKButton(BuilderObject):
@@ -316,7 +316,9 @@ class TKButton(BuilderObject):
     command_properties = ("command",)
 
 
-register_widget("tk.Button", TKButton, "Button", (_("Control & Display"), "tk"))
+register_widget(
+    "tk.Button", TKButton, "tk.Button", (_("Control & Display"), "tk")
+)
 
 
 class TKCheckbutton(BuilderObject):
@@ -374,7 +376,7 @@ class TKCheckbutton(BuilderObject):
 register_widget(
     "tk.Checkbutton",
     TKCheckbutton,
-    "Checkbutton",
+    "tk.Checkbutton",
     (_("Control & Display"), "tk"),
 )
 
@@ -433,7 +435,7 @@ class TKRadiobutton(BuilderObject):
 register_widget(
     "tk.Radiobutton",
     TKRadiobutton,
-    "Radiobutton",
+    "tk.Radiobutton",
     (_("Control & Display"), "tk"),
 )
 
@@ -475,7 +477,7 @@ class TKListbox(BuilderObject):
 
 
 register_widget(
-    "tk.Listbox", TKListbox, "Listbox", (_("Control & Display"), "tk")
+    "tk.Listbox", TKListbox, "tk.Listbox", (_("Control & Display"), "tk")
 )
 
 
@@ -573,7 +575,7 @@ class TKText(BuilderObject):
 
 
 register_widget(
-    "tk.Text", TKText, "Text", (_("Control & Display"), "tk", "ttk")
+    "tk.Text", TKText, "tk.Text", (_("Control & Display"), "tk", "ttk")
 )
 
 
@@ -606,7 +608,7 @@ class TKPanedWindow(PanedWindowBO):
 
 
 register_widget(
-    "tk.PanedWindow", TKPanedWindow, "PanedWindow", (_("Containers"), "tk")
+    "tk.PanedWindow", TKPanedWindow, "tk.PanedWindow", (_("Containers"), "tk")
 )
 
 
@@ -661,7 +663,7 @@ class TKMenubutton(BuilderObject):
 register_widget(
     "tk.Menubutton",
     TKMenubutton,
-    "Menubutton",
+    "tk.Menubutton",
     (
         _("Menu"),
         _("Control & Display"),
@@ -695,7 +697,7 @@ class TKMessage(BuilderObject):
 
 
 register_widget(
-    "tk.Message", TKMessage, "Message", (_("Control & Display"), "tk", "ttk")
+    "tk.Message", TKMessage, "tk.Message", (_("Control & Display"), "tk", "ttk")
 )
 
 
@@ -740,7 +742,7 @@ class TKScale(BuilderObject):
     command_properties = ("command",)
 
 
-register_widget("tk.Scale", TKScale, "Scale", (_("Control & Display"), "tk"))
+register_widget("tk.Scale", TKScale, "tk.Scale", (_("Control & Display"), "tk"))
 
 
 class TKScrollbar(BuilderObject):
@@ -773,7 +775,7 @@ class TKScrollbar(BuilderObject):
 
 
 register_widget(
-    "tk.Scrollbar", TKScrollbar, "Scrollbar", (_("Control & Display"), "tk")
+    "tk.Scrollbar", TKScrollbar, "tk.Scrollbar", (_("Control & Display"), "tk")
 )
 
 
@@ -849,7 +851,7 @@ class TKSpinbox(BuilderObject):
 
 
 register_widget(
-    "tk.Spinbox", TKSpinbox, "Spinbox", (_("Control & Display"), "tk")
+    "tk.Spinbox", TKSpinbox, "tk.Spinbox", (_("Control & Display"), "tk")
 )
 
 
@@ -891,7 +893,7 @@ class TKCanvas(BuilderObject):
 
 
 register_widget(
-    "tk.Canvas", TKCanvas, "Canvas", (_("Control & Display"), "tk", "ttk")
+    "tk.Canvas", TKCanvas, "tk.Canvas", (_("Control & Display"), "tk", "ttk")
 )
 
 
@@ -985,7 +987,7 @@ class TKMenu(BuilderObject):
         return lines
 
 
-register_widget("tk.Menu", TKMenu, "Menu", (_("Menu"), "tk", "ttk"))
+register_widget("tk.Menu", TKMenu, "tk.Menu", (_("Menu"), "tk", "ttk"))
 
 
 #
@@ -1432,7 +1434,7 @@ class TKPanedWindowPane(PanedWindowPaneBO):
 register_widget(
     "tk.PanedWindow.Pane",
     TKPanedWindowPane,
-    "PanedWindow.Pane",
+    "tk.PanedWindow.Pane",
     (_("Pygubu Helpers"), "tk"),
 )
 
@@ -1537,6 +1539,6 @@ class TKOptionMenu(OptionMenuBaseMixin, BuilderObject):
 register_widget(
     "tk.OptionMenu",
     TKOptionMenu,
-    "OptionMenu",
+    "tk.OptionMenu",
     (_("Control & Display"), "tk"),
 )

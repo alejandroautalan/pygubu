@@ -40,7 +40,7 @@ class TTKFrame(TTKWidgetBO):
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 
-register_widget("ttk.Frame", TTKFrame, "Frame", (_("Containers"), "ttk"))
+register_widget("ttk.Frame", TTKFrame, "ttk.Frame", (_("Containers"), "ttk"))
 
 
 class TTKLabel(TTKWidgetBO):
@@ -65,7 +65,9 @@ class TTKLabel(TTKWidgetBO):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 
-register_widget("ttk.Label", TTKLabel, "Label", (_("Control & Display"), "ttk"))
+register_widget(
+    "ttk.Label", TTKLabel, "ttk.Label", (_("Control & Display"), "ttk")
+)
 
 
 class TTKButton(TTKWidgetBO):
@@ -84,7 +86,7 @@ class TTKButton(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Button", TTKButton, "Button", (_("Control & Display"), "ttk")
+    "ttk.Button", TTKButton, "ttk.Button", (_("Control & Display"), "ttk")
 )
 
 
@@ -106,7 +108,7 @@ class TTKCheckbutton(TTKWidgetBO):
 register_widget(
     "ttk.Checkbutton",
     TTKCheckbutton,
-    "Checkbutton",
+    "ttk.Checkbutton",
     (_("Control & Display"), "ttk"),
 )
 
@@ -130,7 +132,7 @@ class TTKRadiobutton(TTKWidgetBO):
 register_widget(
     "ttk.Radiobutton",
     TTKRadiobutton,
-    "Radiobutton",
+    "ttk.Radiobutton",
     (_("Control & Display"), "ttk"),
 )
 
@@ -172,7 +174,7 @@ class TTKCombobox(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Combobox", TTKCombobox, "Combobox", (_("Control & Display"), "ttk")
+    "ttk.Combobox", TTKCombobox, "ttk.Combobox", (_("Control & Display"), "ttk")
 )
 
 
@@ -185,7 +187,10 @@ class TTKScrollbar(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Scrollbar", TTKScrollbar, "Scrollbar", (_("Control & Display"), "ttk")
+    "ttk.Scrollbar",
+    TTKScrollbar,
+    "ttk.Scrollbar",
+    (_("Control & Display"), "ttk"),
 )
 
 
@@ -196,7 +201,7 @@ class TTKSizegrip(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Sizegrip", TTKSizegrip, "Sizegrip", (_("Control & Display"), "ttk")
+    "ttk.Sizegrip", TTKSizegrip, "ttk.Sizegrip", (_("Control & Display"), "ttk")
 )
 
 
@@ -221,7 +226,9 @@ class TTKEntry(TTKWidgetBO, EntryBaseBO):
     command_properties = ("validatecommand", "invalidcommand", "xscrollcommand")
 
 
-register_widget("ttk.Entry", TTKEntry, "Entry", (_("Control & Display"), "ttk"))
+register_widget(
+    "ttk.Entry", TTKEntry, "ttk.Entry", (_("Control & Display"), "ttk")
+)
 
 
 class TTKProgressbar(TTKWidgetBO):
@@ -241,7 +248,7 @@ class TTKProgressbar(TTKWidgetBO):
 register_widget(
     "ttk.Progressbar",
     TTKProgressbar,
-    "Progressbar",
+    "ttk.Progressbar",
     (_("Control & Display"), "ttk"),
 )
 
@@ -263,7 +270,9 @@ class TTKScale(TTKWidgetBO):
     command_properties = ("command",)
 
 
-register_widget("ttk.Scale", TTKScale, "Scale", (_("Control & Display"), "ttk"))
+register_widget(
+    "ttk.Scale", TTKScale, "ttk.Scale", (_("Control & Display"), "ttk")
+)
 
 
 class TTKSeparator(TTKWidgetBO):
@@ -274,7 +283,10 @@ class TTKSeparator(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Separator", TTKSeparator, "Separator", (_("Control & Display"), "ttk")
+    "ttk.Separator",
+    TTKSeparator,
+    "ttk.Separator",
+    (_("Control & Display"), "ttk"),
 )
 
 
@@ -292,7 +304,7 @@ class TTKLabelframe(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Labelframe", TTKLabelframe, "Labelframe", (_("Containers"), "ttk")
+    "ttk.Labelframe", TTKLabelframe, "ttk.Labelframe", (_("Containers"), "ttk")
 )
 
 
@@ -306,7 +318,10 @@ class TTKPanedwindow(TTKWidgetBO, PanedWindowBO):
 
 
 register_widget(
-    "ttk.Panedwindow", TTKPanedwindow, "Panedwindow", (_("Containers"), "ttk")
+    "ttk.Panedwindow",
+    TTKPanedwindow,
+    "ttk.Panedwindow",
+    (_("Containers"), "ttk"),
 )
 
 
@@ -320,7 +335,7 @@ class TTKNotebook(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Notebook", TTKNotebook, "Notebook", (_("Containers"), "ttk")
+    "ttk.Notebook", TTKNotebook, "ttk.Notebook", (_("Containers"), "ttk")
 )
 
 
@@ -348,7 +363,7 @@ class TTKMenubuttonBO(TTKWidgetBO):
 register_widget(
     "ttk.Menubutton",
     TTKMenubuttonBO,
-    "Menubutton",
+    "ttk.Menubutton",
     (
         _("Menu"),
         _("Control & Display"),
@@ -457,7 +472,10 @@ class TTKTreeviewBO(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Treeview", TTKTreeviewBO, "Treeview", (_("Control & Display"), "ttk")
+    "ttk.Treeview",
+    TTKTreeviewBO,
+    "ttk.Treeview",
+    (_("Control & Display"), "ttk"),
 )
 
 
@@ -479,7 +497,7 @@ class TTKPanedwindowPane(TTKWidgetBO, PanedWindowPaneBO):
 register_widget(
     "ttk.Panedwindow.Pane",
     TTKPanedwindowPane,
-    "Panedwindow.Pane",
+    "ttk.Panedwindow.Pane",
     (_("Pygubu Helpers"), "ttk"),
 )
 
@@ -685,7 +703,10 @@ if tk.TkVersion >= 8.6:
     TTKSpinboxBO.class_ = ttk.Spinbox
 
     register_widget(
-        "ttk.Spinbox", TTKSpinboxBO, "Spinbox", (_("Control & Display"), "ttk")
+        "ttk.Spinbox",
+        TTKSpinboxBO,
+        "ttk.Spinbox",
+        (_("Control & Display"), "ttk"),
     )
 
 
@@ -720,7 +741,7 @@ class OptionMenuBO(OptionMenuBaseMixin, BuilderObject):
 register_widget(
     "ttk.OptionMenu",
     OptionMenuBO,
-    "OptionMenu",
+    "ttk.OptionMenu",
     (_("Control & Display"), "ttk"),
 )
 
@@ -749,6 +770,6 @@ class LabeledScaleBO(BuilderObject):
 register_widget(
     "ttk.LabeledScale",
     LabeledScaleBO,
-    "LabeledScale",
+    "ttk.LabeledScale",
     (_("Control & Display"), "ttk"),
 )
