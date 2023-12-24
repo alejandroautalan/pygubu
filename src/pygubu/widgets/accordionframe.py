@@ -39,7 +39,14 @@ class AccordionFrame(ttk.Frame):
             ]
         self.__images = AccordionFrame.IMAGES
 
-    def add_group(self, gid, label=None, expanded=True):
+    def add_group(
+        self,
+        gid,
+        label=None,
+        expanded=True,
+        style="Toolbutton",
+        compound="left",
+    ):
 
         glabel = label
         if label is None:
@@ -49,13 +56,12 @@ class AccordionFrame(ttk.Frame):
         btn = ttk.Button(
             self,
             text=glabel,
-            style="Toolbutton",
+            style=style,
             image=self.__images[0],
-            compound="left",
+            compound=compound,
         )
         btn.grid(sticky=tk.EW)
-        btn.dd_show = True
-        btn.configure(command=lambda: self.__button_clicked(gid))
+        btn.configure(command=lambda: self._toggle_group(gid))
 
         # frame creation
         frame = ttk.Frame(self, width=100, height=100)
@@ -64,7 +70,7 @@ class AccordionFrame(ttk.Frame):
         frame.columnconfigure(0, weight=1)
 
         if not expanded:
-            self.after_idle(lambda: self.__button_clicked(gid))
+            self.after_idle(lambda: self._toggle_group(gid))
 
         # store button, and frame
         self.__groups[gid] = (btn, frame)
@@ -77,14 +83,29 @@ class AccordionFrame(ttk.Frame):
     def group_toogle(self, gid):
         self.__button_clicked(gid)
 
-    def __button_clicked(self, gid):
+    def group_config(self, gid, **kw):
         btn, frame = self.__groups[gid]
-        if btn.dd_show:
-            btn.dd_show = False
+        label = "label"
+        if label in kw:
+            btn.configure(text=kw[label])
+        expanded = "expanded"
+        if expanded in kw:
+            self.after_idle(
+                lambda: self._toggle_group(gid, toggle_to=kw[expanded])
+            )
+        compound = "compound"
+        if compound in kw:
+            btn.configure(compound=kw[compound])
+        style = "style"
+        if style in kw:
+            btn.configure(style=kw[style])
+
+    def _toggle_group(self, gid, toggle_to=None):
+        btn, frame = self.__groups[gid]
+        if frame.winfo_viewable() or toggle_to is False:
             btn.configure(image=self.__images[1])
             frame.grid_remove()
         else:
-            btn.dd_show = True
             btn.configure(image=self.__images[0])
             frame.grid()
         self.event_generate("<<AccordionGroupToggle>>")
