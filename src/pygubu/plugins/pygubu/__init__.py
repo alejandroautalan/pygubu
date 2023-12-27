@@ -41,6 +41,7 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             "pygubu.widgets.dockpane",
             "pygubu.widgets.dockwidget",
         ),
+        "pygubu.plugins.pygubu.hideableframe": ("pygubu.widgets.hideableframe"),
     }
 
     def do_activate(self) -> bool:
