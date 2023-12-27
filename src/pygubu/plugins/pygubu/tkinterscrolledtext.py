@@ -13,6 +13,6 @@ class TkinterScrolledTextBO(TKText):
 register_widget(
     "pygubu.builder.widgets.tkinterscrolledtext",
     TkinterScrolledTextBO,
-    "ScrolledText",
+    "tk.ScrolledText",
     (_("Control & Display"), "tk"),
 )

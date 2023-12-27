@@ -72,6 +72,6 @@ class TKSBHelperBO(BuilderObject):
 register_widget(
     "pygubu.builder.widgets.tkscrollbarhelper",
     TKSBHelperBO,
-    "ScrollbarHelper",
+    "tk.ScrollbarHelper",
     (_("Pygubu Helpers"), "tk"),
 )
