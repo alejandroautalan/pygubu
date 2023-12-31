@@ -3,6 +3,11 @@ History
 
 Changes for version 0.32 (next)
 
+  * New builder for create a tkinter.Tk widget. (use it with caution)
+  * Rewrite StockImage class. Allow to pass a user specific tkroot to create images.
+  * Set widget tcl name for named widgets in designer. refs #287
+  * Editabletreeview, allow a column to have multiple editors per row.
+  * New FilterableTreeview widget.
   * Fix callback argument for code generation in designer. refs alejandroautalan/pygubu-designer#205
   * Fix for issue #284
   * Fix for missed update of 'activeoutline' color in CalendarFrame widget #285 (BloodyRain2k)
@@ -86,7 +91,7 @@ Changes for version 0.24
 Changes for version 0.23.1
 
   * Fix: Generate regular treeview properties in the Code Script #264 (jrezai)
-  
+
 Changes for version 0.23
 
   * Translations for pygubu strings in pygubu-designer (larryw3i)
@@ -120,7 +125,7 @@ Changes for version 0.9.8
 
   * Use entry_points field for installing a startup script with setuptools
   * Fixed issues #66, #86
-  
+
 Changes for version 0.9.7.9
 
   * Fixed issues #72, #74, #78, #81
@@ -153,7 +158,7 @@ Changes for version 0.9.7.3
 
 Changes for version 0.9.7
 
-  * Fixed issues #39, #41 
+  * Fixed issues #39, #41
 
 Changes for version 0.9.6.7
 
@@ -206,7 +211,7 @@ Changes for version 0.9.4
   * Fixed bugs.
 
 Changes for version 0.9.3
-    
+
   * Allow to select control variable type
   * Fixed some bugs.
 
