@@ -159,13 +159,17 @@ class BuilderObject(object):
         # Set widget tcl name
         # Note: tcl does not like capital letters for widget name
         pname = "name"
-        if self.wmeta.is_named and issubclass(self.class_, tk.Widget):
+        if self._can_set_tcl_widget_name():
             if pname not in args:
                 args[pname] = str(self.wmeta.identifier).lower()
                 logger.debug(
                     "Setting widget tcl name to: %s", self.wmeta.identifier
                 )
         return args
+
+    def _can_set_tcl_widget_name(self) -> bool:
+        """Returns True if widget accepts the tcl "name" init argument."""
+        return self.wmeta.is_named and issubclass(self.class_, tk.Widget)
 
     def configure(self, target=None):
         if target is None:

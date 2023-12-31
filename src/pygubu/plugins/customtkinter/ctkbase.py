@@ -79,6 +79,10 @@ class CTkBaseMixin:
     uses_ctk_font = False
     uses_ctk_image = False
 
+    def _can_set_tcl_widget_name(self) -> bool:
+        """Returns True if widget accepts the tcl "name" init argument."""
+        return False
+
     def _process_property_value(self, pname, value):
         if pname in ("width", "height"):
             return int(value)
