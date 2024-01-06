@@ -45,12 +45,12 @@ function build {
 }
 
 function upload_testpypi {
-    build
+    build && \
     twine upload --skip-existing -r test_pygubu dist/*
 }
 
 function upload_pypi {
-    build
+    build && \
     twine upload --skip-existing -r pygubu_project dist/*
 }
 
