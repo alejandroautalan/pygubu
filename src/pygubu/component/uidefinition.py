@@ -60,7 +60,35 @@ class UIDefinition(object):
             self.wmetaclass = WidgetMeta
         self.translator = translator
         self._project_options = {}
+        self._custom_widgets = []
         self.__create()
+
+    @property
+    def custom_widgets(self) -> list:
+        return self._custom_widgets
+
+    @custom_widgets.setter
+    def custom_widgets(self, values: list):
+        self._custom_widgets = values
+
+    def _load_custom_widgets(self):
+        xpath = "./customwidgets/customwidget"
+        node_list: ET.Element = self.root.findall(xpath)
+        if node_list is not None:
+            for node in node_list:
+                self._custom_widgets.append(node.attrib["path"])
+
+    def _save_custom_widgets(self):
+        xpath = "./customwidgets"
+        node: ET.Element = self.root.find(xpath)
+        if node is None:
+            node = ET.Element("customwidgets")
+            self.root.append(node)
+        node.clear()
+        for value in self._custom_widgets:
+            cnode = ET.Element("customwidget")
+            cnode.attrib["path"] = str(value)
+            node.append(cnode)
 
     @property
     def project_options(self) -> dict:
@@ -440,6 +468,7 @@ class UIDefinition(object):
         self.version = version
         self.author = author
         self._load_project_options()
+        self._load_custom_widgets()
 
     def load_file(self, file_or_filename):
         tree = ET.parse(file_or_filename)
@@ -475,6 +504,7 @@ class UIDefinition(object):
 
     def save(self, file_or_filename):
         self._save_project_options()
+        self._save_custom_widgets()
         indent(self.root)
         self.tree.write(
             file_or_filename, xml_declaration=True, encoding="utf-8"
