@@ -1,4 +1,5 @@
 # encoding: utf-8
+import sys
 import importlib
 import logging
 import tkinter
@@ -175,8 +176,15 @@ class Builder(object):
                     logger.debug(msg, _module)
                     raise e
 
-        # If no plugin, Try loading as old custom widget method.
+        # If no plugin, Try loading as new project custom widget
+        new_project_custom_widget = False
         if not plugin_managed:
+            self._load_custom_widgets()
+            if self.is_mapped(builder_id):
+                new_project_custom_widget = True
+
+        # If no plugin, or custom widget. Try loading as old custom widget method.
+        if not plugin_managed and not new_project_custom_widget:
             _module = builder_id
             try:
                 # Import module as full path
@@ -197,6 +205,34 @@ class Builder(object):
                     msg = "Failed to import module: %s"
                     logger.debug(msg, _module)
                     raise e
+
+    def _load_custom_widgets(self):
+        ui_dir = Path().resolve()
+        uifile = self.uidefinition.uifile
+        if uifile is not None:
+            ui_dir = Path(uifile).parent.resolve()
+
+        custom_widgets = [
+            Path(ui_dir, cwpath).resolve()
+            for cwpath in self.uidefinition.custom_widgets
+        ]
+
+        for path in custom_widgets:
+            if not path.match("*.py"):
+                continue
+
+            dirname = str(path.parent)
+            modulename = path.name[:-3]
+            if dirname not in sys.path:
+                sys.path.append(dirname)
+            try:
+                importlib.import_module(modulename)
+            except (ModuleNotFoundError, ImportError) as e:
+                logger.error(
+                    "Failed to load custom widget module: %s", str(path)
+                )
+                logger.exception(e)
+                raise e
 
     def is_mapped(self, builder_uid):
         return builder_uid in CLASS_MAP
