@@ -36,7 +36,8 @@ def isfloat(num: str) -> bool:
 #
 
 WidgetDescription = namedtuple(
-    "WidgetDescription", ["classname", "builder", "label", "tags", "group"]
+    "WidgetDescription",
+    ["classname", "builder", "label", "tags", "group", "public"],
 )
 
 CLASS_MAP = {}
