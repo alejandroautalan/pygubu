@@ -61,6 +61,7 @@ class UIDefinition(object):
         self.translator = translator
         self._project_options = {}
         self._custom_widgets = []
+        self.uifile = None
         self.__create()
 
     @property
@@ -473,6 +474,7 @@ class UIDefinition(object):
     def load_file(self, file_or_filename):
         tree = ET.parse(file_or_filename)
         self._tree_load(tree)
+        self.uifile = file_or_filename
 
     def load_from_string(self, source, version=None):
         tree = ET.ElementTree(ET.fromstring(source))
