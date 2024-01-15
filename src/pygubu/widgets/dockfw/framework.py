@@ -94,13 +94,15 @@ class DockingFramework:
 
     @classmethod
     def drag_start(cls, event: tk.Event):
-        cls.get_targets_below_mouse(event)
-        cls.curr_dock = cls.bmouse_dock
-        cls.curr_dpane = cls.bmouse_dpane
-        cls.curr_dwidget = cls.bmouse_dwidget
+        # Only start movement if a tab is clicked
         cls.source_tab_clicked = tab_below_mouse(
             event.widget, event.x_root, event.y_root
         )
+        if cls.source_tab_clicked is not None:
+            cls.get_targets_below_mouse(event)
+            cls.curr_dock = cls.bmouse_dock
+            cls.curr_dpane = cls.bmouse_dpane
+            cls.curr_dwidget = cls.bmouse_dwidget
 
     @classmethod
     def drag_motion(cls, event: tk.Event):
