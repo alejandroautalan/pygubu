@@ -71,6 +71,8 @@ class DockPaneBO(DockWidgetBaseBO):
 
 
 _builder_id = dockpane_uid = "pygubu.widgets.dockpane"
+DockPaneBO.add_allowed_child(_builder_id)
+
 register_widget(
     _builder_id, DockPaneBO, "DockPane", ("ttk", _("Pygubu Widgets"))
 )
@@ -123,6 +125,8 @@ class DockWidgetBO(DockWidgetBaseBO):
 
 
 _builder_id = "pygubu.widgets.dockwidget"
+DockPaneBO.add_allowed_child(_builder_id)
+
 register_widget(
     _builder_id, DockWidgetBO, "DockWidget", ("ttk", _("Pygubu Widgets"))
 )
