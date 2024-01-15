@@ -30,12 +30,12 @@ class DockFrame(DockWidgetBase, IDockFrame):
     def main_pane(self):
         return self._main_pane
 
-    def _add_pane_to_pane(self, topane, newpane, position=tk.END):
-        topane.panedw.insert(position, newpane)
+    def _add_pane_to_pane(self, topane, newpane, position=tk.END, **pane_kw):
+        topane.panedw.insert(position, newpane, **pane_kw)
         newpane.parent_pane = topane
 
     def _add_widget_to_pane(
-        self, topane, widget, grouped=False, position=tk.END
+        self, topane, widget, grouped=False, position=tk.END, weight=1
     ):
         nb = None
         if grouped:
@@ -46,7 +46,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
             nb = ttk.Notebook(self)
             DockingFramework.init_binding(nb)
             # topane.panedw.add(nb, weight=1)
-            topane.panedw.insert(position, nb, weight=1)
+            topane.panedw.insert(position, nb, weight=weight)
         nb.add(widget, text=widget.title)
         widget.tkraise()
         widget.parent_pane = topane

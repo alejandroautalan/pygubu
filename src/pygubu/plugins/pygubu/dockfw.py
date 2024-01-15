@@ -37,7 +37,7 @@ class DockPaneBO(DockWidgetBaseBO):
     container = True
     container_layout = False
     layout_required = False
-    properties = ("orient",)
+    properties = ("orient", "weight")
     ro_properties = properties
     allowed_parents = (dockframe_uid,)
 
@@ -57,9 +57,10 @@ class DockPaneBO(DockWidgetBaseBO):
         args = self._get_init_args(extra_init_args)
         if not self.widget.main_pane:
             args["main_pane"] = True
+        pweight = args.pop("weight", 1)
         self.pane_widget = self.widget.new_pane(**args)
         if isinstance(parent, DockPaneBO):
-            parent.pane_widget.add_pane(self.pane_widget)
+            parent.pane_widget.add_pane(self.pane_widget, weight=pweight)
         return self.widget
 
     def configure(self, target=None):
@@ -74,14 +75,21 @@ register_widget(
     _builder_id, DockPaneBO, "DockPane", ("ttk", _("Pygubu Widgets"))
 )
 
+register_custom_property(
+    _builder_id,
+    "weight",
+    "integernumber",
+    help=_("The weight value for the pane."),
+)
+
 
 class DockWidgetBO(DockWidgetBaseBO):
     class_ = widgets.DockWidget
     container = True
     container_layout = True
     layout_required = False
-    properties = ("grouped", "title")
-    ro_properties = ("grouped",)
+    properties = ("grouped", "weight", "title")
+    ro_properties = ("grouped", "weight")
     allowed_parents = (dockframe_uid, dockpane_uid)
 
     @classmethod
@@ -100,9 +108,12 @@ class DockWidgetBO(DockWidgetBaseBO):
         dock = parent.pane_widget.maindock
         args: dict = self._get_init_args(extra_init_args)
         grouped = args.pop("grouped", False)
+        weight = args.pop("weight", 1)
         self.widget = dock.new_widget(**args)
         super().configure(target=self.widget)  # hack used here
-        parent.pane_widget.add_widget(self.widget, grouped=grouped)
+        parent.pane_widget.add_widget(
+            self.widget, grouped=grouped, weight=weight
+        )
 
     def get_child_master(self):
         return self.widget.fcenter
@@ -122,4 +133,11 @@ register_custom_property(
     "choice",
     values=("", "true", "false"),
     state="readonly",
+)
+
+register_custom_property(
+    _builder_id,
+    "weight",
+    "integernumber",
+    help=_("The weight value of the widget in the pane"),
 )

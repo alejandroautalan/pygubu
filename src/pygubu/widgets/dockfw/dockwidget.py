@@ -42,11 +42,13 @@ class DockPane(DockWidgetBase, IDockPane):
     def count(self):
         return len(self.panedw.panes())
 
-    def add_pane(self, pane):
-        self.maindock._add_pane_to_pane(self, pane)
+    def add_pane(self, pane, **pane_kw):
+        self.maindock._add_pane_to_pane(self, pane, **pane_kw)
 
-    def add_widget(self, widget, grouped=False):
-        self.maindock._add_widget_to_pane(self, widget, grouped=grouped)
+    def add_widget(self, widget, grouped=False, weight=1):
+        self.maindock._add_widget_to_pane(
+            self, widget, grouped=grouped, weight=weight
+        )
 
 
 class DockWidget(DockWidgetBase, IDockWidget):
