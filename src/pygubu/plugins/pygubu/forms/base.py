@@ -24,6 +24,16 @@ class FieldBOMixin:
             return tk.getboolean(value)
         return super()._process_property_value(pname, value)
 
+    def _code_get_init_args(self, code_identifier):
+        args = super()._code_get_init_args(code_identifier)
+        field_name_value = args.get("field_name", None)
+        if not field_name_value:
+            field_name_value = self.wmeta.identifier
+            args["field_name"] = self._code_process_property_value(
+                code_identifier, "field_name", field_name_value
+            )
+        return args
+
 
 register_custom_property("pygubu.forms.*", "field_name", "fieldname_entry")
 register_custom_property("pygubu.forms.*", "field_initial", "entry")
