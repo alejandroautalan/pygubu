@@ -37,7 +37,7 @@ _builder_uid = f"{_plugin_uid}.FrameForm"
 register_widget(
     _builder_uid,
     FrameFormBO,
-    "Form",
+    "FrameForm",
     _designer_tabs,
     group=GROUP0,
 )

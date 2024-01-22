@@ -27,7 +27,7 @@ _builder_uid = f"{_plugin_uid}.ComboboxField"
 register_widget(
     _builder_uid,
     ComboboxFieldBO,
-    "ComboboxField",
+    "PygubuComboboxField",
     _designer_tabs,
 )
 
