@@ -55,6 +55,7 @@ class TkVarBasedWidget(TkWidgetBase):
 
 class TextField(FieldBase, TkWidgetBase, tk.Text):
     def wset_value(self, value):
+        self.delete("0.0", tk.END)
         state = self.cget("state")
         if state == tk.DISABLED:
             self.configure(state=tk.NORMAL)
