@@ -1139,6 +1139,7 @@ class TKMenuitem(BuilderObject):
 
 
 class TKMenuitemSubmenu(TKMenuitem):
+    container = True
     itemtype = "submenu"
     allowed_parents = ("tk.Menu", "tk.Menuitem.Submenu")
     allowed_children = (
