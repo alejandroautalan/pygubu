@@ -132,6 +132,7 @@ class DockingFramework:
             cls.curr_dpane.indicators_visible(True)
         if (
             cls.bmouse_dwidget is not None
+            and cls.curr_dwidget is not None
             and cls.curr_dwidget != cls.bmouse_dwidget
         ):
             cls.curr_dwidget.indicators_visible(False)
@@ -180,7 +181,8 @@ class DockingFramework:
                 cls.curr_dock.indicators_visible(False)
                 if cls.curr_dpane:
                     cls.curr_dpane.indicators_visible(False)
-                cls.curr_dwidget.indicators_visible(False)
+                if cls.curr_dwidget:
+                    cls.curr_dwidget.indicators_visible(False)
                 # Execute move if any
                 cls.execute_move(event)
 
