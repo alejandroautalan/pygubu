@@ -43,7 +43,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
             if panes:
                 nb = self.nametowidget(panes[-1])
         if nb is None:
-            nb = ttk.Notebook(self)
+            nb = ttk.Notebook(self, padding=0)
             DockingFramework.init_binding(nb)
             # topane.panedw.add(nb, weight=1)
             topane.panedw.insert(position, nb, weight=weight)

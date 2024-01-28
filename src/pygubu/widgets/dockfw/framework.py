@@ -184,7 +184,8 @@ class DockingFramework:
                 if cls.curr_dwidget:
                     cls.curr_dwidget.indicators_visible(False)
                 # Execute move if any
-                cls.execute_move(event)
+                if cls.source_dwidget is not None:
+                    cls.execute_move(event)
 
             cls.curr_dock.configure(cursor=cls.cursor_default)
         cls.moving = False
