@@ -1,29 +1,29 @@
 History
 =======
 
-Changes for version 0.32 (next)
+Changes for version 0.32
 
   * New builder for create a tkinter.Tk widget. (use it with caution)
   * Rewrite StockImage class. Allow to pass a user specific tkroot to create images.
-  * Set widget tcl name for named widgets in designer. refs #287
+  * Set widget tcl name for named widgets in designer. refs alejandroautalan/pygubu#287
   * Editabletreeview, allow a column to have multiple editors per row.
   * New FilterableTreeview widget.
   * Fix callback argument for code generation in designer. refs alejandroautalan/pygubu-designer#205
   * Fix for issue #284
-  * Fix for missed update of 'activeoutline' color in CalendarFrame widget #285 (BloodyRain2k)
-  * New "linewidth" option and visual fixes for CalendarFrame widget #286 (BloodyRain2k)
+  * Fix for missed update of 'activeoutline' color in CalendarFrame widget alejandroautalan/pygubu#285 (BloodyRain2k)
+  * New "linewidth" option and visual fixes for CalendarFrame widget alejandroautalan/pygubu#286 (BloodyRain2k)
 
 Changes for version 0.31:
 
-  * Allow to setup values for option database after first window created. refs #282
+  * Allow to setup values for option database after first window created. refs alejandroautalan/pygubu#282
   * Fix for widget highlighter offsets in preview, refs alejandroautalan/pygubu-designer#203
 
 Changes for version 0.30:
 
   * Editabletreeview: Hide editors when user clicks inside treeview area
-    with no rows. This generates <<TreeviewEditorsUnfocused>> event. refs #279
+    with no rows. This generates \<\<TreeviewEditorsUnfocused\>\> event. refs alejandroautalan/pygubu#279
   * Editabletreeview: Add method get_value(col, item) to quicky
-    access tree data. refs #279
+    access tree data. refs alejandroautalan/pygubu#279
   * Fix error on ttkwidgets plugin (autocomplete widgets)
   * Add support to customtkinter 5.
     Customtkinter changed a lot from 4.6 to 5.
@@ -31,7 +31,7 @@ Changes for version 0.30:
 
 Changes for version 0.29
 
-  * Fixes for PathChooserInput. refs #278, alejandroautalan/pygubu-designer#145
+  * Fixes for PathChooserInput. refs alejandroautalan/pygubu#278, alejandroautalan/pygubu-designer#145
   * Fixes for ToplevelPreviewBaseBO (for plugins)
 
 Changes for version 0.28
@@ -57,19 +57,19 @@ Changes for version 0.26.1
 
 Changes for version 0.26
 
-  * Allow pygubu to use importlib.resources module.  refs #269
+  * Allow pygubu to use importlib.resources module.  refs alejandroautalan/pygubu#269
   * Code generation: Fix callback registration arguments.
   * Builder object, new static method configure_for_preview.
 
 Changes for version 0.25.1
 
   * Fix Menubutton code generation. refs alejandroautalan/pygubu-designer#151
-  * Fix pyinstaller hook for python 3.8  refs #270
+  * Fix pyinstaller hook for python 3.8  refs alejandroautalan/pygubu#270
 
 Changes for version 0.25
 
   * Modified ui definition file to allow decluttering of widget ids in designer (alejandroautalan/pygubu-designer#117)
-  * Fix initial value for boolean tkvariables (issue #268)
+  * Fix initial value for boolean tkvariables (issue alejandroautalan/pygubu#268)
   * Improved  menu code generation (refs alejandroautalan/pygubu-designer#103)
 
 Changes for version 0.24.2
@@ -90,7 +90,7 @@ Changes for version 0.24
 
 Changes for version 0.23.1
 
-  * Fix: Generate regular treeview properties in the Code Script #264 (jrezai)
+  * Fix: Generate regular treeview properties in the Code Script alejandroautalan/pygubu#264 (jrezai)
 
 Changes for version 0.23
 
