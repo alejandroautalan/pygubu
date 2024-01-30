@@ -88,7 +88,7 @@ class HelloworldApp:
         self.builder = builder = pygubu.Builder()
         builder.add_resource_path(PROJECT_PATH)
 
-        # 2: Load an ui file
+        # 2: Load a ui file
         builder.add_from_file(PROJECT_UI)
 
         # 3: Create the mainwindow
@@ -107,13 +107,13 @@ if __name__ == '__main__':
 
 ```
 
-Note that instead of `helloworld.ui`, you should insert the _filename_ (or full path) of your UI definition:
+Note: instead of `helloworld.ui`, you should insert the _filename_ (or full path) of your UI definition:
 
 ```python
 PROJECT_UI = PROJECT_PATH / "helloworld.ui"
 ```
 
-Note also that instead of 'mainwindow', you should have the name of your _main_widget_ (the parent of all widgets) in the following line:
+Note: instead of 'mainwindow', you should have the name of your _main_widget_ (the parent of all widgets) in the following line:
 
 ```python
 self.mainwindow = builder.get_object('_your_main_widget_')
@@ -122,7 +122,7 @@ self.mainwindow = builder.get_object('_your_main_widget_')
 Documentation
 =============
 
-Visit the pygubu [wiki](https://github.com/alejandroautalan/pygubu/wiki) for more documentation.
+Visit the [pygubu wiki](https://github.com/alejandroautalan/pygubu/wiki) for more documentation.
 
 
 The following are some good tkinter (and tk) references:
