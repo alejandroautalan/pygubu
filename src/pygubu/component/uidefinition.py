@@ -59,7 +59,7 @@ class UIDefinition(object):
         if wmetaclass is None:
             self.wmetaclass = WidgetMeta
         self.translator = translator
-        self._project_options = {}
+        self._project_settings = {}
         self._custom_widgets = []
         self.uifile = None
         self.__create()
@@ -92,28 +92,32 @@ class UIDefinition(object):
             node.append(cnode)
 
     @property
-    def project_options(self) -> dict:
-        return self._project_options
+    def project_settings(self) -> dict:
+        return self._project_settings
 
-    @project_options.setter
-    def project_options(self, bag: dict):
-        self._project_options = bag
+    @project_settings.setter
+    def project_settings(self, bag: dict):
+        self._project_settings = bag
 
-    def _load_project_options(self):
-        xpath = ".//project_options"
-        node: ET.Element = self.tree.find(xpath)
-        if node is not None:
-            self._project_options = node.attrib.copy()
+    def _load_project_settings(self):
+        xpath = ".//settings/setting"
+        node_list: ET.Element = self.tree.findall(xpath)
+        if node_list is not None:
+            for node in node_list:
+                self._project_settings[node.attrib["id"]] = node.text
 
-    def _save_project_options(self):
-        xpath = ".//project_options"
+    def _save_project_settings(self):
+        xpath = ".//settings"
         node: ET.Element = self.root.find(xpath)
         if node is None:
-            node = ET.Element("project_options")
+            node = ET.Element("settings")
             self.root.append(node)
         node.clear()
-        for key, value in self._project_options.items():
-            node.attrib[key] = str(value)
+        for key, value in self._project_settings.items():
+            child = ET.Element("setting")
+            child.attrib["id"] = str(key)
+            child.text = str(value)
+            node.append(child)
 
     def _prop_from_xml(self, pnode, element):
         pname = pnode.get("name")
@@ -468,7 +472,7 @@ class UIDefinition(object):
         self.root = root
         self.version = version
         self.author = author
-        self._load_project_options()
+        self._load_project_settings()
         self._load_custom_widgets()
 
     def load_file(self, file_or_filename):
@@ -505,7 +509,7 @@ class UIDefinition(object):
         return '<UIFile xml="{0}">'.format(self.__str__())
 
     def save(self, file_or_filename):
-        self._save_project_options()
+        self._save_project_settings()
         self._save_custom_widgets()
         indent(self.root)
         self.tree.write(
