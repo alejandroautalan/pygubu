@@ -116,7 +116,8 @@ class UIDefinition(object):
         for key, value in self._project_settings.items():
             child = ET.Element("setting")
             child.attrib["id"] = str(key)
-            child.text = str(value)
+            if value is not None:
+                child.text = str(value)
             node.append(child)
 
     def _prop_from_xml(self, pnode, element):
