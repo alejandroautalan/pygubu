@@ -7,7 +7,8 @@ from .fields import FieldBase, DisplayField
 class TkWidgetBase(FieldWidget):
     def wmark_invalid(self, state: bool):
         # Visually mark the widget as invalid depending on state parameter.
-        print("TODO > mark invalid state")
+        cname = self.__class__.__name__
+        print(f"TODO > {cname}: mark invalid state")
 
     def wis_disabled(self) -> bool:
         return "disabled" == self.cget("state")
