@@ -23,6 +23,9 @@ class LazyTranslator:
     def __str__(self):
         return _real_translator(self._message)
 
+    def __repr__(self):
+        return f"LazyTranslator('{self._message}')"
+
 
 def setup_translator(translator):
     global _real_translator
