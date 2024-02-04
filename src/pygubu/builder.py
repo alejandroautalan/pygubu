@@ -49,6 +49,11 @@ class Builder(object):
         """Add additional path to the resources paths."""
         StockImage.add_resource_path(path)
 
+    def add_resource_paths(self, path_list: list):
+        """Add multiple paths for aditional resources."""
+        for path in path_list:
+            self.add_resource_path(path)
+
     def add_resource_package(self, pkg: str):
         StockImage.add_resource_package(pkg)
 
