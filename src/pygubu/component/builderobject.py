@@ -361,7 +361,7 @@ class BuilderObject(object):
         # Set widget tcl name
         # Note: tcl does not like capital letters for widget name
         pname = "name"
-        if self.wmeta.is_named and issubclass(self.class_, tk.Widget):
+        if self._can_set_tcl_widget_name():
             if pname not in args:
                 pvalue = self._code_process_property_value(
                     code_identifier, pname, str(self.wmeta.identifier).lower()
