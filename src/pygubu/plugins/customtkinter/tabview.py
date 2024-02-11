@@ -30,6 +30,7 @@ class CTkTabviewBO(CTkBaseMixin, BuilderObject):
         "text_color",
         "text_color_disabled",
         "command",
+        "anchor",
         "state",
     )
     command_properties = ("command",)
