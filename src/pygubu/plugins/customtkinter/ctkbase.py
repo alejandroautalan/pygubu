@@ -75,6 +75,47 @@ def ctk_image_loader(source_type, source, tk_master):
     return CTkImage(Image.open(source))
 
 
+int_properties = {
+    "border_width": {},
+    "border_spacing": {},
+    "button_corner_radius": {},
+    "button_length": {},
+    "corner_radius": {},
+    "height": {},
+    "number_of_steps": {},
+    "width": {},
+    "checkbox_width": {},
+    "checkbox_height": {},
+    "radiobutton_width": {},
+    "radiobutton_height": {},
+    "border_width_unchecked": {},
+    "border_width_checked": {},
+    "switch_width": {},
+    "switch_height": {},
+    "minimum_pixel_length": {},
+    "determinate_speed": {"editor": "realnumber"},
+    "indeterminate_speed": {"editor": "realnumber"},
+    # "": {},
+}
+
+bool_properties = {
+    "dynamic_resizing": {},
+    "hover": {},
+    "activate_scrollbars": {},
+    "round_width_to_even_numbers": {},
+    "round_height_to_even_numbers": {},
+    # "": {},
+}
+
+font_properties = {
+    "font": {},
+    "dropdown_text_font": {},
+    "dropdown_font": {},
+    "label_font": {},
+    # "": {},
+}
+
+
 class CTkBaseMixin:
     uses_ctk_font = False
     uses_ctk_image = False
@@ -84,21 +125,11 @@ class CTkBaseMixin:
         return False
 
     def _process_property_value(self, pname, value):
-        if pname in ("width", "height"):
-            return int(value)
-        if pname in ("hover", "dynamic_resizing"):
+        if pname in bool_properties:
             return tk.getboolean(value)
-        if pname in (
-            "border_width",
-            "from_",
-            "to",
-            "corner_radius",
-            "button_corner_radius",
-            "button_length",
-            "number_of_steps",
-        ):
+        if pname in int_properties:
             return float(value)
-        if pname == "font":
+        if pname in font_properties:
             fdesc = tkfontstr_to_dict(value)
             _modifiers = (
                 [] if fdesc["modifiers"] is None else fdesc["modifiers"]
@@ -124,22 +155,16 @@ class CTkBaseMixin:
     #
 
     def _code_process_property_value(self, targetid, pname, value: str):
-        if pname in (
-            "hover",
-            "dynamic_resizing",
-            "border_width",
-            "from_",
-            "to",
-            "corner_radius",
-            "button_corner_radius",
-            "button_length",
-            "number_of_steps",
+        if (
+            pname in int_properties
+            or pname in bool_properties
+            or pname in font_properties
         ):
             return super()._process_property_value(pname, value)
         return super()._code_process_property_value(targetid, pname, value)
 
     def _code_set_property(self, targetid, pname, value, code_bag):
-        if pname == "font":
+        if pname in font_properties:
             CTkBaseMixin.uses_ctk_font = True
             fdesc = tkfontstr_to_dict(value)
             _modifiers = (
@@ -179,69 +204,69 @@ class CTkBaseMixin:
 # I will register here all common properties used by customtkinter widgets
 # so I don't have to repeat for each one (notice the .* at end of _builder_uid):
 _builder_uid = f"{_plugin_uid}.*"
-register_custom_property(
-    _builder_uid,
-    "bg_color",
-    "colorentry",
-    help=_("Color behind the widget if it has rounded corners."),
-)
-register_custom_property(_builder_uid, "border_color", "colorentry")
-register_custom_property(_builder_uid, "border_width", "entry")
-register_custom_property(_builder_uid, "button_color", "colorentry")
-register_custom_property(_builder_uid, "button_hover_color", "colorentry")
-register_custom_property(_builder_uid, "button_corner_radius", "entry")
-register_custom_property(_builder_uid, "button_length", "entry")
 
-register_custom_property(_builder_uid, "checkmark_color", "colorentry")
-register_custom_property(_builder_uid, "command", "simplecommandentry")
-register_custom_property(_builder_uid, "corner_radius", "entry")
+color_properties = {
+    "bg_color": {
+        "help": _("Color behind the widget if it has rounded corners.")
+    },
+    "border_color": {},
+    "button_color": {},
+    "button_hover_color": {},
+    "checkmark_color": {},
+    "dropdown_color": {},
+    "dropdown_hover_color": {},
+    "dropdown_text_color": {},
+    "dropdown_fg_color": {},
+    "fg_color": {"help": _("Main color of the widget.")},
+    "hover_color": {},
+    "placeholder_text_color": {},
+    "progress_color": {},
+    "segmented_button_fg_color": {},
+    "segmented_button_selected_color": {},
+    "segmented_button_selected_hover_color": {},
+    "segmented_button_unselected_color": {},
+    "segmented_button_unselected_hover_color": {},
+    "text_color": {},
+    "text_color_disabled": {},
+    "scrollbar_button_color": {},
+    "scrollbar_button_hover_color": {},
+    "scrollbar_fg_color": {},
+    "background_corner_colors": {},
+    "label_fg_color": {},
+    "label_text_color": {},
+    # "": {},
+}
 
-register_custom_property(_builder_uid, "dropdown_color", "colorentry")
-register_custom_property(_builder_uid, "dropdown_hover_color", "colorentry")
-register_custom_property(_builder_uid, "dropdown_text_color", "colorentry")
-register_custom_property(_builder_uid, "dropdown_text_font", "fontentry")
-register_custom_property(
-    _builder_uid,
-    "dynamic_resizing",
-    "choice",
-    values=("", "True", "False"),
-    state="readonly",
-)
+for color in color_properties:
+    register_custom_property(
+        _builder_uid, color, "colorentry", **color_properties[color]
+    )
 
-register_custom_property(
-    _builder_uid, "fg_color", "colorentry", help=_("Main color of the widget.")
-)
+for prop in int_properties:
+    editor = int_properties[prop].pop("editor", "naturalnumber")
+    register_custom_property(_builder_uid, prop, editor, **int_properties[prop])
 
-register_custom_property(_builder_uid, "height", "naturalnumber")
-register_custom_property(
-    _builder_uid,
-    "hover",
-    "choice",
-    values=("", "True", "False"),
-    state="readonly",
-)
-register_custom_property(_builder_uid, "hover_color", "colorentry")
+for prop in bool_properties:
+    register_custom_property(
+        _builder_uid,
+        prop,
+        "choice",
+        values=("", "True", "False"),
+        state="readonly",
+        **bool_properties[prop],
+    )
 
-register_custom_property(_builder_uid, "number_of_steps", "entry")
+for prop in font_properties:
+    register_custom_property(_builder_uid, prop, "fontentry")
 
 register_custom_property(_builder_uid, "placeholder_text", "entry")
-register_custom_property(_builder_uid, "placeholder_text_color", "colorentry")
-register_custom_property(_builder_uid, "progress_color", "colorentry")
-register_custom_property(
-    _builder_uid, "segmented_button_fg_color", "colorentry"
-)
-register_custom_property(
-    _builder_uid, "segmented_button_selected_color", "colorentry"
-)
-register_custom_property(
-    _builder_uid, "segmented_button_selected_hover_color", "colorentry"
-)
-register_custom_property(
-    _builder_uid, "segmented_button_unselected_color", "colorentry"
-)
-register_custom_property(
-    _builder_uid, "segmented_button_unselected_hover_color", "colorentry"
-)
+register_custom_property(_builder_uid, "command", "simplecommandentry")
+register_custom_property(_builder_uid, "text", "text")
+register_custom_property(_builder_uid, "values", "entry")
+register_custom_property(_builder_uid, "variable", "tkvarentry")
+register_custom_property(_builder_uid, "label_text", "text")
+
+
 register_custom_property(
     _builder_uid,
     "orientation",
@@ -250,7 +275,6 @@ register_custom_property(
     state="readonly",
     default_value="horizontal",
 )
-
 register_custom_property(
     _builder_uid,
     "state",
@@ -258,16 +282,6 @@ register_custom_property(
     values=("", "normal", "active", "disabled"),
     state="readonly",
 )
-
-register_custom_property(_builder_uid, "text", "text")
-register_custom_property(_builder_uid, "text_color", "colorentry")
-register_custom_property(_builder_uid, "text_color_disabled", "colorentry")
-
-register_custom_property(_builder_uid, "values", "entry")
-register_custom_property(_builder_uid, "variable", "tkvarentry")
-
-register_custom_property(_builder_uid, "width", "naturalnumber")
-
 register_custom_property(
     _builder_uid,
     "appearance_mode",
@@ -275,7 +289,6 @@ register_custom_property(
     values=("", "dark", "light"),
     state="readonly",
 )
-
 register_custom_property(
     _builder_uid,
     "color_theme",

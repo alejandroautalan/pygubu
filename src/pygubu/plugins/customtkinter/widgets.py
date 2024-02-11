@@ -7,9 +7,6 @@ from pygubu.api.v1 import (
 )
 from pygubu.i18n import _
 from pygubu.utils.datatrans import ListDTO
-from pygubu.plugins.tk.tkstdwidgets import TKFrame as TKFrameBO
-from pygubu.plugins.tk.tkstdwidgets import TKLabel as TKLabelBO
-from pygubu.plugins.tk.tkstdwidgets import TKEntry as TKEntryBO
 
 from ..customtkinter import _designer_tab_label, _plugin_uid
 from .ctkbase import (
@@ -20,18 +17,21 @@ from .ctkbase import (
 )
 
 import pygubu.plugins.customtkinter.tabview
+import pygubu.plugins.customtkinter.scrollableframe
 
 
-class CTkFrameBO(CTkBaseMixin, TKFrameBO):
+class CTkFrameBO(CTkBaseMixin, BuilderObject):
     class_ = ctk.CTkFrame
+    container = True
     properties = (
         "width",
         "height",
+        "corner_radius",
+        "border_width",
         "bg_color",
         "fg_color",
         "border_color",
-        "border_width",
-        "corner_radius",
+        "background_corner_colors",
     )
 
 
@@ -45,7 +45,7 @@ register_widget(
 )
 
 
-class CTkLabelBO(CTkBaseMixin, TKLabelBO):
+class CTkLabelBO(CTkBaseMixin, BuilderObject):
     class_ = ctk.CTkLabel
     properties = (
         "anchor",
@@ -64,11 +64,13 @@ class CTkLabelBO(CTkBaseMixin, TKLabelBO):
         "underline",
         "width",
         # CTK properties
+        "corner_radius",
         "bg_color",
         "fg_color",
+        "text_color",
+        "text_color_disabled",
         "border_color",
         "border_width",
-        "corner_radius",
     )
 
 
@@ -90,6 +92,8 @@ class CTkProgressBarBO(CTkBaseMixin, BuilderObject):
         "height",
         "variable",
         "mode",
+        "orientation",
+        # CTK properties
         "bg_color",
         "fg_color",
         "border_color",
@@ -98,7 +102,6 @@ class CTkProgressBarBO(CTkBaseMixin, BuilderObject):
         "progress_color",
         "determinate_speed",
         "indeterminate_speed",
-        "orientation",
     )
     ro_properties = ("orientation",)
 
@@ -133,16 +136,22 @@ class CTkButtonBO(CTkBaseMixin, BuilderObject):
         "compound",
         "state",
         "command",
+        # CTK properties
         "bg_color",
         "fg_color",
         "border_color",
         "border_width",
+        "border_spacing",
         "corner_radius",
         "hover_color",
         "text_color",
         "text_color_disabled",
         "hover",
         "font",
+        "background_corner_colors",
+        "round_width_to_even_numbers",
+        "round_height_to_even_numbers",
+        "anchor",
     )
     command_properties = ("command",)
     ro_properties = ("hover",)
@@ -169,6 +178,7 @@ class CTkSliderBO(CTkBaseMixin, BuilderObject):
         "to",
         "command",
         "state",
+        # CTK properties
         "bg_color",
         "fg_color",
         "border_color",
@@ -210,7 +220,7 @@ register_custom_property(
 )
 
 
-class CTkEntryBO(CTkBaseMixin, TKEntryBO):
+class CTkEntryBO(CTkBaseMixin, BuilderObject):
     class_ = ctk.CTkEntry
     allow_bindings = False
     properties = (
@@ -284,6 +294,7 @@ class CTkOptionMenuBO(CTkBaseMixin, BuilderObject):
         "dropdown_hover_color",
         "dropdown_text_color",
         "dropdown_color",
+        "dropdown_font",
         "width",
         "height",
         "corner_radius",
@@ -334,27 +345,27 @@ class CTkComboBoxBO(CTkBaseMixin, BuilderObject):
     class_ = ctk.CTkComboBox
     allow_bindings = False
     properties = (
-        "command",
-        "variable",
-        "values",
+        "corner_radius",
+        "border_width",
         "bg_color",
         "fg_color",
         "border_color",
-        "border_width",
         "button_color",
         "button_hover_color",
-        "text_color",
-        "text_color_disabled",
+        "dropdown_fg_color",
         "dropdown_hover_color",
         "dropdown_text_color",
-        "dropdown_color",
+        "text_color",
+        "text_color_disabled",
+        "font",
+        "dropdown_font",
+        "command",
+        "variable",
+        "values",
         "width",
         "height",
-        "corner_radius",
-        "dropdown_text_font",
         "state",
         "hover",
-        "font",
     )
     command_properties = ("command",)
     ro_properties = ("hover",)
@@ -395,26 +406,28 @@ class CTkCheckBoxBO(CTkBaseMixin, BuilderObject):
     class_ = ctk.CTkCheckBox
     allow_bindings = False
     properties = (
-        "textvariable",
-        "command",
-        "variable",
-        "onvalue",
-        "offvalue",
-        "state",
         "width",
         "height",
+        "checkbox_width",
+        "checkbox_height",
+        "corner_radius",
+        "border_width",
         "bg_color",
         "fg_color",
+        "hover_color",
         "border_color",
-        "border_width",
         "checkmark_color",
-        "text",
         "text_color",
         "text_color_disabled",
-        "corner_radius",
-        "hover",
-        "hover_color",
+        "text",
         "font",
+        "textvariable",
+        "state",
+        "hover",
+        "command",
+        "onvalue",
+        "offvalue",
+        "variable",
     )
     command_properties = ("command",)
     ro_properties = ("hover", "onvalue", "offvalue")
@@ -434,25 +447,27 @@ class CTkRadioButtonBO(CTkBaseMixin, BuilderObject):
     class_ = ctk.CTkRadioButton
     allow_bindings = False
     properties = (
-        "textvariable",
-        "command",
-        "variable",
-        "state",
         "width",
         "height",
+        "radiobutton_width",
+        "radiobutton_height",
+        "corner_radius",
+        "border_width_unchecked",
+        "border_width_checked",
         "bg_color",
         "fg_color",
+        "hover_color",
         "border_color",
-        "border_width",
-        "checkmark_color",
-        "text",
         "text_color",
         "text_color_disabled",
-        "corner_radius",
-        "hover",
-        "hover_color",
+        "text",
         "font",
+        "textvariable",
+        "variable",
         "value",
+        "state",
+        "hover",
+        "command",
     )
     command_properties = ("command",)
     ro_properties = ("hover", "value")
@@ -472,30 +487,30 @@ class CTkSwitchBO(CTkBaseMixin, BuilderObject):
     class_ = ctk.CTkSwitch
     allow_bindings = False
     properties = (
-        "textvariable",
-        "command",
-        "variable",
-        "onvalue",
-        "offvalue",
-        "state",
         "width",
         "height",
+        "switch_width",
+        "switch_height",
+        "corner_radius",
+        "border_width",
+        "button_length",
         "bg_color",
         "fg_color",
         "border_color",
-        "border_width",
-        "checkmark_color",
-        "text",
-        "text_color",
-        "text_color_disabled",
-        "corner_radius",
-        "hover",
-        "hover_color",
         "progress_color",
         "button_color",
         "button_hover_color",
-        "button_length",
+        "text_color",
+        "text_color_disabled",
+        "text",
         "font",
+        "textvariable",
+        "onvalue",
+        "offvalue",
+        "variable",
+        "hover",
+        "command",
+        "state",
     )
     command_properties = ("command",)
     ro_properties = (
@@ -542,13 +557,17 @@ class CTkTextboxBO(CTkBaseMixin, BuilderObject):
         # ctk
         "width",
         "height",
+        "corner_radius",
+        "border_width",
+        "border_spacing",
         "bg_color",
         "fg_color",
         "border_color",
-        "border_width",
-        "corner_radius",
         "text_color",
         "font",
+        "scrollbar_button_color",
+        "scrollbar_button_hover_color",
+        "activate_scrollbars",
         # custom
         "text",
     )
@@ -616,18 +635,17 @@ class CTkScrollbarBO(CTkBaseMixin, BuilderObject):
         "orientation",
         "command",
         # CTK
-        "bg_color",
-        "fg_color",
-        "border_color",
-        "border_width",
+        "cursor",
         "corner_radius",
-        "scrollbar_color",
-        "scrollbar_hover_color",
         "border_spacing",
         "minimum_pixel_length",
+        "bg_color",
+        "fg_color",
+        "button_color",
+        "button_hover_color",
         "hover",
     )
-    ro_properties = ("orientation",)
+    ro_properties = ("orientation", "cursor")
     command_properties = ("command",)
 
 
@@ -661,29 +679,23 @@ class CTkSegmentedButtonBO(CTkBaseMixin, BuilderObject):
     properties = (
         "width",
         "height",
-        "textvariable",
-        "image",
-        "compound",
-        "state",
-        "command",
+        "corner_radius",
+        "border_width",
         "bg_color",
         "fg_color",
-        "border_color",
-        "border_width",
-        "corner_radius",
-        "hover_color",
-        "text_color",
-        "text_color_disabled",
-        "hover",
-        "font",
-        "dynamic_resizing",
-        "variable",
-        "values",
         "selected_color",
         "selected_hover_color",
         "unselected_color",
         "unselected_hover_color",
+        "text_color",
+        "text_color_disabled",
         "background_corner_colors",
+        "font",
+        "values",
+        "variable",
+        "dynamic_resizing",
+        "command",
+        "state",
     )
     command_properties = ("command",)
     ro_properties = ("hover",)

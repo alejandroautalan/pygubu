@@ -50,8 +50,12 @@ class CTkDesignerPlugin(IDesignerPlugin):
         def _no_op(event=None):
             pass
 
-        widget_canvas = widget._canvas
-        if builder_uid.endswith(".CTKEntry"):
+        has_canvas = hasattr(widget, "_canvas")
+        widget_canvas = widget._canvas if has_canvas else None
+
+        if builder_uid.endswith(".CTkScrollableFrame"):
+            return
+        elif builder_uid.endswith(".CTKEntry"):
             seqlist = ("<FocusOut>", "<FocusIn>")
             for seq in seqlist:
                 widget_canvas.bind(seq, _no_op)

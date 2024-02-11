@@ -29,6 +29,7 @@ class CTkBuilderLoader(IBuilderLoaderPlugin, IPluginBase):
             f"{_plugin_uid}.CTkCanvas",
             f"{_plugin_uid}.CTkScrollbar",
             f"{_plugin_uid}.CTkTabview",
+            f"{_plugin_uid}.CTkScrollableFrame",
         ),
     }
 
