@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.33
+
+  * Update to support customtkinter 5.2.2
+
 Changes for version 0.32
 
   * New builder for create a tkinter.Tk widget. (use it with caution)
