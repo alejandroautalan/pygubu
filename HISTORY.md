@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.34
+
+  * Add missing container layout options for ScrolledFrame widget. Fixes alejandroautalan/pygubu#293
+
 Changes for version 0.33
 
   * Update to support customtkinter 5.2.2

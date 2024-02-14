@@ -9,6 +9,7 @@ from pygubu.widgets.scrolledframe import ScrolledFrame
 class TTKScrolledFrameBO(BuilderObject):
     class_ = ScrolledFrame
     container = True
+    container_layout = True
     #    maxchildren = 1
     #    allowed_children = ('tk.Frame', 'ttk.Frame' )
     OPTIONS_STANDARD = ("class_", "cursor", "takefocus", "style")
@@ -24,7 +25,12 @@ class TTKScrolledFrameBO(BuilderObject):
         return self.widget.innerframe
 
     def configure(self, target=None):
-        super(TTKScrolledFrameBO, self).configure(self.widget.innerframe)
+        super().configure(self.widget.innerframe)
+
+    def _container_layout(self, target, container_manager, properties):
+        super()._container_layout(
+            self.widget.innerframe, container_manager, properties
+        )
 
     def _set_property(self, target_widget, pname, value):
         if pname in ("usemousewheel",):
