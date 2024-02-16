@@ -5,8 +5,17 @@ from .exceptions import ValidationError
 
 EMPTY_VALUES = (None, "", [], (), {})
 
+"""
+A validator is a class with the following method defined:
 
-class BaseValidator:
+    def __call__(self, value):
+
+This method will raise ValidationError when value does not meet requeriments.
+
+"""
+
+
+class LimitValueValidatorBase:
     message = _("Ensure this value is %(limit_value)s (it is %(show_value)s).")
     code = "limit_value"
 
@@ -46,7 +55,7 @@ class BaseValidator:
         return x
 
 
-class MaxValueValidator(BaseValidator):
+class MaxValueValidator(LimitValueValidatorBase):
     message = _("Ensure this value is less than or equal to %(limit_value)s.")
     code = "max_value"
 
@@ -54,7 +63,7 @@ class MaxValueValidator(BaseValidator):
         return a > b
 
 
-class MinValueValidator(BaseValidator):
+class MinValueValidator(LimitValueValidatorBase):
     message = _(
         "Ensure this value is greater than or equal to %(limit_value)s."
     )
@@ -64,7 +73,7 @@ class MinValueValidator(BaseValidator):
         return a < b
 
 
-class MinLengthValidator(BaseValidator):
+class MinLengthValidator(LimitValueValidatorBase):
     message = _(
         "Ensure this value has at least %(limit_value)d characters (it has "
         "%(show_value)d)."
@@ -78,7 +87,7 @@ class MinLengthValidator(BaseValidator):
         return len(x)
 
 
-class MaxLengthValidator(BaseValidator):
+class MaxLengthValidator(LimitValueValidatorBase):
     message = _(
         "Ensure this value has at most %(limit_value)d characters (it has "
         "%(show_value)d)."
@@ -92,7 +101,7 @@ class MaxLengthValidator(BaseValidator):
         return len(x)
 
 
-class StepValueValidator(BaseValidator):
+class StepValueValidator(LimitValueValidatorBase):
     message = _("Ensure this value is a multiple of step size %(limit_value)s.")
     code = "step_size"
 
