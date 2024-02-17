@@ -4,7 +4,107 @@ import tkinter.ttk as ttk
 from tkinter import filedialog
 
 
-class PathChooserInput(ttk.Frame):
+class PathChooserBase:
+    """Allows to choose a file or directory.
+
+    Encapsulates the usage of the functions:
+
+        filedialog.askopenfilename()
+        filedialog.asksaveasfilename(**fdoptions)
+        filedialog.askdirectory()
+
+    Generates <<PathChooserPathChanged>> event when the path is changed.
+
+    Dialog options:
+      initialdir: str
+      filetypes: iterable
+      title: str
+      mustexist: bool
+      defaultextension: str
+    """
+
+    FILE = "file"
+    DIR = "directory"
+
+    def __init__(self, *args, **kw):
+        super().__init__(*args, **kw)
+        self._choose = self.FILE
+        self._oldvalue = None
+        self._path = None
+        self._fdoptions = {
+            "filetypes": tuple(),
+            "initialdir": None,
+            "mustexist": True,
+            "title": None,
+            "defaultextension": None,
+        }
+
+    def configure(self, cnf=None, **kw):
+        if cnf:
+            return super().configure(cnf, **kw)
+        key = "type"
+        if key in kw:
+            self._choose = kw.pop(key)
+        key = "path"
+        if key in kw:
+            self._path = kw.pop(key)
+        # dialog options
+        for key in tuple(kw.keys()):
+            if key in self._fdoptions:
+                self._fdoptions[key] = kw.pop(key)
+        return super().configure(cnf, **kw)
+
+    config = configure
+
+    def cget(self, key):
+        option = "type"
+        if key == option:
+            return self._choose
+        option = "path"
+        if key == option:
+            return self._path
+        # dialog options
+        if key in self._fdoptions:
+            return self._fdoptions[key]
+        return super().cget(key)
+
+    __getitem__ = cget
+
+    def _is_changed(self):
+        if self._oldvalue != self._get_user_selected_path():
+            return True
+        return False
+
+    def _get_user_selected_path(self):
+        return self._path
+
+    def _generate_changed_event(self):
+        if self._is_changed():
+            self._oldvalue = self._get_user_selected_path()
+            self.event_generate("<<PathChooserPathChanged>>")
+
+    def _do_path_selection(self):
+        fname = None
+        fdoptions = self._fdoptions.copy()
+        fdoptions["parent"] = self.winfo_toplevel()
+        if fdoptions["initialdir"] is None:
+            fdoptions["initialdir"] = self.cget("path")
+        if self._choose == self.FILE:
+            must_exists = fdoptions.pop("mustexist")
+            if must_exists:
+                fname = filedialog.askopenfilename(**fdoptions)
+            else:
+                fname = filedialog.asksaveasfilename(**fdoptions)
+        else:
+            fdoptions.pop("filetypes")
+            fdoptions.pop("defaultextension")
+            fname = filedialog.askdirectory(**fdoptions)
+        if fname:
+            self.configure(path=fname)
+            self._generate_changed_event()
+
+
+class PathChooserInput(PathChooserBase, ttk.Frame):
     """Allows to choose a file or directory.
 
     Encapsulates the usage of the functions:
@@ -51,21 +151,9 @@ class PathChooserInput(ttk.Frame):
         pcidir.pack(fill='x', side='top')
     """
 
-    FILE = "file"
-    DIR = "directory"
-
-    def __init__(self, master=None, **kw):
-        super().__init__(master, **kw)
-        self._choose = self.FILE
-        self._oldvalue = ""
+    def __init__(self, *args, **kw):
+        super().__init__(*args, **kw)
         self._state = "normal"
-        self._fdoptions = {
-            "filetypes": tuple(),
-            "initialdir": None,
-            "mustexist": True,
-            "title": None,
-            "defaultextension": None,
-        }
         # subwidgets
         self.entry = o = ttk.Entry(self, state=self._state)
         o.grid(row=0, column=0, sticky="ew")
@@ -74,7 +162,7 @@ class PathChooserInput(ttk.Frame):
         self.folder_button = o = ttk.Button(
             self,
             text="▶",
-            command=self.__on_folder_btn_pressed,
+            command=self._do_path_selection,
             width=4,
             state=self._state,
         )
@@ -86,9 +174,6 @@ class PathChooserInput(ttk.Frame):
     def configure(self, cnf=None, **kw):
         if cnf:
             return super().configure(cnf, **kw)
-        key = "type"
-        if key in kw:
-            self._choose = kw.pop(key)
         key = "image"
         if key in kw:
             self.folder_button.configure(image=kw.pop(key))
@@ -109,18 +194,11 @@ class PathChooserInput(ttk.Frame):
                 self.folder_button.config(state="disabled")
             else:
                 self.folder_button.config(state=value)
-        # dialog options
-        for key in tuple(kw.keys()):
-            if key in self._fdoptions:
-                self._fdoptions[key] = kw.pop(key)
         return super().configure(cnf, **kw)
 
     config = configure
 
     def cget(self, key):
-        option = "type"
-        if key == option:
-            return self._choose
         option = "image"
         if key == option:
             return self.folder_button.cget(key)
@@ -133,22 +211,12 @@ class PathChooserInput(ttk.Frame):
         option = "state"
         if key == option:
             return self.entry.cget(option)
-        # dialog options
-        if key in self._fdoptions:
-            return self._fdoptions[key]
         return super().cget(key)
 
     __getitem__ = cget
 
-    def _is_changed(self):
-        if self._oldvalue != self.entry.get():
-            return True
-        return False
-
-    def _generate_changed_event(self):
-        if self._is_changed():
-            self._oldvalue = self.entry.get()
-            self.event_generate("<<PathChooserPathChanged>>")
+    def _get_user_selected_path(self):
+        return self.entry.get()
 
     def __on_enter_key_pressed(self, event):
         key = event.keysym
@@ -158,21 +226,8 @@ class PathChooserInput(ttk.Frame):
     def __on_focus_out(self, event):
         self._generate_changed_event()
 
-    def __on_folder_btn_pressed(self):
-        fname = None
-        fdoptions = self._fdoptions.copy()
-        fdoptions["parent"] = self.winfo_toplevel()
-        if fdoptions["initialdir"] is None:
-            fdoptions["initialdir"] = self.cget("path")
-        if self._choose == self.FILE:
-            must_exists = fdoptions.pop("mustexist")
-            if must_exists:
-                fname = filedialog.askopenfilename(**fdoptions)
-            else:
-                fname = filedialog.asksaveasfilename(**fdoptions)
-        else:
-            fdoptions.pop("filetypes")
-            fdoptions.pop("defaultextension")
-            fname = filedialog.askdirectory(**fdoptions)
-        if fname:
-            self.configure(path=fname)
+
+class PathChooserButton(PathChooserBase, ttk.Button):
+    def __init__(self, *args, **kw):
+        super().__init__(*args, **kw)
+        self.configure(command=self._do_path_selection)
