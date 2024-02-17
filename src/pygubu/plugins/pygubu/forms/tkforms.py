@@ -6,6 +6,7 @@ from pygubu.api.v1 import (
 )
 import pygubu.forms.tkforms as tkforms
 import pygubu.plugins.tk.tkstdwidgets as tkw
+from pygubu.plugins.pygubu.scrollbarhelper import TTKSBHelperBO
 from pygubu.i18n import _
 from .base import FieldBOMixin
 
@@ -27,3 +28,5 @@ register_widget(
     "TextField",
     _designer_tabs + ("ttk",),
 )
+
+TTKSBHelperBO.add_allowed_child(_builder_uid)
