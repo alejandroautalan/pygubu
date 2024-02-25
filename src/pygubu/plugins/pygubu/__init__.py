@@ -44,26 +44,22 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             "pygubu.widgets.dockwidget",
         ),
         "pygubu.plugins.pygubu.hideableframe": ("pygubu.widgets.hideableframe"),
+        # Forms are not finished so expect changes
+        "pygubu.plugins.pygubu.forms.ttkwidgetbo": (
+            "pygubu.forms.ttkwidget.FrameFormBuilder",
+            "pygubu.forms.ttkwidget.Label",
+            "pygubu.forms.ttkwidget.Entry",
+            "pygubu.forms.ttkwidget.LabelWidgetInfo",
+        ),
+        "pygubu.plugins.pygubu.forms.tkwidgetbo": (
+            "pygubu.forms.tkwidget.Text",
+        ),
+        "pygubu.plugins.pygubu.forms.pygubuwidgetbo": (
+            "pygubu.forms.pygubuwidget.PygubuCombobox"
+        ),
     }
 
     def do_activate(self) -> bool:
-        # Forms are not finished so include only for development
-        forms = {
-            "pygubu.plugins.pygubu.forms.ttkwidgetbo": (
-                "pygubu.forms.ttkwidget.FrameFormBuilder",
-                "pygubu.forms.ttkwidget.Label",
-                "pygubu.forms.ttkwidget.Entry",
-                "pygubu.forms.ttkwidget.LabelWidgetInfo",
-            ),
-            "pygubu.plugins.pygubu.forms.tkwidgetbo": (
-                "pygubu.forms.tkwidget.Text",
-            ),
-            "pygubu.plugins.pygubu.forms.pygubuwidgetbo": (
-                "pygubu.forms.pygubuwidget.PygubuCombobox"
-            ),
-        }
-        if os.getenv("PYGUBU_ENABLE_FORMS"):
-            self.module_map.update(forms)
         return True
 
     def get_all_modules(self):
