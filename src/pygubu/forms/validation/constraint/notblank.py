@@ -7,8 +7,9 @@ class NotBlank(Constraint):
     empty_values = (None, "", [], (), {})
 
     def __init__(
-        self, *, message=None, allow_none=False, empty_values=None, **kw
+        self, *args, message=None, allow_none=False, empty_values=None, **kw
     ):
+        super().__init__(*args, **kw)
         if message is not None:
             self.message = message
         if empty_values is not None:

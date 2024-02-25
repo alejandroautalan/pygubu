@@ -7,8 +7,9 @@ class IsTrue(Constraint):
     true_values = (True, "1", 1)
 
     def __init__(
-        self, *, message=None, allow_none=False, true_values=None, **kw
+        self, *args, message=None, allow_none=False, true_values=None, **kw
     ):
+        super().__init__(*args, **kw)
         if message is not None:
             self.message = message
         if true_values is not None:
