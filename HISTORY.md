@@ -1,6 +1,23 @@
 History
 =======
 
+Changes in project options branch (future next version)
+
+  * Added copy_custom_property function
+  * Added "public" argument to function register_widget
+  * Modified ApplicationLevelBindManager, methods are now class methods and not static methods.
+    Added parameter master to the init_mousewheel_binding method.
+  * Added new method Builder.add_resource_paths(path_list: list)
+  * Modified UI definition. Added project options section.
+    Options saved: general options, code generation options, style definition, custom widgets.
+  * New classmethods in Builder object canbe_parent_of, canbe_child_of.
+  * New widgets:
+      New Hideable Frame widget.
+      New PathChooserButton widget.
+      Expose accordion widget hidden in pygubu code (Maybe it will be useful).
+      New docking widgets: DockFrame, DockWidget, DockPane. In alpha status, although pygubu designer uses them.
+      New form widgets in alpha status.
+
 Changes for version 0.34
 
   * Add missing container layout options for ScrolledFrame widget. Fixes alejandroautalan/pygubu#293
