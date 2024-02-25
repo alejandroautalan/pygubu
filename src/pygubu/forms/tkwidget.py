@@ -46,7 +46,6 @@ class TkVarBasedWidget(TkWidgetBase):
         elif isinstance(user_var, tk.Variable):
             self._data_var = user_var
             self.tkvar_class = type(user_var)
-            print("using user variable:", user_var)
         else:
             raise ValueError("Incorrect type for data variable")
 
@@ -55,15 +54,11 @@ class TkVarBasedWidget(TkWidgetBase):
     def configure(self, cnf=None, **kw):
         if self.tkvar_pname in kw:
             self._data_var = kw[self.tkvar_pname]
-            print("user changed variable auto created")
         return super().configure(cnf, **kw)
 
     def wset_value(self, value):
         if value in EMPTY_VALUES:
             value = ""
-        print(
-            f"setting {self.field_name} value to:: |{value}|, type: {type(value)}"
-        )
         # FIXME avoid TclErrors when using typed variables Int, Double, Boolean
         tk.Variable.set(self._data_var, value)
 

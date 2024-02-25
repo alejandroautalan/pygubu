@@ -31,4 +31,3 @@ class FormValidator(ConstraintValidator):
             if violations:
                 form.add_error(name, violations)
             self.context.clear()
-        print(violations)

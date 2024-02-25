@@ -70,7 +70,6 @@ class HideableMixin:
                 wlist = parent.pack_slaves()
                 total = len(wlist)
                 self_index = wlist.index(self)
-                print("Iam in position:", self_index)
                 if total > 1:
                     if self_index == 0:
                         self._layout_info["before"] = wlist[1]
