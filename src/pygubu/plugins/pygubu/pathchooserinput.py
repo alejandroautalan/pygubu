@@ -126,3 +126,5 @@ register_widget(
     "PathChooserButton",
     ("ttk", _("Pygubu Widgets")),
 )
+
+register_custom_property(_builder_id, "width", "integernumber")
