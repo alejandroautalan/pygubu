@@ -42,3 +42,7 @@ class NoopTransfomer(DataTransformer):
 
     def reversetransform(self, value):
         return value
+
+
+class TransformationError(Exception):
+    ...

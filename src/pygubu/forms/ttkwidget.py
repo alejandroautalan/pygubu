@@ -1,12 +1,12 @@
-import tkinter as tk
 import tkinter.ttk as ttk
-
 from pygubu.utils.widget import HideableMixin
-from .exceptions import ValidationError
-from .forms import FormWidget, FieldInfo, FormInfo
-from .tkforms import TkVarBasedWidget
-from .config import ENTRY_MARK_INVALID_USING_VALIDATE
-from .fields import FieldBase, DisplayField
+from .builder import FormBuilder
+from .widget import FieldWidget, WidgetInfo, FormInfo
+from .tkwidget import TkFormBuilder, TkVarBasedWidget
+
+
+class FrameFormBuilder(TkFormBuilder, ttk.Frame):
+    ...
 
 
 class TtkVarBasedWidget(TkVarBasedWidget):
@@ -19,11 +19,7 @@ class TtkVarBasedWidget(TkVarBasedWidget):
             self.configure(style=style)
 
 
-class FrameForm(FormWidget, ttk.Frame):
-    pass
-
-
-class LabelFieldInfo(FieldInfo, HideableMixin, ttk.Label):
+class LabelWidgetInfo(WidgetInfo, HideableMixin, ttk.Label):
     """Used to display help and errors messages for the associated form field."""
 
     def __init__(self, *args, **kw):
@@ -52,11 +48,11 @@ class LabelFieldInfo(FieldInfo, HideableMixin, ttk.Label):
         self.hidden = True
 
 
-class EntryField(FieldBase, TtkVarBasedWidget, ttk.Entry):
+class Entry(TtkVarBasedWidget, ttk.Entry):
     pass
 
 
-class LabelField(DisplayField, TtkVarBasedWidget, ttk.Label):
+class Label(TtkVarBasedWidget, ttk.Label):
     """A Display only field using ttk.Label"""
 
     def __init__(self, *args, **kw):
@@ -71,9 +67,9 @@ class LabelField(DisplayField, TtkVarBasedWidget, ttk.Label):
         super().wset_value(str(value))
 
 
-class CheckbuttonField(FieldBase, TtkVarBasedWidget, ttk.Checkbutton):
+class Checkbutton(TtkVarBasedWidget, ttk.Checkbutton):
     tkvar_pname = "variable"
 
 
-class ComboboxField(FieldBase, TtkVarBasedWidget, ttk.Combobox):
+class Combobox(TtkVarBasedWidget, ttk.Combobox):
     pass

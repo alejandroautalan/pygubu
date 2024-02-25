@@ -49,17 +49,17 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
     def do_activate(self) -> bool:
         # Forms are not finished so include only for development
         forms = {
-            "pygubu.plugins.pygubu.forms.ttkforms": (
-                "pygubu.forms.ttk.FrameForm",
-                "pygubu.forms.ttk.LabelField",
-                "pygubu.forms.ttk.EntryField",
-                "pygubu.forms.ttk.LabelFieldInfo",
+            "pygubu.plugins.pygubu.forms.ttkwidgetbo": (
+                "pygubu.forms.ttkwidget.FrameFormBuilder",
+                "pygubu.forms.ttkwidget.Label",
+                "pygubu.forms.ttkwidget.Entry",
+                "pygubu.forms.ttkwidget.LabelWidgetInfo",
             ),
-            "pygubu.plugins.pygubu.forms.tkforms": (
-                "pygubu.forms.tk.TextField",
+            "pygubu.plugins.pygubu.forms.tkwidgetbo": (
+                "pygubu.forms.tkwidget.Text",
             ),
-            "pygubu.plugins.pygubu.forms.pwforms": (
-                "pygubu.forms.pwforms.ComboboxField"
+            "pygubu.plugins.pygubu.forms.pygubuwidgetbo": (
+                "pygubu.forms.pygubuwidget.PygubuCombobox"
             ),
         }
         if os.getenv("PYGUBU_ENABLE_FORMS"):

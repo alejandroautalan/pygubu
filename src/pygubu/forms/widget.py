@@ -1,10 +1,7 @@
-"""Widget related classes"""
-import json
-
-
 class FieldWidget:
-    def __init__(self, *args, **kw):
+    def __init__(self, *args, field_name: str, **kw):
         super().__init__(*args, **kw)
+        self.field_name = field_name
 
     def wset_value(self, value):
         # will set the value in the widget format
@@ -32,3 +29,26 @@ class FieldWidget:
             f"Subclasses must define this method. {self.__class__}"
             f" for field class {self.__class__}"
         )
+
+
+class WidgetInfoBase:
+    def __init__(self, *args, field_name: str, **kw):
+        self.field_name = field_name
+        super().__init__(*args, **kw)
+
+    def show_error(self, error):
+        raise NotImplementedError
+
+    def show_help(self, message):
+        raise NotImplementedError
+
+    def clear(self):
+        raise NotImplementedError
+
+
+class WidgetInfo(WidgetInfoBase):
+    pass
+
+
+class FormInfo(WidgetInfoBase):
+    pass

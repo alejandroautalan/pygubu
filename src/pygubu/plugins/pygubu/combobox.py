@@ -19,6 +19,9 @@ class ComboboxBuilder(TTKCombobox):
     class_ = Combobox
 
 
+ComboboxBO = ComboboxBuilder  # Alias for future rename of builder.
+
+
 _builder_id = "pygubu.builder.widgets.combobox"
 register_widget(
     _builder_id, ComboboxBuilder, "Combobox", ("ttk", _("Pygubu Widgets"))

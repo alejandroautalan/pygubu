@@ -1,7 +1,25 @@
 import tkinter as tk
-from .widgets import FieldWidget
-from .validators import EMPTY_VALUES
-from .fields import FieldBase, DisplayField
+from .builder import FormBuilder
+from .widget import FieldWidget, WidgetInfo
+
+
+EMPTY_VALUES = (None, "", [], (), {})
+
+
+class TkFormBuilder(FormBuilder):
+    def scan_widgets(self):
+        self.search_widgets(self)
+
+    def search_widgets(self, master=None):
+        if master is None:
+            master = self
+        for widget in master.winfo_children():
+            if isinstance(widget, FieldWidget):
+                self.widgets[widget.field_name] = widget
+            elif isinstance(widget, WidgetInfo):
+                self.widgets_info[widget.field_name] = widget
+            else:
+                self.search_widgets(widget)
 
 
 class TkWidgetBase(FieldWidget):
@@ -54,7 +72,7 @@ class TkVarBasedWidget(TkWidgetBase):
         return tk.Variable.get(self._data_var)
 
 
-class TextField(FieldBase, TkWidgetBase, tk.Text):
+class Text(TkWidgetBase, tk.Text):
     def wset_value(self, value):
         self.delete("0.0", tk.END)
         state = self.cget("state")
