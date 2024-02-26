@@ -248,8 +248,8 @@ class CalendarFrame(ttk.Frame):
             anchor="center", expand="true", fill="both", side="top"
         )
 
-        self.__img_prev = imgp = tk.PhotoImage(data=imgp_data)
-        self.__img_next = imgn = tk.PhotoImage(data=imgn_data)
+        self.__img_prev = imgp = tk.PhotoImage(data=imgp_data, master=self)
+        self.__img_next = imgn = tk.PhotoImage(data=imgn_data, master=self)
         # self._lmonth = lmonth
         # self._lyear = lyear
 
