@@ -36,7 +36,9 @@ class Builder(object):
 
     TK_VARIABLE_TYPES = ("string", "int", "boolean", "double")
 
-    def __init__(self, translator=None, *, on_first_object=None):
+    def __init__(
+        self, translator=None, *, on_first_object=None, image_cache=None
+    ):
         super().__init__()
         self.uidefinition = UIDefinition(translator=translator)
         self.root = None
@@ -44,10 +46,13 @@ class Builder(object):
         self.tkvariables = {}
         self.translator = translator
         self.on_first_object = on_first_object  # On first object callback
+        if image_cache is None:
+            image_cache = StockImage
+        self.image_cache = image_cache
 
     def add_resource_path(self, path):
         """Add additional path to the resources paths."""
-        StockImage.add_resource_path(path)
+        self.image_cache.add_resource_path(path)
 
     def add_resource_paths(self, path_list: list):
         """Add multiple paths for aditional resources."""
@@ -55,16 +60,16 @@ class Builder(object):
             self.add_resource_path(path)
 
     def add_resource_package(self, pkg: str):
-        StockImage.add_resource_package(pkg)
+        self.image_cache.add_resource_package(pkg)
 
     def get_image(self, path):
         """Return tk image corresponding to name which is taken form path."""
         image = ""
         name = Path(path).name
-        if not StockImage.is_registered(name):
-            StockImage.find_and_register(name)
+        if not self.image_cache.is_registered(name):
+            self.image_cache.find_and_register(name)
         try:
-            image = StockImage.get(name)
+            image = self.image_cache.get(name)
         except StockImageException:
             # TODO: notify something here.
             pass
@@ -74,10 +79,10 @@ class Builder(object):
         """Return path to use as iconbitmap property."""
         image = None
         name = Path(path).name
-        if not StockImage.is_registered(name):
-            StockImage.find_and_register(name)
+        if not self.image_cache.is_registered(name):
+            self.image_cache.find_and_register(name)
         try:
-            image = StockImage.as_iconbitmap(name)
+            image = self.image_cache.as_iconbitmap(name)
         except StockImageException:
             # TODO: notify something here.
             pass
