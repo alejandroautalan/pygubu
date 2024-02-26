@@ -1,5 +1,6 @@
 from pygubu.api.v1 import IDesignerPlugin
 from pygubu.utils.widget import crop_widget
+from pygubu.stockimage import StockRegistry, StockImageCache, StockImage
 from .toplevelframe import ToplevelFramePreviewBO
 
 
@@ -20,6 +21,12 @@ class PygubuDesignerPlugin(IDesignerPlugin):
         if builder_uid == "tk.Toplevel":
             top = builder.get_object(widget_id, top_master)
         elif builder_uid == "tk.Tk":
+            # for a new tk root, create a diferent image cache:
+            def on_root_created(root):
+                image_cache = StockImageCache(root, StockImage.registry)
+                builder.image_cache = image_cache
+
+            builder.on_first_object = on_root_created
             top = builder.get_object(widget_id)
         elif builder_uid == "pygubu.builder.widgets.dialog":
             dialog = builder.get_object(widget_id, top_master)

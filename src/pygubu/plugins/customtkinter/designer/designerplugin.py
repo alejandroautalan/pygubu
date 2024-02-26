@@ -1,5 +1,6 @@
 from pygubu.api.v1 import IPluginBase, IDesignerPlugin
 from pygubu.utils.widget import crop_widget
+from pygubu.stockimage import StockRegistry, StockImageCache, StockImage
 from .preview import (
     CTkToplevelPreviewBO,
     CTkPreviewBO,
@@ -30,6 +31,12 @@ class CTkDesignerPlugin(IDesignerPlugin):
         top = None
         toplevel_uids = ("customtkinter.CTkToplevel", "customtkinter.CTk")
         if builder_uid in toplevel_uids:
+            # for a new tk root, create a diferent image cache:
+            def on_root_created(root):
+                image_cache = StockImageCache(root, StockImage.registry)
+                builder.image_cache = image_cache
+
+            builder.on_first_object = on_root_created
             top = builder.get_object(widget_id)
         return top
 
