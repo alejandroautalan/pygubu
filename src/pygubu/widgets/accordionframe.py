@@ -3,12 +3,12 @@ import tkinter as tk
 import tkinter.ttk as ttk
 
 
-img_down = """\
+img_expand = """\
 R0lGODlhEAAQAIAAAAAAAAAAACH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAAQABAA
 AAIXjI+py+0P4wK0WprunRo0/VgRJpXmyRQAOw==
 """
 
-img_right = """\
+img_collapse = """\
 R0lGODlhEAAQAIAAAAAAAAAAACH+EUNyZWF0ZWQgd2l0aCBHSU1QACH5BAEKAAEALAAAAAAQABAA
 AAIdjI+pywGtwINHTmpvy3rxnnwQh1mUI52o6rCuWgAAOw==
 """
@@ -24,20 +24,52 @@ class AccordionFrame(ttk.Frame):
         label.grid()
     """
 
-    IMAGES = None
+    EXPAND = 1
+    COLLAPSE = 2
 
     def __init__(self, master=None, **kw):
         ttk.Frame.__init__(self, master, **kw)
         self.__images = None
         self.__groups = {}
         self.columnconfigure(0, weight=1)
+        self.img_expand = None
+        self.img_collapse = None
 
-        if AccordionFrame.IMAGES is None:
-            AccordionFrame.IMAGES = [
-                tk.PhotoImage(data=img_down),
-                tk.PhotoImage(data=img_right),
-            ]
-        self.__images = AccordionFrame.IMAGES
+    def _get_image(self, imgid):
+        if imgid == self.EXPAND:
+            if self.img_expand is None:
+                self.img_expand = tk.PhotoImage(data=img_expand, master=self)
+            return self.img_expand
+        else:
+            if self.img_collapse is None:
+                self.img_collapse = tk.PhotoImage(
+                    data=img_collapse, master=self
+                )
+            return self.img_collapse
+
+    def configure(self, cnf=None, **kw):
+        if cnf:
+            return super().configure(cnf, **kw)
+        key = "img_expand"
+        if key in kw:
+            value = kw.pop(key)
+            self.img_expand = value
+        key = "img_collapse"
+        if key in kw:
+            value = kw.pop(key)
+            self.img_collapse = value
+        return super().configure(cnf, **kw)
+
+    config = configure
+
+    def cget(self, key):
+        option = "img_expand"
+        if key == option:
+            return self.img_expand
+        option = "img_collapse"
+        if key == option:
+            return self.img_collapse
+        return super().cget(key)
 
     def add_group(
         self,
@@ -57,7 +89,7 @@ class AccordionFrame(ttk.Frame):
             self,
             text=glabel,
             style=style,
-            image=self.__images[0],
+            image=self._get_image(self.EXPAND),
             compound=compound,
         )
         btn.grid(sticky=tk.EW)
@@ -103,33 +135,12 @@ class AccordionFrame(ttk.Frame):
     def _toggle_group(self, gid, toggle_to=None):
         btn, frame = self.__groups[gid]
         if frame.winfo_viewable() or toggle_to is False:
-            btn.configure(image=self.__images[1])
+            btn.configure(image=self._get_image(self.COLLAPSE))
             frame.grid_remove()
         else:
-            btn.configure(image=self.__images[0])
+            btn.configure(image=self._get_image(self.EXPAND))
             frame.grid()
         self.event_generate("<<AccordionGroupToggle>>")
-
-    def set_images(self, img_open, img_close):
-        if self.__images == AccordionFrame.IMAGES:
-            self.__images = [
-                tk.PhotoImage(file=img_open),
-                tk.PhotoImage(file=img_close),
-            ]
-        else:
-            self.__images[0].configure(file=img_open)
-            self.__images[1].configure(file=img_close)
-
-    @classmethod
-    def set_gimages(cls, img_open, img_close):
-        if cls.IMAGES is None:
-            cls.IMAGES = [
-                tk.PhotoImage(file=img_open),
-                tk.PhotoImage(file=img_close),
-            ]
-        else:
-            cls.IMAGES[0].configure(file=img_open)
-            cls.IMAGES[1].configure(file=img_close)
 
 
 if __name__ == "__main__":

@@ -12,9 +12,13 @@ from pygubu.widgets.accordionframe import AccordionFrame
 
 class AccordionFrameBO(TTKFrame):
     class_ = AccordionFrame
+    allowed_children = ("pygubu.widgets.AccordionFrameGroup",)
+    _img_properties = ("img_expand", "img_collapse")
+    properties = TTKFrame.properties + _img_properties
+    tkimage_properties = TTKFrame.tkimage_properties + _img_properties
 
 
-_builder_uid = "pygubu.widgets.accordionframe"
+_builder_uid = "pygubu.widgets.AccordionFrame"
 
 register_widget(
     _builder_uid,
@@ -23,9 +27,12 @@ register_widget(
     (_("Pygubu Widgets"), "ttk"),
 )
 
+for prop in AccordionFrameBO._img_properties:
+    register_custom_property(_builder_uid, prop, "imageentry")
+
 
 class AccordionFrameGroupBO(BuilderObject):
-    allowed_parents = ("pygubu.widgets.accordionframe",)
+    allowed_parents = ("pygubu.widgets.AccordionFrame",)
     properties = ("label", "expanded", "compound", "style")
     layout_required = False
     container = True
@@ -55,7 +62,7 @@ class AccordionFrameGroupBO(BuilderObject):
             super()._set_property(target_widget, pname, value)
 
 
-_builder_uid = "pygubu.widgets.accordionframegroup"
+_builder_uid = "pygubu.widgets.AccordionFrameGroup"
 
 register_widget(
     _builder_uid,
