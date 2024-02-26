@@ -174,7 +174,9 @@ class CalendarFrame(ttk.Frame):
         if color_change or calendar_change or date_change:
             linewidth = int(self.__options["linewidth"])
             for rec_i in self._recmat:
-                self._canvas.itemconfigure(rec_i, width=linewidth, activewidth=linewidth)
+                self._canvas.itemconfigure(
+                    rec_i, width=linewidth, activewidth=linewidth
+                )
             self._redraw_calendar()
         return super().configure(cnf, **kw)
 
@@ -238,7 +240,7 @@ class CalendarFrame(ttk.Frame):
         self._canvas.configure(
             background="#ffffff",
             borderwidth="0",
-            height=24*7,
+            height=24 * 7,
             highlightthickness="0",
         )
         self._canvas.configure(width="240")
@@ -472,7 +474,11 @@ class CalendarFrame(ttk.Frame):
             if redraw:
                 rec = self._recmat[i]
                 canvas.coords(rec, x, y, x1, y1)
-                canvas.itemconfigure(rec, fill=options["calendarbg"], activeoutline=options["selectbg"])
+                canvas.itemconfigure(
+                    rec,
+                    fill=options["calendarbg"],
+                    activeoutline=options["selectbg"],
+                )
             else:
                 rec = canvas.create_rectangle(
                     x,
