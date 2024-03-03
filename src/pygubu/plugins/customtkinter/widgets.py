@@ -1,4 +1,6 @@
 import customtkinter as ctk
+import pygubu.plugins.customtkinter.tabview
+import pygubu.plugins.customtkinter.scrollableframe
 
 from pygubu.api.v1 import (
     BuilderObject,
@@ -7,6 +9,7 @@ from pygubu.api.v1 import (
 )
 from pygubu.i18n import _
 from pygubu.utils.datatrans import ListDTO
+from pygubu.plugins.tk.tkstdwidgets import TKCanvas as TKCanvasBO
 
 from ..customtkinter import _designer_tab_label, _plugin_uid
 from .ctkbase import (
@@ -15,9 +18,6 @@ from .ctkbase import (
     GDISPLAY,
     GINPUT,
 )
-
-import pygubu.plugins.customtkinter.tabview
-import pygubu.plugins.customtkinter.scrollableframe
 
 
 class CTkFrameBO(CTkBaseMixin, BuilderObject):
@@ -724,3 +724,17 @@ register_widget(
 )
 
 register_custom_property(_builder_uid, "values", "entry", help=_ctk_values_help)
+
+
+class CTkCanvasBO(TKCanvasBO):
+    class_ = ctk.CTkCanvas
+
+
+_builder_uid = f"{_plugin_uid}.CTkCanvas"
+register_widget(
+    _builder_uid,
+    CTkCanvasBO,
+    "CTkCanvas",
+    ("ttk", _designer_tab_label),
+    group=GDISPLAY,
+)
