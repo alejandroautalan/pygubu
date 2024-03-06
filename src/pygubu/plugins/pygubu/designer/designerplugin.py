@@ -39,6 +39,9 @@ class PygubuDesignerPlugin(IDesignerPlugin):
         if builder_uid.endswith(".pathchooserinput"):
             crop_widget(widget.entry)
             crop_widget(widget.folder_button)
+        if builder_uid.endswith(".ColorInput"):
+            crop_widget(widget._entry)
+            crop_widget(widget._button)
 
     def ensure_visibility_in_preview(self, builder, selected_uid: str):
         """Ensure visibility of selected_uid in preview.
