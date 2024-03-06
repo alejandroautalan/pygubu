@@ -16,8 +16,10 @@ class ColorInput(ColorInputUI):
     KEY_PRESS_MS = 850
 
     def __init__(self, master=None, **kw):
+        entry_var = kw.pop("textvariable", None)
         super().__init__(master, **kw)
-        self._entry_var = tk.StringVar(value="")
+        entry_var = tk.StringVar(value="") if entry_var is None else entry_var
+        self._entry_var = entry_var
         self._entry.configure(textvariable=self._entry_var)
         self._color = ""
         self._kp_cb = None

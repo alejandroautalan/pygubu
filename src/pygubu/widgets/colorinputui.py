@@ -19,12 +19,16 @@ class ColorInputUI(ttk.Frame):
         self._entry.bind("<KeyPress>", self.on_keypress, add="")
         self._button = ttk.Button(self, name="_button")
         self._button.configure(
-            compound="center", style="Toolbutton", text="…", width=-2
+            compound="center",
+            style="Toolbutton",
+            takefocus=True,
+            text="…",
+            width=-2,
         )
         self._button.pack(fill="both", side="left")
         self._button.configure(command=self.on_picker_clicked)
         self.configure(height=25, width=100)
-        self.pack(side="top")
+        # self.pack(side="top")
 
     def on_focusout(self, event=None):
         pass

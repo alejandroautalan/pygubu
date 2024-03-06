@@ -37,6 +37,7 @@
           <property name="command" type="command" cbtype="simple">on_picker_clicked</property>
           <property name="compound">center</property>
           <property name="style">Toolbutton</property>
+          <property name="takefocus">true</property>
           <property name="text" translatable="yes">…</property>
           <property name="width">-2</property>
           <layout manager="pack">
