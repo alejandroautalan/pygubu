@@ -44,6 +44,7 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             "pygubu.widgets.dockwidget",
         ),
         "pygubu.plugins.pygubu.hideableframe": ("pygubu.widgets.hideableframe"),
+        "pygubu.plugins.pygubu.colorinputbo": ("pygubu.widgets.ColorInput"),
         # Forms are not finished so expect changes
         "pygubu.plugins.pygubu.forms.ttkwidgetbo": (
             "pygubu.forms.ttkwidget.FrameFormBuilder",
