@@ -193,7 +193,14 @@ class DockingFramework:
 
     @classmethod
     def execute_move(cls, event: tk.Event):
-        widget_below = event.widget.winfo_containing(event.x_root, event.y_root)
+        widget_below = None
+        # If drag ends in a menu, a key error is produced.
+        try:
+            widget_below = event.widget.winfo_containing(
+                event.x_root, event.y_root
+            )
+        except KeyError:
+            pass
         dock = cls.source_dwidget.maindock
         relative_to = None
         side = None
