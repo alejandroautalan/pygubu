@@ -263,8 +263,14 @@ class BuilderObject(object):
             raise Exception("Container Manager is none :(")
 
     def _gridrc_config(self, target):
-        # configure grid row/col properties:
-        for type_, num, pname, value in self.wmeta.gridrc_properties:
+        """Configure grid row/col properties"""
+
+        # process all index first
+        rc_props = sorted(
+            self.wmeta.gridrc_properties,
+            key=lambda rc: -1 if rc[1] == "all" else 1,
+        )
+        for type_, num, pname, value in rc_props:
             if type_ == "row":
                 target.rowconfigure(num, **{pname: value})
             else:
@@ -478,7 +484,14 @@ class BuilderObject(object):
 
             rowbag = defaultdict(list)
             colbag = defaultdict(list)
-            for type_, num, pname, value in self.wmeta.gridrc_properties:
+
+            # process all index first
+            rc_props = sorted(
+                self.wmeta.gridrc_properties,
+                key=lambda rc: -1 if rc[1] == "all" else 1,
+            )
+
+            for type_, num, pname, value in rc_props:
                 pvalue = self._code_process_layout_property(
                     "grid", pname, value
                 )
