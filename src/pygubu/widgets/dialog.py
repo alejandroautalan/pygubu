@@ -9,6 +9,8 @@ class Dialog(object):
         <<DialogClose>>
     """
 
+    SEQ_DIALOG_CLOSE = "<<DialogClose>>"
+
     def __init__(self, parent, modal=False):
         self.parent = parent
         self.is_modal = modal
@@ -17,7 +19,7 @@ class Dialog(object):
         self.toplevel = tk.Toplevel(parent)
         self.toplevel.withdraw()
         self.toplevel.protocol("WM_DELETE_WINDOW", self._on_wm_delete_window)
-        self.bind("<<DialogClose>>", self._default_close_action)
+        self.bind(self.SEQ_DIALOG_CLOSE, self._default_close_action)
 
         self._init_before()
         self._create_ui()
@@ -33,6 +35,9 @@ class Dialog(object):
 
     def _init_after(self):
         pass
+
+    def emit_close_event(self):
+        self.toplevel.event_generate(self.SEQ_DIALOG_CLOSE)
 
     def set_modal(self, modal):
         self.is_modal = modal
@@ -75,7 +80,7 @@ class Dialog(object):
         self.toplevel = None
 
     def _on_wm_delete_window(self):
-        self.toplevel.event_generate("<<DialogClose>>")
+        self.emit_close_event()
 
     def _default_close_action(self, dialog):
         self.close()
@@ -132,14 +137,12 @@ if __name__ == "__main__":
 
     class TestDialog(Dialog):
         def _create_ui(self):
-            label = ttk.Label(self.frame, text="TestDialog Class")
+            f = ttk.Frame(self.toplevel)
+            f.pack(expand=True, fill=tk.BOTH)
+            label = ttk.Label(f, text="TestDialog Class")
             label.pack()
-            entry = ttk.Entry(self.frame)
+            entry = ttk.Entry(f)
             entry.pack()
-
-    #            f = ttk.Frame(self.toplevel)
-    #            self.default_buttonbox(f)
-    #            f.pack(fill='x')
 
     app = tk.Tk()
     dialog = None
