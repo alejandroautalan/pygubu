@@ -117,7 +117,14 @@ class DockingFramework:
             cls.curr_dpane.indicators_visible(True)
             cls.moving = True
 
-        widget_below = event.widget.winfo_containing(event.x_root, event.y_root)
+        # If drag ends in a menu, a key error is produced.
+        widget_below = None
+        try:
+            widget_below = event.widget.winfo_containing(
+                event.x_root, event.y_root
+            )
+        except KeyError:
+            pass
         if not widget_below:
             return
 
