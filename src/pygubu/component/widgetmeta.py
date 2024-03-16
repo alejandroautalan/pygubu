@@ -158,10 +158,12 @@ class WidgetMeta:
     def copy_properties(self, wfrom):
         # Used on preview methods
         self.properties = wfrom.properties.copy()
-        self.gridrc_properties.clear()
-        self.gridrc_properties.extend(wfrom.gridrc_properties)
-        self.container_manager = wfrom.container_manager
-        self.container_properties = wfrom.container_properties
+        self.layout_properties = wfrom.layout_properties.copy()
+        self.gridrc_properties = wfrom.gridrc_properties.copy()
+        self.container_properties = wfrom.container_properties.copy()
+        self.bindings = wfrom.bindings.copy()
+        self._manager = wfrom._manager
+        self._container_manager = wfrom._container_manager
 
 
 if __name__ == "__main__":
