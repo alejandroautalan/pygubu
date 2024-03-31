@@ -129,3 +129,11 @@ register_widget(
     _designer_tabs,
     group=GROUP0,
 )
+
+register_custom_property(
+    _builder_uid,
+    "state",
+    "choice",
+    values=("", "normal", "readonly", "disabled"),
+    state="readonly",
+)
