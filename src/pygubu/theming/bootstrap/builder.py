@@ -1,4 +1,5 @@
 import sys
+import os
 import tkinter as tk
 import tkinter.ttk as ttk
 import math
@@ -84,7 +85,12 @@ class ThemeDefinition:
         self.type = theme_type
 
 
+_colect_styles = True if os.getenv("PYGUBU_DESIGNER_RUNNING") else False
+
+
 class BootstrapThemeBuilder(IThemeBuilder):
+    generated_styles = set()
+
     def __init__(self, theme_def):
         self.theme = theme_def
         self.tk_master = None
@@ -423,7 +429,6 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         tfinish = timeit.default_timer() - tstart
         logger.debug("Bootstrap ttk theme build time: %s", tfinish)
-
         return settings
 
     def build_tk_palette(self):
@@ -436,6 +441,10 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
             "activeBackground": self.colors.selectbg,
             "activeForeground": self.colors.selectfg,
         }
+
+    def _register_style(self, style_name):
+        if _colect_styles:
+            self.generated_styles.add(style_name)
 
     def update_combobox_popdown_style(self, widget):
         """Update the legacy ttk.Combobox elements. This method is
@@ -509,6 +518,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 "background": background,
             }
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_labelframe_style(self, settings, colorname=None):
         """Create a style for the ttk.Labelframe widget."""
@@ -546,6 +557,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 "background": background,
             }
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_label_style(self, settings, colorname=None):
         """Create a standard style for the ttk.Label widget.
@@ -570,6 +583,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         settings[ttkstyle] = {
             "configure": {"foreground": foreground, "background": background}
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_inverse_label_style(self, settings, colorname=None):
         """Create an inverted style for the ttk.Label."""
@@ -587,6 +602,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         settings[ttkstyle] = {
             "configure": {"foreground": foreground, "background": background}
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_button_style(self, settings, colorname=None):
         STYLE = "TButton"
@@ -647,6 +664,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_toolbutton_style(self, settings, colorname=None):
         """Create a solid toolbutton style for the ttk.Checkbutton"""
@@ -718,6 +737,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_outline_menubutton_style(self, settings, colorname=None):
         """Create an outline button style for the ttk.Menubutton widget"""
@@ -785,6 +806,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_outline_toolbutton_style(self, settings, colorname=None):
         """Create an outline toolbutton style for the ttk.Checkbutton
@@ -857,6 +880,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_link_button_style(self, settings, colorname=None):
         """Create a link button style for the ttk.Button widget."""
@@ -925,6 +950,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_entry_style(self, settings, colorname=None):
         """Create a style for the ttk.Entry widget."""
@@ -980,6 +1007,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_menubutton_style(self, settings, colorname=None):
         """Create a solid style for the ttk.Menubutton widget."""
@@ -1047,6 +1076,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_combobox_style(self, settings, colorname=None):
         """Create a style for the ttk.Combobox widget."""
@@ -1154,6 +1185,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_panedwindow_style(self, settings, colorname=None):
         """Create a standard style for the ttk.Panedwindow widget."""
@@ -1187,6 +1220,9 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 "background": sashcolor,
             }
         }
+        if colorname:
+            self._register_style(h_ttkstyle)
+            self._register_style(v_ttkstyle)
 
     def create_notebook_style(self, settings, colorname=None):
         """Create a standard style for the ttk.Notebook widget."""
@@ -1246,6 +1282,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_separator_style(self, settings, colorname=None):
         """Create a style for the ttk.Separator widget."""
@@ -1288,6 +1326,9 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
             "element create": ("image", v_name),
         }
         settings[v_ttkstyle] = {"layout": [(v_element_uid, {"sticky": tk.NS})]}
+        if colorname:
+            self._register_style(h_ttkstyle)
+            self._register_style(v_ttkstyle)
 
     def create_progressbar_style(self, settings, colorname=None):
         """Create a solid ttk style for the ttk.Progressbar widget."""
@@ -1389,6 +1430,9 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        if colorname:
+            self._register_style(h_ttkstyle)
+            self._register_style(v_ttkstyle)
 
     def create_scale_style(self, settings, colorname=None):
         """Create a style for the ttk.Scale widget."""
@@ -1475,6 +1519,9 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        if colorname:
+            self._register_style(h_ttkstyle)
+            self._register_style(v_ttkstyle)
 
     def create_scrollbar_style(self, settings, colorname=None):
         """Create a standard style for the ttk.Scrollbar widget."""
@@ -1610,6 +1657,9 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        if colorname:
+            self._register_style(h_ttkstyle)
+            self._register_style(v_ttkstyle)
 
     def create_spinbox_style(self, settings, colorname=None):
         """Create a style for the ttk.Spinbox widget."""
@@ -1730,6 +1780,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_treeview_style(self, settings, colorname=None):
         """Create a style for the ttk.Treeview widget."""
@@ -1843,6 +1895,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         settings["Treeitem.indicator"] = {
             "element create": ("from", TTK_ALT),
         }
+        if colorname:
+            self._register_style(body_style)
 
     def create_radiobutton_style(self, settings, colorname=None):
         """Create a style for the ttk.Radiobutton widget."""
@@ -1909,6 +1963,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_checkbutton_style(self, settings, colorname=None):
         """Create a standard style for the ttk.Checkbutton widget."""
@@ -1978,6 +2034,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_sizegrip_style(self, settings, colorname=None):
         """Create a style for the ttk.Sizegrip widget."""
@@ -2007,6 +2065,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_striped_progressbar_style(self, settings, colorname=None):
         """Create a striped style for the ttk.Progressbar widget.
@@ -2115,6 +2175,9 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        if colorname:
+            self._register_style(h_ttkstyle)
+            self._register_style(v_ttkstyle)
 
     def create_square_toggle_style(self, settings, colorname=None):
         """Create a square toggle style for the ttk.Checkbutton widget.
@@ -2196,6 +2259,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_round_toggle_style(self, settings, colorname=None):
         """Create a round toggle style for the ttk.Checkbutton widget.
@@ -2280,6 +2345,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        if colorname:
+            self._register_style(ttkstyle)
 
     def create_round_scrollbar_style(self, settings, colorname=None):
         """Create a round style for the ttk.Scrollbar widget.
@@ -2423,6 +2490,9 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
             ],
             "map": {"arrowcolor": [("pressed", pressed), ("active", active)]},
         }
+        if colorname:
+            self._register_style(h_ttkstyle)
+            self._register_style(v_ttkstyle)
 
     def create_table_treeview_style(self, settings, colorname=None):
         """Create a style for the Tableview widget.
@@ -2538,3 +2608,5 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        if colorname:
+            self._register_style(body_style)

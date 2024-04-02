@@ -54,3 +54,7 @@ class Style(ttk.Style):
         else:
             self.bs_builders[themename].apply(self.master)
         self.bs_builders[themename].update_current_widgets(self.master)
+
+    @classmethod
+    def get_generated_styles(cls):
+        return list(BootstrapThemeBuilder.generated_styles)
