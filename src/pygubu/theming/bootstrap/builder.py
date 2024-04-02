@@ -133,7 +133,15 @@ class BootstrapThemeBuilder(IThemeBuilder):
         if sys.platform == "linux" and FIX_LINUX_FILE_DIALOG:
             self._update_linux_filedialog_bg(master)
 
+    def _get_filedialog_bg_color(self):
+        color = self.colors.bg if self.is_light_theme else self.colors.selectbg
+        color = self.colorutil.update_hsv(color, vd=0.18)
+        return color
+
     def _install_linux_filedialog_hack(self, master):
+        """Install script to modify dialog background color.
+        For now, this only works for the first time the dialog window is created.
+        """
         script = """
 # Enable filedialog namespace
 catch {tk_getOpenFile -badoption}
@@ -151,8 +159,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 0 } {
   }
 }
 """
-        color = self.colors.bg if self.is_light_theme else self.colors.selectbg
-        script = script.replace("{color}", color)
+        script = script.replace("{color}", self._get_filedialog_bg_color())
         master.tk.eval(script)
 
     def _update_linux_filedialog_bg(self, master):
@@ -161,8 +168,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
   set ::tk::dialog::file::pbs_filedialog_bg {color}
 }
 """
-        color = self.colors.bg if self.is_light_theme else self.colors.selectbg
-        script = script.replace("{color}", color)
+        script = script.replace("{color}", self._get_filedialog_bg_color())
         master.tk.eval(script)
 
     def update_current_widgets(self, master):
