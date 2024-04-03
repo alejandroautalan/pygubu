@@ -16,10 +16,24 @@ class DockWidgetBase(SlotFrame):
         super().__init__(*args, **kw)
         self.maindock = maindock
         self.uid = uid
-        self.parent_pane = None
+        self.parent_pane: DockPane = None
 
     def child_master(self):
         return self.fcenter
+
+    def detach_from_parent(self):
+        """Remove this widget as child of parent_pane."""
+        if self.parent_pane:
+            if self in self.parent_pane.dw_children:
+                self.parent_pane.dw_children.remove(self)
+            # the panedwindow of parent could be deleted
+            exists = self.tk.call(
+                "winfo", "exists", str(self.parent_pane.panedw)
+            )
+            if exists:
+                if self in self.parent_pane.panedw.panes():
+                    self.parent_pane.panedw.remove(self)
+            self.parent_pane = None
 
 
 class DockPane(DockWidgetBase, IDockPane):
@@ -33,6 +47,7 @@ class DockPane(DockWidgetBase, IDockPane):
         super().__init__(*args, **kw)
         self.panedw = ttk.Panedwindow(self.fcenter, orient=orient)
         self.panedw.pack(expand=True, fill=tk.BOTH)
+        self.dw_children = []
 
     @property
     def orient(self):
@@ -49,6 +64,11 @@ class DockPane(DockWidgetBase, IDockPane):
         self.maindock._add_widget_to_pane(
             self, widget, grouped=grouped, weight=weight
         )
+
+    def add_dwchild(self, dw: DockWidgetBase):
+        """Add DockPane or DockWidget as child."""
+        dw.parent_pane = self
+        self.dw_children.append(dw)
 
 
 class DockWidget(DockWidgetBase, IDockWidget):

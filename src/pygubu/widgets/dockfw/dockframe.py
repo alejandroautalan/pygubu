@@ -30,9 +30,15 @@ class DockFrame(DockWidgetBase, IDockFrame):
     def main_pane(self):
         return self._main_pane
 
-    def _add_pane_to_pane(self, topane, newpane, position=tk.END, **pane_kw):
+    def _add_pane_to_pane(
+        self, topane: DockPane, newpane: DockPane, position=tk.END, **pane_kw
+    ):
+        # remove newpane as child of current pane if any
+        newpane.detach_from_parent()
+
         topane.panedw.insert(position, newpane, **pane_kw)
         newpane.parent_pane = topane
+        topane.add_dwchild(newpane)
 
     def _add_widget_to_pane(
         self, topane, widget, grouped=False, position=tk.END, weight=1
@@ -49,7 +55,9 @@ class DockFrame(DockWidgetBase, IDockFrame):
             topane.panedw.insert(position, nb, weight=weight)
         nb.add(widget, text=widget.title)
         widget.tkraise()
-        widget.parent_pane = topane
+        widget.detach_from_parent()
+        topane.add_dwchild(widget)
+        # widget.parent_pane = topane
         widget.noteb = nb
         self.dock_widgets[widget.uid] = widget
 
@@ -76,12 +84,17 @@ class DockFrame(DockWidgetBase, IDockFrame):
                     break
         return target
 
-    def _add_widget_to_group(self, tgroup, swidget, position=tk.END):
+    def _add_widget_to_group(
+        self, tgroup, swidget: DockWidget, position=tk.END
+    ):
         nb: ttk.Notebook = tgroup.noteb
         nb.insert(position, swidget, text=swidget.title)
         nb.select(position)
         swidget.noteb = nb
-        swidget.parent_pane = tgroup.parent_pane
+        if tgroup != swidget:
+            swidget.detach_from_parent()
+            tgroup.parent_pane.add_dwchild(swidget)
+        # swidget.parent_pane = tgroup.parent_pane
         swidget.tkraise()
         self.dock_widgets[swidget.uid] = swidget
 
@@ -229,8 +242,9 @@ class DockFrame(DockWidgetBase, IDockFrame):
         if not nb.tabs():
             nb.destroy()
 
-    def _clear_pane(self, pane):
+    def _clear_pane(self, pane: DockPane):
         if pane.count == 0:
+            pane.detach_from_parent()
             pane.destroy()
             return
         logger.debug("Simplify pane for: %s parent: %s", pane, pane.parent_pane)
@@ -267,3 +281,92 @@ class DockFrame(DockWidgetBase, IDockFrame):
                         self._move_into_pane_side(
                             widget, parent, side, position=pos
                         )
+
+    def save_layout(self):
+        """Return a dictionary with information of current layout."""
+        config = {}
+        if self.main_pane:
+            layout = {}
+            self._create_layout(self.main_pane, layout)
+            config = {
+                "v": 1,
+                "mp": self.main_pane.uid,
+                "la": layout,
+                "w": [dw_uid for dw_uid in self.dock_widgets],
+            }
+        return config
+
+    def load_layout(self, config: dict):
+        """Restore layout from previusly saved config dictionary."""
+        if not self._layout_config_valid(config):
+            raise ValueError("Invalid layout configuration.")
+        self._remove_layout()
+        main_uid = config["mp"]
+        pane = self._build_layout(main_uid, config["la"])
+        self.set_main_pane(pane)
+
+    def _layout_config_valid(self, config):
+        valid = False
+        if config.get("v", 0) != 1:
+            valid = False
+        if valid and "w" in config:
+            for uid in config["w"]:
+                if uid not in self.dock_widgets:
+                    valid = False
+                    break
+        else:
+            valid = False
+
+        return valid
+
+    def _create_layout(self, pane, layout: dict):
+        conf = {"orient": pane.orient}
+        children = []
+        layout[pane.uid] = {
+            "cnf": conf,
+            "ch": children,
+        }
+        # if len(pane.panedw.panes()) > 1:
+        #    print(">>>", pane.uid),
+        #    print(">>>", pane.panedw.sashpos(0))
+        for child in pane.dw_children:
+            if isinstance(child, DockPane):
+                children.append(child.uid)
+                self._create_layout(child, layout)
+            else:
+                dw = {
+                    "uid": child.uid,
+                    "gr": child.is_grouped,
+                }
+                children.append(dw)
+
+    def _build_layout(self, pane_uid, layout):
+        pane = self.new_pane(uid=pane_uid, **layout[pane_uid]["cnf"])
+        for widget_or_pane in layout[pane_uid]["ch"]:
+            if isinstance(widget_or_pane, dict):
+                child_uid = widget_or_pane["uid"]
+                grouped = widget_or_pane["gr"]
+                if child_uid in self.dock_widgets:
+                    pane.add_widget(
+                        self.dock_widgets[child_uid], grouped=grouped
+                    )
+            else:
+                child_pane = self._build_layout(widget_or_pane, layout)
+                pane.add_pane(child_pane)
+        return pane
+
+    def _remove_layout(self):
+        """Remove all panes and set main pane to None"""
+
+        def _recursive_remove(pane):
+            for child in pane.dw_children:
+                if isinstance(child, DockPane):
+                    _recursive_remove(child)
+                else:
+                    child.detach_from_parent()
+            pane.detach_from_parent()
+            pane.destroy()
+
+        if self.main_pane:
+            _recursive_remove(self.main_pane)
+            self._main_pane = None
