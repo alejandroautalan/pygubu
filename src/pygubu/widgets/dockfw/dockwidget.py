@@ -28,7 +28,7 @@ class DockPane(DockWidgetBase, IDockPane):
     def __init__(self, *args, orient=tk.HORIZONTAL, **kw):
         uid = kw.get("uid", None)
         if uid is None:
-            self.pcount += 1
+            type(self).pcount += 1
             kw["uid"] = f"pane{self.pcount}"
         super().__init__(*args, **kw)
         self.panedw = ttk.Panedwindow(self.fcenter, orient=orient)
