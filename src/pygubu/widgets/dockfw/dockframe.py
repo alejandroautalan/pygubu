@@ -306,9 +306,11 @@ class DockFrame(DockWidgetBase, IDockFrame):
         self.set_main_pane(pane)
 
     def _layout_config_valid(self, config):
-        valid = False
+        valid = True
+        # validate "version"
         if config.get("v", 0) != 1:
             valid = False
+        # validate widgets exists
         if valid and "w" in config:
             for uid in config["w"]:
                 if uid not in self.dock_widgets:
