@@ -24,6 +24,7 @@ class DockFrameBO(DockWidgetBaseBO):
     container = True
     container_layout = False
     maxchildren = 1
+    virtual_events = (widgets.DockFrame.EVENT_LAYOUT_CHANGED,)
 
 
 _builder_id = dockframe_uid = "pygubu.widgets.dockframe"

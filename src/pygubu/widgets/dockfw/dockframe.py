@@ -17,10 +17,21 @@ logger = logging.getLogger(__name__)
 
 
 class DockFrame(DockWidgetBase, IDockFrame):
+    """A Dock Frame, where user can configure the layout
+    of the frames within a window.
+    Based on https://wiki.tcl-lang.org/page/Docking+framework
+
+    Generates <<DocFrame::LayoutChanged>> event when the user
+    changes the layout.
+    """
+
+    EVENT_LAYOUT_CHANGED = "<<DocFrame::LayoutChanged>>"
+
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
         self.dock_widgets: dict[str, DockWidget] = {}
         self._main_pane = None
+        self._emit_cbid = None
 
     def indicators_visible(self, visible: bool):
         if self._main_pane:
@@ -61,7 +72,8 @@ class DockFrame(DockWidgetBase, IDockFrame):
         widget.noteb = nb
         self.dock_widgets[widget.uid] = widget
 
-    def new_pane(self, *, main_pane=False, **pane_kw):
+    def new_pane(self, *, main_pane=False, **pane_kw) -> DockPane:
+        """Creates new DockPane locked to this DockFrame."""
         pane = DockPane(self, maindock=self, **pane_kw)
         if main_pane:
             self.set_main_pane(pane)
@@ -71,7 +83,8 @@ class DockFrame(DockWidgetBase, IDockFrame):
         pane.pack(in_=self.fcenter, expand=True, fill=tk.BOTH)
         self._main_pane = pane
 
-    def new_widget(self, **widget_kw):
+    def new_widget(self, **widget_kw) -> DockWidget:
+        """Creates new DockWidget locked to this DockFrame."""
         widget = DockWidget(self, maindock=self, **widget_kw)
         return widget
 
@@ -95,6 +108,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
         self._add_widget_to_group(twidget, swidget, position)
         self._clear_notebook(noteb)
         self._clear_pane(pane)
+        self._emit_layout_changed()
 
     def _move_into_pane_side(self, swidget, tpane, side, position=None):
         logger.debug("Move to into pane side. position %s", position)
@@ -134,6 +148,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
                 )
         self._clear_notebook(noteb)
         self._clear_pane(pane)
+        self._emit_layout_changed()
 
     def _move_into_pane_side_complex(self, swidget, tpane, side, position=None):
         move_to_new_pane = True
@@ -157,7 +172,8 @@ class DockFrame(DockWidgetBase, IDockFrame):
             logger.debug("Moving to new pane.")
             self._move_to_new_pane(swidget, tpane, side)
 
-    def _move_to_new_pane(self, swidget, tpane, side):
+    def _move_to_new_pane(self, swidget: DockWidget, tpane: DockPane, side):
+        """Move DockWidget 'swidget' to a new pane inside target pane 'tpane'."""
         logger.debug("Move to new pane.")
         new_orient = (
             tk.HORIZONTAL if tpane.orient == tk.VERTICAL else tk.VERTICAL
@@ -172,7 +188,10 @@ class DockFrame(DockWidgetBase, IDockFrame):
         self._add_widget_to_pane(new_pane, swidget, position=new_pos)
         self._raise_panes(new_pane)
 
-    def _move_to_widget_side(self, swidget, twidget, side):
+    def _move_to_widget_side(
+        self, swidget: DockWidget, twidget: DockWidget, side
+    ):
+        """Move 'swidget' to one side of 'twidget'."""
         logger.debug("Move to widget side: %s", side)
         if swidget == twidget:
             logger.debug("No move needed.")
@@ -209,7 +228,10 @@ class DockFrame(DockWidgetBase, IDockFrame):
                 index = panes.index(str(widget))
         return index
 
-    def _replace_widget_with_pane(self, widget, orient):
+    def _replace_widget_with_pane(self, widget: DockWidget, orient):
+        """Creates new pane, move widget inside it and
+        puts the pane in the current position of widget.
+        """
         parent_pane = widget.parent_pane
         widget_pos = self._get_position_in_pane(widget)
         new_pane = self.new_pane(orient=orient)
@@ -230,10 +252,14 @@ class DockFrame(DockWidgetBase, IDockFrame):
             widget.tkraise()
 
     def _clear_notebook(self, nb: ttk.Notebook):
+        """Destroy notebook if does not have children."""
         if not nb.tabs():
             nb.destroy()
 
     def _clear_pane(self, pane: DockPane):
+        """If pane does not have children, destroys it.
+        Otherwise tries to simplificate it.
+        """
         if pane.count == 0:
             pane.detach_from_parent()
             pane.destroy()
@@ -295,6 +321,16 @@ class DockFrame(DockWidgetBase, IDockFrame):
         main_uid = config["mp"]
         pane = self._build_layout(main_uid, config["la"])
         self.set_main_pane(pane)
+
+    def _emit_layout_changed(self):
+        """Schedule a notify of layout changed."""
+        if self._emit_cbid is not None:
+            self.after_cancel(self._emit_cbid)
+        self._emit_cbid = self.after(800, self._notify_layout_changed)
+
+    def _notify_layout_changed(self):
+        self.event_generate(self.EVENT_LAYOUT_CHANGED)
+        self._emit_cbid = None
 
     def _layout_config_valid(self, config):
         valid = True
