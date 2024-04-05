@@ -75,15 +75,6 @@ class DockFrame(DockWidgetBase, IDockFrame):
         widget = DockWidget(self, maindock=self, **widget_kw)
         return widget
 
-    def find_pane_for(self, dock_widget):
-        target = None
-        for uid, widget in self.dock_widgets.items():
-            if widget == dock_widget:
-                if widget.parent_pane:
-                    target = widget.parent_pane
-                    break
-        return target
-
     def _add_widget_to_group(
         self, tgroup, swidget: DockWidget, position=tk.END
     ):
