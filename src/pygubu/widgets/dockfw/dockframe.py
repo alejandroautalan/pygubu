@@ -306,10 +306,10 @@ class DockFrame(DockWidgetBase, IDockFrame):
             layout = {}
             self._create_layout(self.main_pane, layout)
             config = {
-                "v": 1,
-                "mp": self.main_pane.uid,
-                "la": layout,
-                "w": [dw_uid for dw_uid in self.dock_widgets],
+                "ver": 1,
+                "main": self.main_pane.uid,
+                "layout": layout,
+                "dwl": [dw_uid for dw_uid in self.dock_widgets],
             }
         return config
 
@@ -318,8 +318,8 @@ class DockFrame(DockWidgetBase, IDockFrame):
         if not self._layout_config_valid(config):
             raise ValueError("Invalid layout configuration.")
         self._remove_layout()
-        main_uid = config["mp"]
-        pane = self._build_layout(main_uid, config["la"])
+        main_uid = config["main"]
+        pane = self._build_layout(main_uid, config["layout"])
         self.set_main_pane(pane)
 
     def _emit_layout_changed(self):
@@ -335,11 +335,11 @@ class DockFrame(DockWidgetBase, IDockFrame):
     def _layout_config_valid(self, config):
         valid = True
         # validate "version"
-        if config.get("v", 0) != 1:
+        if config.get("ver", 0) != 1:
             valid = False
         # validate widgets exists
-        if valid and "w" in config:
-            for uid in config["w"]:
+        if valid and "dwl" in config:
+            for uid in config["dwl"]:
                 if uid not in self.dock_widgets:
                     valid = False
                     break
@@ -348,7 +348,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
 
         return valid
 
-    def _create_layout(self, pane, layout: dict):
+    def _create_layout(self, pane: DockPane, layout: dict):
         conf = {"orient": pane.orient}
         children = []
         layout[pane.uid] = {
@@ -358,7 +358,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
         # if len(pane.panedw.panes()) > 1:
         #    print(">>>", pane.uid),
         #    print(">>>", pane.panedw.sashpos(0))
-        for child in pane.dw_children:
+        for child in pane.sorted_dw_children:
             if isinstance(child, DockPane):
                 children.append(child.uid)
                 self._create_layout(child, layout)

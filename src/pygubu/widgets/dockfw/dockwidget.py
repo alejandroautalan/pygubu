@@ -57,6 +57,21 @@ class DockPane(DockWidgetBase, IDockPane):
     def count(self):
         return len(self.panedw.panes())
 
+    @property
+    def sorted_dw_children(self):
+        wsorted = []
+        for tkpane in self.panedw.panes():
+            tkpane = self.nametowidget(tkpane)
+            if isinstance(tkpane, ttk.Notebook):
+                for tab in tkpane.tabs():
+                    tab = self.nametowidget(tab)
+                    if tab in self.dw_children:
+                        wsorted.append(tab)
+            else:
+                if tkpane in self.dw_children:
+                    wsorted.append(tkpane)
+        return wsorted
+
     def add_pane(self, pane, **pane_kw):
         self.maindock._add_pane_to_pane(self, pane, **pane_kw)
 
