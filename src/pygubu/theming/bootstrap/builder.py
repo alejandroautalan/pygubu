@@ -1296,7 +1296,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         HSTYLE = "Horizontal.TSeparator"
         VSTYLE = "Vertical.TSeparator"
 
-        hsize = [40, 1]
+        hsize = [20, 1]
         # vsize = [1, 40]
 
         # style colors
