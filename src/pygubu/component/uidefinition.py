@@ -59,6 +59,7 @@ class UIDefinition(object):
         if wmetaclass is None:
             self.wmetaclass = WidgetMeta
         self.translator = translator
+        self.project_node = None
         self._project_settings = {}
         self._custom_widgets = []
         self.uifile = None
@@ -74,17 +75,17 @@ class UIDefinition(object):
 
     def _load_custom_widgets(self):
         xpath = "./customwidgets/customwidget"
-        node_list: ET.Element = self.root.findall(xpath)
+        node_list: ET.Element = self.project_node.findall(xpath)
         if node_list is not None:
             for node in node_list:
                 self._custom_widgets.append(node.attrib["path"])
 
     def _save_custom_widgets(self):
         xpath = "./customwidgets"
-        node: ET.Element = self.root.find(xpath)
+        node: ET.Element = self.project_node.find(xpath)
         if node is None:
             node = ET.Element("customwidgets")
-            self.root.append(node)
+            self.project_node.append(node)
         node.clear()
         for value in self._custom_widgets:
             cnode = ET.Element("customwidget")
@@ -100,18 +101,18 @@ class UIDefinition(object):
         self._project_settings = bag
 
     def _load_project_settings(self):
-        xpath = ".//settings/setting"
-        node_list: ET.Element = self.tree.findall(xpath)
+        xpath = "./settings/setting"
+        node_list: ET.Element = self.project_node.findall(xpath)
         if node_list is not None:
             for node in node_list:
                 self._project_settings[node.attrib["id"]] = node.text
 
     def _save_project_settings(self):
         xpath = ".//settings"
-        node: ET.Element = self.root.find(xpath)
+        node: ET.Element = self.project_node.find(xpath)
         if node is None:
             node = ET.Element("settings")
-            self.root.append(node)
+            self.project_node.append(node)
         node.clear()
         for key, value in self._project_settings.items():
             child = ET.Element("setting")
@@ -298,7 +299,7 @@ class UIDefinition(object):
         parent_layout = None
 
         xpath = ".//*[@id='{0}']/../..".format(elemid)
-        parent = self.interfaces.find(xpath)
+        parent = self.root.find(xpath)
         if parent is not None:
             parent_layout = parent.find("./layout")
             if parent_layout is not None:
@@ -446,12 +447,12 @@ class UIDefinition(object):
         # Version 1.0: start of schema versioning, implements multiple layout managers
         # Version 1.1: remove idtocommand and command_id_arg properties
         # Version 1.4: new project structure.
-        self.root = root = ET.Element("project")
+        self.root = root = ET.Element("interface")
         root.set("version", self._latest_version)
         if self.author:
             root.set("author", self.author)
-        self.interfaces = ET.Element("interfaces")
-        root.append(self.interfaces)
+        self.project_node = ET.Element("project")
+        root.append(self.project_node)
         self.tree = ET.ElementTree(root)
 
     def _tree_load(self, tree, default_version=None):
@@ -461,18 +462,13 @@ class UIDefinition(object):
         root: ET.Element = tree.getroot()
         version = root.get("version", default_version)
         author = root.get("author", "")
-        if root.tag == "interface":
-            old_root = root
-            root = ET.Element("project")
-            root.set("version", self._latest_version)
-            self.interfaces = ET.Element("interfaces")
-            for child in old_root:
-                self.interfaces.append(child)
-        else:
-            self.interfaces = root.find("./interfaces")
         self.root = root
         self.version = version
         self.author = author
+        self.project_node = root.find("./project")
+        if self.project_node is None:
+            self.project_node = ET.Element("project")
+            root.append(self.project_node)
         self._load_project_settings()
         self._load_custom_widgets()
 
@@ -492,7 +488,7 @@ class UIDefinition(object):
 
     def add_xmlnode(self, node, parent=None):
         if parent is None:
-            self.interfaces.append(node)
+            self.root.append(node)
         else:
             parent.append(node)
         return node
@@ -527,7 +523,7 @@ class UIDefinition(object):
 
     def widgets(self):
         xpath = "./object"
-        children = self.interfaces.findall(xpath)
+        children = self.root.findall(xpath)
         for child in children:
             wmeta = self.xmlnode_to_widget(child)
             yield wmeta
@@ -544,7 +540,7 @@ class UIDefinition(object):
 
     def replace_widget(self, identifier, rootmeta):
         xpath = ".//object[@id='{0}']".format(identifier)
-        parent = self.interfaces.find(xpath + "/..")
+        parent = self.root.find(xpath + "/..")
         target = parent.find(xpath)
 
         if parent is not None:
