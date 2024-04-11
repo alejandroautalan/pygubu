@@ -1,3 +1,4 @@
+import tkinter as tk
 from pygubu.api.v1 import BuilderObject
 from pygubu.plugins.tk.tkstdwidgets import TKToplevel
 
@@ -11,8 +12,64 @@ class ToplevelPreviewMixin(object):
     def __init__(self, master=None, **kw):
         super().__init__(master, **kw)
         self.tl_attrs = {}
-        self._w_set = False
-        self._h_set = False
+        self._w_set = False  # Marks if width was set using "width" property
+        self._h_set = False  # Marks if height was set using "height" property
+        self._propagate = True  # Save propagate state configured by user
+        self._geometry_set = False
+        self._geom_w = 1
+        self._geom_h = 1
+        self._uwidth = 1  # Save width configured by user
+        self._uheight = 1  # Save height configured by user
+
+    def _get_req_wh(self):
+        """Calculate aproximation of real width and height
+        because this frame is locked for preview purposes."""
+        my_w = self._uwidth
+        my_h = self._uheight
+        has_minsize = False
+        min_w = my_w
+        min_h = my_h
+        final_w = my_w
+        final_h = my_h
+
+        if "minsize" in self.tl_attrs:
+            minsize = self.tl_attrs.get("minsize", (1, 1))
+            min_w = minsize[0]
+            min_h = minsize[1]
+            has_minsize = True
+
+        content_w = content_h = 0
+        if self._propagate:
+            children = self.winfo_children()
+            # Calculate aproximation of internal size.
+            for child in children:
+                content_w = max(content_w, child.winfo_reqwidth())
+                content_h = max(content_h, child.winfo_reqheight())
+            if children and has_minsize:
+                # propagate is enabled, resize to content size
+                final_w = max(content_w, min_w)
+                final_h = max(content_h, min_h)
+            else:
+                # No children, show frame with user configured size
+                final_w = max(my_w, min_w)
+                final_h = max(my_h, min_h)
+        else:
+            # Propagate is false, fixed w/h frame.
+            final_w = max(min_w, my_w)
+            final_h = max(min_h, my_h)
+        if self._geometry_set:
+            # Geometry overrides all
+            final_w = self._geom_w
+            final_h = self._geom_h
+        # print(f"{my_w=}, {my_h=}, {has_minsize=}, {min_w=}, {min_h=}, {content_w=}, {content_h=}")
+        # print(f"{final_w=}, {final_h=}")
+        return (final_w, final_h)
+
+    def winfo_reqwidth(self):
+        return self._get_req_wh()[0]
+
+    def winfo_reqheight(self):
+        return self._get_req_wh()[1]
 
     def configure(self, cnf=None, **kw):
         if cnf:
@@ -35,6 +92,8 @@ class ToplevelPreviewMixin(object):
                 kw.pop(key)
             else:
                 self._w_set = True
+            # save user width setting
+            self._uwidth = value
         key = "height"
         if key in kw:
             value = int(kw[key])
@@ -53,6 +112,8 @@ class ToplevelPreviewMixin(object):
                 kw.pop(key)
             else:
                 self._h_set = True
+            # save user height setting
+            self._uheight = value
         key = "menu"
         if key in kw:
             # No menu preview available
@@ -87,6 +148,13 @@ class ToplevelPreviewBaseBO(BuilderObject):
             elif w.grid_slaves():
                 w.grid_propagate(0)
 
+    def _container_layout(self, target, container_manager, properties):
+        # save user configured propagate state
+        value = self.wmeta.container_properties.get("propagate", True)
+        value = self._process_property_value("propagate", value)
+        self.widget._propagate = value
+        super()._container_layout(target, container_manager, properties)
+
     def layout(self, target=None):
         self.widget.pack(expand=True, fill="both")
         self._container_layout(
@@ -108,6 +176,8 @@ class ToplevelPreviewBaseBO(BuilderObject):
                 w, h = value.split("|")
                 value = (int(w), int(h))
             return value
+        if pname == "propagate":
+            return tk.getboolean(value)
         return super()._process_property_value(pname, value)
 
     def _set_property(self, target_widget, pname, value):
@@ -128,6 +198,8 @@ class ToplevelPreviewBaseBO(BuilderObject):
             else:
                 if isinstance(pvalue, tuple):
                     tw.tl_attrs[pname] = pvalue
+                    if pname == "minsize":
+                        tw.configure(width=pvalue[0], height=pvalue[1])
                 else:
                     del tw.tl_attrs[pname]
         elif pname == "geometry":
@@ -138,6 +210,9 @@ class ToplevelPreviewBaseBO(BuilderObject):
                     tw.tl_attrs["minsize"] = (w, h)
                     tw._h_set = tw._w_set = False
                     tw.configure(width=w, height=h)
+                    tw._geometry_set = True
+                    tw._geom_w = w
+                    tw._geom_h = h
         elif pname == "resizable":
             # Do nothing, fake 'resizable' property for Toplevel preview
             pass
