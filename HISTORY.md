@@ -1,22 +1,26 @@
 History
 =======
 
-Changes in project options branch (future next version)
+Changes for version 0.35
 
-  * Added copy_custom_property function
-  * Added "public" argument to function register_widget
+  * New theming module. Adds bootstrap like themes, based on ttkbootstrap.  Initial draft. TODO: improve graphics, draw with pillow if available.
   * Modified ApplicationLevelBindManager, methods are now class methods and not static methods.
     Added parameter master to the init_mousewheel_binding method.
-  * Added new method Builder.add_resource_paths(path_list: list)
   * Modified UI definition. Added project options section.
     Options saved: general options, code generation options, style definition, custom widgets.
-  * New classmethods in Builder object canbe_parent_of, canbe_child_of.
   * New widgets:
-      New Hideable Frame widget.
-      New PathChooserButton widget.
-      Expose accordion widget hidden in pygubu code (Maybe it will be useful).
-      New docking widgets: DockFrame, DockWidget, DockPane. In alpha status, although pygubu designer uses them.
-      New form widgets in alpha status.
+      - New Hideable Frame widget.
+      - New PathChooserButton widget.
+      - New ColorInput widget.
+      - New docking widgets: DockFrame, DockWidget, DockPane. In alpha status, although pygubu designer uses them.
+      - New form widgets in alpha status.
+      - Expose accordion widget hidden in pygubu code (Maybe it will be useful).
+  * New emit_close_event for pygubu Dialog
+  * Grid container options, fixed bug: process "all" index first, so specific row/col props are configured correctly.
+  * New classmethods in Builder object canbe_parent_of, canbe_child_of.
+  * Added copy_custom_property function
+  * Added "public" argument to function register_widget
+  * Added new method Builder.add_resource_paths(path_list: list)
 
 Changes for version 0.34
 
