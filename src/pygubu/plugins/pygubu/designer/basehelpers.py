@@ -45,10 +45,14 @@ class ToplevelPreviewMixin(object):
             for child in children:
                 content_w = max(content_w, child.winfo_reqwidth())
                 content_h = max(content_h, child.winfo_reqheight())
-            if children and has_minsize:
-                # propagate is enabled, resize to content size
-                final_w = max(content_w, min_w)
-                final_h = max(content_h, min_h)
+            if children:
+                if has_minsize:
+                    # propagate is enabled, resize to content size
+                    final_w = max(content_w, min_w)
+                    final_h = max(content_h, min_h)
+                else:
+                    final_w = max(my_w, content_w)
+                    final_h = max(my_h, content_h)
             else:
                 # No children, show frame with user configured size
                 final_w = max(my_w, min_w)
