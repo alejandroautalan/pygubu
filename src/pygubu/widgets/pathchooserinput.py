@@ -27,7 +27,6 @@ class PathChooserBase:
     DIR = "directory"
 
     def __init__(self, *args, **kw):
-        super().__init__(*args, **kw)
         self._choose = self.FILE
         self._oldvalue = None
         self._path = None
@@ -38,6 +37,7 @@ class PathChooserBase:
             "title": None,
             "defaultextension": None,
         }
+        super().__init__(*args, **kw)
 
     def configure(self, cnf=None, **kw):
         if cnf:
