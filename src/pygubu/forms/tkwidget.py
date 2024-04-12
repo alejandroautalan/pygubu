@@ -1,6 +1,7 @@
 import tkinter as tk
 from .builder import FormBuilder
 from .widget import FieldWidget, WidgetInfo
+from .config import TEXT_ERROR_BGCOLOR
 
 
 EMPTY_VALUES = (None, "", [], (), {})
@@ -23,11 +24,6 @@ class TkFormBuilder(FormBuilder):
 
 
 class TkWidgetBase(FieldWidget):
-    def wmark_invalid(self, state: bool):
-        # Visually mark the widget as invalid depending on state parameter.
-        cname = self.__class__.__name__
-        print(f"TODO > {cname}: mark invalid state")
-
     def wis_disabled(self) -> bool:
         return "disabled" == self.cget("state")
 
@@ -68,6 +64,16 @@ class TkVarBasedWidget(TkWidgetBase):
 
 
 class Text(TkWidgetBase, tk.Text):
+    def wmark_invalid(self, state: bool):
+        # Visually mark the widget as invalid depending on state parameter.
+        if not hasattr(self, "_last_bg_color"):
+            self._last_bg_color = None
+        if state:
+            self._last_bg_color = self.cget("background")
+            self.configure(background=TEXT_ERROR_BGCOLOR)
+        elif self._last_bg_color is not None:
+            self.configure(background=self._last_bg_color)
+
     def wset_value(self, value):
         self.delete("0.0", tk.END)
         state = self.cget("state")
