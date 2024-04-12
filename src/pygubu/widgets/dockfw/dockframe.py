@@ -365,7 +365,8 @@ class DockFrame(DockWidgetBase, IDockFrame):
             else:
                 dw = {
                     "uid": child.uid,
-                    "gr": child.is_grouped,
+                    "grouped": child.is_grouped,
+                    "weight": int(child.dw_options.get("weight", 1)),
                 }
                 children.append(dw)
 
@@ -374,10 +375,13 @@ class DockFrame(DockWidgetBase, IDockFrame):
         for widget_or_pane in layout[pane_uid]["ch"]:
             if isinstance(widget_or_pane, dict):
                 child_uid = widget_or_pane["uid"]
-                grouped = widget_or_pane["gr"]
+                grouped = widget_or_pane["grouped"]
+                weight = widget_or_pane["weight"]
                 if child_uid in self.dock_widgets:
                     pane.add_widget(
-                        self.dock_widgets[child_uid], grouped=grouped
+                        self.dock_widgets[child_uid],
+                        grouped=grouped,
+                        weight=weight,
                     )
             else:
                 child_pane = self._build_layout(widget_or_pane, layout)

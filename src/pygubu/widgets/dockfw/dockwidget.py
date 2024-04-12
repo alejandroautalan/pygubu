@@ -17,6 +17,7 @@ class DockWidgetBase(SlotFrame):
         self.maindock = maindock
         self.uid = uid
         self.parent_pane: DockPane = None
+        self.dw_options = {}
 
     def child_master(self):
         return self.fcenter
@@ -72,10 +73,12 @@ class DockPane(DockWidgetBase, IDockPane):
                     wsorted.append(tkpane)
         return wsorted
 
-    def add_pane(self, pane, **pane_kw):
+    def add_pane(self, pane: "DockPane", **pane_kw):
+        pane.dw_options.update(pane_kw)
         self.maindock._add_pane_to_pane(self, pane, **pane_kw)
 
-    def add_widget(self, widget, grouped=False, weight=1):
+    def add_widget(self, widget: "DockWidget", grouped=False, weight=1):
+        widget.dw_options["weight"] = weight
         self.maindock._add_widget_to_pane(
             self, widget, grouped=grouped, weight=weight
         )
