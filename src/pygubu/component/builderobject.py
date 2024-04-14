@@ -248,17 +248,16 @@ class BuilderObject(object):
         # Do container layout
         propagate = properties.get("propagate", "true")
         propagate = tk.getboolean(propagate)
+        propagate = 1 if propagate else 0
         anchor = properties.get("anchor", None)
 
         if container_manager == "grid":
             if anchor:
                 target.grid_anchor(anchor)
-            if not propagate:
-                target.grid_propagate(0)
+            target.grid_propagate(propagate)
             self._gridrc_config(target)
         elif container_manager == "pack":
-            if not propagate:
-                target.pack_propagate(0)
+            target.pack_propagate(propagate)
         elif container_manager is None:
             raise Exception("Container Manager is none :(")
 
