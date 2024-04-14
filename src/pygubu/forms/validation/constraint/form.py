@@ -1,10 +1,11 @@
 from ..base import Constraint, ConstraintValidator
 from .notblank import NotBlank
+from pygubu.i18n import _
 
 
 class Required(NotBlank):
     code = "required"
-    message = "This value is required."
+    message = _("This value is required.")
 
 
 class Form(Constraint):

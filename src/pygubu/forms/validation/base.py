@@ -59,14 +59,24 @@ class ConstraintViolationList(ConstraintViolation):
 
 
 class ExecutionContext:
-    def __init__(self):
+    def __init__(self, translator=None):
         self._violations = []
+        self._translator = (
+            self._noop_trans if translator is None else translator
+        )
+
+    def _noop_trans(s):
+        """Default no-op translator"""
+        return s
 
     @property
     def violations(self):
         return ConstraintViolationList(self._violations)
 
     def add_violation(self, /, **kw):
+        msg_key = "message"
+        if msg_key in kw:
+            kw[msg_key] = str(self._translator(kw[msg_key]))
         violation = ConstraintViolation(**kw)
         self._violations.append(violation)
 

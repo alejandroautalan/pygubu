@@ -59,6 +59,7 @@ class Form:
         self.cleaned_data = {}
         self.transformation_error = None
         self._errors = {}
+        self.translator = None
 
     def add(self, name: str, field: FormField):
         self.fields[name] = field
@@ -136,7 +137,7 @@ class Form:
     def do_validation(self):
         constraint = FormConstraint()
         validator = FormValidator()
-        context = ExecutionContext()
+        context = ExecutionContext(translator=self.translator)
         validator.initialize(context)
         validator.validate(self, constraint)
 

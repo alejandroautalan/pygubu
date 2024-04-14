@@ -36,6 +36,10 @@ def translator(message: str) -> str:
     return LazyTranslator(message)
 
 
+def noop_translator(message: str) -> str:
+    return message
+
+
 if "PYGUBU_LAZY_TRANSLATOR" in os.environ:
     # Environment variable is set in pygubu-designer to activate string translations.
     _ = T = translator

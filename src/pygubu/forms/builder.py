@@ -30,4 +30,7 @@ class FormBuilder:
             form.add(name, field)
         for name, info in self.widgets_info.items():
             form.add_info_display(name, info)
+        trans_key = "translator"
+        if trans_key in config:
+            form.translator = config[trans_key]
         return form
