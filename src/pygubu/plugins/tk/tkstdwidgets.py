@@ -538,9 +538,11 @@ class TKText(BuilderObject):
             state = target_widget.cget("state")
             if state == tk.DISABLED:
                 target_widget.configure(state=tk.NORMAL)
+                target_widget.delete("0.0", tk.END)
                 target_widget.insert("0.0", value)
                 target_widget.configure(state=tk.DISABLED)
             else:
+                target_widget.delete("0.0", tk.END)
                 target_widget.insert("0.0", value)
         else:
             super(TKText, self)._set_property(target_widget, pname, value)
