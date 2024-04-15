@@ -1,7 +1,6 @@
 import tkinter as tk
 from .builder import FormBuilder
 from .widget import FieldWidget, WidgetInfo
-from .config import TEXT_ERROR_BGCOLOR
 
 
 EMPTY_VALUES = (None, "", [], (), {})
@@ -23,9 +22,57 @@ class TkFormBuilder(FormBuilder):
                 self.search_widgets(widget)
 
 
+class WidgetViewManager:
+    """A class to provide default behavior and allow user to inject
+    custom code."""
+
+    def mark_invalid(self, widget, state: bool):
+        ...
+
+    def is_disabled(self, widget) -> bool:
+        ...
+
+
+class TkWidgetViewManager(WidgetViewManager):
+    """Default view manager for tk widgets
+
+    To mark widget as invalid, uses option database
+    to get color information:
+       form_error_bg: background color
+       form_error_fg: foreground color
+    If color information is not found, does nothing.
+    """
+
+    def mark_invalid(self, widget: tk.Widget, state: bool):
+        class_ = widget.winfo_class()
+        error_bg = widget.option_get("form_error_bg", class_)
+        error_fg = widget.option_get("form_error_fg", class_)
+
+        if not all((error_bg, error_fg)):
+            # no configuration found, do nothing
+            return
+        if not hasattr(widget, "_oldbg"):
+            widget._oldbg = None
+            widget._oldfg = None
+        if state:
+            widget._oldbg = widget.cget("background")
+            widget._oldfg = widget.cget("foreground")
+            widget.configure(background=error_bg, foreground=error_fg)
+        elif widget._oldbg is not None:
+            widget.configure(background=widget._oldbg, foreground=widget._oldfg)
+
+    def is_disabled(self, widget) -> bool:
+        return "disabled" == widget.cget("state")
+
+
 class TkWidgetBase(FieldWidget):
+    view_manager = TkWidgetViewManager()
+
     def wis_disabled(self) -> bool:
-        return "disabled" == self.cget("state")
+        return self.view_manager.is_disabled(self)
+
+    def wmark_invalid(self, state: bool):
+        self.view_manager.mark_invalid(self, state)
 
 
 class TkVarBasedWidget(TkWidgetBase):
@@ -64,16 +111,6 @@ class TkVarBasedWidget(TkWidgetBase):
 
 
 class Text(TkWidgetBase, tk.Text):
-    def wmark_invalid(self, state: bool):
-        # Visually mark the widget as invalid depending on state parameter.
-        if not hasattr(self, "_last_bg_color"):
-            self._last_bg_color = None
-        if state:
-            self._last_bg_color = self.cget("background")
-            self.configure(background=TEXT_ERROR_BGCOLOR)
-        elif self._last_bg_color is not None:
-            self.configure(background=self._last_bg_color)
-
     def wset_value(self, value):
         self.delete("0.0", tk.END)
         state = self.cget("state")

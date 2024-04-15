@@ -2,46 +2,66 @@ import tkinter.ttk as ttk
 from pygubu.utils.widget import HideableMixin
 from .builder import FormBuilder
 from .widget import FieldWidget, WidgetInfo, FormInfo
-from .tkwidget import TkFormBuilder, TkVarBasedWidget
+from .tkwidget import TkFormBuilder, TkVarBasedWidget, TkWidgetViewManager
 
 
 class FrameFormBuilder(TkFormBuilder, ttk.Frame):
     ...
 
 
-class TtkVarBasedWidget(TkVarBasedWidget):
-    def wmark_invalid(self, state: bool):
-        style: str = self.cget("style")
+class TtkWidgetViewManager(TkWidgetViewManager):
+    """Default view manager for ttk widgets
+
+    To mark widget as invalid, combines the word "Error."
+    with the widget style class.
+    """
+
+    def mark_invalid(self, widget: ttk.Widget, state: bool):
+        style: str = widget.cget("style")
         if style:
             style = style.removeprefix("Error.")
             if state:
                 style = f"Error.{style}"
-            self.configure(style=style)
+            widget.configure(style=style)
+
+
+class TtkVarBasedWidget(TkVarBasedWidget):
+    view_manager = TtkWidgetViewManager()
+
+
+class TtkWidgetInfoViewManager:
+    def _set_style(self, widget, mode: str):
+        style: str = widget.cget("style")
+        if style:
+            style = style.removeprefix("Error.")
+            style = style.removeprefix("Help.")
+            style = f"{mode}.{style}"
+            widget.configure(style=style)
+
+    def show_error(self, widget: ttk.Widget):
+        self._set_style(widget, "Error")
+
+    def show_help(self, widget: ttk.Widget):
+        self._set_style(widget, "Help")
 
 
 class LabelWidgetInfo(WidgetInfo, HideableMixin, ttk.Label):
     """Used to display help and errors messages for the associated form field."""
 
+    view_manager = TtkWidgetInfoViewManager()
+
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)
-
-    def _set_style(self, mode: str):
-        style: str = self.cget("style")
-        if style:
-            style = style.removeprefix("Error.")
-            style = style.removeprefix("Help.")
-            style = f"{mode}.{style}"
-            self.configure(style=style)
 
     def show_error(self, error):
         self.hidden = False
         self.configure(text=error.message)
-        self._set_style("Error")
+        self.view_manager.show_error(self)
 
     def show_help(self, message):
         self.hidden = False
         self.configure(text=message)
-        self._set_style("Help")
+        self.view_manager.show_help(self)
 
     def clear(self):
         self.configure(text="")
