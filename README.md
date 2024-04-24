@@ -9,7 +9,7 @@ Welcome to Pygubu!
 
 The user interfaces designed are saved as [XML](https://en.wikipedia.org/wiki/XML) files, and, by using the _pygubu builder_, these can be loaded by applications dynamically as needed.
 
-Pygubu is inspired by [Glade](https://glade.gnome.org).
+Pygubu is inspired by [Glade](https://gitlab.gnome.org/GNOME/glade).
 
 Installation
 ============
