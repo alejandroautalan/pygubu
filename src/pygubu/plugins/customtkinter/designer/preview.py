@@ -115,7 +115,7 @@ CTKPreview = ToplevelPreviewFactory(
 )
 
 
-class CTkPreviewBO(ToplevelPreviewBaseBO):
+class CTkPreviewBO(CTkToplevelPreviewBO):
     class_ = CTKPreview
     properties = ToplevelPreviewBaseBO.properties + ("appearance_mode",)
     ro_properties = ToplevelPreviewBaseBO.ro_properties + ("fg_color",)
