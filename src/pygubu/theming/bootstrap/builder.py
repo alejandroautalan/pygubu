@@ -187,7 +187,12 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 self.update_combobox_popdown_style(widget)
             else:
                 if wclass in self.tk_widgets_options:
-                    widget.configure(**self.tk_widgets_options[wclass])
+                    # some widget may block the property (like customtkinter)
+                    # so add try here.
+                    try:
+                        widget.configure(**self.tk_widgets_options[wclass])
+                    except Exception as e:
+                        logger.debug(e)
             # print("  " * level, f"{wclass} {wstyle}")
             for k, v in widget.children.items():
                 self._walk_and_update_widget(v, style, level + 1)
