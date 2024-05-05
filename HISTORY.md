@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.35.1
+
+  * Fix error in customtkinter Ctk builder
+
 Changes for version 0.35
 
   * New theming module. Adds bootstrap like themes, based on ttkbootstrap.  Initial draft. TODO: improve graphics, draw with pillow if available.

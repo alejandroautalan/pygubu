@@ -2,6 +2,6 @@
 
 __all__ = ["Builder"]
 
-__version__ = "0.35"
+__version__ = "0.35.1"
 
 from .builder import Builder
