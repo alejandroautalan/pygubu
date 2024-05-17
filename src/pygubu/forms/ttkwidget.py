@@ -19,9 +19,12 @@ class TtkWidgetViewManager(TkWidgetViewManager):
     def mark_invalid(self, widget: ttk.Widget, state: bool):
         style: str = widget.cget("style")
         if style:
-            style = style.removeprefix("Error.")
+            # remove prefix if exists.
+            prefix = "Error."
+            if style.startswith(prefix):
+                style = style[len(prefix) :]
             if state:
-                style = f"Error.{style}"
+                style = f"{prefix}{style}"
             widget.configure(style=style)
 
 
@@ -33,8 +36,14 @@ class TtkWidgetInfoViewManager:
     def _set_style(self, widget, mode: str):
         style: str = widget.cget("style")
         if style:
-            style = style.removeprefix("Error.")
-            style = style.removeprefix("Help.")
+            # remove prefix if exists
+            prefix = "Error."
+            if style.startswith(prefix):
+                style = style[len(prefix) :]
+            # remove prefix if exists
+            prefix = "Help."
+            if style.startswith(prefix):
+                style = style[len(prefix) :]
             style = f"{mode}.{style}"
             widget.configure(style=style)
 
