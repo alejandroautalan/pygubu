@@ -1,6 +1,11 @@
 History
 =======
 
+Changes for version 0.35.2
+
+  * Drop support for python 3.6 and 3.7 (was already not working)
+  * Update pyinstaller hooks
+
 Changes for version 0.35.1
 
   * Fix error in customtkinter Ctk builder
