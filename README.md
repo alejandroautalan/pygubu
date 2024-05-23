@@ -14,7 +14,7 @@ Pygubu is inspired by [Glade](https://gitlab.gnome.org/GNOME/glade).
 Installation
 ============
 
-The latest version of pygubu requires Python >= 3.6
+The latest version of pygubu requires Python >= 3.8
 
 You can install pygubu using pip:
 
