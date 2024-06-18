@@ -13,6 +13,9 @@ from customtkinter import CTkScrollableFrame
 class CTkScrollableFrameBO(CTkBaseMixin, BuilderObject):
     class_ = CTkScrollableFrame
     container = True
+    # CTkScrollableFrame does some weird things
+    # with layout so I disable container layout here on purpose.
+    container_layout = False
     properties = (
         "width",
         "height",

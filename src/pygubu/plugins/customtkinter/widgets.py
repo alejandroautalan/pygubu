@@ -23,6 +23,7 @@ from .ctkbase import (
 class CTkFrameBO(CTkBaseMixin, BuilderObject):
     class_ = ctk.CTkFrame
     container = True
+    container_layout = True
     properties = (
         "width",
         "height",
