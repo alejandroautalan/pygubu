@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.35.3
+
+  * Fix container layout on customtkinter CTKFrame.
+
 Changes for version 0.35.2
 
   * Drop support for python 3.6 and 3.7 (was already not working)
