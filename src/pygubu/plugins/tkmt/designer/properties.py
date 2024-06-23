@@ -21,4 +21,35 @@ for prop in float_properties:
         _builder_uid, prop, editor, **float_properties[prop]
     )
 
+list_properties = {
+    "columnnames": {"help": "A json list of strings."},
+    "datacolumnnames": {
+        "help": "A json list of strings. Should be same size as columnnames."
+    },
+    "columnwidths": {
+        "help": "A json list of ints. . Should be same size as columnnames."
+    },
+}
+
+for prop in list_properties:
+    editor = list_properties[prop].pop("editor", "text")
+    register_custom_property(
+        _builder_uid, prop, editor, **list_properties[prop]
+    )
+
+string_properties = {
+    # Treeview data argument
+    "data": {
+        "help": "Use a resource URI here, example:  res://my_treeview_data"
+    },
+    # Treeview data argument
+    "subentryname": {},
+}
+
+for prop in string_properties:
+    editor = string_properties[prop].pop("editor", "entry")
+    register_custom_property(
+        _builder_uid, prop, editor, **string_properties[prop]
+    )
+
 # "sticky" style  "padx", "pady"

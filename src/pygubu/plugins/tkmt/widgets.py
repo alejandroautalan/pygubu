@@ -1,3 +1,4 @@
+import json
 import TKinterModernThemes as tkmt
 
 from pygubu.i18n import _
@@ -6,6 +7,7 @@ from pygubu.api.v1 import (
     register_widget,
     register_custom_property,
 )
+from pygubu.utils.datatrans import ListDTO
 from ..tkmt import _designer_tab_label, _plugin_uid
 
 
@@ -69,6 +71,7 @@ class TkmtWidgetBO(BuilderObject):
         assert self.master_add_method is not None
         add_method = getattr(master, self.master_add_method)
         kargs = self._get_init_args(extra_init_args)
+        kargs = self._get_keyword_args(kargs)
         args_defaults = self._get_positional_args_defaults()
         args = self._get_positional_args(kargs, args_defaults)
         self.widget = add_method(*args, **kargs)
@@ -76,6 +79,16 @@ class TkmtWidgetBO(BuilderObject):
 
     def configure(self, target=None):
         pass
+
+    def _get_keyword_args(self, bag: dict):
+        for pname in self.properties:
+            if (
+                pname not in self.ro_properties
+                and pname in self.wmeta.properties
+            ):
+                pvalue = self.wmeta.properties[pname]
+                bag[pname] = self._process_property_value(pname, pvalue)
+        return bag
 
     def _get_positional_args(self, bag: dict, defaults: dict) -> list:
         args = []
@@ -274,5 +287,101 @@ register_widget(
     _builder_uid,
     wNumericalSpinboxBO,
     "wNumericalSpinbox",
+    ("ttk", _designer_tab_label),
+)
+
+
+class wNonnumericalSpinboxBO(TkmtWidgetBO):
+    master_add_method = "NonnumericalSpinbox"
+    pos_args = ("values", "variable")
+    properties = pos_args + TkmtWidgetBO.properties
+    ro_properties = properties
+    json_to_list = ListDTO([], ["values should be a json list"])
+
+    def _get_positional_args_defaults(self) -> dict:
+        return {
+            "values": [],
+            "variable": None,
+        }
+
+    def _process_property_value(self, pname, value):
+        if pname == "values":
+            return self.json_to_list.transform(value)
+        return super()._process_property_value(pname, value)
+
+
+_builder_uid = f"{_plugin_uid}.wNonnumericalSpinbox"
+register_widget(
+    _builder_uid,
+    wNonnumericalSpinboxBO,
+    "wNonnumericalSpinbox",
+    ("ttk", _designer_tab_label),
+)
+
+
+class TreeviewBO(TkmtWidgetBO):
+    master_add_method = "Treeview"
+    pos_args = ("columnnames", "columnwidths", "height", "data", "subentryname")
+    kw_args = ("datacolumnnames",)
+    properties = pos_args + kw_args + TkmtWidgetBO.properties
+    ro_properties = pos_args + TkmtWidgetBO.properties
+    json_to_colname = ListDTO([], ["values should be a json list"])
+    json_to_colwidth = ListDTO([], [])
+
+    def _get_positional_args_defaults(self) -> dict:
+        return {
+            "columnnames": [],
+            "columnwidths": [],
+            "height": 5,
+            "data": {},
+            "subentryname": "",
+        }
+
+    def _get_init_args(self, extra_init_args: dict = None):
+        kargs = super()._get_init_args(extra_init_args)
+
+        key_names = "columnnames"
+        key_widths = "columnwidths"
+
+        # Fix names and widths
+        if key_names in kargs and key_widths in kargs:
+            name_count = len(kargs[key_names])
+            width_count = len(kargs[key_widths])
+
+            if width_count > name_count:
+                kargs[key_widths] = kargs[key_widths][:name_count]
+            if width_count < name_count:
+                diff = name_count - width_count
+                for i in range(0, diff):
+                    kargs[key_widths].append(100)
+        elif key_names in kargs and key_widths not in kargs:
+            name_count = len(kargs[key_names])
+            kargs[key_widths] = []
+            for i in range(0, name_count):
+                kargs[key_widths].append(100)
+        elif key_names not in kargs and key_widths in kargs:
+            width_count = len(kargs[key_widths])
+            kargs[key_names] = []
+            for i in range(0, width_count):
+                kargs[key_names].append(f"column {i+1}")
+        # Fix data if we are in designer and no resource is set.
+        key_data = "data"
+        if key_data in kargs and kargs[key_data] is None:
+            kargs[key_data] = {}
+        return kargs
+
+    def _process_property_value(self, pname, value):
+        if pname in ("columnnames", "datacolumnnames"):
+            return self.json_to_colname.transform(value)
+        if pname == "columnwidths":
+            return self.json_to_colwidth.transform(value)
+        return super()._process_property_value(pname, value)
+
+
+_builder_uid = f"{_plugin_uid}.Treeview"
+register_widget(
+    _builder_uid,
+    TreeviewBO,
+    "Treeview",
     ("ttk", _designer_tab_label),
 )
