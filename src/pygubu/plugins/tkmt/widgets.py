@@ -1,3 +1,4 @@
+import os
 import json
 import tkinter as tk
 import TKinterModernThemes as tkmt
@@ -10,6 +11,9 @@ from pygubu.api.v1 import (
 )
 from pygubu.utils.datatrans import ListDTO
 from ..tkmt import _designer_tab_label, _plugin_uid
+
+
+running_in_designer = os.getenv("PYGUBU_DESIGNER_RUNNING")
 
 
 class ThemedTkFrameBO(BuilderObject):
@@ -346,11 +350,14 @@ class TreeviewBO(TkmtWidgetBO):
             "subentryname": "",
         }
 
-    def _get_init_args(self, extra_init_args: dict = None):
-        kargs = super()._get_init_args(extra_init_args)
+    def _post_process_properties(self, tkmaster: tk.Widget, pbag: dict) -> None:
+        if running_in_designer:
+            self._fix_initargs_in_designer(pbag)
 
+    def _fix_initargs_in_designer(self, kargs: dict) -> None:
         key_names = "columnnames"
         key_widths = "columnwidths"
+        key_datacn = "datacolumnnames"
 
         # Fix names and widths
         if key_names in kargs and key_widths in kargs:
@@ -373,11 +380,19 @@ class TreeviewBO(TkmtWidgetBO):
             kargs[key_names] = []
             for i in range(0, width_count):
                 kargs[key_names].append(f"column {i+1}")
+
+        # fix datacolumnnames if we are in designer editing.
+        if key_datacn in kargs:
+            name_count = len(kargs[key_names])
+            dcn_count = len(kargs[key_datacn])
+            if name_count != dcn_count:
+                # just clear data names until user enter correct ones
+                kargs[key_datacn] = None
+        print(kargs[key_names], kargs[key_datacn])
         # Fix data if we are in designer and no resource is set.
         key_data = "data"
         if key_data in kargs and kargs[key_data] is None:
             kargs[key_data] = {}
-        return kargs
 
     def _process_property_value(self, pname, value):
         if pname in ("columnnames", "datacolumnnames"):
