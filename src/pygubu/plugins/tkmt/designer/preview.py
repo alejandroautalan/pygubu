@@ -50,9 +50,9 @@ class PreviewBaseMixin:
         return self.tkmt_widget
 
 
-class wFramePreviewBO(PreviewBaseMixin, tkmt_widgets.wFrameBO):
+class FramePreviewBO(PreviewBaseMixin, tkmt_widgets.FrameBO):
     ...
 
 
-class wLabelFramePreviewBO(PreviewBaseMixin, tkmt_widgets.wLabelFrameBO):
+class LabelFramePreviewBO(PreviewBaseMixin, tkmt_widgets.LabelFrameBO):
     ...
