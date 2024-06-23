@@ -1,4 +1,5 @@
 import json
+import tkinter as tk
 import TKinterModernThemes as tkmt
 
 from pygubu.i18n import _
@@ -70,37 +71,46 @@ class TkmtWidgetBO(BuilderObject):
         master = parent.get_child_master()
         assert self.master_add_method is not None
         add_method = getattr(master, self.master_add_method)
-        kargs = self._get_init_args(extra_init_args)
-        kargs = self._get_keyword_args(kargs)
-        args_defaults = self._get_positional_args_defaults()
-        args = self._get_positional_args(kargs, args_defaults)
+        pbag = self._process_properties(parent.widget)
+        kargs = self._get_keyword_args(pbag)
+        args = self._get_positional_args(pbag)
         self.widget = add_method(*args, **kargs)
         return self.widget
 
     def configure(self, target=None):
         pass
 
-    def _get_keyword_args(self, bag: dict):
+    def _process_properties(self, tkmaster: tk.Widget) -> dict:
+        defaults = self._get_property_defaults(tkmaster)
+        pbag = {}
         for pname in self.properties:
-            if (
-                pname not in self.ro_properties
-                and pname in self.wmeta.properties
-            ):
+            if pname in self.wmeta.properties:
                 pvalue = self.wmeta.properties[pname]
-                bag[pname] = self._process_property_value(pname, pvalue)
-        return bag
+                pbag[pname] = self._process_property_value(pname, pvalue)
+            elif pname in defaults:
+                pbag[pname] = defaults[pname]
+        self._post_process_properties(tkmaster, pbag)
+        return pbag
 
-    def _get_positional_args(self, bag: dict, defaults: dict) -> list:
+    def _post_process_properties(self, tkmaster: tk.Widget, pbag: dict) -> None:
+        pass
+
+    def _get_keyword_args(self, bag: dict) -> dict:
+        kargs = {}
+        for pname in self.properties:
+            if pname not in self.pos_args and pname in bag:
+                kargs[pname] = bag[pname]
+        return kargs
+
+    def _get_positional_args(self, bag: dict) -> list:
         args = []
         for pname in self.pos_args:
             if pname in bag:
-                value = bag.pop(pname)
+                value = bag[pname]
                 args.append(value)
-            elif pname in defaults:
-                args.append(defaults[pname])
         return args
 
-    def _get_positional_args_defaults(self) -> dict:
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {}
 
     def _process_property_value(self, pname, value):
@@ -113,8 +123,9 @@ class FrameBO(TkmtWidgetBO):
     container = True
     master_add_method = "addFrame"
     pos_args = ("name",)
+    properties = pos_args + TkmtWidgetBO.properties
 
-    def _get_positional_args_defaults(self) -> dict:
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {"name": self.wmeta.identifier}
 
 
@@ -133,7 +144,7 @@ class LabelFrameBO(TkmtWidgetBO):
     ro_properties = properties
     pos_args = ("text",)
 
-    def _get_positional_args_defaults(self) -> dict:
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {"text": self.wmeta.identifier}
 
 
@@ -164,7 +175,7 @@ class ButtonBO(TkmtWidgetBO):
     properties = pos_args + TkmtWidgetBO.properties
     ro_properties = properties
 
-    def _get_positional_args_defaults(self) -> dict:
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {
             "text": self.wmeta.identifier,
             "command": None,
@@ -191,7 +202,7 @@ class CheckbuttonBO(TkmtWidgetBO):
     properties = pos_args + TkmtWidgetBO.properties
     ro_properties = properties
 
-    def _get_positional_args_defaults(self) -> dict:
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {
             "text": self.wmeta.identifier,
             "variable": None,
@@ -230,7 +241,7 @@ class RadiobuttonBO(CheckbuttonBO):
     properties = pos_args + TkmtWidgetBO.properties
     ro_properties = properties
 
-    def _get_positional_args_defaults(self) -> dict:
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {
             "text": self.wmeta.identifier,
             "variable": None,
@@ -250,7 +261,7 @@ class EntryBO(TkmtWidgetBO):
     properties = pos_args + TkmtWidgetBO.properties
     ro_properties = properties
 
-    def _get_positional_args_defaults(self) -> dict:
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {
             "textvariable": None,
         }
@@ -266,7 +277,7 @@ class NumericalSpinboxBO(TkmtWidgetBO):
     properties = pos_args + TkmtWidgetBO.properties
     ro_properties = properties
 
-    def _get_positional_args_defaults(self) -> dict:
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {
             "lower": 0,
             "upper": 10,
@@ -296,7 +307,7 @@ class NonnumericalSpinboxBO(TkmtWidgetBO):
     ro_properties = properties
     json_to_list = ListDTO([], ["values should be a json list"])
 
-    def _get_positional_args_defaults(self) -> dict:
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {
             "values": [],
             "variable": None,
@@ -326,7 +337,7 @@ class TreeviewBO(TkmtWidgetBO):
     json_to_colname = ListDTO([], ["values should be a json list"])
     json_to_colwidth = ListDTO([], [])
 
-    def _get_positional_args_defaults(self) -> dict:
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {
             "columnnames": [],
             "columnwidths": [],
