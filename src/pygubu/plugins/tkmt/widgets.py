@@ -109,7 +109,7 @@ class TkmtWidgetBO(BuilderObject):
         return super()._process_property_value(pname, value)
 
 
-class wFrameBO(TkmtWidgetBO):
+class FrameBO(TkmtWidgetBO):
     container = True
     master_add_method = "addFrame"
     pos_args = ("name",)
@@ -118,15 +118,15 @@ class wFrameBO(TkmtWidgetBO):
         return {"name": self.wmeta.identifier}
 
 
-_builder_uid = f"{_plugin_uid}.wFrame"
-_wframe = _builder_uid
-register_widget(_builder_uid, wFrameBO, "wFrame", ("ttk", _designer_tab_label))
+_builder_uid = f"{_plugin_uid}.Frame"
+_frame = _builder_uid
+register_widget(_builder_uid, FrameBO, "Frame", ("ttk", _designer_tab_label))
 
-wFrameBO.add_allowed_parent(_themedtkinterframe)
-wFrameBO.add_allowed_parent(_wframe)
+FrameBO.add_allowed_parent(_themedtkinterframe)
+FrameBO.add_allowed_parent(_frame)
 
 
-class wLabelFrameBO(TkmtWidgetBO):
+class LabelFrameBO(TkmtWidgetBO):
     container = True
     master_add_method = "addLabelFrame"
     properties = ("text",) + TkmtWidgetBO.properties
@@ -137,28 +137,28 @@ class wLabelFrameBO(TkmtWidgetBO):
         return {"text": self.wmeta.identifier}
 
 
-_builder_uid = f"{_plugin_uid}.wLabelFrame"
-_wlabelframe = _builder_uid
+_builder_uid = f"{_plugin_uid}.LabelFrame"
+_labelframe = _builder_uid
 register_widget(
-    _builder_uid, wLabelFrameBO, "wLabelFrame", ("ttk", _designer_tab_label)
+    _builder_uid, LabelFrameBO, "LabelFrame", ("ttk", _designer_tab_label)
 )
 
-wFrameBO.add_allowed_parent(_themedtkinterframe)
-wFrameBO.add_allowed_parent(_wframe)
-wFrameBO.add_allowed_parent(_wlabelframe)
+FrameBO.add_allowed_parent(_themedtkinterframe)
+FrameBO.add_allowed_parent(_frame)
+FrameBO.add_allowed_parent(_labelframe)
 
 
-class wSeparatorBO(TkmtWidgetBO):
+class SeparatorBO(TkmtWidgetBO):
     master_add_method = "Seperator"
 
 
-_builder_uid = f"{_plugin_uid}.wSeparator"
+_builder_uid = f"{_plugin_uid}.Separator"
 register_widget(
-    _builder_uid, wSeparatorBO, "wSeparator", ("ttk", _designer_tab_label)
+    _builder_uid, SeparatorBO, "Separator", ("ttk", _designer_tab_label)
 )
 
 
-class wButtonBO(TkmtWidgetBO):
+class ButtonBO(TkmtWidgetBO):
     master_add_method = "Button"
     pos_args = ("text", "command")
     properties = pos_args + TkmtWidgetBO.properties
@@ -171,23 +171,21 @@ class wButtonBO(TkmtWidgetBO):
         }
 
 
-_builder_uid = f"{_plugin_uid}.wButton"
-register_widget(
-    _builder_uid, wButtonBO, "wButton", ("ttk", _designer_tab_label)
-)
+_builder_uid = f"{_plugin_uid}.Button"
+register_widget(_builder_uid, ButtonBO, "Button", ("ttk", _designer_tab_label))
 
 
-class wAccentButtonBO(wButtonBO):
+class AccentButtonBO(ButtonBO):
     master_add_method = "AccentButton"
 
 
-_builder_uid = f"{_plugin_uid}.wAccentButton"
+_builder_uid = f"{_plugin_uid}.AccentButton"
 register_widget(
-    _builder_uid, wAccentButtonBO, "wAccentButton", ("ttk", _designer_tab_label)
+    _builder_uid, AccentButtonBO, "AccentButton", ("ttk", _designer_tab_label)
 )
 
 
-class wCheckbuttonBO(TkmtWidgetBO):
+class CheckbuttonBO(TkmtWidgetBO):
     master_add_method = "Checkbutton"
     pos_args = ("text", "variable")
     properties = pos_args + TkmtWidgetBO.properties
@@ -200,33 +198,33 @@ class wCheckbuttonBO(TkmtWidgetBO):
         }
 
 
-_builder_uid = f"{_plugin_uid}.wCheckbutton"
+_builder_uid = f"{_plugin_uid}.Checkbutton"
 register_widget(
-    _builder_uid, wCheckbuttonBO, "wCheckbutton", ("ttk", _designer_tab_label)
+    _builder_uid, CheckbuttonBO, "Checkbutton", ("ttk", _designer_tab_label)
 )
 
 
-class wToggleButtonBO(wCheckbuttonBO):
+class ToggleButtonBO(CheckbuttonBO):
     master_add_method = "ToggleButton"
 
 
-_builder_uid = f"{_plugin_uid}.wToggleButton"
+_builder_uid = f"{_plugin_uid}.ToggleButton"
 register_widget(
-    _builder_uid, wToggleButtonBO, "wToggleButton", ("ttk", _designer_tab_label)
+    _builder_uid, ToggleButtonBO, "ToggleButton", ("ttk", _designer_tab_label)
 )
 
 
-class wSlideSwitchBO(wCheckbuttonBO):
+class SlideSwitchBO(CheckbuttonBO):
     master_add_method = "SlideSwitch"
 
 
-_builder_uid = f"{_plugin_uid}.wSlideSwitch"
+_builder_uid = f"{_plugin_uid}.SlideSwitch"
 register_widget(
-    _builder_uid, wSlideSwitchBO, "wSlideSwitch", ("ttk", _designer_tab_label)
+    _builder_uid, SlideSwitchBO, "SlideSwitch", ("ttk", _designer_tab_label)
 )
 
 
-class wRadiobuttonBO(wCheckbuttonBO):
+class RadiobuttonBO(CheckbuttonBO):
     master_add_method = "Radiobutton"
     pos_args = ("text", "variable", "value")
     properties = pos_args + TkmtWidgetBO.properties
@@ -240,13 +238,13 @@ class wRadiobuttonBO(wCheckbuttonBO):
         }
 
 
-_builder_uid = f"{_plugin_uid}.wRadiobutton"
+_builder_uid = f"{_plugin_uid}.Radiobutton"
 register_widget(
-    _builder_uid, wRadiobuttonBO, "wRadiobutton", ("ttk", _designer_tab_label)
+    _builder_uid, RadiobuttonBO, "Radiobutton", ("ttk", _designer_tab_label)
 )
 
 
-class wEntryBO(TkmtWidgetBO):
+class EntryBO(TkmtWidgetBO):
     master_add_method = "Entry"
     pos_args = ("textvariable",)
     properties = pos_args + TkmtWidgetBO.properties
@@ -258,11 +256,11 @@ class wEntryBO(TkmtWidgetBO):
         }
 
 
-_builder_uid = f"{_plugin_uid}.wEntry"
-register_widget(_builder_uid, wEntryBO, "wEntry", ("ttk", _designer_tab_label))
+_builder_uid = f"{_plugin_uid}.Entry"
+register_widget(_builder_uid, EntryBO, "Entry", ("ttk", _designer_tab_label))
 
 
-class wNumericalSpinboxBO(TkmtWidgetBO):
+class NumericalSpinboxBO(TkmtWidgetBO):
     master_add_method = "NumericalSpinbox"
     pos_args = ("lower", "upper", "increment", "variable")
     properties = pos_args + TkmtWidgetBO.properties
@@ -282,16 +280,16 @@ class wNumericalSpinboxBO(TkmtWidgetBO):
         return super()._process_property_value(pname, value)
 
 
-_builder_uid = f"{_plugin_uid}.wNumericalSpinbox"
+_builder_uid = f"{_plugin_uid}.NumericalSpinbox"
 register_widget(
     _builder_uid,
-    wNumericalSpinboxBO,
-    "wNumericalSpinbox",
+    NumericalSpinboxBO,
+    "NumericalSpinbox",
     ("ttk", _designer_tab_label),
 )
 
 
-class wNonnumericalSpinboxBO(TkmtWidgetBO):
+class NonnumericalSpinboxBO(TkmtWidgetBO):
     master_add_method = "NonnumericalSpinbox"
     pos_args = ("values", "variable")
     properties = pos_args + TkmtWidgetBO.properties
@@ -310,11 +308,11 @@ class wNonnumericalSpinboxBO(TkmtWidgetBO):
         return super()._process_property_value(pname, value)
 
 
-_builder_uid = f"{_plugin_uid}.wNonnumericalSpinbox"
+_builder_uid = f"{_plugin_uid}.NonnumericalSpinbox"
 register_widget(
     _builder_uid,
-    wNonnumericalSpinboxBO,
-    "wNonnumericalSpinbox",
+    NonnumericalSpinboxBO,
+    "NonnumericalSpinbox",
     ("ttk", _designer_tab_label),
 )
 
