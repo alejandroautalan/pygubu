@@ -409,3 +409,28 @@ register_widget(
     "Treeview",
     ("ttk", _designer_tab_label),
 )
+
+
+class OptionMenuBO(TkmtWidgetBO):
+    master_add_method = "OptionMenu"
+    pos_args = ("values", "variable")
+    properties = pos_args + TkmtWidgetBO.properties
+    ro_properties = properties
+    jlist_values = ListDTO([], ["values should be a json list"])
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {
+            "values": ["Test Item"],
+            "variable": tk.StringVar(master),
+        }
+
+    def _process_property_value(self, pname, value):
+        if pname == "values":
+            return self.jlist_values.transform(value)
+        return super()._process_property_value(pname, value)
+
+
+_builder_uid = f"{_plugin_uid}.OptionMenu"
+register_widget(
+    _builder_uid, OptionMenuBO, "OptionMenu", ("ttk", _designer_tab_label)
+)
