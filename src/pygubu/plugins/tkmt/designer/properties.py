@@ -21,7 +21,7 @@ for prop in float_properties:
         _builder_uid, prop, editor, **float_properties[prop]
     )
 
-list_properties = {
+json_properties = {
     "columnnames": {"help": "A json list of strings."},
     "datacolumnnames": {
         "help": "A json list of strings. Should be same size as columnnames."
@@ -31,10 +31,10 @@ list_properties = {
     },
 }
 
-for prop in list_properties:
-    editor = list_properties[prop].pop("editor", "text")
+for prop in json_properties:
+    editor = json_properties[prop].pop("editor", "json_entry")
     register_custom_property(
-        _builder_uid, prop, editor, **list_properties[prop]
+        _builder_uid, prop, editor, **json_properties[prop]
     )
 
 string_properties = {
