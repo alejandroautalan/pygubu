@@ -188,7 +188,11 @@ class BuilderObject(object):
 
     def _process_property_value(self, pname, value):
         propvalue = value
-        if pname in self.tkvar_properties:
+
+        uri = str(value)
+        if uri.startswith("res://"):
+            propvalue = self.builder.get_resource(uri)
+        elif pname in self.tkvar_properties:
             propvalue = self.builder.create_variable(value)
             if "text" in self.wmeta.properties and pname == "textvariable":
                 propvalue.set(self.wmeta.properties["text"])

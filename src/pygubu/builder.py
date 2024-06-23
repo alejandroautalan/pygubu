@@ -10,6 +10,7 @@ from .component.widgetmeta import WidgetMeta
 from .stockimage import StockImage, StockImageException
 from .component.uidefinition import UIDefinition
 from .component.plugin_manager import PluginManager
+from .component.datapool import IDataPool, DictDataPool, InvalidURIError
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +38,12 @@ class Builder(object):
     TK_VARIABLE_TYPES = ("string", "int", "boolean", "double")
 
     def __init__(
-        self, translator=None, *, on_first_object=None, image_cache=None
+        self,
+        translator=None,
+        *,
+        on_first_object=None,
+        image_cache=None,
+        data_pool=None,
     ):
         super().__init__()
         self.uidefinition = UIDefinition(translator=translator)
@@ -49,6 +55,23 @@ class Builder(object):
         if image_cache is None:
             image_cache = StockImage
         self.image_cache = image_cache
+        self.data_pool: IDataPool = (
+            data_pool
+            if isinstance(data_pool, IDataPool)
+            else DictDataPool(data_pool)
+        )
+
+    def get_resource(self, uri: str):
+        """Gets a generic resource from the data pool.
+
+        Note, this is NOT related to the add_resource_* methods.
+        """
+        data = None
+        try:
+            data = self.data_pool.get_resource(uri)
+        except InvalidURIError as e:
+            logger.exception(e)
+        return data
 
     def add_resource_path(self, path):
         """Add additional path to the resources paths."""
