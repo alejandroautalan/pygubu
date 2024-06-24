@@ -1,10 +1,9 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+import pygubu.plugins.tkmt.widgets as tkmt_builders
 
-from pygubu.api.v1 import BuilderObject
 from TKinterModernThemes.WidgetFrame import WidgetFrame
-
-import pygubu.plugins.tkmt.widgets as tkmt_widgets
+from ..base import tkmt_to_tkwidget
 
 
 class ThemedTkFramePreview(ttk.Frame):
@@ -21,7 +20,7 @@ class ThemedTkFramePreview(ttk.Frame):
         self.tkmt_widget = WidgetFrame(self, "Master Frame")
 
 
-class ThemedTKinterFramePreviewBO(tkmt_widgets.ThemedTkFrameBO):
+class ThemedTKinterFramePreviewBO(tkmt_builders.ThemedTkFrameBO):
     layout_required = True
     class_ = ThemedTkFramePreview
 
@@ -32,7 +31,7 @@ class ThemedTKinterFramePreviewBO(tkmt_widgets.ThemedTkFrameBO):
         return args
 
     def realize(self, parent, extra_init_args: dict = None):
-        return super(tkmt_widgets.ThemedTkFrameBO, self).realize(
+        return super(tkmt_builders.ThemedTkFrameBO, self).realize(
             parent, extra_init_args
         )
 
@@ -43,16 +42,34 @@ class ThemedTKinterFramePreviewBO(tkmt_widgets.ThemedTkFrameBO):
 class PreviewBaseMixin:
     def realize(self, parent, extra_init_args: dict = None):
         self.tkmt_widget = super().realize(parent, extra_init_args)
-        self.widget = self.tkmt_widget.master
+        self.widget = tkmt_to_tkwidget(self.tkmt_widget)
         return self.widget
 
     def get_child_master(self):
         return self.tkmt_widget
 
 
-class FramePreviewBO(PreviewBaseMixin, tkmt_widgets.FrameBO):
+class FramePreviewBO(PreviewBaseMixin, tkmt_builders.FrameBO):
     ...
 
 
-class LabelFramePreviewBO(PreviewBaseMixin, tkmt_widgets.LabelFrameBO):
+class LabelFramePreviewBO(PreviewBaseMixin, tkmt_builders.LabelFrameBO):
+    ...
+
+
+class NotebookPreviewBO(PreviewBaseMixin, tkmt_builders.NotebookBO):
+    ...
+
+
+class NotebookTabPreviewBO(PreviewBaseMixin, tkmt_builders.NotebookTabBO):
+    ...
+
+
+class PanedWindowPreviewBO(PreviewBaseMixin, tkmt_builders.PanedWindowBO):
+    ...
+
+
+class PanedWindowPanePreviewBO(
+    PreviewBaseMixin, tkmt_builders.PanedWindowPaneBO
+):
     ...
