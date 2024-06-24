@@ -22,34 +22,63 @@ for prop in float_properties:
     )
 
 json_properties = {
+    # Treeview begin
     "columnnames": {"help": "A json list of strings."},
     "datacolumnnames": {
         "help": "A json list of strings. Should be same size as columnnames."
     },
     "columnwidths": {
-        "help": "A json list of ints. . Should be same size as columnnames."
+        "help": "A json list of ints. Should be same size as columnnames."
     },
+    "values": [
+        # OptionMenu begin
+        {
+            "buid": f"{_plugin_uid}.OptionMenu",
+            "help": "A json list of strings.",
+        },
+        # Combobox begin
+        {
+            "buid": f"{_plugin_uid}.Combobox",
+            "help": "A json list of strings.",
+        },
+    ],
 }
 
 for prop in json_properties:
-    editor = json_properties[prop].pop("editor", "json_entry")
-    register_custom_property(
-        _builder_uid, prop, editor, **json_properties[prop]
-    )
+    definitions = json_properties[prop]
+    if isinstance(definitions, dict):
+        definitions = [definitions]
+    for definition in definitions:
+        builder_uid = definition.pop("buid", _builder_uid)
+        editor = definition.pop("editor", "json_entry")
+        register_custom_property(builder_uid, prop, editor, **definition)
 
 string_properties = {
-    # Treeview data argument
+    # Treeview begin
     "data": {
         "help": "Use a resource URI here, example:  res://my_treeview_data"
     },
-    # Treeview data argument
     "subentryname": {},
+    # MenuButton begin
+    "menu": {
+        "buid": f"{_plugin_uid}.MenuButton",
+        "help": "Use a resource URI here, example:  res://my_menu",
+    },
+    "defaulttext": {},
 }
 
 for prop in string_properties:
+    builder_uid = string_properties[prop].pop("buid", _builder_uid)
     editor = string_properties[prop].pop("editor", "entry")
     register_custom_property(
-        _builder_uid, prop, editor, **string_properties[prop]
+        builder_uid, prop, editor, **string_properties[prop]
     )
 
-# "sticky" style  "padx", "pady"
+# Scale
+register_custom_property(
+    f"{_plugin_uid}.Scale",
+    "variable",
+    "tkvarentry",
+    type_choices=("int", "double"),
+    type_default="int",
+)

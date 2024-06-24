@@ -2,6 +2,7 @@ import os
 import json
 import tkinter as tk
 import TKinterModernThemes as tkmt
+import TKinterModernThemes.WidgetFrame as tkmt_widgets
 
 from pygubu.i18n import _
 from pygubu.api.v1 import (
@@ -11,6 +12,7 @@ from pygubu.api.v1 import (
 )
 from pygubu.utils.datatrans import ListDTO
 from ..tkmt import _designer_tab_label, _plugin_uid
+from .base import tkmt_to_tkwidget
 
 
 running_in_designer = os.getenv("PYGUBU_DESIGNER_RUNNING")
@@ -75,7 +77,7 @@ class TkmtWidgetBO(BuilderObject):
         master = parent.get_child_master()
         assert self.master_add_method is not None
         add_method = getattr(master, self.master_add_method)
-        pbag = self._process_properties(parent.widget)
+        pbag = self._process_properties(tkmt_to_tkwidget(master))
         kargs = self._get_keyword_args(pbag)
         args = self._get_positional_args(pbag)
         self.widget = add_method(*args, **kargs)
@@ -144,9 +146,9 @@ FrameBO.add_allowed_parent(_frame)
 class LabelFrameBO(TkmtWidgetBO):
     container = True
     master_add_method = "addLabelFrame"
-    properties = ("text",) + TkmtWidgetBO.properties
-    ro_properties = properties
     pos_args = ("text",)
+    properties = pos_args + TkmtWidgetBO.properties
+    ro_properties = properties
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {"text": self.wmeta.identifier}
@@ -388,7 +390,7 @@ class TreeviewBO(TkmtWidgetBO):
             if name_count != dcn_count:
                 # just clear data names until user enter correct ones
                 kargs[key_datacn] = None
-        print(kargs[key_names], kargs[key_datacn])
+
         # Fix data if we are in designer and no resource is set.
         key_data = "data"
         if key_data in kargs and kargs[key_data] is None:
@@ -434,3 +436,243 @@ _builder_uid = f"{_plugin_uid}.OptionMenu"
 register_widget(
     _builder_uid, OptionMenuBO, "OptionMenu", ("ttk", _designer_tab_label)
 )
+
+
+class ComboboxBO(TkmtWidgetBO):
+    master_add_method = "Combobox"
+    pos_args = ("values", "variable")
+    properties = pos_args + TkmtWidgetBO.properties
+    ro_properties = properties
+    jlist_values = ListDTO([], ["values should be a json list"])
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {
+            "values": ["Test Item"],
+            "variable": tk.StringVar(master),
+        }
+
+    def _process_property_value(self, pname, value):
+        if pname == "values":
+            return self.jlist_values.transform(value)
+        return super()._process_property_value(pname, value)
+
+
+_builder_uid = f"{_plugin_uid}.Combobox"
+register_widget(
+    _builder_uid, ComboboxBO, "Combobox", ("ttk", _designer_tab_label)
+)
+
+
+class MenuButtonBO(TkmtWidgetBO):
+    master_add_method = "MenuButton"
+    pos_args = ("menu", "defaulttext")
+    properties = pos_args + TkmtWidgetBO.properties
+    ro_properties = properties
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {
+            "menu": None,
+            "defaulttext": "MenuButton",
+        }
+
+
+_builder_uid = f"{_plugin_uid}.MenuButton"
+register_widget(
+    _builder_uid, MenuButtonBO, "MenuButton", ("ttk", _designer_tab_label)
+)
+
+
+class NotebookBO(TkmtWidgetBO):
+    master_add_method = "Notebook"
+    pos_args = ("name",)
+    properties = pos_args + TkmtWidgetBO.properties
+    ro_properties = properties
+    container = True
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {
+            "name": self.wmeta.identifier,
+        }
+
+
+_builder_uid = f"{_plugin_uid}.Notebook"
+_notebook = _builder_uid
+register_widget(
+    _builder_uid, NotebookBO, "Notebook", ("ttk", _designer_tab_label)
+)
+
+
+class NotebookTabBO(TkmtWidgetBO):
+    master_add_method = "addTab"
+    pos_args = ("text",)
+    properties = pos_args
+    ro_properties = properties
+    container = True
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {
+            "text": self.wmeta.identifier,
+        }
+
+
+_builder_uid = f"{_plugin_uid}.NotebookTab"
+_notebok_tab = _builder_uid
+register_widget(
+    _builder_uid, NotebookTabBO, "Notebook.Tab", ("ttk", _designer_tab_label)
+)
+
+NotebookBO.add_allowed_child(_notebok_tab)
+NotebookTabBO.add_allowed_parent(_notebook)
+
+
+class PanedWindowBO(TkmtWidgetBO):
+    master_add_method = "PanedWindow"
+    pos_args = ("name", "orient")
+    properties = pos_args + TkmtWidgetBO.properties
+    ro_properties = properties
+    container = True
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {
+            "name": self.wmeta.identifier,
+        }
+
+
+_builder_uid = f"{_plugin_uid}.PanedWindow"
+_panedwindow = _builder_uid
+register_widget(
+    _builder_uid, PanedWindowBO, "PanedWindow", ("ttk", _designer_tab_label)
+)
+
+
+class PanedWindowPaneBO(TkmtWidgetBO):
+    master_add_method = "addWindow"
+    pos_args = ("weight",)
+    properties = pos_args
+    ro_properties = properties
+    container = True
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {
+            "weight": 1,
+        }
+
+
+_builder_uid = f"{_plugin_uid}.PanedWindowPane"
+_panedwindow_pane = _builder_uid
+register_widget(
+    _builder_uid,
+    PanedWindowPaneBO,
+    "PanedWindow.Pane",
+    ("ttk", _designer_tab_label),
+)
+
+PanedWindowBO.add_allowed_child(_panedwindow_pane)
+PanedWindowPaneBO.add_allowed_parent(_panedwindow)
+
+
+class BlankBO(TkmtWidgetBO):
+    master_add_method = "Blank"
+    pos_args = ("name",)
+    properties = pos_args + ("row", "col", "rowspan", "colspan")
+    ro_properties = properties
+
+    def realize(self, parent, extra_init_args: dict = None):
+        super().realize(parent, extra_init_args)
+        self.widget = parent.widget
+        return self.widget
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {
+            "name": "Blank",
+        }
+
+
+_builder_uid = f"{_plugin_uid}.Blank"
+register_widget(_builder_uid, BlankBO, "Blank", ("ttk", _designer_tab_label))
+
+
+class LabelBO(TkmtWidgetBO):
+    master_add_method = "Label"
+    pos_args = ("text",)
+    properties = pos_args + TkmtWidgetBO.properties
+    ro_properties = properties
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {"text": self.wmeta.identifier}
+
+
+_builder_uid = f"{_plugin_uid}.Label"
+_labelframe = _builder_uid
+register_widget(_builder_uid, LabelBO, "Label", ("ttk", _designer_tab_label))
+
+
+class TextBO(TkmtWidgetBO):
+    master_add_method = "Text"
+    pos_args = ("text",)
+    properties = pos_args + TkmtWidgetBO.properties
+    ro_properties = properties
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {"text": self.wmeta.identifier}
+
+
+_builder_uid = f"{_plugin_uid}.Text"
+_labelframe = _builder_uid
+register_widget(_builder_uid, TextBO, "Text", ("ttk", _designer_tab_label))
+
+
+class ScaleBO(TkmtWidgetBO):
+    master_add_method = "Scale"
+    pos_args = ("lower", "upper", "variable")
+    properties = pos_args + TkmtWidgetBO.properties
+    ro_properties = properties
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {
+            "lower": 0,
+            "upper": 10,
+            "variable": None,
+        }
+
+    def _process_property_value(self, pname, value):
+        if pname in ("lower", "upper"):
+            return float(value)
+        return super()._process_property_value(pname, value)
+
+
+_builder_uid = f"{_plugin_uid}.Scale"
+register_widget(
+    _builder_uid,
+    ScaleBO,
+    "Scale",
+    ("ttk", _designer_tab_label),
+)
+
+
+class ProgressbarBO(TkmtWidgetBO):
+    master_add_method = "Progressbar"
+    pos_args = ("variable",)
+    properties = pos_args + TkmtWidgetBO.properties
+    ro_properties = properties
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {
+            "variable": None,
+        }
+
+    def _process_property_value(self, pname, value):
+        if pname in ("lower", "upper"):
+            return float(value)
+        return super()._process_property_value(pname, value)
+
+
+_builder_uid = f"{_plugin_uid}.Progressbar"
+register_widget(
+    _builder_uid,
+    ProgressbarBO,
+    "Progressbar",
+    ("ttk", _designer_tab_label),
+)
+
+# TODO: matplotlibFrame
