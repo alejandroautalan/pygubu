@@ -13,3 +13,9 @@ def tkmt_to_tkwidget(widget):
     if isinstance(widget, PanedWindow):
         return widget.panedwindow
     return None
+
+
+# Groups for ordering buttons in designer palette.
+GROUP_CONTAINER = 0
+GROUP_DISPLAY = 1
+GROUP_INPUT = 2

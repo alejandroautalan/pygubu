@@ -12,7 +12,7 @@ from pygubu.api.v1 import (
 )
 from pygubu.utils.datatrans import ListDTO
 from ..tkmt import _designer_tab_label, _plugin_uid
-from .base import tkmt_to_tkwidget
+from .base import tkmt_to_tkwidget, GROUP_CONTAINER, GROUP_DISPLAY, GROUP_INPUT
 
 
 running_in_designer = os.getenv("PYGUBU_DESIGNER_RUNNING")
@@ -44,6 +44,7 @@ register_widget(
     ThemedTkFrameBO,
     "ThemedTKinterFrame",
     ("ttk", _designer_tab_label),
+    GROUP_CONTAINER,
 )
 
 register_custom_property(
@@ -137,7 +138,13 @@ class FrameBO(TkmtWidgetBO):
 
 _builder_uid = f"{_plugin_uid}.Frame"
 _frame = _builder_uid
-register_widget(_builder_uid, FrameBO, "Frame", ("ttk", _designer_tab_label))
+register_widget(
+    _builder_uid,
+    FrameBO,
+    "Frame",
+    ("ttk", _designer_tab_label),
+    GROUP_CONTAINER,
+)
 
 FrameBO.add_allowed_parent(_themedtkinterframe)
 FrameBO.add_allowed_parent(_frame)
@@ -157,7 +164,11 @@ class LabelFrameBO(TkmtWidgetBO):
 _builder_uid = f"{_plugin_uid}.LabelFrame"
 _labelframe = _builder_uid
 register_widget(
-    _builder_uid, LabelFrameBO, "LabelFrame", ("ttk", _designer_tab_label)
+    _builder_uid,
+    LabelFrameBO,
+    "LabelFrame",
+    ("ttk", _designer_tab_label),
+    GROUP_CONTAINER,
 )
 
 FrameBO.add_allowed_parent(_themedtkinterframe)
@@ -171,7 +182,11 @@ class SeparatorBO(TkmtWidgetBO):
 
 _builder_uid = f"{_plugin_uid}.Separator"
 register_widget(
-    _builder_uid, SeparatorBO, "Separator", ("ttk", _designer_tab_label)
+    _builder_uid,
+    SeparatorBO,
+    "Separator",
+    ("ttk", _designer_tab_label),
+    GROUP_DISPLAY,
 )
 
 
@@ -189,7 +204,9 @@ class ButtonBO(TkmtWidgetBO):
 
 
 _builder_uid = f"{_plugin_uid}.Button"
-register_widget(_builder_uid, ButtonBO, "Button", ("ttk", _designer_tab_label))
+register_widget(
+    _builder_uid, ButtonBO, "Button", ("ttk", _designer_tab_label), GROUP_INPUT
+)
 
 
 class AccentButtonBO(ButtonBO):
@@ -198,7 +215,11 @@ class AccentButtonBO(ButtonBO):
 
 _builder_uid = f"{_plugin_uid}.AccentButton"
 register_widget(
-    _builder_uid, AccentButtonBO, "AccentButton", ("ttk", _designer_tab_label)
+    _builder_uid,
+    AccentButtonBO,
+    "AccentButton",
+    ("ttk", _designer_tab_label),
+    GROUP_INPUT,
 )
 
 
@@ -217,7 +238,11 @@ class CheckbuttonBO(TkmtWidgetBO):
 
 _builder_uid = f"{_plugin_uid}.Checkbutton"
 register_widget(
-    _builder_uid, CheckbuttonBO, "Checkbutton", ("ttk", _designer_tab_label)
+    _builder_uid,
+    CheckbuttonBO,
+    "Checkbutton",
+    ("ttk", _designer_tab_label),
+    GROUP_INPUT,
 )
 
 
@@ -227,7 +252,11 @@ class ToggleButtonBO(CheckbuttonBO):
 
 _builder_uid = f"{_plugin_uid}.ToggleButton"
 register_widget(
-    _builder_uid, ToggleButtonBO, "ToggleButton", ("ttk", _designer_tab_label)
+    _builder_uid,
+    ToggleButtonBO,
+    "ToggleButton",
+    ("ttk", _designer_tab_label),
+    GROUP_INPUT,
 )
 
 
@@ -237,7 +266,11 @@ class SlideSwitchBO(CheckbuttonBO):
 
 _builder_uid = f"{_plugin_uid}.SlideSwitch"
 register_widget(
-    _builder_uid, SlideSwitchBO, "SlideSwitch", ("ttk", _designer_tab_label)
+    _builder_uid,
+    SlideSwitchBO,
+    "SlideSwitch",
+    ("ttk", _designer_tab_label),
+    GROUP_INPUT,
 )
 
 
@@ -257,7 +290,11 @@ class RadiobuttonBO(CheckbuttonBO):
 
 _builder_uid = f"{_plugin_uid}.Radiobutton"
 register_widget(
-    _builder_uid, RadiobuttonBO, "Radiobutton", ("ttk", _designer_tab_label)
+    _builder_uid,
+    RadiobuttonBO,
+    "Radiobutton",
+    ("ttk", _designer_tab_label),
+    GROUP_INPUT,
 )
 
 
@@ -274,7 +311,9 @@ class EntryBO(TkmtWidgetBO):
 
 
 _builder_uid = f"{_plugin_uid}.Entry"
-register_widget(_builder_uid, EntryBO, "Entry", ("ttk", _designer_tab_label))
+register_widget(
+    _builder_uid, EntryBO, "Entry", ("ttk", _designer_tab_label)
+), GROUP_INPUT
 
 
 class NumericalSpinboxBO(TkmtWidgetBO):
@@ -303,6 +342,7 @@ register_widget(
     NumericalSpinboxBO,
     "NumericalSpinbox",
     ("ttk", _designer_tab_label),
+    GROUP_INPUT,
 )
 
 
@@ -331,6 +371,7 @@ register_widget(
     NonnumericalSpinboxBO,
     "NonnumericalSpinbox",
     ("ttk", _designer_tab_label),
+    GROUP_INPUT,
 )
 
 
@@ -410,6 +451,7 @@ register_widget(
     TreeviewBO,
     "Treeview",
     ("ttk", _designer_tab_label),
+    GROUP_DISPLAY,
 )
 
 
@@ -434,7 +476,11 @@ class OptionMenuBO(TkmtWidgetBO):
 
 _builder_uid = f"{_plugin_uid}.OptionMenu"
 register_widget(
-    _builder_uid, OptionMenuBO, "OptionMenu", ("ttk", _designer_tab_label)
+    _builder_uid,
+    OptionMenuBO,
+    "OptionMenu",
+    ("ttk", _designer_tab_label),
+    GROUP_INPUT,
 )
 
 
@@ -459,7 +505,11 @@ class ComboboxBO(TkmtWidgetBO):
 
 _builder_uid = f"{_plugin_uid}.Combobox"
 register_widget(
-    _builder_uid, ComboboxBO, "Combobox", ("ttk", _designer_tab_label)
+    _builder_uid,
+    ComboboxBO,
+    "Combobox",
+    ("ttk", _designer_tab_label),
+    GROUP_INPUT,
 )
 
 
@@ -478,7 +528,11 @@ class MenuButtonBO(TkmtWidgetBO):
 
 _builder_uid = f"{_plugin_uid}.MenuButton"
 register_widget(
-    _builder_uid, MenuButtonBO, "MenuButton", ("ttk", _designer_tab_label)
+    _builder_uid,
+    MenuButtonBO,
+    "MenuButton",
+    ("ttk", _designer_tab_label),
+    GROUP_INPUT,
 )
 
 
@@ -498,7 +552,11 @@ class NotebookBO(TkmtWidgetBO):
 _builder_uid = f"{_plugin_uid}.Notebook"
 _notebook = _builder_uid
 register_widget(
-    _builder_uid, NotebookBO, "Notebook", ("ttk", _designer_tab_label)
+    _builder_uid,
+    NotebookBO,
+    "Notebook",
+    ("ttk", _designer_tab_label),
+    GROUP_CONTAINER,
 )
 
 
@@ -518,7 +576,11 @@ class NotebookTabBO(TkmtWidgetBO):
 _builder_uid = f"{_plugin_uid}.NotebookTab"
 _notebok_tab = _builder_uid
 register_widget(
-    _builder_uid, NotebookTabBO, "Notebook.Tab", ("ttk", _designer_tab_label)
+    _builder_uid,
+    NotebookTabBO,
+    "Notebook.Tab",
+    ("ttk", _designer_tab_label),
+    GROUP_CONTAINER,
 )
 
 NotebookBO.add_allowed_child(_notebok_tab)
@@ -541,7 +603,11 @@ class PanedWindowBO(TkmtWidgetBO):
 _builder_uid = f"{_plugin_uid}.PanedWindow"
 _panedwindow = _builder_uid
 register_widget(
-    _builder_uid, PanedWindowBO, "PanedWindow", ("ttk", _designer_tab_label)
+    _builder_uid,
+    PanedWindowBO,
+    "PanedWindow",
+    ("ttk", _designer_tab_label),
+    GROUP_CONTAINER,
 )
 
 
@@ -565,6 +631,7 @@ register_widget(
     PanedWindowPaneBO,
     "PanedWindow.Pane",
     ("ttk", _designer_tab_label),
+    GROUP_CONTAINER,
 )
 
 PanedWindowBO.add_allowed_child(_panedwindow_pane)
@@ -589,7 +656,9 @@ class BlankBO(TkmtWidgetBO):
 
 
 _builder_uid = f"{_plugin_uid}.Blank"
-register_widget(_builder_uid, BlankBO, "Blank", ("ttk", _designer_tab_label))
+register_widget(
+    _builder_uid, BlankBO, "Blank", ("ttk", _designer_tab_label), GROUP_DISPLAY
+)
 
 
 class LabelBO(TkmtWidgetBO):
@@ -604,7 +673,9 @@ class LabelBO(TkmtWidgetBO):
 
 _builder_uid = f"{_plugin_uid}.Label"
 _labelframe = _builder_uid
-register_widget(_builder_uid, LabelBO, "Label", ("ttk", _designer_tab_label))
+register_widget(
+    _builder_uid, LabelBO, "Label", ("ttk", _designer_tab_label)
+), GROUP_DISPLAY
 
 
 class TextBO(TkmtWidgetBO):
@@ -619,7 +690,9 @@ class TextBO(TkmtWidgetBO):
 
 _builder_uid = f"{_plugin_uid}.Text"
 _labelframe = _builder_uid
-register_widget(_builder_uid, TextBO, "Text", ("ttk", _designer_tab_label))
+register_widget(
+    _builder_uid, TextBO, "Text", ("ttk", _designer_tab_label)
+), GROUP_INPUT
 
 
 class ScaleBO(TkmtWidgetBO):
@@ -643,10 +716,7 @@ class ScaleBO(TkmtWidgetBO):
 
 _builder_uid = f"{_plugin_uid}.Scale"
 register_widget(
-    _builder_uid,
-    ScaleBO,
-    "Scale",
-    ("ttk", _designer_tab_label),
+    _builder_uid, ScaleBO, "Scale", ("ttk", _designer_tab_label), GROUP_INPUT
 )
 
 
@@ -673,6 +743,7 @@ register_widget(
     ProgressbarBO,
     "Progressbar",
     ("ttk", _designer_tab_label),
+    GROUP_INPUT,
 )
 
 # TODO: matplotlibFrame
