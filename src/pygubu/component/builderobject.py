@@ -170,6 +170,8 @@ class BuilderObject(object):
 
     def _can_set_tcl_widget_name(self) -> bool:
         """Returns True if widget accepts the tcl "name" init argument."""
+        if self.class_ is None:
+            return False
         return self.wmeta.is_named and issubclass(self.class_, tk.Widget)
 
     def configure(self, target=None):
