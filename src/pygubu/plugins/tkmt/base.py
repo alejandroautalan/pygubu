@@ -19,3 +19,16 @@ def tkmt_to_tkwidget(widget):
 GROUP_CONTAINER = 0
 GROUP_DISPLAY = 1
 GROUP_INPUT = 2
+
+
+class CommandProxy:
+    def __init__(self):
+        self.command = None
+
+    @property
+    def __name__(self):
+        return f"CommandProxy({self.command})"
+
+    def __call__(self, *args):
+        if self.command is not None:
+            self.command(*args)

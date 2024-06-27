@@ -12,7 +12,13 @@ from pygubu.api.v1 import (
 )
 from pygubu.utils.datatrans import ListDTO
 from ..tkmt import _designer_tab_label, _plugin_uid
-from .base import tkmt_to_tkwidget, GROUP_CONTAINER, GROUP_DISPLAY, GROUP_INPUT
+from .base import (
+    tkmt_to_tkwidget,
+    CommandProxy,
+    GROUP_CONTAINER,
+    GROUP_DISPLAY,
+    GROUP_INPUT,
+)
 
 
 running_in_designer = os.getenv("PYGUBU_DESIGNER_RUNNING")
@@ -195,12 +201,25 @@ class ButtonBO(TkmtWidgetBO):
     pos_args = ("text", "command")
     properties = pos_args + TkmtWidgetBO.properties
     ro_properties = properties
+    command_properties = ("command",)
+
+    def __init__(self, builder, wmeta):
+        super().__init__(builder, wmeta)
+        self.cmd_proxy = CommandProxy()
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {
             "text": self.wmeta.identifier,
             "command": None,
         }
+
+    def _process_property_value(self, pname, value):
+        if pname in self.command_properties:
+            return self.cmd_proxy
+        return super()._process_property_value(pname, value)
+
+    def _connect_command(self, cmd_pname, callback):
+        self.cmd_proxy.command = callback
 
 
 _builder_uid = f"{_plugin_uid}.Button"
