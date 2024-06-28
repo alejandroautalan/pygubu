@@ -73,3 +73,7 @@ class PanedWindowPanePreviewBO(
     PreviewBaseMixin, tkmt_builders.PanedWindowPaneBO
 ):
     ...
+
+
+class FrameNextColPreviewBO(PreviewBaseMixin, tkmt_builders.FrameNextColBO):
+    ...

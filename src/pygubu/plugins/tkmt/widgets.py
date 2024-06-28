@@ -182,6 +182,31 @@ FrameBO.add_allowed_parent(_frame)
 FrameBO.add_allowed_parent(_labelframe)
 
 
+class FrameNextColBO(BuilderObject):
+    allow_bindings = False
+    layout_required = False
+
+    def realize(self, parent, extra_init_args: dict = None):
+        self.widget = parent.widget
+        master = parent.get_child_master()
+        master.nextCol()
+        return self.widget
+
+
+_builder_uid = f"{_plugin_uid}.FrameNextCol"
+register_widget(
+    _builder_uid,
+    FrameNextColBO,
+    "Frame.NextCol",
+    ("ttk", _designer_tab_label),
+    GROUP_CONTAINER,
+)
+
+FrameNextColBO.add_allowed_parent(_themedtkinterframe)
+FrameNextColBO.add_allowed_parent(_frame)
+FrameNextColBO.add_allowed_parent(_labelframe)
+
+
 class SeparatorBO(TkmtWidgetBO):
     master_add_method = "Seperator"
 
@@ -397,7 +422,7 @@ register_widget(
 class TreeviewBO(TkmtWidgetBO):
     master_add_method = "Treeview"
     pos_args = ("columnnames", "columnwidths", "height", "data", "subentryname")
-    kw_args = ("datacolumnnames",)
+    kw_args = ("datacolumnnames", "openkey", "anchor", "newframe")
     properties = pos_args + kw_args + TkmtWidgetBO.properties
     ro_properties = pos_args + TkmtWidgetBO.properties
     json_to_colname = ListDTO([], ["values should be a json list"])
@@ -411,6 +436,15 @@ class TreeviewBO(TkmtWidgetBO):
             "data": {},
             "subentryname": "",
         }
+
+    def _process_property_value(self, pname, value):
+        if pname in ("columnnames", "datacolumnnames"):
+            return self.json_to_colname.transform(value)
+        if pname == "columnwidths":
+            return self.json_to_colwidth.transform(value)
+        if pname == "newframe":
+            return tk.getboolean(value)
+        return super()._process_property_value(pname, value)
 
     def _post_process_properties(self, tkmaster: tk.Widget, pbag: dict) -> None:
         if running_in_designer:
@@ -453,15 +487,8 @@ class TreeviewBO(TkmtWidgetBO):
 
         # Fix data if we are in designer and no resource is set.
         key_data = "data"
-        if key_data in kargs and kargs[key_data] is None:
+        if key_data in kargs:
             kargs[key_data] = {}
-
-    def _process_property_value(self, pname, value):
-        if pname in ("columnnames", "datacolumnnames"):
-            return self.json_to_colname.transform(value)
-        if pname == "columnwidths":
-            return self.json_to_colwidth.transform(value)
-        return super()._process_property_value(pname, value)
 
 
 _builder_uid = f"{_plugin_uid}.Treeview"
