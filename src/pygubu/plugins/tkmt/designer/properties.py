@@ -4,25 +4,55 @@ from pygubu.plugins.tkmt import _designer_tab_label, _plugin_uid
 _builder_uid = f"{_plugin_uid}.*"
 
 tkmt_properties = {
+    "args": {
+        "editor": "json_entry",
+        "help": "Args passsed to command property. In designer, a json list.",
+    },
     "col": {"editor": "naturalnumber"},
     "colspan": {"editor": "naturalnumber", "min_value": 1},
     "columnnames": {  # Treeview
         "editor": "json_entry",
-        "help": "A json list of strings.",
+        "help": "Column header names. In designer, a json list of strings.",
+        "json_type": list,
+        "json_item_type": str,
     },
     "columnwidths": {  # Treeview
         "editor": "json_entry",
-        "help": "A json list of ints. Should be same size as columnnames.",
+        "help": "Width of each column, should be same size as columnnames. In designer, a json list of ints",
+        "json_type": list,
+        "json_item_type": int,
     },
+    "command": [
+        {
+            "editor": "commandentry",
+        },
+        {
+            "buid": f"{_plugin_uid}.Checkbutton",
+            "editor": "simplecommandentry",
+        },
+        {
+            "buid": f"{_plugin_uid}.OptionMenu",
+            "editor": "simplecommandentry",
+        },
+    ],
     "datacolumnnames": {  # Treeview
         "editor": "json_entry",
-        "help": "A json list of strings. Should be same size as columnnames.",
+        "help": """Defaults to columnnames, a mapping of columnnames to the data file.
+Should be same size as columnnames. In designer, a json list of strings.""",
+        "json_type": list,
+        "json_item_type": str,
     },
     "data": {  # Treeview
         "editor": "entry",
-        "help": "Use a resource URI here, example:  res://my_treeview_data",
+        "help": """The tree data.
+In designer, use a resource URI here, example:  res://my_treeview_data""",
     },
     "defaulttext": {"editor": "entry"},  # MenuButton
+    "disabled": {
+        "editor": "choice",
+        "values": ("", "True"),
+        "state": "readonly",
+    },
     "increment": {"editor": "realnumber"},
     "lower": {"editor": "realnumber"},
     "menu": {  # MenuButton

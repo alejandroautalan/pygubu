@@ -13,7 +13,7 @@ from pygubu.api.v1 import (
 from pygubu.utils.datatrans import ListDTO
 from ..tkmt import _designer_tab_label, _plugin_uid
 from .base import (
-    tkmt_to_tkwidget,
+    TkmtWidgetBO,
     CommandProxy,
     GROUP_CONTAINER,
     GROUP_DISPLAY,
@@ -70,66 +70,6 @@ register_custom_property(
     default_value="dark",
     state="readonly",
 )
-
-
-class TkmtWidgetBO(BuilderObject):
-    allow_bindings = False
-    layout_required = False
-    properties = ("row", "col", "padx", "pady", "rowspan", "colspan", "sticky")
-    ro_properties = properties
-    pos_args = tuple()
-    master_add_method = None
-
-    def realize(self, parent, extra_init_args: dict = None):
-        master = parent.get_child_master()
-        assert self.master_add_method is not None
-        add_method = getattr(master, self.master_add_method)
-        pbag = self._process_properties(tkmt_to_tkwidget(master))
-        kargs = self._get_keyword_args(pbag)
-        args = self._get_positional_args(pbag)
-        self.widget = add_method(*args, **kargs)
-        return self.widget
-
-    def configure(self, target=None):
-        pass
-
-    def _process_properties(self, tkmaster: tk.Widget) -> dict:
-        defaults = self._get_property_defaults(tkmaster)
-        pbag = {}
-        for pname in self.properties:
-            if pname in self.wmeta.properties:
-                pvalue = self.wmeta.properties[pname]
-                pbag[pname] = self._process_property_value(pname, pvalue)
-            elif pname in defaults:
-                pbag[pname] = defaults[pname]
-        self._post_process_properties(tkmaster, pbag)
-        return pbag
-
-    def _post_process_properties(self, tkmaster: tk.Widget, pbag: dict) -> None:
-        pass
-
-    def _get_keyword_args(self, bag: dict) -> dict:
-        kargs = {}
-        for pname in self.properties:
-            if pname not in self.pos_args and pname in bag:
-                kargs[pname] = bag[pname]
-        return kargs
-
-    def _get_positional_args(self, bag: dict) -> list:
-        args = []
-        for pname in self.pos_args:
-            if pname in bag:
-                value = bag[pname]
-                args.append(value)
-        return args
-
-    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
-        return {}
-
-    def _process_property_value(self, pname, value):
-        if pname in ("row", "col", "rowspan", "colspan"):
-            return int(value)
-        return super()._process_property_value(pname, value)
 
 
 class FrameBO(TkmtWidgetBO):
@@ -224,27 +164,16 @@ register_widget(
 class ButtonBO(TkmtWidgetBO):
     master_add_method = "Button"
     pos_args = ("text", "command")
-    properties = pos_args + TkmtWidgetBO.properties
+    kw_args = ("args",)
+    properties = pos_args + kw_args + TkmtWidgetBO.properties
     ro_properties = properties
     command_properties = ("command",)
-
-    def __init__(self, builder, wmeta):
-        super().__init__(builder, wmeta)
-        self.cmd_proxy = CommandProxy()
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {
             "text": self.wmeta.identifier,
             "command": None,
         }
-
-    def _process_property_value(self, pname, value):
-        if pname in self.command_properties:
-            return self.cmd_proxy
-        return super()._process_property_value(pname, value)
-
-    def _connect_command(self, cmd_pname, callback):
-        self.cmd_proxy.command = callback
 
 
 _builder_uid = f"{_plugin_uid}.Button"
@@ -270,8 +199,10 @@ register_widget(
 class CheckbuttonBO(TkmtWidgetBO):
     master_add_method = "Checkbutton"
     pos_args = ("text", "variable")
-    properties = pos_args + TkmtWidgetBO.properties
+    kw_args = ("command", "args", "disabled")
+    properties = pos_args + kw_args + TkmtWidgetBO.properties
     ro_properties = properties
+    command_properties = ("command",)
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {
@@ -504,8 +435,10 @@ register_widget(
 class OptionMenuBO(TkmtWidgetBO):
     master_add_method = "OptionMenu"
     pos_args = ("values", "variable")
-    properties = pos_args + TkmtWidgetBO.properties
+    kw_args = ("command",)
+    properties = pos_args + kw_args + TkmtWidgetBO.properties
     ro_properties = properties
+    command_properties = ("command",)
     jlist_values = ListDTO([], ["values should be a json list"])
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
@@ -518,6 +451,10 @@ class OptionMenuBO(TkmtWidgetBO):
         if pname == "values":
             return self.jlist_values.transform(value)
         return super()._process_property_value(pname, value)
+
+    def _code_define_callback_args(self, cmd_pname, cmd):
+        # arg for command callback
+        return ("value",)
 
 
 _builder_uid = f"{_plugin_uid}.OptionMenu"
