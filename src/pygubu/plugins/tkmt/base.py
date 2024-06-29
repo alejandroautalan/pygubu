@@ -96,6 +96,17 @@ class TkmtWidgetBO(BuilderObject):
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {}
 
+    def _set_property(self, target_widget, pname, value):
+        if pname == "makeResizable":
+            if value == "all":
+                target_widget.makeResizable()
+            elif value == "recursive":
+                target_widget.makeResizable(recursive=True, onlyFrames=False)
+            else:
+                target_widget.makeResizable(recursive=False, onlyFrames=True)
+            return
+        super()._set_property(target_widget, pname, value)
+
     def _process_property_value(self, pname, value):
         if pname in self.command_properties:
             cmd_proxy = self.command_proxies.get(pname, None)
@@ -105,7 +116,7 @@ class TkmtWidgetBO(BuilderObject):
             return cmd_proxy
         if pname in ("row", "col", "rowspan", "colspan"):
             return int(value)
-        if pname == "args":
+        if pname in ("args", "validatecommandargs", "invalidcommandargs"):
             return self.args_to_list.transform(value)
         if pname in ("disabled",):
             return tk.getboolean(value)

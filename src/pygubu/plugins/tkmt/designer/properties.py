@@ -22,19 +22,7 @@ tkmt_properties = {
         "json_type": list,
         "json_item_type": int,
     },
-    "command": [
-        {
-            "editor": "commandentry",
-        },
-        {
-            "buid": f"{_plugin_uid}.Checkbutton",
-            "editor": "simplecommandentry",
-        },
-        {
-            "buid": f"{_plugin_uid}.OptionMenu",
-            "editor": "simplecommandentry",
-        },
-    ],
+    "command": {"editor": "simplecommandentry"},
     "datacolumnnames": {  # Treeview
         "editor": "json_entry",
         "help": """Defaults to columnnames, a mapping of columnnames to the data file.
@@ -54,7 +42,19 @@ In designer, use a resource URI here, example:  res://my_treeview_data""",
         "state": "readonly",
     },
     "increment": {"editor": "realnumber"},
+    "invalidcommand": {
+        "editor": "simplecommandentry",
+    },
+    "invalidcommandargs": {
+        "editor": "json_entry",
+        "help": "Args passsed to invalidcommand property. In designer, a json list.",
+    },
     "lower": {"editor": "realnumber"},
+    "makeResizable": {
+        "editor": "choice",
+        "values": ("", "all", "recursive", "onlyframes"),
+        "state": "readonly",
+    },
     "menu": {  # MenuButton
         "buid": f"{_plugin_uid}.MenuButton",
         "editor": "entry",
@@ -83,6 +83,29 @@ In designer, use a resource URI here, example:  res://my_treeview_data""",
     "rowspan": {"editor": "naturalnumber", "min_value": 1},
     "subentryname": {"editor": "entry"},  # Treeview
     "upper": {"editor": "realnumber"},
+    "validate": {
+        "editor": "choice",
+        "values": (
+            "",
+            "all",
+            "focus",
+            "focusin",
+            "focusout",
+            "key",
+            "none",
+        ),
+        "state": "readonly",
+    },
+    "validatecommand": {"editor": "simplecommandentry"},
+    "validatecommandargs": {
+        "editor": "json_entry",
+        "help": "Args passsed to validatecommand property. In designer, a json list.",
+    },
+    "validatecommandmode": {
+        "editor": "choice",
+        "values": ("", "%P", "%d %i %P %s %S %v %V %W"),
+        # "state": "readonly",
+    },
     "values": [
         {  # OptionMenu
             "editor": "json_entry",

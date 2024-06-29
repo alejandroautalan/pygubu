@@ -252,7 +252,7 @@ register_widget(
 class RadiobuttonBO(CheckbuttonBO):
     master_add_method = "Radiobutton"
     pos_args = ("text", "variable", "value")
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + CheckbuttonBO.properties
     ro_properties = properties
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
@@ -276,8 +276,17 @@ register_widget(
 class EntryBO(TkmtWidgetBO):
     master_add_method = "Entry"
     pos_args = ("textvariable",)
-    properties = pos_args + TkmtWidgetBO.properties
+    kw_args = (
+        "validatecommand",
+        "validatecommandargs",
+        "validatecommandmode",
+        "invalidcommand",
+        "invalidcommandargs",
+        "validate",
+    )
+    properties = pos_args + kw_args + TkmtWidgetBO.properties
     ro_properties = properties
+    command_properties = ("validatecommand", "invalidcommand")
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {
@@ -435,7 +444,7 @@ register_widget(
 class OptionMenuBO(TkmtWidgetBO):
     master_add_method = "OptionMenu"
     pos_args = ("values", "variable")
-    kw_args = ("command",)
+    kw_args = ("command", "args")
     properties = pos_args + kw_args + TkmtWidgetBO.properties
     ro_properties = properties
     command_properties = ("command",)
@@ -454,7 +463,14 @@ class OptionMenuBO(TkmtWidgetBO):
 
     def _code_define_callback_args(self, cmd_pname, cmd):
         # arg for command callback
-        return ("value",)
+        fargs = ["value"]
+        user_args = self.wmeta.properties.get("args", None)
+        if user_args:
+            user_args = self._process_property_value("args", user_args)
+        if user_args:
+            for idx, arg in enumerate(user_args):
+                fargs.insert(0, f"arg{idx}")
+        return fargs
 
 
 _builder_uid = f"{_plugin_uid}.OptionMenu"
@@ -546,8 +562,8 @@ register_widget(
 class NotebookTabBO(TkmtWidgetBO):
     master_add_method = "addTab"
     pos_args = ("text",)
-    properties = pos_args
-    ro_properties = properties
+    properties = pos_args + ("makeResizable",)
+    ro_properties = pos_args
     container = True
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
