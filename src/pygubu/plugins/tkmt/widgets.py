@@ -14,6 +14,7 @@ from pygubu.utils.datatrans import ListDTO
 from ..tkmt import _designer_tab_label, _plugin_uid
 from .base import (
     TkmtWidgetBO,
+    WidgetAsMethodBO,
     CommandProxy,
     GROUP_CONTAINER,
     GROUP_DISPLAY,
@@ -72,11 +73,11 @@ register_custom_property(
 )
 
 
-class FrameBO(TkmtWidgetBO):
+class FrameBO(WidgetAsMethodBO):
     container = True
     master_add_method = "addFrame"
     pos_args = ("name",)
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + WidgetAsMethodBO.kw_args
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {"name": self.wmeta.identifier}
@@ -96,11 +97,11 @@ FrameBO.add_allowed_parent(_themedtkinterframe)
 FrameBO.add_allowed_parent(_frame)
 
 
-class LabelFrameBO(TkmtWidgetBO):
+class LabelFrameBO(WidgetAsMethodBO):
     container = True
     master_add_method = "addLabelFrame"
     pos_args = ("text",)
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + WidgetAsMethodBO.kw_args
     ro_properties = properties
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
@@ -147,7 +148,7 @@ FrameNextColBO.add_allowed_parent(_frame)
 FrameNextColBO.add_allowed_parent(_labelframe)
 
 
-class SeparatorBO(TkmtWidgetBO):
+class SeparatorBO(WidgetAsMethodBO):
     master_add_method = "Seperator"
 
 
@@ -161,11 +162,11 @@ register_widget(
 )
 
 
-class ButtonBO(TkmtWidgetBO):
+class ButtonBO(WidgetAsMethodBO):
     master_add_method = "Button"
     pos_args = ("text", "command")
-    kw_args = ("args",)
-    properties = pos_args + kw_args + TkmtWidgetBO.properties
+    kw_args = ("args",) + WidgetAsMethodBO.kw_args
+    properties = pos_args + kw_args
     ro_properties = properties
     command_properties = ("command",)
 
@@ -196,11 +197,11 @@ register_widget(
 )
 
 
-class CheckbuttonBO(TkmtWidgetBO):
+class CheckbuttonBO(WidgetAsMethodBO):
     master_add_method = "Checkbutton"
     pos_args = ("text", "variable")
-    kw_args = ("command", "args", "disabled")
-    properties = pos_args + kw_args + TkmtWidgetBO.properties
+    kw_args = ("command", "args", "disabled") + WidgetAsMethodBO.kw_args
+    properties = pos_args + kw_args
     ro_properties = properties
     command_properties = ("command",)
 
@@ -252,7 +253,7 @@ register_widget(
 class RadiobuttonBO(CheckbuttonBO):
     master_add_method = "Radiobutton"
     pos_args = ("text", "variable", "value")
-    properties = pos_args + CheckbuttonBO.properties
+    properties = pos_args + CheckbuttonBO.kw_args
     ro_properties = properties
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
@@ -273,7 +274,7 @@ register_widget(
 )
 
 
-class EntryBO(TkmtWidgetBO):
+class EntryBO(WidgetAsMethodBO):
     master_add_method = "Entry"
     pos_args = ("textvariable",)
     kw_args = (
@@ -283,8 +284,8 @@ class EntryBO(TkmtWidgetBO):
         "invalidcommand",
         "invalidcommandargs",
         "validate",
-    )
-    properties = pos_args + kw_args + TkmtWidgetBO.properties
+    ) + WidgetAsMethodBO.kw_args
+    properties = pos_args + kw_args
     ro_properties = properties
     command_properties = ("validatecommand", "invalidcommand")
 
@@ -300,10 +301,10 @@ register_widget(
 ), GROUP_INPUT
 
 
-class NumericalSpinboxBO(TkmtWidgetBO):
+class NumericalSpinboxBO(WidgetAsMethodBO):
     master_add_method = "NumericalSpinbox"
     pos_args = ("lower", "upper", "increment", "variable")
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + WidgetAsMethodBO.kw_args
     ro_properties = properties
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
@@ -330,10 +331,10 @@ register_widget(
 )
 
 
-class NonnumericalSpinboxBO(TkmtWidgetBO):
+class NonnumericalSpinboxBO(WidgetAsMethodBO):
     master_add_method = "NonnumericalSpinbox"
     pos_args = ("values", "variable")
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + WidgetAsMethodBO.kw_args
     ro_properties = properties
     json_to_list = ListDTO([], ["values should be a json list"])
 
@@ -359,12 +360,17 @@ register_widget(
 )
 
 
-class TreeviewBO(TkmtWidgetBO):
+class TreeviewBO(WidgetAsMethodBO):
     master_add_method = "Treeview"
     pos_args = ("columnnames", "columnwidths", "height", "data", "subentryname")
-    kw_args = ("datacolumnnames", "openkey", "anchor", "newframe")
-    properties = pos_args + kw_args + TkmtWidgetBO.properties
-    ro_properties = pos_args + TkmtWidgetBO.properties
+    kw_args = (
+        "datacolumnnames",
+        "openkey",
+        "anchor",
+        "newframe",
+    ) + WidgetAsMethodBO.kw_args
+    properties = pos_args + kw_args
+    ro_properties = properties
     json_to_colname = ListDTO([], ["values should be a json list"])
     json_to_colwidth = ListDTO([], [])
 
@@ -441,11 +447,11 @@ register_widget(
 )
 
 
-class OptionMenuBO(TkmtWidgetBO):
+class OptionMenuBO(WidgetAsMethodBO):
     master_add_method = "OptionMenu"
     pos_args = ("values", "variable")
-    kw_args = ("command", "args")
-    properties = pos_args + kw_args + TkmtWidgetBO.properties
+    kw_args = ("command", "args") + WidgetAsMethodBO.kw_args
+    properties = pos_args + kw_args
     ro_properties = properties
     command_properties = ("command",)
     jlist_values = ListDTO([], ["values should be a json list"])
@@ -483,10 +489,10 @@ register_widget(
 )
 
 
-class ComboboxBO(TkmtWidgetBO):
+class ComboboxBO(WidgetAsMethodBO):
     master_add_method = "Combobox"
     pos_args = ("values", "variable")
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + WidgetAsMethodBO.kw_args
     ro_properties = properties
     jlist_values = ListDTO([], ["values should be a json list"])
 
@@ -512,10 +518,10 @@ register_widget(
 )
 
 
-class MenuButtonBO(TkmtWidgetBO):
+class MenuButtonBO(WidgetAsMethodBO):
     master_add_method = "MenuButton"
     pos_args = ("menu", "defaulttext")
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + WidgetAsMethodBO.kw_args
     ro_properties = properties
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
@@ -535,10 +541,10 @@ register_widget(
 )
 
 
-class NotebookBO(TkmtWidgetBO):
+class NotebookBO(WidgetAsMethodBO):
     master_add_method = "Notebook"
     pos_args = ("name",)
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + WidgetAsMethodBO.kw_args
     ro_properties = properties
     container = True
 
@@ -559,9 +565,10 @@ register_widget(
 )
 
 
-class NotebookTabBO(TkmtWidgetBO):
+class NotebookTabBO(WidgetAsMethodBO):
     master_add_method = "addTab"
     pos_args = ("text",)
+    kw_args = ()
     properties = pos_args + ("makeResizable",)
     ro_properties = pos_args
     container = True
@@ -586,10 +593,10 @@ NotebookBO.add_allowed_child(_notebok_tab)
 NotebookTabBO.add_allowed_parent(_notebook)
 
 
-class PanedWindowBO(TkmtWidgetBO):
+class PanedWindowBO(WidgetAsMethodBO):
     master_add_method = "PanedWindow"
     pos_args = ("name", "orient")
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + WidgetAsMethodBO.kw_args
     ro_properties = properties
     container = True
 
@@ -610,7 +617,7 @@ register_widget(
 )
 
 
-class PanedWindowPaneBO(TkmtWidgetBO):
+class PanedWindowPaneBO(WidgetAsMethodBO):
     master_add_method = "addWindow"
     pos_args = ("weight",)
     properties = pos_args
@@ -637,10 +644,11 @@ PanedWindowBO.add_allowed_child(_panedwindow_pane)
 PanedWindowPaneBO.add_allowed_parent(_panedwindow)
 
 
-class BlankBO(TkmtWidgetBO):
+class BlankBO(WidgetAsMethodBO):
     master_add_method = "Blank"
     pos_args = ("name",)
-    properties = pos_args + ("row", "col", "rowspan", "colspan")
+    kw_args = ("row", "col", "rowspan", "colspan")
+    properties = pos_args + kw_args
     ro_properties = properties
 
     def realize(self, parent, extra_init_args: dict = None):
@@ -660,10 +668,10 @@ register_widget(
 )
 
 
-class LabelBO(TkmtWidgetBO):
+class LabelBO(WidgetAsMethodBO):
     master_add_method = "Label"
     pos_args = ("text",)
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + WidgetAsMethodBO.kw_args
     ro_properties = properties
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
@@ -677,10 +685,10 @@ register_widget(
 ), GROUP_DISPLAY
 
 
-class TextBO(TkmtWidgetBO):
+class TextBO(WidgetAsMethodBO):
     master_add_method = "Text"
     pos_args = ("text",)
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + WidgetAsMethodBO.kw_args
     ro_properties = properties
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
@@ -694,10 +702,10 @@ register_widget(
 ), GROUP_INPUT
 
 
-class ScaleBO(TkmtWidgetBO):
+class ScaleBO(WidgetAsMethodBO):
     master_add_method = "Scale"
     pos_args = ("lower", "upper", "variable")
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + WidgetAsMethodBO.kw_args
     ro_properties = properties
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
@@ -719,10 +727,10 @@ register_widget(
 )
 
 
-class ProgressbarBO(TkmtWidgetBO):
+class ProgressbarBO(WidgetAsMethodBO):
     master_add_method = "Progressbar"
     pos_args = ("variable",)
-    properties = pos_args + TkmtWidgetBO.properties
+    properties = pos_args + WidgetAsMethodBO.kw_args
     ro_properties = properties
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:

@@ -62,7 +62,11 @@ class NotebookPreviewBO(PreviewBaseMixin, tkmt_builders.NotebookBO):
 
 
 class NotebookTabPreviewBO(PreviewBaseMixin, tkmt_builders.NotebookTabBO):
-    ...
+    def _set_property(self, target_widget, pname, value):
+        return super()._set_property(self.tkmt_widget, pname, value)
+
+    def configure_children(self, target=None):
+        super().configure_children(self.tkmt_widget)
 
 
 class PanedWindowPreviewBO(PreviewBaseMixin, tkmt_builders.PanedWindowBO):

@@ -40,15 +40,60 @@ class CommandProxy:
 class TkmtWidgetBO(BuilderObject):
     allow_bindings = False
     layout_required = False
-    properties = ("row", "col", "padx", "pady", "rowspan", "colspan", "sticky")
-    ro_properties = properties
-    pos_args = tuple()
-    master_add_method = None
+    pos_args = ()
+    kw_args = ("row", "col", "padx", "pady", "rowspan", "colspan", "sticky")
     args_to_list = ListDTO([], [])  # To process args property
 
     def __init__(self, builder, wmeta):
         super().__init__(builder, wmeta)
         self.command_proxies: Mapping[str, CommandProxy] = {}
+        self.make_resizable = None
+
+    def configure(self, target=None):
+        if target is None:
+            target = self.widget
+        for pname, value in self.wmeta.properties.items():
+            if pname not in self.pos_args and pname not in self.kw_args:
+                self._set_property(target, pname, value)
+
+    def _set_property(self, target_widget, pname, value):
+        if pname == "makeResizable":
+            self.make_resizable = value
+            return
+        super()._set_property(target_widget, pname, value)
+
+    def configure_children(self, target=None):
+        if target is None:
+            target = self.widget
+        if self.make_resizable is not None:
+            if self.make_resizable == "all":
+                target.makeResizable()
+            elif self.make_resizable == "recursive":
+                target.makeResizable(recursive=True, onlyFrames=False)
+            else:
+                target.makeResizable(recursive=False, onlyFrames=True)
+
+    def _process_property_value(self, pname, value):
+        if pname in self.command_properties:
+            cmd_proxy = self.command_proxies.get(pname, None)
+            if cmd_proxy is None:
+                cmd_proxy = CommandProxy()
+                self.command_proxies[pname] = cmd_proxy
+            return cmd_proxy
+        if pname in ("row", "col", "rowspan", "colspan"):
+            return int(value)
+        if pname in ("args", "validatecommandargs", "invalidcommandargs"):
+            return self.args_to_list.transform(value)
+        if pname in ("disabled",):
+            return tk.getboolean(value)
+        return super()._process_property_value(pname, value)
+
+    def _connect_command(self, cmd_pname, callback):
+        self.command_proxies[cmd_pname].command = callback
+
+
+class WidgetAsMethodBO(TkmtWidgetBO):
+    master_add_method = None
 
     def realize(self, parent, extra_init_args: dict = None):
         master = parent.get_child_master()
@@ -59,9 +104,6 @@ class TkmtWidgetBO(BuilderObject):
         args = self._get_positional_args(pbag)
         self.widget = add_method(*args, **kargs)
         return self.widget
-
-    def configure(self, target=None):
-        pass
 
     def _process_properties(self, tkmaster: tk.Widget) -> dict:
         defaults = self._get_property_defaults(tkmaster)
@@ -81,7 +123,7 @@ class TkmtWidgetBO(BuilderObject):
     def _get_keyword_args(self, bag: dict) -> dict:
         kargs = {}
         for pname in self.properties:
-            if pname not in self.pos_args and pname in bag:
+            if pname in self.kw_args and pname in bag:
                 kargs[pname] = bag[pname]
         return kargs
 
@@ -95,32 +137,3 @@ class TkmtWidgetBO(BuilderObject):
 
     def _get_property_defaults(self, master: tk.Widget = None) -> dict:
         return {}
-
-    def _set_property(self, target_widget, pname, value):
-        if pname == "makeResizable":
-            if value == "all":
-                target_widget.makeResizable()
-            elif value == "recursive":
-                target_widget.makeResizable(recursive=True, onlyFrames=False)
-            else:
-                target_widget.makeResizable(recursive=False, onlyFrames=True)
-            return
-        super()._set_property(target_widget, pname, value)
-
-    def _process_property_value(self, pname, value):
-        if pname in self.command_properties:
-            cmd_proxy = self.command_proxies.get(pname, None)
-            if cmd_proxy is None:
-                cmd_proxy = CommandProxy()
-                self.command_proxies[pname] = cmd_proxy
-            return cmd_proxy
-        if pname in ("row", "col", "rowspan", "colspan"):
-            return int(value)
-        if pname in ("args", "validatecommandargs", "invalidcommandargs"):
-            return self.args_to_list.transform(value)
-        if pname in ("disabled",):
-            return tk.getboolean(value)
-        return super()._process_property_value(pname, value)
-
-    def _connect_command(self, cmd_pname, callback):
-        self.command_proxies[cmd_pname].command = callback
