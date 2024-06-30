@@ -131,6 +131,12 @@ In designer, use a resource URI here, example:  res://my_treeview_data""",
             "type_default": "int",
         },
         {
+            "buid": f"{_plugin_uid}.NumericalSpinbox",
+            "editor": "tkvarentry",
+            "type_choices": ("int", "double"),
+            "type_default": "int",
+        },
+        {
             "buid": f"{_plugin_uid}.NonnumericalSpinbox",
             "editor": "tkvarentry",
             "type_choices": ("string",),
