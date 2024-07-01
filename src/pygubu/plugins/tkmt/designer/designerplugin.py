@@ -1,9 +1,11 @@
+import tkinter as tk
 from pygubu.api.v1 import IDesignerPlugin
 from pygubu.utils.widget import crop_widget
 
-# from pygubu.stockimage import StockRegistry, StockImageCache, StockImage
+from pygubu.stockimage import StockRegistry, StockImageCache, StockImage
 import pygubu.plugins.tkmt.designer.preview as preview
 import pygubu.plugins.tkmt.designer.properties
+from .toplevelpreview import ThemedTKinterFrameTLPreview
 
 
 class PygubuDesignerPlugin(IDesignerPlugin):
@@ -17,11 +19,27 @@ class PygubuDesignerPlugin(IDesignerPlugin):
             #    print(f"Warning: {preview_name} NOT defined")
         return None
 
-    #    def get_toplevel_preview_for(
-    #        self, builder_uid: str, widget_id: str, builder, top_master
-    #    ):
-    #        top = None
-    #        return top
+    def get_toplevel_preview_for(
+        self, builder_uid: str, widget_id: str, builder, top_master
+    ):
+        top = None
+        toplevel_uids = ("tkmt.ThemedTKinterFrame",)
+        if builder_uid in toplevel_uids:
+            ui = builder.uidefinition
+            xpath = f".//object[@class='{builder_uid}']"
+            node = ui.root.find(xpath)
+            if node is not None:
+                node.set("class", "tkmt.ThemedTKinterFrameTLPreview")
+
+            # for a new tk root, create a diferent image cache:
+            def on_root_created(root):
+                image_cache = StockImageCache(root, StockImage.registry)
+                builder.image_cache = image_cache
+
+            builder.on_first_object = on_root_created
+            top = builder.get_object(widget_id)
+
+        return top
 
     #    def configure_for_preview(self, builder_uid: str, widget):
     #        """Make widget just display with minimal functionality."""
