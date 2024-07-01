@@ -16,6 +16,7 @@ from .base import (
     TkmtWidgetBO,
     WidgetAsMethodBO,
     CommandProxy,
+    GROUP_ROOT,
     GROUP_CONTAINER,
     GROUP_DISPLAY,
     GROUP_INPUT,
@@ -25,51 +26,29 @@ from .base import (
 running_in_designer = os.getenv("PYGUBU_DESIGNER_RUNNING")
 
 
-class ThemedTkFrameBO(BuilderObject):
+class ThemedTKinterFrameBO(TkmtWidgetBO):
     allow_bindings = False
     layout_required = False
     allowed_parents = ("root",)
     class_ = tkmt.ThemedTKinterFrame
     container = True
-    properties = ("title", "theme", "mode")
+    pos_args = ("title",)
+    kw_args = ("theme", "mode", "usecommandlineargs", "useconfigfile")
+    properties = pos_args + kw_args
     ro_properties = properties
 
-    def realize(self, parent, extra_init_args: dict = None):
-        kargs = self._get_init_args(extra_init_args)
-        # master = parent.get_child_master()
-        args = []
-        for arg in ("title",):
-            args.append(kargs.pop(arg))
-        self.widget = self.class_(*args, **kargs)
-        return self.widget
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {"title": self.wmeta.identifier}
 
 
 _builder_uid = f"{_plugin_uid}.ThemedTKinterFrame"
 _themedtkinterframe = _builder_uid
 register_widget(
     _builder_uid,
-    ThemedTkFrameBO,
+    ThemedTKinterFrameBO,
     "ThemedTKinterFrame",
     ("ttk", _designer_tab_label),
-    GROUP_CONTAINER,
-)
-
-register_custom_property(
-    _builder_uid,
-    "theme",
-    "choice",
-    values=("azure", "sun-valley", "park"),
-    default_value="park",
-    state="readonly",
-)
-
-register_custom_property(
-    _builder_uid,
-    "mode",
-    "choice",
-    values=("light", "dark"),
-    default_value="dark",
-    state="readonly",
+    GROUP_ROOT,
 )
 
 
@@ -297,8 +276,8 @@ class EntryBO(WidgetAsMethodBO):
 
 _builder_uid = f"{_plugin_uid}.Entry"
 register_widget(
-    _builder_uid, EntryBO, "Entry", ("ttk", _designer_tab_label)
-), GROUP_INPUT
+    _builder_uid, EntryBO, "Entry", ("ttk", _designer_tab_label), GROUP_INPUT
+)
 
 
 class NumericalSpinboxBO(WidgetAsMethodBO):
@@ -681,8 +660,8 @@ class LabelBO(WidgetAsMethodBO):
 _builder_uid = f"{_plugin_uid}.Label"
 _labelframe = _builder_uid
 register_widget(
-    _builder_uid, LabelBO, "Label", ("ttk", _designer_tab_label)
-), GROUP_DISPLAY
+    _builder_uid, LabelBO, "Label", ("ttk", _designer_tab_label), GROUP_DISPLAY
+)
 
 
 class TextBO(WidgetAsMethodBO):
@@ -698,8 +677,8 @@ class TextBO(WidgetAsMethodBO):
 _builder_uid = f"{_plugin_uid}.Text"
 _labelframe = _builder_uid
 register_widget(
-    _builder_uid, TextBO, "Text", ("ttk", _designer_tab_label)
-), GROUP_INPUT
+    _builder_uid, TextBO, "Text", ("ttk", _designer_tab_label), GROUP_DISPLAY
+)
 
 
 class ScaleBO(WidgetAsMethodBO):
@@ -750,7 +729,7 @@ register_widget(
     ProgressbarBO,
     "Progressbar",
     ("ttk", _designer_tab_label),
-    GROUP_INPUT,
+    GROUP_DISPLAY,
 )
 
 # TODO: matplotlibFrame

@@ -19,9 +19,10 @@ def tkmt_to_tkwidget(widget):
 
 
 # Groups for ordering buttons in designer palette.
-GROUP_CONTAINER = 0
-GROUP_DISPLAY = 1
-GROUP_INPUT = 2
+GROUP_ROOT = 0
+GROUP_CONTAINER = 10
+GROUP_DISPLAY = 30
+GROUP_INPUT = 60
 
 
 class CommandProxy:
@@ -48,6 +49,47 @@ class TkmtWidgetBO(BuilderObject):
         super().__init__(builder, wmeta)
         self.command_proxies: Mapping[str, CommandProxy] = {}
         self.make_resizable = None
+
+    def realize(self, parent, extra_init_args: dict = None):
+        master = parent.get_child_master()
+        pbag = self._process_properties(tkmt_to_tkwidget(master))
+        kargs = self._get_keyword_args(pbag)
+        args = self._get_positional_args(pbag)
+        self.widget = self.class_(*args, **kargs)
+        return self.widget
+
+    def _process_properties(self, tkmaster: tk.Widget) -> dict:
+        defaults = self._get_property_defaults(tkmaster)
+        pbag = {}
+        for pname in self.properties:
+            if pname in self.wmeta.properties:
+                pvalue = self.wmeta.properties[pname]
+                pbag[pname] = self._process_property_value(pname, pvalue)
+            elif pname in defaults:
+                pbag[pname] = defaults[pname]
+        self._post_process_properties(tkmaster, pbag)
+        return pbag
+
+    def _post_process_properties(self, tkmaster: tk.Widget, pbag: dict) -> None:
+        pass
+
+    def _get_keyword_args(self, bag: dict) -> dict:
+        kargs = {}
+        for pname in self.properties:
+            if pname in self.kw_args and pname in bag:
+                kargs[pname] = bag[pname]
+        return kargs
+
+    def _get_positional_args(self, bag: dict) -> list:
+        args = []
+        for pname in self.pos_args:
+            if pname in bag:
+                value = bag[pname]
+                args.append(value)
+        return args
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {}
 
     def configure(self, target=None):
         if target is None:
@@ -84,7 +126,7 @@ class TkmtWidgetBO(BuilderObject):
             return int(value)
         if pname in ("args", "validatecommandargs", "invalidcommandargs"):
             return self.args_to_list.transform(value)
-        if pname in ("disabled",):
+        if pname in ("disabled", "usecommandlineargs", "useconfigfile"):
             return tk.getboolean(value)
         return super()._process_property_value(pname, value)
 
@@ -104,36 +146,3 @@ class WidgetAsMethodBO(TkmtWidgetBO):
         args = self._get_positional_args(pbag)
         self.widget = add_method(*args, **kargs)
         return self.widget
-
-    def _process_properties(self, tkmaster: tk.Widget) -> dict:
-        defaults = self._get_property_defaults(tkmaster)
-        pbag = {}
-        for pname in self.properties:
-            if pname in self.wmeta.properties:
-                pvalue = self.wmeta.properties[pname]
-                pbag[pname] = self._process_property_value(pname, pvalue)
-            elif pname in defaults:
-                pbag[pname] = defaults[pname]
-        self._post_process_properties(tkmaster, pbag)
-        return pbag
-
-    def _post_process_properties(self, tkmaster: tk.Widget, pbag: dict) -> None:
-        pass
-
-    def _get_keyword_args(self, bag: dict) -> dict:
-        kargs = {}
-        for pname in self.properties:
-            if pname in self.kw_args and pname in bag:
-                kargs[pname] = bag[pname]
-        return kargs
-
-    def _get_positional_args(self, bag: dict) -> list:
-        args = []
-        for pname in self.pos_args:
-            if pname in bag:
-                value = bag[pname]
-                args.append(value)
-        return args
-
-    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
-        return {}

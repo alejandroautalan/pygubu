@@ -60,6 +60,11 @@ In designer, use a resource URI here, example:  res://my_treeview_data""",
         "editor": "entry",
         "help": "Use a resource URI here, example:  res://my_menu",
     },
+    "mode": {
+        "editor": "choice",
+        "values": ("", "light", "dark"),
+        "state": "readonly",
+    },
     "newframe": {  # Treeview
         "editor": "choice",
         "values": ("", "True", "False"),
@@ -82,7 +87,22 @@ In designer, use a resource URI here, example:  res://my_treeview_data""",
     "row": {"editor": "naturalnumber"},
     "rowspan": {"editor": "naturalnumber", "min_value": 1},
     "subentryname": {"editor": "entry"},  # Treeview
+    "theme": {
+        "editor": "choice",
+        "values": ("", "azure", "sun-valley", "park"),
+        "state": "readonly",
+    },
     "upper": {"editor": "realnumber"},
+    "usecommandlineargs": {
+        "editor": "choice",
+        "values": ("", "True", "False"),
+        "state": "readonly",
+    },
+    "useconfigfile": {
+        "editor": "choice",
+        "values": ("", "True", "False"),
+        "state": "readonly",
+    },
     "validate": {
         "editor": "choice",
         "values": (

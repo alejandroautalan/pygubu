@@ -20,33 +20,52 @@ class ThemedTkFramePreview(ttk.Frame):
         self.tkmt_widget = WidgetFrame(self, "Master Frame")
 
 
-class ThemedTKinterFramePreviewBO(tkmt_builders.ThemedTkFrameBO):
-    layout_required = True
-    class_ = ThemedTkFramePreview
+# class ThemedTKinterFramePreviewBO(tkmt_builders.ThemedTkFrameBO):
+# layout_required = True
+# class_ = ThemedTkFramePreview
 
-    def _get_init_args(self, extra_init_args: dict = None):
-        args = super()._get_init_args(extra_init_args)
-        if "title" not in args:
-            args["title"] = self.wmeta.identifier
-        return args
+# def _get_init_args(self, extra_init_args: dict = None):
+# args = super()._get_init_args(extra_init_args)
+# if "title" not in args:
+# args["title"] = self.wmeta.identifier
+# return args
 
-    def realize(self, parent, extra_init_args: dict = None):
-        return super(tkmt_builders.ThemedTkFrameBO, self).realize(
-            parent, extra_init_args
-        )
+# def realize(self, parent, extra_init_args: dict = None):
+# return super(tkmt_builders.ThemedTkFrameBO, self).realize(
+# parent, extra_init_args
+# )
 
-    def get_child_master(self):
-        return self.widget.tkmt_widget
+# def get_child_master(self):
+# return self.widget.tkmt_widget
 
 
 class PreviewBaseMixin:
     def realize(self, parent, extra_init_args: dict = None):
-        self.tkmt_widget = super().realize(parent, extra_init_args)
-        self.widget = tkmt_to_tkwidget(self.tkmt_widget)
+        if self.class_ == ThemedTkFramePreview:
+            self.widget = super().realize(parent, extra_init_args)
+            self.tkmt_widget = self.widget.tkmt_widget
+        else:
+            self.tkmt_widget = super().realize(parent, extra_init_args)
+            self.widget = tkmt_to_tkwidget(self.tkmt_widget)
         return self.widget
 
     def get_child_master(self):
         return self.tkmt_widget
+
+
+class ThemedTKinterFramePreviewBO(
+    PreviewBaseMixin, tkmt_builders.ThemedTKinterFrameBO
+):
+    class_ = ThemedTkFramePreview
+    layout_required = True
+    pos_args = (
+        "master",
+        "title",
+    )
+    properties = pos_args + tkmt_builders.ThemedTKinterFrameBO.kw_args
+
+    def _get_property_defaults(self, master: tk.Widget = None) -> dict:
+        return {"master": master, "title": self.wmeta.identifier}
 
 
 class FramePreviewBO(PreviewBaseMixin, tkmt_builders.FrameBO):
