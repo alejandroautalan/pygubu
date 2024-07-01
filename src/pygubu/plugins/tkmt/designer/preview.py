@@ -20,25 +20,6 @@ class ThemedTkFramePreview(ttk.Frame):
         self.tkmt_widget = WidgetFrame(self, "Master Frame")
 
 
-# class ThemedTKinterFramePreviewBO(tkmt_builders.ThemedTkFrameBO):
-# layout_required = True
-# class_ = ThemedTkFramePreview
-
-# def _get_init_args(self, extra_init_args: dict = None):
-# args = super()._get_init_args(extra_init_args)
-# if "title" not in args:
-# args["title"] = self.wmeta.identifier
-# return args
-
-# def realize(self, parent, extra_init_args: dict = None):
-# return super(tkmt_builders.ThemedTkFrameBO, self).realize(
-# parent, extra_init_args
-# )
-
-# def get_child_master(self):
-# return self.widget.tkmt_widget
-
-
 class PreviewBaseMixin:
     def realize(self, parent, extra_init_args: dict = None):
         if self.class_ == ThemedTkFramePreview:
