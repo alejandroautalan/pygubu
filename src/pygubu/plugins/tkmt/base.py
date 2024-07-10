@@ -3,6 +3,7 @@ from typing import Mapping
 from TKinterModernThemes.WidgetFrame import WidgetFrame, Notebook, PanedWindow
 from pygubu.api.v1 import BuilderObject
 from pygubu.utils.datatrans import ListDTO
+from .codegen import TkmtWidgetCodeMixin
 
 
 def tkmt_to_tkwidget(widget):
@@ -38,7 +39,7 @@ class CommandProxy:
             self.command(*args)
 
 
-class TkmtWidgetBO(BuilderObject):
+class TkmtWidgetBO(TkmtWidgetCodeMixin, BuilderObject):
     allow_bindings = False
     layout_required = False
     pos_args = ()
@@ -132,6 +133,16 @@ class TkmtWidgetBO(BuilderObject):
 
     def _connect_command(self, cmd_pname, callback):
         self.command_proxies[cmd_pname].command = callback
+
+    def _code_process_property_value(self, targetid, pname, value: str):
+        if pname in ("args", "validatecommandargs", "invalidcommandargs"):
+            return str(self.args_to_list.transform(value))
+        if pname == "variable":
+            # variables can be none in some constructors
+            # avoid error when builder trys to create a tk variable.
+            if value is None:
+                return str(value)
+        return super()._code_process_property_value(targetid, pname, value)
 
 
 class WidgetAsMethodBO(TkmtWidgetBO):

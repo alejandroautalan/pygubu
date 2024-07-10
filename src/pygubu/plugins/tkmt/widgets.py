@@ -328,6 +328,11 @@ class NonnumericalSpinboxBO(WidgetAsMethodBO):
             return self.json_to_list.transform(value)
         return super()._process_property_value(pname, value)
 
+    def _code_process_property_value(self, targetid, pname, value: str):
+        if pname == "values":
+            return str(self.json_to_list.transform(value))
+        return super()._code_process_property_value(targetid, pname, value)
+
 
 _builder_uid = f"{_plugin_uid}.NonnumericalSpinbox"
 register_widget(
@@ -370,6 +375,13 @@ class TreeviewBO(WidgetAsMethodBO):
         if pname == "newframe":
             return tk.getboolean(value)
         return super()._process_property_value(pname, value)
+
+    def _code_process_property_value(self, targetid, pname, value: str):
+        if pname in ("columnnames", "datacolumnnames"):
+            return str(self.json_to_colname.transform(value))
+        if pname == "columnwidths":
+            return str(self.json_to_colwidth.transform(value))
+        return super()._code_process_property_value(targetid, pname, value)
 
     def _post_process_properties(self, tkmaster: tk.Widget, pbag: dict) -> None:
         if running_in_designer:
@@ -446,6 +458,11 @@ class OptionMenuBO(WidgetAsMethodBO):
             return self.jlist_values.transform(value)
         return super()._process_property_value(pname, value)
 
+    def _code_process_property_value(self, targetid, pname, value: str):
+        if pname == "values":
+            return str(self.jlist_values.transform(value))
+        return super()._code_process_property_value(targetid, pname, value)
+
     def _code_define_callback_args(self, cmd_pname, cmd):
         # arg for command callback
         fargs = ["value"]
@@ -485,6 +502,11 @@ class ComboboxBO(WidgetAsMethodBO):
         if pname == "values":
             return self.jlist_values.transform(value)
         return super()._process_property_value(pname, value)
+
+    def _code_process_property_value(self, targetid, pname, value: str):
+        if pname == "values":
+            return str(self.jlist_values.transform(value))
+        return super()._code_process_property_value(targetid, pname, value)
 
 
 _builder_uid = f"{_plugin_uid}.Combobox"
