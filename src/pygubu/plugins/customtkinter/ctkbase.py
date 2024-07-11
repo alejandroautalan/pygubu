@@ -82,6 +82,8 @@ int_properties = {
     "button_length": {},
     "corner_radius": {},
     "height": {},
+    "from_": {},
+    "to": {},
     "number_of_steps": {},
     "width": {},
     "checkbox_width": {},

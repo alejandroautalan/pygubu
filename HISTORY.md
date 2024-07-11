@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.35.4
+
+  * Fix from, to properties on customtkinter CTKSlide.
+
 Changes for version 0.35.3
 
   * Fix container layout on customtkinter CTKFrame.
