@@ -370,6 +370,9 @@ class Builder(object):
     def code_translate_str(self, value: str) -> str:
         raise NotImplementedError()
 
+    def code_get_resource(self, uri: str):
+        raise NotImplementedError()
+
 
 # Load plugins on module init
 PluginManager.load_plugins()

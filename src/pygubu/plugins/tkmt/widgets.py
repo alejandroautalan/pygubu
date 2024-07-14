@@ -112,6 +112,13 @@ class FrameNextColBO(BuilderObject):
         master.nextCol()
         return self.widget
 
+    def code_realize(self, boparent, code_identifier=None):
+        lines = []
+        master = boparent.code_child_master()
+        s = f"{master}.nextCol()"
+        lines.append(s)
+        return lines
+
 
 _builder_uid = f"{_plugin_uid}.FrameNextCol"
 register_widget(
