@@ -170,6 +170,8 @@ class BuilderObject(object):
 
     def _can_set_tcl_widget_name(self) -> bool:
         """Returns True if widget accepts the tcl "name" init argument."""
+        if self.class_ is None:
+            return False
         return self.wmeta.is_named and issubclass(self.class_, tk.Widget)
 
     def configure(self, target=None):
@@ -188,7 +190,11 @@ class BuilderObject(object):
 
     def _process_property_value(self, pname, value):
         propvalue = value
-        if pname in self.tkvar_properties:
+
+        uri = str(value)
+        if uri.startswith("res://"):
+            propvalue = self.builder.get_resource(uri)
+        elif pname in self.tkvar_properties:
             propvalue = self.builder.create_variable(value)
             if "text" in self.wmeta.properties and pname == "textvariable":
                 propvalue.set(self.wmeta.properties["text"])
@@ -554,7 +560,11 @@ class BuilderObject(object):
 
     def _code_process_property_value(self, targetid, pname, value: str):
         propvalue = None
-        if pname in self.tkvar_properties:
+
+        uri = str(value)
+        if uri.startswith("res://"):
+            propvalue = self.builder.code_get_resource(uri)
+        elif pname in self.tkvar_properties:
             propvalue = self._code_set_tkvariable_property(pname, value)
         elif pname in self.command_properties:
             cmd = json.loads(value)
