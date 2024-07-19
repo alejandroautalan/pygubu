@@ -404,6 +404,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
             # Buttons
             self.create_button_style(settings, name)
             self.create_toolbutton_style(settings, name)
+            self.create_outline_button_style(settings, name)
             self.create_outline_menubutton_style(settings, name)
             self.create_outline_toolbutton_style(settings, name)
             self.create_link_button_style(settings, name)
@@ -745,6 +746,72 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                     ("pressed !disabled", toggle_on),
                     ("selected !disabled", toggle_on),
                     ("hover !disabled", toggle_on),
+                ],
+            },
+        }
+        if colorname:
+            self._register_style(ttkstyle)
+
+    def create_outline_button_style(self, settings, colorname=None):
+        """Create an outline style for the ttk.Button widget."""
+        STYLE = "Outline.TButton"
+
+        disabled_fg = self.colorutil.make_transparent(
+            0.30, self.colors.fg, self.colors.bg
+        )
+
+        if any([colorname is None, not colorname]):
+            ttkstyle = STYLE
+            colorname = PRIMARY
+        else:
+            ttkstyle = f"{colorname}.{STYLE}"
+
+        foreground = self.colors.get_color(colorname)
+        background = self.colors.get_foreground(colorname)
+        foreground_pressed = background
+        bordercolor = foreground
+        pressed = foreground
+        hover = foreground
+
+        settings[ttkstyle] = {
+            "configure": {
+                "foreground": foreground,
+                "background": self.colors.bg,
+                "bordercolor": bordercolor,
+                "darkcolor": self.colors.bg,
+                "lightcolor": self.colors.bg,
+                "relief": tk.RAISED,
+                "focusthickness": 0,
+                "focuscolor": foreground,
+                "padding": (10, 5),
+                "anchor": tk.CENTER,
+            },
+            "map": {
+                "foreground": [
+                    ("disabled", disabled_fg),
+                    ("pressed !disabled", foreground_pressed),
+                    ("hover !disabled", foreground_pressed),
+                ],
+                "background": [
+                    ("pressed !disabled", pressed),
+                    ("hover !disabled", hover),
+                ],
+                "bordercolor": [
+                    ("disabled", disabled_fg),
+                    ("pressed !disabled", pressed),
+                    ("hover !disabled", hover),
+                ],
+                "darkcolor": [
+                    ("pressed !disabled", pressed),
+                    ("hover !disabled", hover),
+                ],
+                "lightcolor": [
+                    ("pressed !disabled", pressed),
+                    ("hover !disabled", hover),
+                ],
+                "focuscolor": [
+                    ("pressed !disabled", foreground_pressed),
+                    ("hover !disabled", foreground_pressed),
                 ],
             },
         }
