@@ -222,5 +222,8 @@ class ToplevelPreviewBaseBO(BuilderObject):
         elif pname == "modal":
             # Do nothing, fake 'modal' property for dialog preview
             pass
+        elif pname in ("className", "baseName"):
+            # Do nothing, fake properties for dialog preview
+            pass
         else:
             super()._set_property(tw, pname, value)
