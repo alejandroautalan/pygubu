@@ -614,8 +614,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         settings[ttkstyle] = {
             "configure": {"foreground": foreground, "background": background}
         }
-        if colorname:
-            self._register_style(ttkstyle)
+        self._register_style(ttkstyle)
 
     def create_button_style(self, settings, colorname=None):
         STYLE = "TButton"
@@ -815,8 +814,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
-        if colorname:
-            self._register_style(ttkstyle)
+        self._register_style(ttkstyle)
 
     def create_outline_menubutton_style(self, settings, colorname=None):
         """Create an outline button style for the ttk.Menubutton widget"""
@@ -884,8 +882,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
-        if colorname:
-            self._register_style(ttkstyle)
+        self._register_style(ttkstyle)
 
     def create_outline_toolbutton_style(self, settings, colorname=None):
         """Create an outline toolbutton style for the ttk.Checkbutton
@@ -958,8 +955,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
-        if colorname:
-            self._register_style(ttkstyle)
+        self._register_style(ttkstyle)
 
     def create_link_button_style(self, settings, colorname=None):
         """Create a link button style for the ttk.Button widget."""
@@ -1028,8 +1024,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
-        if colorname:
-            self._register_style(ttkstyle)
+        self._register_style(ttkstyle)
 
     def create_entry_style(self, settings, colorname=None):
         """Create a style for the ttk.Entry widget."""
@@ -2253,9 +2248,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
-        if colorname:
-            self._register_style(h_ttkstyle)
-            self._register_style(v_ttkstyle)
+        self._register_style(h_ttkstyle)
+        self._register_style(v_ttkstyle)
 
     def create_square_toggle_style(self, settings, colorname=None):
         """Create a square toggle style for the ttk.Checkbutton widget.
@@ -2337,8 +2331,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ],
             },
         }
-        if colorname:
-            self._register_style(ttkstyle)
+        self._register_style(ttkstyle)
 
     def create_round_toggle_style(self, settings, colorname=None):
         """Create a round toggle style for the ttk.Checkbutton widget.
@@ -2423,8 +2416,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
-        if colorname:
-            self._register_style(ttkstyle)
+        self._register_style(ttkstyle)
 
     def create_round_scrollbar_style(self, settings, colorname=None):
         """Create a round style for the ttk.Scrollbar widget.
@@ -2686,5 +2678,4 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
-        if colorname:
-            self._register_style(body_style)
+        self._register_style(body_style)
