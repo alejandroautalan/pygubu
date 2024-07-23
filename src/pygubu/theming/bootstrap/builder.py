@@ -438,6 +438,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
             self.create_table_treeview_style(settings, name)
             # sizegrip
             self.create_sizegrip_style(settings, name)
+            # Floodgauge
+            self.create_floodgauge_style(settings, name)
 
         tfinish = timeit.default_timer() - tstart
         logger.debug("Bootstrap ttk theme build time: %s", tfinish)
@@ -2679,3 +2681,103 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
             ],
         }
         self._register_style(body_style)
+
+    def create_floodgauge_style(self, settings, colorname=None):
+        """Create a ttk style for the pygubu Floodgauge
+        widget. This is a custom widget style that uses components of
+        the progressbar and label.
+        """
+        HSTYLE = "Horizontal.TFloodgauge"
+        VSTYLE = "Vertical.TFloodgauge"
+        FLOOD_FONT = "-size 14"
+
+        if any([colorname is None, colorname == ""]):
+            h_ttkstyle = HSTYLE
+            v_ttkstyle = VSTYLE
+            background = self.colors.primary
+        else:
+            h_ttkstyle = f"{colorname}.{HSTYLE}"
+            v_ttkstyle = f"{colorname}.{VSTYLE}"
+            background = self.colors.get_color(colorname)
+
+        if colorname == LIGHT:
+            foreground = self.colors.fg
+            troughcolor = self.colors.bg
+        else:
+            troughcolor = self.colorutil.update_hsv(background, sd=-0.3, vd=0.8)
+            foreground = self.colors.selectfg
+
+        # horizontal floodgauge
+        h_element = h_ttkstyle.replace(".TF", ".F")
+        # vertical floodgauge
+        v_element = v_ttkstyle.replace(".TF", ".F")
+
+        ttk_elements = (
+            (f"{h_element}.trough", TTK_CLAM),
+            (f"{h_element}.pbar", TTK_DEFAULT),
+            (f"{v_element}.trough", TTK_CLAM),
+            (f"{v_element}.pbar", TTK_DEFAULT),
+        )
+        for element_name, from_ in ttk_elements:
+            settings[element_name] = {
+                "element create": ("from", from_),
+            }
+
+        settings[h_ttkstyle] = {
+            "configure": dict(
+                thickness=50,
+                borderwidth=1,
+                bordercolor=background,
+                lightcolor=background,
+                pbarrelief=tk.FLAT,
+                troughcolor=troughcolor,
+                background=background,
+                foreground=foreground,
+                justify=tk.CENTER,
+                anchor=tk.CENTER,
+                font=FLOOD_FONT,
+            ),
+            "layout": [
+                (
+                    f"{h_element}.trough",
+                    {
+                        "children": [
+                            (f"{h_element}.pbar", {"sticky": tk.NS}),
+                            ("Floodgauge.label", {"sticky": ""}),
+                        ],
+                        "sticky": tk.NSEW,
+                    },
+                )
+            ],
+        }
+        settings[v_ttkstyle] = {
+            "configure": dict(
+                thickness=50,
+                borderwidth=1,
+                bordercolor=background,
+                lightcolor=background,
+                pbarrelief=tk.FLAT,
+                troughcolor=troughcolor,
+                background=background,
+                foreground=foreground,
+                justify=tk.CENTER,
+                anchor=tk.CENTER,
+                font=FLOOD_FONT,
+            ),
+            "layout": [
+                (
+                    f"{v_element}.trough",
+                    {
+                        "children": [
+                            (f"{v_element}.pbar", {"sticky": tk.EW}),
+                            ("Floodgauge.label", {"sticky": ""}),
+                        ],
+                        "sticky": tk.NSEW,
+                    },
+                )
+            ],
+        }
+
+        if colorname:
+            self._register_style(h_ttkstyle)
+            self._register_style(v_ttkstyle)
