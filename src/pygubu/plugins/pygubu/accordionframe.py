@@ -3,36 +3,32 @@ import tkinter as tk
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
-    register_custom_property,
 )
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
-from pygubu.i18n import _
 from pygubu.widgets.accordionframe import AccordionFrame
+from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
 
 
 class AccordionFrameBO(TTKFrame):
     class_ = AccordionFrame
-    allowed_children = ("pygubu.widgets.AccordionFrameGroup",)
+    allowed_children = (f"{_plugin_uid}.AccordionFrameGroup",)
     _img_properties = ("img_expand", "img_collapse")
     properties = TTKFrame.properties + _img_properties
     tkimage_properties = TTKFrame.tkimage_properties + _img_properties
 
 
-_builder_uid = "pygubu.widgets.AccordionFrame"
+_builder_uid = f"{_plugin_uid}.AccordionFrame"
 
 register_widget(
     _builder_uid,
     AccordionFrameBO,
     "AccordionFrame",
-    (_("Pygubu Widgets"), "ttk"),
+    (_designer_tab_label, "ttk"),
 )
-
-for prop in AccordionFrameBO._img_properties:
-    register_custom_property(_builder_uid, prop, "imageentry")
 
 
 class AccordionFrameGroupBO(BuilderObject):
-    allowed_parents = ("pygubu.widgets.AccordionFrame",)
+    allowed_parents = (f"{_plugin_uid}.AccordionFrame",)
     properties = ("label", "expanded", "compound", "style")
     layout_required = False
     container = True
@@ -62,35 +58,11 @@ class AccordionFrameGroupBO(BuilderObject):
             super()._set_property(target_widget, pname, value)
 
 
-_builder_uid = "pygubu.widgets.AccordionFrameGroup"
+_builder_uid = f"{_plugin_uid}.AccordionFrameGroup"
 
 register_widget(
     _builder_uid,
     AccordionFrameGroupBO,
     "AccordionFrame.Group",
-    (_("Pygubu Widgets"), "ttk"),
-)
-
-register_custom_property(_builder_uid, "label", "entry")
-register_custom_property(
-    _builder_uid, "style", "ttkstylechoice", default_value="Toolbutton"
-)
-register_custom_property(
-    _builder_uid,
-    "expanded",
-    "choice",
-    values=("", "false", "true"),
-    state="readonly",
-)
-register_custom_property(
-    _builder_uid,
-    "compound",
-    "choice",
-    values=(
-        "",
-        tk.LEFT,
-        tk.RIGHT,
-        tk.NONE,
-    ),
-    state="readonly",
+    (_designer_tab_label, "ttk"),
 )

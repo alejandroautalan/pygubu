@@ -10,6 +10,7 @@ _plugin_uid = "pygubu.widgets"
 class PygubuWidgetsLoader(BuilderLoaderPlugin):
     module_map = {
         "pygubu.plugins.pygubu.calendarframe": (
+            f"{_plugin_uid}.calendarframe",
             "pygubu.builder.widgets.calendarframe",
         ),
         "pygubu.plugins.pygubu.combobox": ("pygubu.builder.widgets.combobox",),
@@ -20,7 +21,7 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.plugins.pygubu.pathchooserinput": (
             "pygubu.builder.widgets.pathchooserinput",
             "pygubu.widgets.PathChooserInput",
-            "pygubu.widgets.PathChooserButton",
+            f"{_plugin_uid}.PathChooserButton",
         ),
         "pygubu.plugins.pygubu.scrollbarhelper": (
             "pygubu.builder.widgets.scrollbarhelper",
@@ -38,18 +39,18 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             "pygubu.builder.widgets.tkscrolledframe",
         ),
         "pygubu.plugins.pygubu.filterabletreeview": (
-            "pygubu.widgets.FilterableTreeview",
+            f"{_plugin_uid}.FilterableTreeview",
         ),
         "pygubu.plugins.pygubu.accordionframe": (
-            "pygubu.widgets.AccordionFrame",
+            f"{_plugin_uid}.AccordionFrame",
         ),
         "pygubu.plugins.pygubu.dockfw": (
-            "pygubu.widgets.dockframe",
-            "pygubu.widgets.dockpane",
-            "pygubu.widgets.dockwidget",
+            f"{_plugin_uid}.dockframe",
+            f"{_plugin_uid}.dockpane",
+            f"{_plugin_uid}.dockwidget",
         ),
         "pygubu.plugins.pygubu.hideableframe": (
-            "pygubu.widgets.hideableframe",
+            f"{_plugin_uid}.hideableframe",
         ),
         "pygubu.plugins.pygubu.colorinputbo": ("pygubu.widgets.ColorInput",),
         "pygubu.plugins.pygubu.floodgauge_bo": ("pygubu.widgets.Floodgauge",),

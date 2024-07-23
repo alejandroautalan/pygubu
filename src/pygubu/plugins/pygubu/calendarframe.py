@@ -5,8 +5,8 @@ from pygubu.api.v1 import (
     register_custom_property,
 )
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
-from pygubu.i18n import _
 from pygubu.widgets.calendarframe import CalendarFrame
+from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
 
 
 class CalendarFrameBuilder(BuilderObject):
@@ -33,50 +33,14 @@ class CalendarFrameBuilder(BuilderObject):
     virtual_events = ("<<CalendarFrameDateSelected>>",)
 
 
-_builder_id = "pygubu.builder.widgets.calendarframe"
+_builder_id = f"{_plugin_uid}.CalendarFrame"
 register_widget(
     _builder_id,
     CalendarFrameBuilder,
     "CalendarFrame",
-    ("ttk", _("Pygubu Widgets")),
+    ("ttk", _designer_tab_label),
 )
-
-register_custom_property(
-    _builder_id,
-    "state",
-    "choice",
-    values=("", "normal", "disabled"),
-    state="readonly",
+# Register old name until removal
+register_widget(
+    "pygubu.builder.widgets.calendarframe", CalendarFrameBuilder, public=False
 )
-register_custom_property(
-    _builder_id,
-    "firstweekday",
-    "choice",
-    values=("0", "6"),
-    state="readonly",
-    default_value="6",
-)
-register_custom_property(_builder_id, "year", "entry")
-register_custom_property(
-    _builder_id,
-    "month",
-    "choice",
-    values=("", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"),
-    state="readonly",
-)
-register_custom_property(
-    _builder_id,
-    "linewidth",
-    "choice",
-    values=("1", "2", "3", "4"),
-    state="readonly",
-    default_value="1",
-)
-register_custom_property(_builder_id, "calendarfg", "colorentry")
-register_custom_property(_builder_id, "calendarbg", "colorentry")
-register_custom_property(_builder_id, "headerfg", "colorentry")
-register_custom_property(_builder_id, "headerbg", "colorentry")
-register_custom_property(_builder_id, "selectbg", "colorentry")
-register_custom_property(_builder_id, "selectfg", "colorentry")
-register_custom_property(_builder_id, "markbg", "colorentry")
-register_custom_property(_builder_id, "markfg", "colorentry")
