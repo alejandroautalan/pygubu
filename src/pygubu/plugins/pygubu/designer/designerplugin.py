@@ -1,3 +1,4 @@
+import pygubu.plugins.pygubu.designer.properties
 from pygubu.api.v1 import IDesignerPlugin
 from pygubu.utils.widget import crop_widget
 from pygubu.stockimage import StockRegistry, StockImageCache, StockImage

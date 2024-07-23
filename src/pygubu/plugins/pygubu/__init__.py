@@ -1,5 +1,10 @@
 import os
 from pygubu.api.v1 import BuilderLoaderPlugin
+from pygubu.i18n import _
+
+
+_designer_tab_label = _("Pygubu Widgets")
+_plugin_uid = "pygubu.widgets"
 
 
 class PygubuWidgetsLoader(BuilderLoaderPlugin):
@@ -43,8 +48,11 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             "pygubu.widgets.dockpane",
             "pygubu.widgets.dockwidget",
         ),
-        "pygubu.plugins.pygubu.hideableframe": ("pygubu.widgets.hideableframe"),
-        "pygubu.plugins.pygubu.colorinputbo": ("pygubu.widgets.ColorInput"),
+        "pygubu.plugins.pygubu.hideableframe": (
+            "pygubu.widgets.hideableframe",
+        ),
+        "pygubu.plugins.pygubu.colorinputbo": ("pygubu.widgets.ColorInput",),
+        "pygubu.plugins.pygubu.floodgauge_bo": ("pygubu.widgets.Floodgauge",),
         # Forms are not finished so expect changes
         "pygubu.plugins.pygubu.forms.ttkwidgetbo": (
             "pygubu.forms.ttkwidget.FrameFormBuilder",

@@ -103,3 +103,27 @@ class HideableMixin:
             elif layout == "place":
                 self.place(**self._layout_info)
             self._is_hidden = False
+
+
+class WidgetConfigureMixin:
+    """Class Mixin to make easy adding properties a la tkinter way.
+    Tkinter sets properties using the configure method.
+    """
+
+    def _configure_get(self, cnf):
+        return super().configure(cnf)
+
+    def _configure_set(self, **kwargs):
+        return super().configure(**kwargs)
+
+    def __getitem__(self, key: str):
+        return self._configure_get(cnf=key)
+
+    def __setitem__(self, key: str, value):
+        self._configure_set(**{key: value})
+
+    def configure(self, cnf=None, **kwargs):
+        if cnf is not None:
+            return self._configure_get(cnf)
+        else:
+            return self._configure_set(**kwargs)
