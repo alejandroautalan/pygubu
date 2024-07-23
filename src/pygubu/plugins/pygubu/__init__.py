@@ -52,8 +52,8 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.plugins.pygubu.hideableframe": (
             f"{_plugin_uid}.hideableframe",
         ),
-        "pygubu.plugins.pygubu.colorinputbo": ("pygubu.widgets.ColorInput",),
-        "pygubu.plugins.pygubu.floodgauge_bo": ("pygubu.widgets.Floodgauge",),
+        "pygubu.plugins.pygubu.colorinput_bo": (f"{_plugin_uid}.ColorInput",),
+        "pygubu.plugins.pygubu.floodgauge_bo": (f"{_plugin_uid}.Floodgauge",),
         # Forms are not finished so expect changes
         "pygubu.plugins.pygubu.forms.ttkwidgetbo": (
             "pygubu.forms.ttkwidget.FrameFormBuilder",
