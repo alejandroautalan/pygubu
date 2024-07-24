@@ -50,7 +50,7 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.plugins.pygubu.accordionframe": (
             f"{_plugin_uid}.AccordionFrame",
         ),
-        "pygubu.plugins.pygubu.dockfw": (
+        "pygubu.plugins.pygubu.dockfw_bo": (
             f"{_plugin_uid}.dockframe",
             f"{_plugin_uid}.dockpane",
             f"{_plugin_uid}.dockwidget",
