@@ -1,5 +1,5 @@
 import tkinter as tk
-import pygubu.plugins.pygubu.combobox as cbb
+import pygubu.plugins.pygubu.combobox_bo as cbb
 import pygubu.forms.pygubuwidget as pygubuwidget
 
 from pygubu.api.v1 import (
@@ -8,7 +8,6 @@ from pygubu.api.v1 import (
     register_custom_property,
     copy_custom_property,
 )
-from pygubu.i18n import _
 from .base import (
     WidgetBOMixin,
     _plugin_uid as base_plugin_uid,
@@ -35,7 +34,3 @@ register_widget(
     "PygubuCombobox",
     _designer_tabs,
 )
-
-copy_custom_property(cbb._builder_id, "values", _builder_uid)
-copy_custom_property(cbb._builder_id, "keyvariable", _builder_uid)
-copy_custom_property(cbb._builder_id, "state", _builder_uid)
