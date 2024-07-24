@@ -9,10 +9,14 @@ _plugin_uid = "pygubu.widgets"
 
 class PygubuWidgetsLoader(BuilderLoaderPlugin):
     module_map = {
+        "pygubu.plugins.pygubu.accordionframe": (
+            f"{_plugin_uid}.AccordionFrame",
+        ),
         "pygubu.plugins.pygubu.calendarframe": (
             f"{_plugin_uid}.calendarframe",
             "pygubu.builder.widgets.calendarframe",
         ),
+        "pygubu.plugins.pygubu.colorinput_bo": (f"{_plugin_uid}.ColorInput",),
         "pygubu.plugins.pygubu.combobox_bo": (
             f"{_plugin_uid}.Combobox",
             "pygubu.builder.widgets.combobox",
@@ -21,9 +25,34 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             f"{_plugin_uid}.Dialog",
             "pygubu.builder.widgets.dialog",
         ),
+        "pygubu.plugins.pygubu.dockfw_bo": (
+            f"{_plugin_uid}.dockframe",
+            f"{_plugin_uid}.dockpane",
+            f"{_plugin_uid}.dockwidget",
+        ),
         "pygubu.plugins.pygubu.editabletreeview_bo": (
             f"{_plugin_uid}.EditableTreeview",
             "pygubu.builder.widgets.editabletreeview",
+        ),
+        "pygubu.plugins.pygubu.filterabletreeview_bo": (
+            f"{_plugin_uid}.FilterableTreeview",
+        ),
+        "pygubu.plugins.pygubu.floodgauge_bo": (f"{_plugin_uid}.Floodgauge",),
+        # Forms are not finished so expect changes
+        "pygubu.plugins.pygubu.forms.pygubuwidgetbo": (
+            "pygubu.forms.pygubuwidget.PygubuCombobox"
+        ),
+        "pygubu.plugins.pygubu.forms.tkwidgetbo": (
+            "pygubu.forms.tkwidget.Text",
+        ),
+        "pygubu.plugins.pygubu.forms.ttkwidgetbo": (
+            "pygubu.forms.ttkwidget.FrameFormBuilder",
+            "pygubu.forms.ttkwidget.Label",
+            "pygubu.forms.ttkwidget.Entry",
+            "pygubu.forms.ttkwidget.LabelWidgetInfo",
+        ),
+        "pygubu.plugins.pygubu.hideableframe": (
+            f"{_plugin_uid}.hideableframe",
         ),
         "pygubu.plugins.pygubu.pathchooserinput": (
             "pygubu.builder.widgets.pathchooserinput",
@@ -44,35 +73,6 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         ),
         "pygubu.plugins.pygubu.tkscrolledframe": (
             "pygubu.builder.widgets.tkscrolledframe",
-        ),
-        "pygubu.plugins.pygubu.filterabletreeview_bo": (
-            f"{_plugin_uid}.FilterableTreeview",
-        ),
-        "pygubu.plugins.pygubu.accordionframe": (
-            f"{_plugin_uid}.AccordionFrame",
-        ),
-        "pygubu.plugins.pygubu.dockfw_bo": (
-            f"{_plugin_uid}.dockframe",
-            f"{_plugin_uid}.dockpane",
-            f"{_plugin_uid}.dockwidget",
-        ),
-        "pygubu.plugins.pygubu.hideableframe": (
-            f"{_plugin_uid}.hideableframe",
-        ),
-        "pygubu.plugins.pygubu.colorinput_bo": (f"{_plugin_uid}.ColorInput",),
-        "pygubu.plugins.pygubu.floodgauge_bo": (f"{_plugin_uid}.Floodgauge",),
-        # Forms are not finished so expect changes
-        "pygubu.plugins.pygubu.forms.ttkwidgetbo": (
-            "pygubu.forms.ttkwidget.FrameFormBuilder",
-            "pygubu.forms.ttkwidget.Label",
-            "pygubu.forms.ttkwidget.Entry",
-            "pygubu.forms.ttkwidget.LabelWidgetInfo",
-        ),
-        "pygubu.plugins.pygubu.forms.tkwidgetbo": (
-            "pygubu.forms.tkwidget.Text",
-        ),
-        "pygubu.plugins.pygubu.forms.pygubuwidgetbo": (
-            "pygubu.forms.pygubuwidget.PygubuCombobox"
         ),
     }
 

@@ -10,6 +10,7 @@ hiddenimports = [
     "pygubu.plugins.pygubu.flodgauge_bo",
     "pygubu.plugins.pygubu.forms",
     "pygubu.plugins.pygubu.forms.pygubuwidgetbo",
+    "pygubu.plugins.pygubu.forms.tkwidgetbo",
     "pygubu.plugins.pygubu.forms.ttkwidgetbo",
     "pygubu.plugins.pygubu.hideableframe",
     "pygubu.plugins.pygubu.pathchooserinput",
