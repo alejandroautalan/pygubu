@@ -45,7 +45,7 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.plugins.pygubu.tkscrolledframe": (
             "pygubu.builder.widgets.tkscrolledframe",
         ),
-        "pygubu.plugins.pygubu.filterabletreeview": (
+        "pygubu.plugins.pygubu.filterabletreeview_bo": (
             f"{_plugin_uid}.FilterableTreeview",
         ),
         "pygubu.plugins.pygubu.accordionframe": (
