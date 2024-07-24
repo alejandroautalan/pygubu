@@ -12,6 +12,9 @@ _CalendarFrame = f"{_plugin_uid}.CalendarFrame"
 _ColorInput = f"{_plugin_uid}.ColorInput"
 _Combobox = f"{_plugin_uid}.Combobox"
 _Dialog = f"{_plugin_uid}.Dialog"
+_DockFrame = f"{_plugin_uid}.docframe"
+_DockPane = f"{_plugin_uid}.docpane"
+_DockWidget = f"{_plugin_uid}.dockwidget"
 _forms_PygubuCombobox = f"{forms_uid}.pygubuwidget.PygubuCombobox"
 
 h_values = _(
@@ -22,6 +25,7 @@ h_values = _(
 h_keyvariable = _("Tk variable associated to the key value.")  # combobox
 h_state = _("Combobox state.")  # combobox
 h_modal = _("Determines if dialog is run in normal or modal mode.")  # Dialog
+h_weight = _("The weight value for the pane.")  # DockPane
 
 plugin_properties = {
     "calendarfg": dict(buid=_CalendarFrame, editor="colorentry"),
@@ -43,6 +47,12 @@ plugin_properties = {
         values=("0", "6"),
         state="readonly",
         default_value="6",
+    ),
+    "grouped": dict(
+        buid=_DockWidget,
+        editor="choice",
+        values=("", "true", "false"),
+        state="readonly",
     ),
     "headerbg": dict(buid=_CalendarFrame, editor="colorentry"),
     "headerfg": dict(buid=_CalendarFrame, editor="colorentry"),
@@ -134,6 +144,14 @@ plugin_properties = {
     "values": [
         dict(buid=_Combobox, help=h_values),
         dict(buid=_forms_PygubuCombobox, help=h_values),
+    ],
+    "weight": [
+        dict(buid=_DockPane, editor="integernumber", help=h_weight),
+        dict(
+            buid=_DockWidget,
+            editor="integernumber",
+            help=_("The weight value of the widget in the pane"),
+        ),
     ],
     "width": dict(
         buid=_AccordionFrame, editor="dimensionentry", default_value="200"

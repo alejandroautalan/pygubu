@@ -3,12 +3,11 @@ import tkinter.ttk as ttk
 
 from pygubu.api.v1 import (
     register_widget,
-    register_custom_property,
     BuilderObject,
 )
-from pygubu.i18n import _
 
 import pygubu.widgets.dockfw.widgets as widgets
+from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
 
 
 class DockWidgetBaseBO(BuilderObject):
@@ -27,9 +26,9 @@ class DockFrameBO(DockWidgetBaseBO):
     virtual_events = (widgets.DockFrame.EVENT_LAYOUT_CHANGED,)
 
 
-_builder_id = dockframe_uid = "pygubu.widgets.dockframe"
+_builder_id = dockframe_uid = f"{_plugin_uid}.dockframe"
 register_widget(
-    _builder_id, DockFrameBO, "DockFrame", ("ttk", _("Pygubu Widgets"))
+    _builder_id, DockFrameBO, "DockFrame", ("ttk", _designer_tab_label)
 )
 
 
@@ -71,18 +70,11 @@ class DockPaneBO(DockWidgetBaseBO):
         pass
 
 
-_builder_id = dockpane_uid = "pygubu.widgets.dockpane"
+_builder_id = dockpane_uid = f"{_plugin_uid}.dockpane"
 DockPaneBO.add_allowed_child(_builder_id)
 
 register_widget(
-    _builder_id, DockPaneBO, "DockPane", ("ttk", _("Pygubu Widgets"))
-)
-
-register_custom_property(
-    _builder_id,
-    "weight",
-    "integernumber",
-    help=_("The weight value for the pane."),
+    _builder_id, DockPaneBO, "DockPane", ("ttk", _designer_tab_label)
 )
 
 
@@ -125,24 +117,9 @@ class DockWidgetBO(DockWidgetBaseBO):
         pass
 
 
-_builder_id = "pygubu.widgets.dockwidget"
+_builder_id = f"{_plugin_uid}.dockwidget"
 DockPaneBO.add_allowed_child(_builder_id)
 
 register_widget(
-    _builder_id, DockWidgetBO, "DockWidget", ("ttk", _("Pygubu Widgets"))
-)
-
-register_custom_property(
-    _builder_id,
-    "grouped",
-    "choice",
-    values=("", "true", "false"),
-    state="readonly",
-)
-
-register_custom_property(
-    _builder_id,
-    "weight",
-    "integernumber",
-    help=_("The weight value of the widget in the pane"),
+    _builder_id, DockWidgetBO, "DockWidget", ("ttk", _designer_tab_label)
 )
