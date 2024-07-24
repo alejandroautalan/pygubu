@@ -2,14 +2,17 @@ import tkinter as tk
 from pygubu.i18n import _
 from pygubu.api.v1 import register_custom_property
 from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
+from pygubu.plugins.pygubu.forms.base import _plugin_uid as forms_uid
 
 
-_builder_uid = f"{_plugin_uid}.*"
+_builder_all = f"{_plugin_uid}.*"
 _AccordionFrame = f"{_plugin_uid}.AccordionFrame"
 _AccordionFrameGroup = f"{_plugin_uid}.AccordionFrameGroup"
 _CalendarFrame = f"{_plugin_uid}.CalendarFrame"
 _ColorInput = f"{_plugin_uid}.ColorInput"
 _Combobox = f"{_plugin_uid}.Combobox"
+_Dialog = f"{_plugin_uid}.Dialog"
+_forms_PygubuCombobox = f"{forms_uid}.pygubuwidget.PygubuCombobox"
 
 h_values = _(
     "In designer: json list of key, value pairs\n"
@@ -18,6 +21,7 @@ h_values = _(
 )  # combobox
 h_keyvariable = _("Tk variable associated to the key value.")  # combobox
 h_state = _("Combobox state.")  # combobox
+h_modal = _("Determines if dialog is run in normal or modal mode.")  # Dialog
 
 plugin_properties = {
     "calendarfg": dict(buid=_CalendarFrame, editor="colorentry"),
@@ -47,9 +51,12 @@ plugin_properties = {
     ),
     "img_expand": dict(editor="imageentry"),
     "img_collapse": dict(editor="imageentry"),
-    "keyvariable": dict(
-        buid=_Combobox, editor="tkvarentry", help=h_keyvariable
-    ),
+    "keyvariable": [
+        dict(buid=_Combobox, editor="tkvarentry", help=h_keyvariable),
+        dict(
+            buid=_forms_PygubuCombobox, editor="tkvarentry", help=h_keyvariable
+        ),
+    ],
     "label": dict(buid=_AccordionFrameGroup),
     "linewidth": dict(
         buid=_CalendarFrame,
@@ -61,6 +68,13 @@ plugin_properties = {
     "mask": dict(buid=f"{_plugin_uid}.Floodgauge"),
     "markbg": dict(buid=_CalendarFrame, editor="colorentry"),
     "markfg": dict(buid=_CalendarFrame, editor="colorentry"),
+    "modal": dict(
+        buid=_Dialog,
+        editor="choice",
+        values=("true", "false"),
+        state="readonly",
+        help=h_modal,
+    ),
     "month": dict(
         buid=_CalendarFrame,
         editor="choice",
@@ -97,6 +111,13 @@ plugin_properties = {
             state="readonly",
             help=h_state,
         ),
+        dict(
+            buid=_forms_PygubuCombobox,
+            editor="choice",
+            values=("", "normal", "disabled"),
+            state="readonly",
+            help=h_state,
+        ),
     ],
     "style": dict(
         buid=_AccordionFrameGroup,
@@ -110,7 +131,10 @@ plugin_properties = {
         state="readonly",
     ),
     "value": dict(buid=_ColorInput, editor="colorentry"),
-    "values": dict(buid=_Combobox, help=h_values),
+    "values": [
+        dict(buid=_Combobox, help=h_values),
+        dict(buid=_forms_PygubuCombobox, help=h_values),
+    ],
     "width": dict(
         buid=_AccordionFrame, editor="dimensionentry", default_value="200"
     ),
@@ -122,6 +146,6 @@ for prop in plugin_properties:
     if isinstance(definitions, dict):
         definitions = [definitions]
     for definition in definitions:
-        builder_uid = definition.pop("buid", _builder_uid)
+        builder_uid = definition.pop("buid", _builder_all)
         editor = definition.pop("editor", "entry")
         register_custom_property(builder_uid, prop, editor, **definition)

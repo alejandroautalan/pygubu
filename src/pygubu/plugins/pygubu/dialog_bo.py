@@ -1,8 +1,8 @@
 # encoding: utf-8
-from pygubu.api.v1 import register_widget, register_custom_property
+from pygubu.api.v1 import register_widget
 from pygubu.plugins.tk.tkstdwidgets import TKToplevel
-from pygubu.i18n import _
 from pygubu.widgets.dialog import Dialog
+from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
 
 
 class DialogBO(TKToplevel):
@@ -46,17 +46,9 @@ class DialogBO(TKToplevel):
             )
 
 
-_builder_id = "pygubu.builder.widgets.dialog"
+_builder_id = f"{_plugin_uid}.Dialog"
 register_widget(
-    _builder_id, DialogBO, "Dialog", (_("Pygubu Widgets"), "ttk"), group=0
+    _builder_id, DialogBO, "Dialog", (_designer_tab_label, "ttk"), group=0
 )
-
-_help = _("Determines if dialog is run in normal or modal mode.")
-register_custom_property(
-    _builder_id,
-    "modal",
-    "choice",
-    values=("true", "false"),
-    state="readonly",
-    help=_help,
-)
+# Register old name until removal
+register_widget("pygubu.builder.widgets.dialog", DialogBO, public=False)
