@@ -12,6 +12,7 @@ _CalendarFrame = f"{_plugin_uid}.CalendarFrame"
 _ColorInput = f"{_plugin_uid}.ColorInput"
 _Combobox = f"{_plugin_uid}.Combobox"
 _Dialog = f"{_plugin_uid}.Dialog"
+_Dialog_old = "pygubu.builder.widgets.dialog"
 _DockFrame = f"{_plugin_uid}.docframe"
 _DockPane = f"{_plugin_uid}.docpane"
 _DockWidget = f"{_plugin_uid}.dockwidget"
@@ -82,13 +83,22 @@ plugin_properties = {
     "mask": dict(buid=f"{_plugin_uid}.Floodgauge"),
     "markbg": dict(buid=_CalendarFrame, editor="colorentry"),
     "markfg": dict(buid=_CalendarFrame, editor="colorentry"),
-    "modal": dict(
-        buid=_Dialog,
-        editor="choice",
-        values=("true", "false"),
-        state="readonly",
-        help=h_modal,
-    ),
+    "modal": [
+        dict(
+            buid=_Dialog,
+            editor="choice",
+            values=("true", "false"),
+            state="readonly",
+            help=h_modal,
+        ),
+        dict(
+            buid=_Dialog_old,
+            editor="choice",
+            values=("true", "false"),
+            state="readonly",
+            help=h_modal,
+        ),
+    ],
     "month": dict(
         buid=_CalendarFrame,
         editor="choice",
