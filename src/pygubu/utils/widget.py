@@ -107,23 +107,36 @@ class HideableMixin:
 
 class WidgetConfigureMixin:
     """Class Mixin to make easy adding properties a la tkinter way.
-    Tkinter sets properties using the configure method.
+
+    Tkinter widget option management as used in class tk.Misc:
+        cget(option) to get a widget option.
+        configure(option=value) to set widget option
+        configure(option) to get info about option
     """
 
-    def _configure_get(self, cnf):
-        return super().configure(cnf)
+    def _configure_get(self, option):
+        """Return option information"""
+        return super().configure(option)
 
-    def _configure_set(self, **kwargs):
-        return super().configure(**kwargs)
+    def _configure_set(self, **kw):
+        """Sets widgets options"""
+        return super().configure(**kw)
 
-    def __getitem__(self, key: str):
-        return self._configure_get(cnf=key)
+    def _widget_cget(self, option):
+        """Get widget option"""
+        return super().cget(option)
 
-    def __setitem__(self, key: str, value):
-        self._configure_set(**{key: value})
+    def cget(self, key):
+        return self._widget_cget(key)
 
     def configure(self, cnf=None, **kwargs):
         if cnf is not None:
             return self._configure_get(cnf)
         else:
             return self._configure_set(**kwargs)
+
+    def __getitem__(self, key: str):
+        return self._widget_cget(key)
+
+    def __setitem__(self, key: str, value):
+        self._configure_set(**{key: value})

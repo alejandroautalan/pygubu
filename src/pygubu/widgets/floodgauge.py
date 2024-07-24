@@ -230,19 +230,23 @@ class Floodgauge(WidgetConfigureMixin, ttk.Progressbar):
         self.FGSM.reconfigure_layout(self)
         self._set_widget_text()
 
-    def _configure_get(self, cnf):
-        if cnf == "value":
+    def _widget_cget(self, option):
+        if option == "value":
             return self._pvariable.get()
-        if cnf == "text":
+        if option == "text":
             return self._ptextvar.get()
-        if cnf == "mask":
-            return self._mask
-        if cnf == "font":
-            return self._font
-        if cnf == "textvariable":
+        if option == "mask":
+            return self._pmask
+        if option == "font":
+            return self._pfont
+        if option == "textvariable":
             return self._ptextvar
-        else:
-            return super()._configure_get(cnf)
+        return super()._widget_cget(option)
+
+    def _configure_get(self, option):
+        if option in ("value", "text", "mask", "font", "textvariable"):
+            return self._widget_cget(option)
+        return super()._configure_get(option)
 
     def _configure_set(self, **kw):
         update_text = False
@@ -289,3 +293,20 @@ class Floodgauge(WidgetConfigureMixin, ttk.Progressbar):
         if update_text:
             self._set_widget_text()
         return super()._configure_set(**kw)
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    gauge = Floodgauge(root, mask="{}%")
+    gauge.pack(expand=True, fill="both")
+    options = ("value", "text", "mask", "font", "textvariable", "variable")
+    for option in options:
+        value = gauge.cget(option)
+        print(f"The gauge {option} is:", value, type(value))
+
+    scale = ttk.Scale(
+        root, variable=gauge.cget("variable"), value=0, from_=0, to=100
+    )
+    scale.pack()
+
+    root.mainloop()
