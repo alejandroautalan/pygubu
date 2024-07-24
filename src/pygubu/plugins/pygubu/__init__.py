@@ -13,7 +13,10 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             f"{_plugin_uid}.calendarframe",
             "pygubu.builder.widgets.calendarframe",
         ),
-        "pygubu.plugins.pygubu.combobox": ("pygubu.builder.widgets.combobox",),
+        "pygubu.plugins.pygubu.combobox_bo": (
+            f"{_plugin_uid}.Combobox",
+            "pygubu.builder.widgets.combobox",
+        ),
         "pygubu.plugins.pygubu.dialog": ("pygubu.builder.widgets.dialog",),
         "pygubu.plugins.pygubu.editabletreeview": (
             "pygubu.builder.widgets.editabletreeview",
