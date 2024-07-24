@@ -1,26 +1,17 @@
-from pygubu.api.v1 import register_widget, register_custom_property
+from pygubu.api.v1 import register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
-from pygubu.i18n import _
-
 from pygubu.widgets.hideableframe import HideableFrame
+from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
 
 
 class HideableFrameBO(TTKFrame):
     class_ = HideableFrame
 
 
-_builder_uid = "pygubu.widgets.hideableframe"
+_builder_uid = f"{_plugin_uid}.hideableframe"
 register_widget(
     _builder_uid,
     HideableFrameBO,
     "HideableFrame",
-    (_("Pygubu Widgets"), "ttk"),
-)
-
-register_custom_property(
-    _builder_uid, "width", "dimensionentry", default_value=200
-)
-
-register_custom_property(
-    _builder_uid, "height", "dimensionentry", default_value=200
+    (_designer_tab_label, "ttk"),
 )

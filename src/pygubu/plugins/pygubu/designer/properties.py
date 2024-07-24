@@ -16,6 +16,7 @@ _DockFrame = f"{_plugin_uid}.docframe"
 _DockPane = f"{_plugin_uid}.docpane"
 _DockWidget = f"{_plugin_uid}.dockwidget"
 _forms_PygubuCombobox = f"{forms_uid}.pygubuwidget.PygubuCombobox"
+_HideableFrame = f"{_plugin_uid}.hideableframe"
 
 h_values = _(
     "In designer: json list of key, value pairs\n"
@@ -56,9 +57,12 @@ plugin_properties = {
     ),
     "headerbg": dict(buid=_CalendarFrame, editor="colorentry"),
     "headerfg": dict(buid=_CalendarFrame, editor="colorentry"),
-    "height": dict(
-        buid=_AccordionFrame, editor="dimensionentry", default_value="200"
-    ),
+    "height": [
+        dict(
+            buid=_AccordionFrame, editor="dimensionentry", default_value="200"
+        ),
+        dict(buid=_HideableFrame, editor="dimensionentry", default_value=200),
+    ],
     "img_expand": dict(editor="imageentry"),
     "img_collapse": dict(editor="imageentry"),
     "keyvariable": [
@@ -153,9 +157,12 @@ plugin_properties = {
             help=_("The weight value of the widget in the pane"),
         ),
     ],
-    "width": dict(
-        buid=_AccordionFrame, editor="dimensionentry", default_value="200"
-    ),
+    "width": [
+        dict(
+            buid=_AccordionFrame, editor="dimensionentry", default_value="200"
+        ),
+        dict(buid=_HideableFrame, editor="dimensionentry", default_value=200),
+    ],
     "year": dict(buid=_CalendarFrame, editor="naturalnumber"),
 }
 
