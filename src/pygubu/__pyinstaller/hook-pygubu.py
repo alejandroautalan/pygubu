@@ -5,7 +5,7 @@ hiddenimports = [
     "pygubu.plugins.pygubu.combobox_bo",
     "pygubu.plugins.pygubu.dialog_bo",
     "pygubu.plugins.pygubu.dockfw_bo",
-    "pygubu.plugins.pygubu.editabletreeview",
+    "pygubu.plugins.pygubu.editabletreeview_bo",
     "pygubu.plugins.pygubu.filterabletreeview",
     "pygubu.plugins.pygubu.flodgauge_bo",
     "pygubu.plugins.pygubu.forms",

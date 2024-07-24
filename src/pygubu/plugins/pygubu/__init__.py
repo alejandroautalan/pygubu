@@ -21,7 +21,8 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             f"{_plugin_uid}.Dialog",
             "pygubu.builder.widgets.dialog",
         ),
-        "pygubu.plugins.pygubu.editabletreeview": (
+        "pygubu.plugins.pygubu.editabletreeview_bo": (
+            f"{_plugin_uid}.EditableTreeview",
             "pygubu.builder.widgets.editabletreeview",
         ),
         "pygubu.plugins.pygubu.pathchooserinput": (
