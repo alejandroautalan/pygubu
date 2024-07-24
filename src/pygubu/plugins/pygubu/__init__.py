@@ -54,7 +54,7 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.plugins.pygubu.hideableframe_bo": (
             f"{_plugin_uid}.hideableframe",
         ),
-        "pygubu.plugins.pygubu.pathchooserinput": (
+        "pygubu.plugins.pygubu.pathchooserinput_bo": (
             "pygubu.builder.widgets.pathchooserinput",
             "pygubu.widgets.PathChooserInput",
             f"{_plugin_uid}.PathChooserButton",
