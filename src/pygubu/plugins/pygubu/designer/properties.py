@@ -9,8 +9,10 @@ _builder_all = f"{_plugin_uid}.*"
 _AccordionFrame = f"{_plugin_uid}.AccordionFrame"
 _AccordionFrameGroup = f"{_plugin_uid}.AccordionFrameGroup"
 _CalendarFrame = f"{_plugin_uid}.CalendarFrame"
+_CalendarFrame_old = "pygubu.builder.widgets.calendarframe"
 _ColorInput = f"{_plugin_uid}.ColorInput"
 _Combobox = f"{_plugin_uid}.Combobox"
+_Combobox_old = "pygubu.builder.widgets.combobox"
 _Dialog = f"{_plugin_uid}.Dialog"
 _Dialog_old = "pygubu.builder.widgets.dialog"
 _DockFrame = f"{_plugin_uid}.docframe"
@@ -30,8 +32,12 @@ h_modal = _("Determines if dialog is run in normal or modal mode.")  # Dialog
 h_weight = _("The weight value for the pane.")  # DockPane
 
 plugin_properties = {
-    "calendarfg": dict(buid=_CalendarFrame, editor="colorentry"),
-    "calendarbg": dict(buid=_CalendarFrame, editor="colorentry"),
+    "calendarfg": dict(
+        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    ),
+    "calendarbg": dict(
+        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    ),
     "compound": dict(
         buid=_AccordionFrameGroup,
         editor="choice",
@@ -44,7 +50,7 @@ plugin_properties = {
         state="readonly",
     ),
     "firstweekday": dict(
-        buid=_CalendarFrame,
+        buid=[_CalendarFrame, _CalendarFrame_old],
         editor="choice",
         values=("0", "6"),
         state="readonly",
@@ -56,8 +62,12 @@ plugin_properties = {
         values=("", "true", "false"),
         state="readonly",
     ),
-    "headerbg": dict(buid=_CalendarFrame, editor="colorentry"),
-    "headerfg": dict(buid=_CalendarFrame, editor="colorentry"),
+    "headerbg": dict(
+        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    ),
+    "headerfg": dict(
+        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    ),
     "height": [
         dict(
             buid=_AccordionFrame, editor="dimensionentry", default_value="200"
@@ -66,33 +76,29 @@ plugin_properties = {
     ],
     "img_expand": dict(editor="imageentry"),
     "img_collapse": dict(editor="imageentry"),
-    "keyvariable": [
-        dict(buid=_Combobox, editor="tkvarentry", help=h_keyvariable),
-        dict(
-            buid=_forms_PygubuCombobox, editor="tkvarentry", help=h_keyvariable
-        ),
-    ],
+    "keyvariable": dict(
+        buid=[_Combobox, _Combobox_old, _forms_PygubuCombobox],
+        editor="tkvarentry",
+        help=h_keyvariable,
+    ),
     "label": dict(buid=_AccordionFrameGroup),
     "linewidth": dict(
-        buid=_CalendarFrame,
+        buid=[_CalendarFrame, _CalendarFrame_old],
         editor="choice",
         values=("1", "2", "3", "4"),
         state="readonly",
         default_value="1",
     ),
     "mask": dict(buid=f"{_plugin_uid}.Floodgauge"),
-    "markbg": dict(buid=_CalendarFrame, editor="colorentry"),
-    "markfg": dict(buid=_CalendarFrame, editor="colorentry"),
+    "markbg": dict(
+        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    ),
+    "markfg": dict(
+        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    ),
     "modal": [
         dict(
-            buid=_Dialog,
-            editor="choice",
-            values=("true", "false"),
-            state="readonly",
-            help=h_modal,
-        ),
-        dict(
-            buid=_Dialog_old,
+            buid=[_Dialog, _Dialog_old],
             editor="choice",
             values=("true", "false"),
             state="readonly",
@@ -100,7 +106,7 @@ plugin_properties = {
         ),
     ],
     "month": dict(
-        buid=_CalendarFrame,
+        buid=[_CalendarFrame, _CalendarFrame_old],
         editor="choice",
         values=(
             "",
@@ -119,17 +125,21 @@ plugin_properties = {
         ),
         state="readonly",
     ),
-    "selectbg": dict(buid=_CalendarFrame, editor="colorentry"),
-    "selectfg": dict(buid=_CalendarFrame, editor="colorentry"),
+    "selectbg": dict(
+        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    ),
+    "selectfg": dict(
+        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    ),
     "state": [
         dict(
-            buid=_CalendarFrame,
+            buid=[_CalendarFrame, _CalendarFrame_old],
             editor="choice",
             values=("", "normal", "disabled"),
             state="readonly",
         ),
         dict(
-            buid=_Combobox,
+            buid=[_Combobox, _Combobox_old],
             editor="choice",
             values=("", "normal", "disabled"),
             state="readonly",
@@ -156,8 +166,10 @@ plugin_properties = {
     ),
     "value": dict(buid=_ColorInput, editor="colorentry"),
     "values": [
-        dict(buid=_Combobox, help=h_values),
-        dict(buid=_forms_PygubuCombobox, help=h_values),
+        dict(
+            buid=[_Combobox, _Combobox_old, _forms_PygubuCombobox],
+            help=h_values,
+        ),
     ],
     "weight": [
         dict(buid=_DockPane, editor="integernumber", help=h_weight),
@@ -168,12 +180,12 @@ plugin_properties = {
         ),
     ],
     "width": [
-        dict(
-            buid=_AccordionFrame, editor="dimensionentry", default_value="200"
-        ),
+        dict(buid=_AccordionFrame, editor="dimensionentry", default_value=200),
         dict(buid=_HideableFrame, editor="dimensionentry", default_value=200),
     ],
-    "year": dict(buid=_CalendarFrame, editor="naturalnumber"),
+    "year": dict(
+        buid=[_CalendarFrame, _CalendarFrame_old], editor="naturalnumber"
+    ),
 }
 
 for prop in plugin_properties:
@@ -181,6 +193,9 @@ for prop in plugin_properties:
     if isinstance(definitions, dict):
         definitions = [definitions]
     for definition in definitions:
-        builder_uid = definition.pop("buid", _builder_all)
+        builders = definition.pop("buid", _builder_all)
+        if isinstance(builders, str):
+            builders = [builders]
         editor = definition.pop("editor", "entry")
-        register_custom_property(builder_uid, prop, editor, **definition)
+        for builder_uid in builders:
+            register_custom_property(builder_uid, prop, editor, **definition)
