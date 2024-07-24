@@ -7,6 +7,7 @@ _builder_uid = f"{_plugin_uid}.*"
 _AccordionFrame = f"{_plugin_uid}.AccordionFrame"
 _AccordionFrameGroup = f"{_plugin_uid}.AccordionFrameGroup"
 _CalendarFrame = f"{_plugin_uid}.CalendarFrame"
+_ColorInput = f"{_plugin_uid}.ColorInput"
 
 plugin_properties = {
     "calendarfg": dict(buid=_CalendarFrame, editor="colorentry"),
@@ -86,6 +87,7 @@ plugin_properties = {
         values=("", "false", "true"),
         state="readonly",
     ),
+    "value": dict(buid=_ColorInput, editor="colorentry"),
     "width": dict(
         buid=_AccordionFrame, editor="dimensionentry", default_value="200"
     ),

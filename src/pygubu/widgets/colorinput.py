@@ -2,6 +2,7 @@
 import tkinter as tk
 import tkinter.colorchooser
 import tkinter.ttk as ttk
+from pygubu.utils.widget import WidgetConfigureMixin
 from pygubu.widgets.colorinputui import ColorInputUI
 
 
@@ -10,7 +11,7 @@ from pygubu.widgets.colorinputui import ColorInputUI
 #
 
 
-class ColorInput(ColorInputUI):
+class ColorInput(WidgetConfigureMixin, ColorInputUI):
     BGCOLOR = ""
     EVENT_COLOR_CHANGED = "<<ColorInput:ColorChanged>>"
     KEY_PRESS_MS = 850
@@ -28,9 +29,19 @@ class ColorInput(ColorInputUI):
         cls = type(self)
         cls.BGCOLOR = style.lookup("TFrame", "background")
 
-    def configure(self, cnf=None, **kw):
-        if cnf:
-            return super().configure(cnf, **kw)
+    def _widget_cget(self, option):
+        if option == "value":
+            return self._color
+        if option == "textvariable":
+            return self._entry_var
+        return super()._widget_cget(option)
+
+    def _configure_get(self, option):
+        if option in ("value", "textvariable"):
+            return self._widget_cget(option)
+        return super()._configure_get(option)
+
+    def _configure_set(self, **kw):
         key = "textvariable"
         if key in kw:
             value = kw[key]
@@ -49,18 +60,7 @@ class ColorInput(ColorInputUI):
             else:
                 self._entry.configure(state=state)
                 self._button.configure(state=state)
-        return super().configure(cnf, **kw)
-
-    config = configure
-
-    def cget(self, key):
-        option = "value"
-        if key == option:
-            return self._color
-        option = "textvariable"
-        if key == option:
-            return self._entry_var
-        return super().cget(key)
+        return super()._configure_set(**kw)
 
     def _set_value(self, txtcolor):
         self._color = txtcolor
