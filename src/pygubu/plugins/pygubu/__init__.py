@@ -51,7 +51,7 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             "pygubu.forms.ttkwidget.Entry",
             "pygubu.forms.ttkwidget.LabelWidgetInfo",
         ),
-        "pygubu.plugins.pygubu.hideableframe": (
+        "pygubu.plugins.pygubu.hideableframe_bo": (
             f"{_plugin_uid}.hideableframe",
         ),
         "pygubu.plugins.pygubu.pathchooserinput": (
