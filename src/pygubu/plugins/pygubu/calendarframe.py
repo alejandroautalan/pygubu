@@ -6,7 +6,7 @@ from pygubu.api.v1 import (
 )
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 from pygubu.widgets.calendarframe import CalendarFrame
-from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
+from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
 
 
 class CalendarFrameBuilder(BuilderObject):
@@ -38,7 +38,7 @@ register_widget(
     _builder_id,
     CalendarFrameBuilder,
     "CalendarFrame",
-    ("ttk", _designer_tab_label),
+    ("ttk", _tab_widgets_label),
 )
 # Register old name until removal
 register_widget(

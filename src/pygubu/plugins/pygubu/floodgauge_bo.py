@@ -6,7 +6,7 @@ from pygubu.api.v1 import (
 )
 from pygubu.widgets.floodgauge import Floodgauge
 from pygubu.plugins.ttk.ttkstdwidgets import TTKProgressbar
-from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
+from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
 
 #
 # Builder definition section
@@ -23,5 +23,5 @@ register_widget(
     _builder_uid,
     FloodgaugeBO,
     "Floodgauge",
-    ("ttk", _designer_tab_label),
+    ("ttk", _tab_widgets_label),
 )

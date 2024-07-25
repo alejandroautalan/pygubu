@@ -3,7 +3,7 @@ import tkinter as tk
 from pygubu.api.v1 import BuilderObject, register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import TTKButton
 from pygubu.widgets.pathchooserinput import PathChooserInput, PathChooserButton
-from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
+from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
 
 
 class PathChooserBaseMixin:
@@ -42,7 +42,7 @@ register_widget(
     _builder_id,
     PathChooserInputBO,
     "PathChooserInput",
-    ("ttk", _designer_tab_label),
+    ("ttk", _tab_widgets_label),
 )
 _old_bid = "pygubu.builder.widgets.pathchooserinput"
 register_widget(
@@ -65,5 +65,5 @@ register_widget(
     _builder_id,
     PathChooserButtonBO,
     "PathChooserButton",
-    ("ttk", _designer_tab_label),
+    ("ttk", _tab_widgets_label),
 )

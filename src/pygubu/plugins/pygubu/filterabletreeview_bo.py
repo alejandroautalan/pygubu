@@ -6,7 +6,7 @@ from pygubu.plugins.ttk.ttkstdwidgets import (
 )
 from .scrollbarhelper_bo import TTKSBHelperBO
 from pygubu.widgets.filterabletreeview import FilterableTreeview
-from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
+from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
 
 
 class FilterableTreeviewBO(TTKTreeviewBO):
@@ -26,5 +26,5 @@ register_widget(
     _builder_uid,
     FilterableTreeviewBO,
     "FilterableTreeview",
-    (_designer_tab_label, "ttk"),
+    (_tab_widgets_label, "ttk"),
 )

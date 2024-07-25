@@ -2,7 +2,7 @@
 from pygubu.api.v1 import register_widget
 from pygubu.plugins.tk.tkstdwidgets import TKToplevel
 from pygubu.widgets.dialog import Dialog
-from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
+from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
 
 
 class DialogBO(TKToplevel):
@@ -48,7 +48,7 @@ class DialogBO(TKToplevel):
 
 _builder_id = f"{_plugin_uid}.Dialog"
 register_widget(
-    _builder_id, DialogBO, "Dialog", (_designer_tab_label, "ttk"), group=0
+    _builder_id, DialogBO, "Dialog", (_tab_widgets_label, "ttk"), group=0
 )
 # Register old name until removal
 register_widget("pygubu.builder.widgets.dialog", DialogBO, public=False)

@@ -1,7 +1,7 @@
 from pygubu.api.v1 import register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 from pygubu.widgets.hideableframe import HideableFrame
-from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
+from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
 
 
 class HideableFrameBO(TTKFrame):
@@ -13,5 +13,5 @@ register_widget(
     _builder_uid,
     HideableFrameBO,
     "HideableFrame",
-    (_designer_tab_label, "ttk"),
+    (_tab_widgets_label, "ttk"),
 )

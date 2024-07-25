@@ -1,7 +1,7 @@
 import tkinter as tk
 from pygubu.i18n import _
 from pygubu.api.v1 import register_custom_property
-from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
+from pygubu.plugins.pygubu import _plugin_uid
 from pygubu.plugins.pygubu.forms.base import _plugin_uid as forms_uid
 from pygubu.widgets.pathchooserinput import PathChooserInput
 

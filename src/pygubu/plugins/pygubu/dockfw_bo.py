@@ -7,7 +7,7 @@ from pygubu.api.v1 import (
 )
 
 import pygubu.widgets.dockfw.widgets as widgets
-from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
+from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
 
 
 class DockWidgetBaseBO(BuilderObject):
@@ -28,7 +28,7 @@ class DockFrameBO(DockWidgetBaseBO):
 
 _builder_id = dockframe_uid = f"{_plugin_uid}.dockframe"
 register_widget(
-    _builder_id, DockFrameBO, "DockFrame", ("ttk", _designer_tab_label)
+    _builder_id, DockFrameBO, "DockFrame", ("ttk", _tab_widgets_label)
 )
 
 
@@ -74,7 +74,7 @@ _builder_id = dockpane_uid = f"{_plugin_uid}.dockpane"
 DockPaneBO.add_allowed_child(_builder_id)
 
 register_widget(
-    _builder_id, DockPaneBO, "DockPane", ("ttk", _designer_tab_label)
+    _builder_id, DockPaneBO, "DockPane", ("ttk", _tab_widgets_label)
 )
 
 
@@ -121,5 +121,5 @@ _builder_id = f"{_plugin_uid}.dockwidget"
 DockPaneBO.add_allowed_child(_builder_id)
 
 register_widget(
-    _builder_id, DockWidgetBO, "DockWidget", ("ttk", _designer_tab_label)
+    _builder_id, DockWidgetBO, "DockWidget", ("ttk", _tab_widgets_label)
 )

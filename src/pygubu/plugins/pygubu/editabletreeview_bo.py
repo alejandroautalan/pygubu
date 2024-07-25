@@ -6,7 +6,7 @@ from pygubu.plugins.ttk.ttkstdwidgets import (
 )
 from .scrollbarhelper_bo import TTKSBHelperBO
 from pygubu.widgets.editabletreeview import EditableTreeview
-from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
+from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
 
 
 class EditableTreeviewBO(TTKTreeviewBO):
@@ -28,7 +28,7 @@ register_widget(
     _builder_uid,
     EditableTreeviewBO,
     "EditableTreeview",
-    (_designer_tab_label, "ttk"),
+    (_tab_widgets_label, "ttk"),
 )
 
 # Register old name until removal

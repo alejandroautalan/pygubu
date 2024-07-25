@@ -2,7 +2,7 @@
 from pygubu.api.v1 import register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import TTKCombobox
 from pygubu.widgets.combobox import Combobox
-from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
+from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
 
 
 class ComboboxBO(TTKCombobox):
@@ -24,7 +24,7 @@ ComboboxBuilder = ComboboxBO  # Alias for future rename of builder.
 
 _builder_id = f"{_plugin_uid}.Combobox"
 register_widget(
-    _builder_id, ComboboxBO, "Combobox", ("ttk", _designer_tab_label)
+    _builder_id, ComboboxBO, "Combobox", ("ttk", _tab_widgets_label)
 )
 
 # Register old name until removal

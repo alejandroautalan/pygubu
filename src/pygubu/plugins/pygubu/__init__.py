@@ -3,7 +3,7 @@ from pygubu.api.v1 import BuilderLoaderPlugin
 from pygubu.i18n import _
 
 
-_designer_tab_label = _("Pygubu Widgets")
+_tab_widgets_label = _("Pygubu Widgets")
 _tab_helpers_label = _("Pygubu Helpers")
 _plugin_uid = "pygubu.widgets"
 
