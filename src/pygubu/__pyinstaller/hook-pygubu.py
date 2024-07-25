@@ -17,7 +17,7 @@ hiddenimports = [
     "pygubu.plugins.pygubu.scrollbarhelper_bo",
     "pygubu.plugins.pygubu.scrolledframe_bo",
     "pygubu.plugins.pygubu.tkscrollbarhelper_bo",
-    "pygubu.plugins.pygubu.tkscrolledframe",
+    "pygubu.plugins.pygubu.tkscrolledframe_bo",
     "pygubu.plugins.tk.scrolledtext_bo",
     "pygubu.plugins.tk.tkstdwidgets",
     "pygubu.plugins.ttk.ttkstdwidgets",
