@@ -4,6 +4,7 @@ from pygubu.i18n import _
 
 
 _designer_tab_label = _("Pygubu Widgets")
+_tab_helpers_label = _("Pygubu Helpers")
 _plugin_uid = "pygubu.widgets"
 
 
@@ -67,8 +68,9 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             "pygubu.builder.widgets.scrolledframe",
             f"{_plugin_uid}.ScrolledFrame",
         ),
-        "pygubu.plugins.pygubu.tkscrollbarhelper": (
+        "pygubu.plugins.pygubu.tkscrollbarhelper_bo": (
             "pygubu.builder.widgets.tkscrollbarhelper",
+            f"{_plugin_uid}.TkScrollbarHelper",
         ),
         "pygubu.plugins.pygubu.tkscrolledframe": (
             "pygubu.builder.widgets.tkscrolledframe",

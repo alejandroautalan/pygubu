@@ -9,7 +9,7 @@ from pygubu.api.v1 import (
     register_custom_property,
 )
 from pygubu.i18n import _
-from pygubu.plugins.pygubu.tkscrollbarhelper import TKSBHelperBO
+from pygubu.plugins.pygubu.tkscrollbarhelper_bo import TKSBHelperBO
 from .base import (
     WidgetBOMixin,
     _plugin_uid as base_plugin_uid,
