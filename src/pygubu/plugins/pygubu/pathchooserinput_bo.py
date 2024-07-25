@@ -1,13 +1,9 @@
 # encoding: utf-8
 import tkinter as tk
-from pygubu.api.v1 import (
-    BuilderObject,
-    register_widget,
-    register_custom_property,
-)
-from pygubu.i18n import _
+from pygubu.api.v1 import BuilderObject, register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import TTKButton
 from pygubu.widgets.pathchooserinput import PathChooserInput, PathChooserButton
+from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
 
 
 class PathChooserBaseMixin:
@@ -31,45 +27,6 @@ class PathChooserBaseMixin:
         return super()._code_process_property_value(targetid, pname, value)
 
 
-# common properties
-_builder_id = "pygubu.widgets.PathChooser.*"
-_help = _("Dialog type")
-register_custom_property(
-    _builder_id,
-    "type",
-    "choice",
-    values=(PathChooserInput.FILE, PathChooserInput.DIR),
-    state="readonly",
-    default_value=PathChooserInput.FILE,
-    help=_help,
-)
-
-_help = _("Initial path value.")
-register_custom_property(_builder_id, "path", "entry", help=_help)
-
-_help = _(
-    "Dialog option. Determines if path must exist for directory and file dialogs. The default value is True."
-)
-register_custom_property(
-    _builder_id,
-    "mustexist",
-    "choice",
-    values=("", "true", "false"),
-    state="readonly",
-    default_value="true",
-    help=_help,
-)
-
-_help = _("Dialog option. Sets initial directory.")
-register_custom_property(_builder_id, "initialdir", "entry", help=_help)
-
-_help = _("Dialog option. Sets dialog title.")
-register_custom_property(_builder_id, "title", "entry", help=_help)
-
-_help = _("Dialog option. Sets default file extension.")
-register_custom_property(_builder_id, "defaultextension", "entry", help=_help)
-
-
 class PathChooserInputBO(PathChooserBaseMixin, BuilderObject):
     class_ = PathChooserInput
     properties = PathChooserBaseMixin.base_properties + (
@@ -80,34 +37,18 @@ class PathChooserInputBO(PathChooserBaseMixin, BuilderObject):
     virtual_events = ("<<PathChooserPathChanged>>",)
 
 
-_builder_id = "pygubu.widgets.PathChooserInput"
+_builder_id = f"{_plugin_uid}.PathChooserInput"
 register_widget(
     _builder_id,
     PathChooserInputBO,
     "PathChooserInput",
-    ("ttk", _("Pygubu Widgets")),
+    ("ttk", _designer_tab_label),
 )
 _old_bid = "pygubu.builder.widgets.pathchooserinput"
 register_widget(
     _old_bid,
     PathChooserInputBO,
     public=False,
-)
-
-_help = _("Image for the button.")
-register_custom_property(_builder_id, "image", "imageentry", help=_help)
-
-_help = _("Tk variable associated to the path property.")
-register_custom_property(_builder_id, "textvariable", "tkvarentry", help=_help)
-
-_help = _("Path entry state.")
-register_custom_property(
-    _builder_id,
-    "state",
-    "choice",
-    values=("", "normal", "disabled", "readonly"),
-    state="readonly",
-    help=_help,
 )
 
 
@@ -119,12 +60,10 @@ class PathChooserButtonBO(PathChooserBaseMixin, BuilderObject):
     virtual_events = ("<<PathChooserPathChanged>>",)
 
 
-_builder_id = "pygubu.widgets.PathChooserButton"
+_builder_id = f"{_plugin_uid}.PathChooserButton"
 register_widget(
     _builder_id,
     PathChooserButtonBO,
     "PathChooserButton",
-    ("ttk", _("Pygubu Widgets")),
+    ("ttk", _designer_tab_label),
 )
-
-register_custom_property(_builder_id, "width", "integernumber")

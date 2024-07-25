@@ -3,6 +3,7 @@ from pygubu.i18n import _
 from pygubu.api.v1 import register_custom_property
 from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
 from pygubu.plugins.pygubu.forms.base import _plugin_uid as forms_uid
+from pygubu.widgets.pathchooserinput import PathChooserInput
 
 
 _builder_all = f"{_plugin_uid}.*"
@@ -20,6 +21,9 @@ _DockPane = f"{_plugin_uid}.docpane"
 _DockWidget = f"{_plugin_uid}.dockwidget"
 _forms_PygubuCombobox = f"{forms_uid}.pygubuwidget.PygubuCombobox"
 _HideableFrame = f"{_plugin_uid}.hideableframe"
+_PathChoser_all = f"{_plugin_uid}.PathChooser.*"
+_PathChoser_old = "pygubu.builder.widgets.pathchooser.*"
+_PathChoserButton = f"{_plugin_uid}.PathChooserButton"
 
 h_values = _(
     "In designer: json list of key, value pairs\n"
@@ -30,6 +34,12 @@ h_keyvariable = _("Tk variable associated to the key value.")  # combobox
 h_state = _("Combobox state.")  # combobox
 h_modal = _("Determines if dialog is run in normal or modal mode.")  # Dialog
 h_weight = _("The weight value for the pane.")  # DockPane
+h_mustexist = _(
+    "Dialog option. Determines if path must exist for directory and file dialogs. The default value is True."
+)  # PathChooserInput
+h_initialdir = _("Dialog option. Sets initial directory.")  # PathChooserInput
+h_title = _("Dialog option. Sets dialog title.")  # PathChooserInput
+h_defaultextension = _help = _("Dialog option. Sets default file extension.")
 
 plugin_properties = {
     "calendarfg": dict(
@@ -47,6 +57,15 @@ plugin_properties = {
             tk.RIGHT,
             tk.NONE,
         ),
+        state="readonly",
+    ),
+    "defaultextension": dict(
+        buid=[_PathChoser_all, _PathChoser_old], help=h_defaultextension
+    ),
+    "expanded": dict(
+        buid=_AccordionFrameGroup,
+        editor="choice",
+        values=("", "false", "true"),
         state="readonly",
     ),
     "firstweekday": dict(
@@ -74,8 +93,16 @@ plugin_properties = {
         ),
         dict(buid=_HideableFrame, editor="dimensionentry", default_value=200),
     ],
+    "image": dict(
+        buid=[_PathChoser_all, _PathChoser_old],
+        editor="imageentry",
+        help=_("Image for the button."),
+    ),
     "img_expand": dict(editor="imageentry"),
     "img_collapse": dict(editor="imageentry"),
+    "initialdir": dict(
+        buid=[_PathChoser_all, _PathChoser_old], help=h_initialdir
+    ),
     "keyvariable": dict(
         buid=[_Combobox, _Combobox_old, _forms_PygubuCombobox],
         editor="tkvarentry",
@@ -125,6 +152,18 @@ plugin_properties = {
         ),
         state="readonly",
     ),
+    "mustexist": dict(
+        buid=[_PathChoser_all, _PathChoser_old],
+        editor="choice",
+        values=("", "true", "false"),
+        state="readonly",
+        default_value="true",
+        help=h_mustexist,
+    ),
+    "path": dict(
+        buid=[_PathChoser_all, _PathChoser_old],
+        help=_("Initial path value."),
+    ),
     "selectbg": dict(
         buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
     ),
@@ -152,17 +191,32 @@ plugin_properties = {
             state="readonly",
             help=h_state,
         ),
+        dict(
+            buid=[_PathChoser_all, _PathChoser_old],
+            editor="choice",
+            values=("", "normal", "disabled", "readonly"),
+            state="readonly",
+            help=_("Path entry state."),
+        ),
     ],
     "style": dict(
         buid=_AccordionFrameGroup,
         editor="ttkstylechoice",
         default_value="Toolbutton",
     ),
-    "expanded": dict(
-        buid=_AccordionFrameGroup,
+    "textvariable": dict(
+        buid=[_PathChoser_all, _PathChoser_old],
+        editor="tkvarentry",
+        help=_("Tk variable associated to the path property."),
+    ),
+    "title": dict(buid=[_PathChoser_all, _PathChoser_old], help=h_title),
+    "type": dict(
+        buid=[_PathChoser_all, _PathChoser_old],
         editor="choice",
-        values=("", "false", "true"),
+        values=(PathChooserInput.FILE, PathChooserInput.DIR),
         state="readonly",
+        default_value=PathChooserInput.FILE,
+        help=_("Dialog type"),  # PathChooserInput
     ),
     "value": dict(buid=_ColorInput, editor="colorentry"),
     "values": [
@@ -182,6 +236,7 @@ plugin_properties = {
     "width": [
         dict(buid=_AccordionFrame, editor="dimensionentry", default_value=200),
         dict(buid=_HideableFrame, editor="dimensionentry", default_value=200),
+        dict(buid=_PathChoserButton, editor="integernumber"),
     ],
     "year": dict(
         buid=[_CalendarFrame, _CalendarFrame_old], editor="naturalnumber"
