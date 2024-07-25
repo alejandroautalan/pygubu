@@ -10,11 +10,11 @@ _plugin_uid = "pygubu.widgets"
 
 class PygubuWidgetsLoader(BuilderLoaderPlugin):
     module_map = {
-        "pygubu.plugins.pygubu.accordionframe": (
+        "pygubu.plugins.pygubu.accordionframe_bo": (
             f"{_plugin_uid}.AccordionFrame",
         ),
-        "pygubu.plugins.pygubu.calendarframe": (
-            f"{_plugin_uid}.calendarframe",
+        "pygubu.plugins.pygubu.calendarframe_bo": (
+            f"{_plugin_uid}.CalendarFrame",
             "pygubu.builder.widgets.calendarframe",
         ),
         "pygubu.plugins.pygubu.colorinput_bo": (f"{_plugin_uid}.ColorInput",),

@@ -1,6 +1,6 @@
 hiddenimports = [
-    "pygubu.plugins.pygubu.accordionframe",
-    "pygubu.plugins.pygubu.calendarframe",
+    "pygubu.plugins.pygubu.accordionframe_bo",
+    "pygubu.plugins.pygubu.calendarframe_bo",
     "pygubu.plugins.pygubu.colorinput_bo",
     "pygubu.plugins.pygubu.combobox_bo",
     "pygubu.plugins.pygubu.dialog_bo",
