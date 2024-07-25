@@ -2,8 +2,8 @@
 import tkinter as tk
 
 from pygubu.api.v1 import BuilderObject, register_widget
-from pygubu.i18n import _
 from pygubu.widgets.scrollbarhelper import ScrollbarHelper
+from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
 
 
 class TTKSBHelperBO(BuilderObject):
@@ -53,9 +53,17 @@ class TTKSBHelperBO(BuilderObject):
             )
 
 
+_builder_id = f"{_plugin_uid}.ScrollbarHelper"
 register_widget(
-    "pygubu.builder.widgets.scrollbarhelper",
+    _builder_id,
     TTKSBHelperBO,
     "ScrollbarHelper",
-    (_("Pygubu Helpers"), "ttk"),
+    (_designer_tab_label, "ttk"),
+)
+
+_builder_old = "pygubu.builder.widgets.scrollbarhelper"
+register_widget(
+    _builder_old,
+    TTKSBHelperBO,
+    public=False,
 )
