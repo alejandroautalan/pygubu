@@ -67,9 +67,6 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             "pygubu.builder.widgets.scrolledframe",
             f"{_plugin_uid}.ScrolledFrame",
         ),
-        "pygubu.plugins.pygubu.tkinterscrolledtext": (
-            "pygubu.builder.widgets.tkinterscrolledtext",
-        ),
         "pygubu.plugins.pygubu.tkscrollbarhelper": (
             "pygubu.builder.widgets.tkscrollbarhelper",
         ),
