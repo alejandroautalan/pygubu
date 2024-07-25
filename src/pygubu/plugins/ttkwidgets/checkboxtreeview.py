@@ -1,6 +1,6 @@
 from pygubu.api.v1 import register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import TTKTreeviewBO, TTKTreeviewColumnBO
-from pygubu.plugins.pygubu.scrollbarhelper import TTKSBHelperBO
+from pygubu.plugins.pygubu.scrollbarhelper_bo import TTKSBHelperBO
 from ttkwidgets.checkboxtreeview import CheckboxTreeview
 
 from ..ttkwidgets import _designer_tab_label, _plugin_uid

@@ -14,7 +14,7 @@ hiddenimports = [
     "pygubu.plugins.pygubu.forms.ttkwidgetbo",
     "pygubu.plugins.pygubu.hideableframe_bo",
     "pygubu.plugins.pygubu.pathchooserinput_bo",
-    "pygubu.plugins.pygubu.scrollbarhelper",
+    "pygubu.plugins.pygubu.scrollbarhelper_bo",
     "pygubu.plugins.pygubu.scrolledframe",
     "pygubu.plugins.pygubu.tkinterscrolledtext",
     "pygubu.plugins.pygubu.tkscrollbarhelper",

@@ -59,8 +59,9 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             "pygubu.widgets.PathChooserInput",
             f"{_plugin_uid}.PathChooserButton",
         ),
-        "pygubu.plugins.pygubu.scrollbarhelper": (
+        "pygubu.plugins.pygubu.scrollbarhelper_bo": (
             "pygubu.builder.widgets.scrollbarhelper",
+            f"{_plugin_uid}.ScrollbarHelper",
         ),
         "pygubu.plugins.pygubu.scrolledframe": (
             "pygubu.builder.widgets.scrolledframe",

@@ -2,7 +2,7 @@ import tkinter as tk
 from pygubu.i18n import _
 from pygubu.api.v1 import register_widget, register_custom_property
 from pygubu.plugins.ttk.ttkstdwidgets import TTKTreeviewBO, TTKTreeviewColumnBO
-from pygubu.plugins.pygubu.scrollbarhelper import TTKSBHelperBO
+from pygubu.plugins.pygubu.scrollbarhelper_bo import TTKSBHelperBO
 from ttkwidgets.table import Table
 
 from ..ttkwidgets import _designer_tab_label, _plugin_uid

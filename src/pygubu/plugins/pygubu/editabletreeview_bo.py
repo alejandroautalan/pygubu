@@ -4,7 +4,7 @@ from pygubu.plugins.ttk.ttkstdwidgets import (
     TTKTreeviewBO,
     TTKTreeviewColumnBO,
 )
-from .scrollbarhelper import TTKSBHelperBO
+from .scrollbarhelper_bo import TTKSBHelperBO
 from pygubu.widgets.editabletreeview import EditableTreeview
 from pygubu.plugins.pygubu import _designer_tab_label, _plugin_uid
 

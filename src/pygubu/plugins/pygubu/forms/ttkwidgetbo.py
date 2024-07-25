@@ -14,7 +14,7 @@ from .base import (
     _plugin_uid as base_plugin_uid,
     _designer_tabname,
 )
-from pygubu.plugins.pygubu.scrollbarhelper import TTKSBHelperBO
+from pygubu.plugins.pygubu.scrollbarhelper_bo import TTKSBHelperBO
 from .tkwidgetbo import _tk_text_builder_uid
 
 # Groups for ordering buttons in designer palette.
