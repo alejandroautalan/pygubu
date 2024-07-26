@@ -5,6 +5,11 @@ Changes for (next) version 0.36:
 
   * Initial support for TKinterModernThemes package.
 
+Changes for version 0.35.5
+
+  * Fix menu code generation. refs #296
+  * Fix issue with CTKEntry text property. refs alejandroautalan/pygubu-designer#266
+
 Changes for version 0.35.4
 
   * Fix from, to properties on customtkinter CTKSlide.
