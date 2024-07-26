@@ -40,13 +40,13 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         ),
         "pygubu.plugins.pygubu.floodgauge_bo": (f"{_plugin_uid}.Floodgauge",),
         # Forms are not finished so expect changes
-        "pygubu.plugins.pygubu.forms.pygubuwidgetbo": (
+        "pygubu.plugins.pygubu.forms.pygubuwidget_bo": (
             "pygubu.forms.pygubuwidget.PygubuCombobox"
         ),
-        "pygubu.plugins.pygubu.forms.tkwidgetbo": (
+        "pygubu.plugins.pygubu.forms.tkwidget_bo": (
             "pygubu.forms.tkwidget.Text",
         ),
-        "pygubu.plugins.pygubu.forms.ttkwidgetbo": (
+        "pygubu.plugins.pygubu.forms.ttkwidget_bo": (
             "pygubu.forms.ttkwidget.FrameFormBuilder",
             "pygubu.forms.ttkwidget.Label",
             "pygubu.forms.ttkwidget.Entry",
