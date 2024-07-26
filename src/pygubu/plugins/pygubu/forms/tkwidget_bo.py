@@ -12,13 +12,13 @@ from pygubu.i18n import _
 from pygubu.plugins.pygubu.tkscrollbarhelper_bo import TKSBHelperBO
 from .base import (
     WidgetBOMixin,
-    _plugin_uid as base_plugin_uid,
-    _designer_tabname,
+    _plugin_forms_uid,
+    _tab_form_widgets_label,
 )
 
 
-_plugin_uid = f"{base_plugin_uid}.tkwidget"
-_designer_tabs = ("tk", _designer_tabname)
+_plugin_uid = f"{_plugin_forms_uid}.tkwidget"
+_designer_tabs = ("tk", _tab_form_widgets_label)
 
 
 class TextBO(WidgetBOMixin, tkw.TKText):

@@ -2,7 +2,7 @@ import tkinter as tk
 from pygubu.i18n import _
 from pygubu.api.v1 import register_custom_property
 from pygubu.plugins.pygubu import _plugin_uid
-from pygubu.plugins.pygubu.forms.base import _plugin_uid as forms_uid
+from pygubu.plugins.pygubu.forms.base import _plugin_forms_uid as forms_uid
 from pygubu.widgets.pathchooserinput import PathChooserInput
 
 
@@ -19,7 +19,11 @@ _Dialog_old = "pygubu.builder.widgets.dialog"
 _DockFrame = f"{_plugin_uid}.docframe"
 _DockPane = f"{_plugin_uid}.docpane"
 _DockWidget = f"{_plugin_uid}.dockwidget"
+_forms_all = f"{forms_uid}.*"
 _forms_PygubuCombobox = f"{forms_uid}.pygubuwidget.PygubuCombobox"
+_forms_FrameFormBuilder = f"{forms_uid}.ttkwidget.FrameFormBuilder"
+_forms_LabelWidgetInfo = f"{forms_uid}.ttkwidget.LabelWidgetInfo"
+_forms_Combobox = f"{forms_uid}.ttkwidget.Combobox"
 _HideableFrame = f"{_plugin_uid}.hideableframe"
 _PathChoser_all = f"{_plugin_uid}.PathChooser.*"
 _PathChoser_old = "pygubu.builder.widgets.pathchooser.*"
@@ -68,6 +72,10 @@ plugin_properties = {
         values=("", "false", "true"),
         state="readonly",
     ),
+    "field_name": [
+        dict(buid=_forms_all, editor="fieldname_entry"),
+        dict(buid=_forms_LabelWidgetInfo, editor="fieldname_selector"),
+    ],
     "firstweekday": dict(
         buid=[_CalendarFrame, _CalendarFrame_old],
         editor="choice",
@@ -88,10 +96,13 @@ plugin_properties = {
         buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
     ),
     "height": [
-        dict(
-            buid=_AccordionFrame, editor="dimensionentry", default_value="200"
-        ),
+        dict(buid=_AccordionFrame, editor="dimensionentry", default_value=200),
         dict(buid=_HideableFrame, editor="dimensionentry", default_value=200),
+        dict(
+            buid=_forms_FrameFormBuilder,
+            editor="dimensionentry",
+            default_value=200,
+        ),
     ],
     "image": dict(
         buid=[_PathChoser_all, _PathChoser_old],
@@ -198,6 +209,12 @@ plugin_properties = {
             state="readonly",
             help=_("Path entry state."),
         ),
+        dict(
+            buid=_forms_Combobox,
+            editor="choice",
+            values=("", "normal", "disabled", "readonly"),
+            state="readonly",
+        ),
     ],
     "style": dict(
         buid=_AccordionFrameGroup,
@@ -236,6 +253,11 @@ plugin_properties = {
     "width": [
         dict(buid=_AccordionFrame, editor="dimensionentry", default_value=200),
         dict(buid=_HideableFrame, editor="dimensionentry", default_value=200),
+        dict(
+            buid=_forms_FrameFormBuilder,
+            editor="dimensionentry",
+            default_value=200,
+        ),
         dict(buid=_PathChoserButton, editor="integernumber"),
     ],
     "year": dict(

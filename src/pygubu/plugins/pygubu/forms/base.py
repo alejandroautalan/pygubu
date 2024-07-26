@@ -1,10 +1,10 @@
 import tkinter as tk
-from pygubu.api.v1 import BuilderObject, register_custom_property
+from pygubu.api.v1 import BuilderObject
 from pygubu.i18n import _
 
 
-_plugin_uid = "pygubu.forms"
-_designer_tabname = _("Pygubu Forms")
+_plugin_forms_uid = "pygubu.forms"
+_tab_form_widgets_label = _("Pygubu Forms")
 
 
 class WidgetBOMixin:
@@ -41,8 +41,3 @@ class WidgetBOMixin:
                 code_identifier, self.FIELD_NAME_PROP, field_name_value
             )
         return args
-
-
-register_custom_property(
-    f"{_plugin_uid}.*", WidgetBOMixin.FIELD_NAME_PROP, "fieldname_entry"
-)

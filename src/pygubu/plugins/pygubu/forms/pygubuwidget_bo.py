@@ -10,13 +10,13 @@ from pygubu.api.v1 import (
 )
 from .base import (
     WidgetBOMixin,
-    _plugin_uid as base_plugin_uid,
-    _designer_tabname,
+    _plugin_forms_uid,
+    _tab_form_widgets_label,
 )
 
 
-_plugin_uid = f"{base_plugin_uid}.pygubuwidget"
-_designer_tabs = ("tk", _designer_tabname)
+_plugin_uid = f"{_plugin_forms_uid}.pygubuwidget"
+_designer_tabs = ("tk", _tab_form_widgets_label)
 
 
 class PygubuComboboxBO(WidgetBOMixin, cbb.ComboboxBO):

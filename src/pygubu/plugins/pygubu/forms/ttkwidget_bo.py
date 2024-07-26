@@ -6,16 +6,15 @@ import pygubu.plugins.ttk.ttkstdwidgets as ttkw
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
-    register_custom_property,
 )
 from pygubu.i18n import _
 from .base import (
     WidgetBOMixin,
-    _plugin_uid as base_plugin_uid,
-    _designer_tabname,
+    _plugin_forms_uid,
+    _tab_form_widgets_label,
 )
 from pygubu.plugins.pygubu.scrollbarhelper_bo import TTKSBHelperBO
-from .tkwidgetbo import _tk_text_builder_uid
+from .tkwidget_bo import _tk_text_builder_uid
 
 # Groups for ordering buttons in designer palette.
 GROUP0: int = 0
@@ -23,8 +22,8 @@ GROUP1: int = 10
 GROUP2: int = 20
 GROUP3: int = 30
 
-_plugin_uid = f"{base_plugin_uid}.ttkwidget"
-_designer_tabs = ("ttk", _designer_tabname)
+_plugin_uid = f"{_plugin_forms_uid}.ttkwidget"
+_designer_tabs = ("ttk", _tab_form_widgets_label)
 
 # Register text as child of TTKSBHelperBO
 TTKSBHelperBO.add_allowed_child(_tk_text_builder_uid)
@@ -76,7 +75,6 @@ register_widget(
     _designer_tabs,
     group=GROUP1,
 )
-register_custom_property(_builder_uid, "field_name", "fieldname_selector")
 
 
 class LabelBO(WidgetBOMixin, ttkw.TTKLabel):
@@ -128,12 +126,4 @@ register_widget(
     "Combobox",
     _designer_tabs,
     group=GROUP0,
-)
-
-register_custom_property(
-    _builder_uid,
-    "state",
-    "choice",
-    values=("", "normal", "readonly", "disabled"),
-    state="readonly",
 )
