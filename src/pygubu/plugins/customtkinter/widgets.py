@@ -261,9 +261,21 @@ class CTkEntryBO(CTkBaseMixin, BuilderObject):
 
     def _set_property(self, target_widget, pname, value):
         if pname == "text":
-            super()._set_property(target_widget._entry, pname, value)
+            target_widget.delete(0, "end")
+            target_widget.insert(0, value)
         else:
             super()._set_property(target_widget, pname, value)
+
+    def _code_set_property(self, targetid, pname, value, code_bag):
+        if pname == "text":
+            sval = self.builder.code_translate_str(value)
+            lines = [
+                f"""{targetid}.delete(0, "end")""",
+                f"{targetid}.insert(0, {sval})",
+            ]
+            code_bag[pname] = lines
+        else:
+            super()._code_set_property(targetid, pname, value, code_bag)
 
 
 _builder_uid = f"{_plugin_uid}.CTkEntry"
