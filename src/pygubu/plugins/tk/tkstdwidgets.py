@@ -940,53 +940,17 @@ class TKMenu(BuilderObject):
     command_properties = ("postcommand", "tearoffcommand")
     allow_bindings = False
 
-    def __init__(self, builder, wdescr):
-        super().__init__(builder, wdescr)
-        self._menuitems = None
-
     def layout(self, target=None):
         pass
 
     #
     # code generation functions
     #
-    def add_menuitem(self, itemid, itemtype, properties):
-        if self._menuitems is None:
-            self._menuitems = []
-        self._menuitems.append((itemtype, properties))
-
-    def code_realize(self, boparent, code_identifier=None):
-        start = -1
-        tearoff_conf = self.wmeta.properties.get("tearoff", "true")
-        if tearoff_conf in ("1", "true"):
-            start = 0
-        self.code_item_index = start
-        return super(TKMenu, self).code_realize(boparent, code_identifier)
-
     def _code_define_callback_args(self, cmd_pname, cmd):
         args = None
         if cmd_pname == "tearoffcommand":
             args = ("menu", "tearoff")
         return args
-
-    def code_configure_children(self, targetid=None):
-        if self._menuitems is None:
-            return tuple()
-
-        if targetid is None:
-            targetid = self.code_identifier()
-        lines = []
-        for itemtype, kwp in self._menuitems:
-            bag = []
-            for pname, value in kwp.items():
-                s = f"{pname}={value}"
-                bag.append(s)
-            props = ""
-            if bag:
-                props = ", " + ", ".join(bag)
-            line = f'{targetid}.add("{itemtype}"{props})'
-            lines.append(line)
-        return lines
 
 
 register_widget("tk.Menu", TKMenu, "tk.Menu", (_("Menu"), "tk", "ttk"))
@@ -1081,11 +1045,34 @@ class TKMenuitem(BuilderObject):
         properties = {}
         for pname in kwproperties:
             properties[pname] = code_bag[pname]
-        boparent.add_menuitem(self.wmeta.identifier, self.itemtype, properties)
 
         lines = []
+        # process commands first
+        commands = super().code_connect_commands()
+        lines.extend(commands)
+        # create item
+        item_lines = self._code_render_menuitem(boparent, self.wmeta.identifier,
+                                            self.itemtype, properties)
+        lines.extend(item_lines)
+
         for pname in complex_properties:
             lines.extend(code_bag[pname])
+        return lines
+
+    def _code_render_menuitem(self, parent_bo, itemid:str, itemtype:str, properties:dict):
+        lines = []
+
+        targetid = parent_bo.code_identifier()
+        bag = []
+        for pname, value in properties.items():
+            s = f"{pname}={value}"
+            bag.append(s)
+        props = ""
+        if bag:
+            props = ", " + ", ".join(bag)
+        line = f'{targetid}.add("{itemtype}"{props})'
+        lines.append(line)
+
         return lines
 
     def code_configure(self, targetid=None):
@@ -1138,6 +1125,10 @@ class TKMenuitem(BuilderObject):
             return super(TKMenuitem, self)._code_connect_command(
                 cmd_pname, cmd, cbname
             )
+
+    def code_connect_commands(self):
+        # Do nothing here because we already called in realize method.
+        return tuple()
 
 
 class TKMenuitemSubmenu(TKMenuitem):
@@ -1234,11 +1225,6 @@ class TKMenuitemSubmenu(TKMenuitem):
     #
     # code generation functions
     #
-    def add_menuitem(self, itemid, itemtype, properties):
-        if self._menuitems is None:
-            self._menuitems = []
-        self._menuitems.append((itemtype, properties))
-
     def code_realize(self, boparent, code_identifier=None):
         self._code_identifier = code_identifier
         masterid = boparent.code_child_master()
@@ -1301,27 +1287,14 @@ class TKMenuitemSubmenu(TKMenuitem):
 
         return lines
 
+    def code_connect_commands(self):
+        # Call code_connect_commands from BuilderObject because
+        # I'm a subclass of TKMenuitem which has
+        # code_connect_commands muted.
+        return super(TKMenuitem, self).code_connect_commands()
+
     def code_configure(self, targetid=None):
         return tuple()
-
-    def code_configure_children(self, targetid=None):
-        if self._menuitems is None:
-            return tuple()
-
-        if targetid is None:
-            targetid = self.code_identifier()
-        lines = []
-        for itemtype, kwp in self._menuitems:
-            bag = []
-            for pname, value in kwp.items():
-                s = f"{pname}={value}"
-                bag.append(s)
-            props = ""
-            if bag:
-                props = ", " + ", ".join(bag)
-            line = f'{targetid}.add("{itemtype}"{props})'
-            lines.append(line)
-        return lines
 
     def _code_define_callback_args(self, cmd_pname, cmd):
         args = None
