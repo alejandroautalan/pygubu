@@ -1,9 +1,8 @@
 import awesometkinter as atk
-from pygubu.i18n import _
-from pygubu.api.v1 import register_widget, register_custom_property
+from pygubu.api.v1 import register_widget
 from pygubu.plugins.tk.tkstdwidgets import TKCheckbutton
 from pygubu.plugins.ttk.ttkstdwidgets import TTKButton, TTKRadiobutton
-from ..awesometkinter import _designer_tab_label, _plugin_uid
+from ..awesometkinter import _plugin_uid, _designer_tabs
 
 
 class Button3dBO(TTKButton):
@@ -14,15 +13,8 @@ class Button3dBO(TTKButton):
     class_ = atk.Button3d
 
 
-_builder_uid = _plugin_uid + ".Button3d"
-register_widget(
-    _builder_uid, Button3dBO, "Button3d", ("ttk", _designer_tab_label), group=2
-)
-register_custom_property(
-    _builder_uid, "bg", "colorentry", help=_("button color")
-)
-
-register_custom_property(_builder_uid, "fg", "colorentry", help=_("text color"))
+_builder_uid = f"{_plugin_uid}.Button3d"
+register_widget(_builder_uid, Button3dBO, "Button3d", _designer_tabs, group=2)
 
 
 class RadiobuttonBO(TTKRadiobutton):
@@ -46,40 +38,13 @@ class RadiobuttonBO(TTKRadiobutton):
     class_ = atk.Radiobutton
 
 
-_builder_uid = _plugin_uid + ".Radiobutton"
+_builder_uid = f"{_plugin_uid}.Radiobutton"
 register_widget(
     _builder_uid,
     RadiobuttonBO,
     "Radiobutton",
-    ("ttk", _designer_tab_label),
+    _designer_tabs,
     group=2,
-)
-register_custom_property(
-    _builder_uid,
-    "bg",
-    "colorentry",
-    help=_('background color "should match parent bg"'),
-)
-register_custom_property(_builder_uid, "fg", "colorentry", help=_("text color"))
-register_custom_property(
-    _builder_uid,
-    "ind_bg",
-    "colorentry",
-    help=_('indicator ring background "fill color"'),
-)
-register_custom_property(
-    _builder_uid,
-    "ind_outline_color",
-    "colorentry",
-    help=_("indicator outline / ring color"),
-)
-register_custom_property(
-    _builder_uid, "ind_mark_color", "colorentry", help=_("check mark color")
-)
-register_custom_property(
-    _builder_uid,
-    "font",
-    "fontentry",
 )
 
 
@@ -98,29 +63,11 @@ class CheckbuttonBO(TKCheckbutton):
     class_ = atk.Checkbutton
 
 
-_builder_uid = _plugin_uid + ".Checkbutton"
+_builder_uid = f"{_plugin_uid}.Checkbutton"
 register_widget(
     _builder_uid,
     CheckbuttonBO,
     "Checkbutton",
-    ("ttk", _designer_tab_label),
+    _designer_tabs,
     group=2,
-)
-
-register_custom_property(
-    _builder_uid,
-    "box_color",
-    "colorentry",
-)
-
-register_custom_property(
-    _builder_uid,
-    "check_mark_color",
-    "colorentry",
-)
-
-register_custom_property(
-    _builder_uid,
-    "text_color",
-    "colorentry",
 )

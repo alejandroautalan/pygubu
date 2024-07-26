@@ -4,6 +4,7 @@ from pygubu.api.v1 import BuilderLoaderPlugin
 
 _designer_tab_label = _("AwesomeTkinter")
 _plugin_uid = "awesometkinter"
+_designer_tabs = ("ttk", _designer_tab_label)
 
 
 class AwesometkinterLoader(BuilderLoaderPlugin):
@@ -47,3 +48,11 @@ class AwesometkinterLoader(BuilderLoaderPlugin):
 
     def can_load(self, identifier: str) -> bool:
         return identifier.startswith("awesometkinter.")
+
+    def get_designer_plugin(self):
+        """Load class that implements IDesignerPlugin"""
+
+        # Just load the module for properties definitions.
+        from .designer.designerplugin import AwesometkinterPlugin
+
+        return None
