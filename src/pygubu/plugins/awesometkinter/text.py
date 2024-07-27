@@ -4,7 +4,7 @@ from pygubu.api.v1 import register_widget, register_custom_property
 from pygubu.plugins.tk.tkstdwidgets import TKText
 import awesometkinter as atk
 
-from ..awesometkinter import _designer_tab_label, _plugin_uid
+from ..awesometkinter import _plugin_uid, _designer_tabs
 
 
 class ScrolledTextBO(TKText):
@@ -43,73 +43,11 @@ class ScrolledTextBO(TKText):
         return super()._code_process_property_value(targetid, pname, value)
 
 
-_builder_uid = _plugin_uid + ".ScrolledText"
+_builder_uid = f"{_plugin_uid}.ScrolledText"
 register_widget(
     _builder_uid,
     ScrolledTextBO,
     "ScrolledText",
-    ("ttk", _designer_tab_label),
+    _designer_tabs,
     group=1,
-)
-register_custom_property(
-    _builder_uid, "bg", "colorentry", help=_("background color")
-)
-register_custom_property(
-    _builder_uid, "fg", "colorentry", help=_("foreground color")
-)
-register_custom_property(
-    _builder_uid, "bd", "naturalnumber", help=_("border width")
-)
-register_custom_property(
-    _builder_uid,
-    "vscroll",
-    "choice",
-    values=("", "false", "true"),
-    state="readonly",
-    help=_("include vertical scrollbar"),
-)
-register_custom_property(
-    _builder_uid,
-    "hscroll",
-    "choice",
-    values=("", "false", "true"),
-    state="readonly",
-    help=_("include horizontal scrollbar"),
-)
-register_custom_property(
-    _builder_uid,
-    "autoscroll",
-    "choice",
-    values=("", "false", "true"),
-    state="readonly",
-    help=_("automatic vertical scrolling"),
-)
-register_custom_property(
-    _builder_uid,
-    "max_chars",
-    "naturalnumber",
-    help=_(
-        "maximum characters allowed in Text widget, text will be truncated from the beginning to match the max chars"
-    ),
-)
-register_custom_property(
-    _builder_uid, "sbar_fg", "colorentry", help=_("color of scrollbars' slider")
-)
-register_custom_property(
-    _builder_uid,
-    "sbar_bg",
-    "colorentry",
-    help=_("color of scrollbars' trough, default to frame's background"),
-)
-register_custom_property(
-    _builder_uid,
-    "vbar_width",
-    "naturalnumber",
-    help=_("vertical scrollbar width"),
-)
-register_custom_property(
-    _builder_uid,
-    "hbar_width",
-    "naturalnumber",
-    help=_("horizontal scrollbar width"),
 )

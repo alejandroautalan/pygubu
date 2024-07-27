@@ -1,12 +1,10 @@
 import awesometkinter as atk
-from pygubu.i18n import _
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
-    register_custom_property,
 )
 
-from ..awesometkinter import _designer_tab_label, _plugin_uid
+from ..awesometkinter import _plugin_uid, _designer_tabs
 
 
 class RadialProgressbarBO(BuilderObject):
@@ -34,65 +32,12 @@ class RadialProgressbarBO(BuilderObject):
         return super()._process_property_value(pname, value)
 
 
-_builder_uid = _plugin_uid + ".RadialProgressbar"
+_builder_uid = f"{_plugin_uid}.RadialProgressbar"
 register_widget(
     _builder_uid,
     RadialProgressbarBO,
     "RadialProgressbar",
-    ("ttk", _designer_tab_label),
-)
-register_custom_property(
-    _builder_uid,
-    "bg",
-    "colorentry",
-    help=_("color of base ring"),
-)
-register_custom_property(
-    _builder_uid,
-    "fg",
-    "colorentry",
-    help=_("color of indicator ring"),
-)
-register_custom_property(
-    _builder_uid,
-    "text_fg",
-    "colorentry",
-    help=_("percentage text color"),
-)
-register_custom_property(
-    _builder_uid,
-    "font",
-    "fontentry",
-    help=_("tkinter font for percentage text"),
-)
-register_custom_property(
-    _builder_uid,
-    "font_size_ratio",
-    "spinbox",
-    from_=0.1,
-    to=1,
-    increment=0.1,
-    help=_(
-        "font size to progressbar width ratio, e.g. for a progressbar size 100 pixels, a 0.1 ratio means font size 10"
-    ),
-)
-register_custom_property(
-    _builder_uid,
-    "base_img",
-    "imageentry",
-    help=_("base image for progressbar"),
-)
-register_custom_property(
-    _builder_uid,
-    "indicator_img",
-    "imageentry",
-    help=_("indicator image for progressbar"),
-)
-register_custom_property(
-    _builder_uid,
-    "parent_bg",
-    "colorentry",
-    help=_("color of parent container"),
+    _designer_tabs,
 )
 
 
@@ -102,27 +47,12 @@ class RadialProgressbar3dBO(BuilderObject):
     class_ = atk.RadialProgressbar3d
 
 
-_builder_uid = _plugin_uid + ".RadialProgressbar3d"
+_builder_uid = f"{_plugin_uid}.RadialProgressbar3d"
 register_widget(
     _builder_uid,
     RadialProgressbar3dBO,
     "RadialProgressbar3d",
-    ("ttk", _designer_tab_label),
-)
-register_custom_property(
-    _builder_uid,
-    "fg",
-    "colorentry",
-)
-register_custom_property(
-    _builder_uid,
-    "text_fg",
-    "colorentry",
-)
-register_custom_property(
-    _builder_uid,
-    "text_bg",
-    "colorentry",
+    _designer_tabs,
 )
 
 
@@ -137,27 +67,5 @@ class SegmentbarBO(BuilderObject):
         return super()._process_property_value(pname, value)
 
 
-_builder_uid = _plugin_uid + ".Segmentbar"
-register_widget(
-    _builder_uid, SegmentbarBO, "Segmentbar", ("ttk", _designer_tab_label)
-)
-register_custom_property(
-    _builder_uid,
-    "bg",
-    "colorentry",
-)
-register_custom_property(
-    _builder_uid,
-    "fg",
-    "colorentry",
-)
-register_custom_property(
-    _builder_uid,
-    "width",
-    "naturalnumber",
-)
-register_custom_property(
-    _builder_uid,
-    "height",
-    "dimensionentry",
-)
+_builder_uid = f"{_plugin_uid}.Segmentbar"
+register_widget(_builder_uid, SegmentbarBO, "Segmentbar", _designer_tabs)

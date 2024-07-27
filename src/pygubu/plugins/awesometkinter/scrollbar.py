@@ -1,9 +1,8 @@
-from pygubu.i18n import _
-from pygubu.api.v1 import register_widget, register_custom_property
+from pygubu.api.v1 import register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import TTKScrollbar
 import awesometkinter as atk
 
-from ..awesometkinter import _designer_tab_label, _plugin_uid
+from ..awesometkinter import _plugin_uid, _designer_tabs
 
 
 class SimpleScrollbarBO(TTKScrollbar):
@@ -28,14 +27,10 @@ class SimpleScrollbarBO(TTKScrollbar):
         return super()._process_property_value(pname, value)
 
 
-_builder_uid = _plugin_uid + ".SimpleScrollbar"
+_builder_uid = f"{_plugin_uid}.SimpleScrollbar"
 register_widget(
     _builder_uid,
     SimpleScrollbarBO,
     "SimpleScrollbar",
-    ("ttk", _designer_tab_label),
+    _designer_tabs,
 )
-
-register_custom_property(_builder_uid, "bg", "colorentry")
-register_custom_property(_builder_uid, "slider_color", "colorentry")
-register_custom_property(_builder_uid, "width", "naturalnumber")
