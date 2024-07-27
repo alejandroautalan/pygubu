@@ -204,6 +204,8 @@ class Builder(object):
                     importlib.import_module(_module)
                     plugin_managed = True
                     logger.debug("Module %s loaded.", _module)
+                    # Module found, Stop searching
+                    break
                 except (ModuleNotFoundError, ImportError) as e:
                     msg = "Failed to import module as fullname: %s"
                     logger.debug(msg, _module)
@@ -218,26 +220,39 @@ class Builder(object):
 
         # If no plugin, or custom widget. Try loading as old custom widget method.
         if not plugin_managed and not new_project_custom_widget:
-            _module = builder_id
-            try:
-                # Import module as full path
-                importlib.import_module(_module)
-                logger.debug("Module %s loaded.", _module)
-            except (ModuleNotFoundError, ImportError) as e:
+            _module: str = builder_id
+            targets = []
+            first_module = _module.split(".")[0]
+            spec = importlib.util.find_spec(first_module)
+            if spec is not None:
+                if "." in _module:
+                    # Import module as full path
+                    fullpath, b = _module.rsplit(".", 1)
+                    if fullpath != first_module:
+                        targets.append(fullpath)
                 # A single module can contain various widgets
                 # try to import the first part of the path
-                if "." in _module:
-                    first, last = _module.rsplit(".", 1)
-                    try:
-                        importlib.import_module(first)
-                        logger.debug("Module %s loaded.", first)
-                    except (ModuleNotFoundError, ImportError):
-                        importlib.import_module(last)
-                        logger.debug("Module %s loaded.", last)
-                else:
-                    msg = "Failed to import module: %s"
-                    logger.debug(msg, _module)
-                    raise e
+                targets.append(first_module)
+            # Load target modules, first fullpath, then first_module
+            module_loaded = False
+            last_exception = None
+            for module in targets:
+                try:
+                    importlib.import_module(module)
+                    module_loaded = True
+                    logger.debug("Module %s loaded.", module)
+                    break
+                except Exception as e:
+                    last_exception = e
+
+            if not module_loaded:
+                error = RuntimeError(
+                    f"Failed to import a module for builder id '{_module}'"
+                )
+                logger.exception(error)
+                if last_exception:
+                    raise error from last_exception
+                raise error
 
     def _load_custom_widgets(self):
         ui_dir = Path().resolve()
