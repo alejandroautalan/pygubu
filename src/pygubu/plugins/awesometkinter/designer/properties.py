@@ -7,8 +7,18 @@ _builder_all = f"{_plugin_uid}.*"
 _button3d = f"{_plugin_uid}.Button3d"
 _radiobutton = f"{_plugin_uid}.Radiobutton"
 _checkbutton = f"{_plugin_uid}.Checkbutton"
+_frame3d = f"{_plugin_uid}.Frame3d"
+_scrollableframe = f"{_plugin_uid}.ScrollableFrame"
+
 
 plugin_properties = {
+    "autoscroll": dict(
+        buid=_scrollableframe,
+        editor="choice",
+        values=("", "false", "true"),
+        state="readonly",
+        help=_("auto scroll to bottom if new items added to frame"),
+    ),
     "check_mark_color": dict(
         buid=_checkbutton,
         editor="colorentry",
@@ -19,6 +29,12 @@ plugin_properties = {
             buid=_radiobutton,
             editor="colorentry",
             help=_('background color "should match parent bg"'),
+        ),
+        dict(buid=_frame3d, editor="colorentry", help=_("color of frame")),
+        dict(
+            buid=_scrollableframe,
+            editor="colorentry",
+            help=_("background color"),
         ),
     ],
     "box_color": dict(
@@ -31,6 +47,18 @@ plugin_properties = {
         help=_("text color"),
     ),
     "font": dict(buid=_radiobutton, editor="fontentry"),
+    "hbar_width": dict(
+        buid=_scrollableframe,
+        editor="dimensionentry",
+        help=_("horizontal scrollbar width"),
+    ),
+    "hscroll": dict(
+        buid=_scrollableframe,
+        editor="choice",
+        values=("", "false", "true"),
+        state="readonly",
+        help=_("use horizontal scrollbar"),
+    ),
     "ind_bg": dict(
         buid=_radiobutton,
         editor="colorentry",
@@ -44,9 +72,31 @@ plugin_properties = {
         editor="colorentry",
         help=_("indicator outline / ring color"),
     ),
+    "sbar_bg": dict(
+        buid=_scrollableframe,
+        editor="colorentry",
+        help=_("color of scrollbars' trough, default to frame's background"),
+    ),
+    "sbar_fg": dict(
+        buid=_scrollableframe,
+        editor="colorentry",
+        help=_("color of scrollbars' slider"),
+    ),
     "text_color": dict(
         buid=_checkbutton,
         editor="colorentry",
+    ),
+    "vscroll": dict(
+        buid=_scrollableframe,
+        editor="choice",
+        values=("", "false", "true"),
+        state="readonly",
+        help=_("use vertical scrollbar"),
+    ),
+    "vbar_width": dict(
+        buid=_scrollableframe,
+        editor="dimensionentry",
+        help=_("vertical scrollbar width"),
     ),
 }
 

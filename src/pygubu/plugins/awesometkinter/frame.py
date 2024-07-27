@@ -10,7 +10,7 @@ from pygubu.plugins.tk.tkstdwidgets import TKFrame
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 import awesometkinter as atk
 
-from ..awesometkinter import _designer_tab_label, _plugin_uid
+from ..awesometkinter import _plugin_uid, _designer_tabs
 
 
 class Frame3dBO(TTKFrame):
@@ -21,14 +21,8 @@ class Frame3dBO(TTKFrame):
     class_ = atk.Frame3d
 
 
-_builder_uid = _plugin_uid + ".Frame3d"
-register_widget(
-    _builder_uid, Frame3dBO, "Frame3d", ("ttk", _designer_tab_label), group=0
-)
-
-register_custom_property(
-    _builder_uid, "bg", "colorentry", help=_("color of frame")
-)
+_builder_uid = f"{_plugin_uid}.Frame3d"
+register_widget(_builder_uid, Frame3dBO, "Frame3d", _designer_tabs, group=0)
 
 
 class ScrollableFrameBO(TKFrame):
@@ -58,67 +52,11 @@ class ScrollableFrameBO(TKFrame):
         return super()._code_process_property_value(targetid, pname, value)
 
 
-_builder_uid = _plugin_uid + ".ScrollableFrame"
+_builder_uid = f"{_plugin_uid}.ScrollableFrame"
 register_widget(
     _builder_uid,
     ScrollableFrameBO,
     "ScrollableFrame",
-    ("ttk", _designer_tab_label),
+    _designer_tabs,
     group=0,
-)
-
-register_custom_property(
-    _builder_uid,
-    "vscroll",
-    "choice",
-    values=("", "false", "true"),
-    state="readonly",
-    help=_("use vertical scrollbar"),
-)
-
-register_custom_property(
-    _builder_uid,
-    "hscroll",
-    "choice",
-    values=("", "false", "true"),
-    state="readonly",
-    help=_("use horizontal scrollbar"),
-)
-
-register_custom_property(
-    _builder_uid,
-    "autoscroll",
-    "choice",
-    values=("", "false", "true"),
-    state="readonly",
-    help=_("auto scroll to bottom if new items added to frame"),
-)
-
-register_custom_property(
-    _builder_uid, "bg", "colorentry", help=_("background color")
-)
-
-register_custom_property(
-    _builder_uid, "sbar_fg", "colorentry", help=_("color of scrollbars' slider")
-)
-
-register_custom_property(
-    _builder_uid,
-    "sbar_bg",
-    "colorentry",
-    help=_("color of scrollbars' trough, default to frame's background"),
-)
-
-register_custom_property(
-    _builder_uid,
-    "vbar_width",
-    "dimensionentry",
-    help=_("vertical scrollbar width"),
-)
-
-register_custom_property(
-    _builder_uid,
-    "hbar_width",
-    "dimensionentry",
-    help=_("vertical scrollbar width"),
 )
