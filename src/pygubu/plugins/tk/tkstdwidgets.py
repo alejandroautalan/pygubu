@@ -1051,15 +1051,18 @@ class TKMenuitem(BuilderObject):
         commands = super().code_connect_commands()
         lines.extend(commands)
         # create item
-        item_lines = self._code_render_menuitem(boparent, self.wmeta.identifier,
-                                            self.itemtype, properties)
+        item_lines = self._code_render_menuitem(
+            boparent, self.wmeta.identifier, self.itemtype, properties
+        )
         lines.extend(item_lines)
 
         for pname in complex_properties:
             lines.extend(code_bag[pname])
         return lines
 
-    def _code_render_menuitem(self, parent_bo, itemid:str, itemtype:str, properties:dict):
+    def _code_render_menuitem(
+        self, parent_bo, itemid: str, itemtype: str, properties: dict
+    ):
         lines = []
 
         targetid = parent_bo.code_identifier()
