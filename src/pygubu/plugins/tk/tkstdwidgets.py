@@ -616,7 +616,7 @@ register_widget(
 
 class TKMenubutton(BuilderObject):
     class_ = tk.Menubutton
-    container = False
+    container = True
     OPTIONS_STANDARD = (
         "activebackground",
         "activeforeground",
@@ -1466,7 +1466,7 @@ register_widget(
 class ToplevelMenuHelperBO(BuilderObject):
     class_ = None
     container = True
-    allowed_parents = ("tk.Toplevel",)
+    allowed_parents = ("tk.Tk", "tk.Toplevel")
     maxchildren = 1
     layout_required = False
     allow_bindings = False

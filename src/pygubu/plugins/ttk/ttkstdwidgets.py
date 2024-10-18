@@ -347,7 +347,7 @@ class TTKMenubuttonBO(TTKWidgetBO):
     )
     OPTIONS_SPECIFIC = ("direction",)  # 'menu'
     class_ = ttk.Menubutton
-    container = False
+    container = True
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
     allowed_children = ("tk.Menu",)
     maxchildren = 1
