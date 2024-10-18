@@ -5,6 +5,10 @@ Changes for (next) version 0.36:
 
   * Initial support for TKinterModernThemes package.
 
+Changes for version 0.35.6
+
+  * Fix issue when setting menu for Menubutton. refs alejandroautalan/pygubu-designer#276
+
 Changes for version 0.35.5
 
   * Fix menu code generation. refs #296
