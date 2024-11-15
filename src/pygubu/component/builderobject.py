@@ -136,8 +136,10 @@ class BuilderObject(object):
         self.builder = builder
         self.wmeta = wmeta
         self._code_identifier = None
+        self.parent_bo = None
 
     def realize(self, parent, extra_init_args: dict = None):
+        self.parent_bo = parent
         args = self._get_init_args(extra_init_args)
         master = parent.get_child_master()
         self.widget = self.class_(master, **args)
@@ -222,10 +224,25 @@ class BuilderObject(object):
                 logger.error(msg, pname, repr(self.class_), str(e))
                 # logger.exception(e)
 
+    def _parent_cancel_children_layout(self) -> bool:
+        override = False
+        if self.parent_bo is not None:
+            override = self.parent_bo.cancel_children_layout()
+        return override
+
+    def cancel_children_layout(self) -> bool:
+        """Determine if children need to cancel layout on themselves."""
+        return False
+
+    def is_layout_required(self) -> bool:
+        return (
+            self.layout_required and not self._parent_cancel_children_layout()
+        )
+
     def layout(self, target=None):
         if target is None:
             target = self.widget
-        if self.layout_required:
+        if self.is_layout_required():
             # Check manager
             manager = self.wmeta.manager
             logger.debug(
@@ -404,6 +421,7 @@ class BuilderObject(object):
         return args
 
     def code_realize(self, boparent, code_identifier=None):
+        self.parent_bo = boparent
         if code_identifier is not None:
             self._code_identifier = code_identifier
         lines = []
@@ -462,7 +480,7 @@ class BuilderObject(object):
         if parentid is None:
             parentid = targetid
         lines = []
-        if self.layout_required:
+        if self.is_layout_required():
             manager = self.wmeta.manager
             layout = self.wmeta.layout_properties
             args_bag = []
