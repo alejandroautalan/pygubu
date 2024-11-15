@@ -1,7 +1,7 @@
 import tkinter as tk
 
 # from pygubu.i18n import _
-from pygubu.api.v1 import register_widget, register_custom_property
+from pygubu.api.v1 import register_widget
 from tkinterweb import HtmlLabel, HtmlFrame
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 from ..tkinterweb import _designer_tab_label, _plugin_uid
@@ -39,29 +39,11 @@ class HtmlFrameBO(TTKFrame):
 
 _builder_uid = f"{_plugin_uid}.HtmlFrame"
 register_widget(
-    _builder_uid, HtmlFrameBO, "HtmlFrame", ("ttk", _designer_tab_label)
-)
-
-register_custom_property(
     _builder_uid,
-    "messages_enabled",
-    "choice",
-    values=("", "true", "false"),
-    state="readonly",
-)
-register_custom_property(
-    _builder_uid,
-    "vertical_scrollbar",
-    "choice",
-    values=("", "true", "false", "auto"),
-    state="readonly",
-)
-register_custom_property(
-    _builder_uid,
-    "horizontal_scrollbar",
-    "choice",
-    values=("", "true", "false", "auto"),
-    state="readonly",
+    HtmlFrameBO,
+    "HtmlFrame",
+    ("ttk", _designer_tab_label),
+    group=0,
 )
 
 
@@ -81,15 +63,9 @@ class HtmlLabelBO(HtmlFrameBO):
 
 _builder_uid = f"{_plugin_uid}.HtmlLabel"
 register_widget(
-    _builder_uid, HtmlLabelBO, "HtmlLabel", ("ttk", _designer_tab_label)
-)
-
-register_custom_property(_builder_uid, "text", "text")
-
-register_custom_property(
     _builder_uid,
-    "messages_enabled",
-    "choice",
-    values=("", "true", "false"),
-    state="readonly",
+    HtmlLabelBO,
+    "HtmlLabel",
+    ("ttk", _designer_tab_label),
+    group=0,
 )

@@ -8,17 +8,37 @@ _plugin_uid = "tkinterweb"
 
 
 class TkinterwebLoader(BuilderLoaderPlugin):
-    _module = "pygubu.plugins.tkinterweb.htmlwidgets"
+    module_map = {
+        "pygubu.plugins.tkinterweb.htmlwidgets": (
+            f"{_plugin_uid}.HtmlFrame",
+            f"{_plugin_uid}.HtmlLabel",
+        ),
+        "pygubu.plugins.tkinterweb.extrawidgets": (
+            f"{_plugin_uid}.Notebook",
+            f"{_plugin_uid}.ColourSelector",
+        ),
+    }
 
     def do_activate(self) -> bool:
         spec = importlib.util.find_spec("tkinterweb")
         return True if spec is not None else False
 
     def get_module_for(self, identifier: str) -> str:
-        return self._module
+        for module, identifiers in self.module_map.items():
+            if identifier in identifiers:
+                return module
+        return None
 
     def get_all_modules(self):
-        return (self._module,)
+        return [m for m in self.module_map.keys()]
 
     def can_load(self, identifier: str) -> bool:
         return identifier.startswith("tkinterweb.")
+
+    def get_designer_plugin(self):
+        """Load class that implements IDesignerPlugin"""
+
+        # Just load the module for properties definitions.
+        from .designer.designerplugin import TkinterwebPlugin
+
+        return None
