@@ -64,7 +64,10 @@ TRANSLATABLE_PROPERTIES = ["label", "text", "title"]
 
 
 class BuilderObject(object):
-    """Base class for Widgets created with Builder"""
+    """Base class for Widgets created with Builder.
+
+    children_layout_override: Determine if children need to cancel layout on themselves.
+    """
 
     OPTIONS_STANDARD = tuple()
     OPTIONS_SPECIFIC = tuple()
@@ -75,6 +78,7 @@ class BuilderObject(object):
     allowed_parents = None
     allowed_children = None
     maxchildren = None
+    children_layout_override = False
     properties = tuple()
     ro_properties = tuple()
     layout_required = True
@@ -224,19 +228,15 @@ class BuilderObject(object):
                 logger.error(msg, pname, repr(self.class_), str(e))
                 # logger.exception(e)
 
-    def _parent_cancel_children_layout(self) -> bool:
+    def _parent_cancels_children_layout(self) -> bool:
         override = False
         if self.parent_bo is not None:
-            override = self.parent_bo.cancel_children_layout()
+            override = self.parent_bo.children_layout_override
         return override
-
-    def cancel_children_layout(self) -> bool:
-        """Determine if children need to cancel layout on themselves."""
-        return False
 
     def is_layout_required(self) -> bool:
         return (
-            self.layout_required and not self._parent_cancel_children_layout()
+            self.layout_required and not self._parent_cancels_children_layout()
         )
 
     def layout(self, target=None):

@@ -34,6 +34,7 @@ register_widget(
 
 class NotebookPageBO(TTKNotebookTab):
     allowed_parents = (_notebook_uid,)
+    children_layout_override = True
     properties = (
         "state",
         "text",
@@ -41,9 +42,6 @@ class NotebookPageBO(TTKNotebookTab):
         "compound",
         "underline",
     )
-
-    def cancel_children_layout(self) -> bool:
-        return True
 
 
 _builder_uid = f"{_plugin_uid}.Notebook.Page"
