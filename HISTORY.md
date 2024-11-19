@@ -3,7 +3,10 @@ History
 
 Changes for (next) version 0.36:
 
+  * BuilderObject class: Store reference to parent.
+  * BuilderObject class: Add option to override children layout.
   * Initial support for TKinterModernThemes package.
+  * Clean tkinterweb plugin. Add tkinterweb Notebook widget.  refs alejandroautalan/pygubu-designer#278
 
 Changes for version 0.35.6
 
