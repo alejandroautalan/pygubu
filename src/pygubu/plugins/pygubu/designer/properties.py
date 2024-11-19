@@ -221,11 +221,20 @@ plugin_properties = {
         editor="ttkstylechoice",
         default_value="Toolbutton",
     ),
-    "textvariable": dict(
-        buid=[_PathChoser_all, _PathChoser_old],
-        editor="tkvarentry",
-        help=_("Tk variable associated to the path property."),
-    ),
+    "textvariable": [
+        dict(
+            buid=[_PathChoserButton],
+            editor="tkvarentry",
+            help=_(
+                "Tk variable whose value will be used in place of the text resource."
+            ),
+        ),
+        dict(
+            buid=[_PathChoser_all, _PathChoser_old],
+            editor="tkvarentry",
+            help=_("Tk variable associated to the path property."),
+        ),
+    ],
     "title": dict(buid=[_PathChoser_all, _PathChoser_old], help=h_title),
     "type": dict(
         buid=[_PathChoser_all, _PathChoser_old],
