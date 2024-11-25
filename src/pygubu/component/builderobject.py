@@ -684,8 +684,9 @@ class BuilderObject(object):
         cmdtype = cmd["cbtype"]
         if cmdtype == CB_TYPES.WITH_WID:
             wid = self.wmeta.identifier
-            fdef = f'_wcmd = lambda wid="{wid}": {cbname}(wid)'
-            cbname = "_wcmd"
+            fname = f"{wid}_cmd_"
+            fdef = f"""def {fname}(): {cbname}("{wid}")\n"""
+            cbname = fname
             lines.append(fdef)
         if args is not None:
             if cmdtype == CB_TYPES.ENTRY_VALIDATE:
