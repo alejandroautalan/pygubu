@@ -65,7 +65,7 @@ class TableCanvasBuilder(BuilderObject):
             value = int(tk.getboolean(value))
         return value
 
-    def layout(self, target=None, configure_gridrc=True):
+    def layout(self, target=None, *, forget=False):
         self.widget.show()
 
     def code_layout(self, targetid=None, parentid=None):

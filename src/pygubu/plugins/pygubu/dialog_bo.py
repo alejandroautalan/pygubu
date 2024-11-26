@@ -13,8 +13,8 @@ class DialogBO(TKToplevel):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     virtual_events = ("<<DialogClose>>",)
 
-    def layout(self, target=None):
-        super(DialogBO, self).layout(self.widget.toplevel)
+    def layout(self, target=None, *, forget=False):
+        super(DialogBO, self).layout(self.widget.toplevel, forget=forget)
 
     def _set_property(self, target_widget, pname, value):
         if pname == "modal":

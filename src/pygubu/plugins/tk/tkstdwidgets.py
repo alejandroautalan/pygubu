@@ -940,7 +940,7 @@ class TKMenu(BuilderObject):
     command_properties = ("postcommand", "tearoffcommand")
     allow_bindings = False
 
-    def layout(self, target=None):
+    def layout(self, target=None, *, forget=False):
         pass
 
     #
@@ -1023,7 +1023,7 @@ class TKMenuitem(BuilderObject):
     def configure(self):
         pass
 
-    def layout(self, target=None):
+    def layout(self, target=None, *, forget=False):
         pass
 
     def _connect_command(self, cpname, callback):
@@ -1217,7 +1217,7 @@ class TKMenuitemSubmenu(TKMenuitem):
     def configure(self):
         pass
 
-    def layout(self, target=None):
+    def layout(self, target=None, *, forget=False):
         pass
 
     def _connect_command(self, cpname, callback):
@@ -1433,7 +1433,7 @@ class TKLabelwidgetBO(BuilderObject):
     def add_child(self, bobject):
         self.widget.configure(labelwidget=bobject.widget)
 
-    def layout(self, target=None):
+    def layout(self, target=None, *, forget=False):
         pass
 
     #
@@ -1478,7 +1478,7 @@ class ToplevelMenuHelperBO(BuilderObject):
     def add_child(self, bobject):
         self.widget.configure(menu=bobject.widget)
 
-    def layout(self, target=None):
+    def layout(self, target=None, *, forget=False):
         pass
 
     #

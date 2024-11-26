@@ -528,7 +528,7 @@ class TTKNotebookTab(TTKWidgetBO):
     def configure(self, target=None):
         pass
 
-    def layout(self, target=None):
+    def layout(self, target=None, *, forget=False):
         pass
 
     def add_child(self, bobject):
@@ -639,7 +639,7 @@ class TTKTreeviewColumnBO(TTKWidgetBO):
     def configure(self, target=None):
         pass
 
-    def layout(self, target=None):
+    def layout(self, target=None, *, forget=False):
         pass
 
     def _connect_command(self, cpname, callback):

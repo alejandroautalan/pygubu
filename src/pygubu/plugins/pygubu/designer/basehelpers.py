@@ -158,7 +158,7 @@ class ToplevelPreviewBaseBO(BuilderObject):
         self.widget._propagate = value
         super()._container_layout(target, container_manager, properties)
 
-    def layout(self, target=None):
+    def layout(self, target=None, *, forget=False):
         self.widget.pack(expand=True, fill="both")
         self._container_layout(
             self.widget,

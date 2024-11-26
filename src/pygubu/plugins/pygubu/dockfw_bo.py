@@ -66,7 +66,7 @@ class DockPaneBO(DockWidgetBaseBO):
     def configure(self, target=None):
         pass
 
-    def layout(self, target=None):
+    def layout(self, target=None, *, forget=False):
         pass
 
 

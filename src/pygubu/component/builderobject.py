@@ -239,7 +239,7 @@ class BuilderObject(object):
             self.layout_required and not self._parent_cancels_children_layout()
         )
 
-    def layout(self, target=None):
+    def layout(self, target=None, *, forget=False):
         if target is None:
             target = self.widget
         if self.is_layout_required():
@@ -250,10 +250,16 @@ class BuilderObject(object):
             )
             properties = self.wmeta.layout_properties
             if manager == "grid":
+                if forget:
+                    target.grid_forget()
                 target.grid(**properties)
             elif manager == "pack":
+                if forget:
+                    target.pack_forget()
                 target.pack(**properties)
             elif manager == "place":
+                if forget:
+                    target.place_forget()
                 target.place(**self.wmeta.layout_properties)
             else:
                 msg = f"Invalid layout manager: {manager}"
