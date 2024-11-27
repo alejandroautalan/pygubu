@@ -49,9 +49,9 @@ class Combobox(ttk.Combobox):
 
         keyvar = self._keyvar
         if self._keyvarcb is not None:
-            keyvar.trace_vdelete("w", self._keyvarcb)
+            keyvar.trace_remove("write", self._keyvarcb)
         self._keyvar = var
-        self._keyvarcb = var.trace(mode="w", callback=on_keyvar_changed)
+        self._keyvarcb = var.trace_add("write", on_keyvar_changed)
 
     def __config_txtvar(self, var):
         keyvar = self._keyvar
@@ -65,9 +65,9 @@ class Combobox(ttk.Combobox):
 
         txtvar = self._txtvar
         if txtvar and self._txtvarcb is not None:
-            txtvar.trace_vdelete("w", self._txtvarcb)
+            txtvar.trace_remove("write", self._txtvarcb)
         self._txtvar = var
-        self._txtvarcb = var.trace(mode="w", callback=on_txtvar_changed)
+        self._txtvarcb = var.trace_add("write", on_txtvar_changed)
 
     def _delayed_clear_vars(self):
         # clear variables:
