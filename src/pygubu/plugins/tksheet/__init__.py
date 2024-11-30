@@ -12,7 +12,7 @@ class TksheetLoader(BuilderLoaderPlugin):
 
     def do_activate(self) -> bool:
         spec = importlib.util.find_spec("tksheet")
-        return True if spec is not None else False
+        return spec is not None
 
     def get_module_for(self, identifier: str) -> str:
         return self._module
