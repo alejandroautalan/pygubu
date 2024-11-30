@@ -270,26 +270,30 @@ class UIDefinition(object):
             child_layouts = element.findall("./child/object/layout")
             rclines_loaded = set()
             if child_layouts is not None:
-                for layout_node in child_layouts:
-                    manager = layout_node.get("manager", "grid")
-                    if manager != "place":
-                        clmanager = manager
-                    props = layout_node.findall("./property")
-                    if props is not None:
-                        for p in props:
-                            ptype = p.get("type", None)
-                            if ptype is not None:
-                                rcid = p.get("id")
-                                rcname = p.get("name")
-                                key = (ptype, rcid, rcname)
-                                if key not in rclines_loaded:
-                                    rcvalue = p.text
-                                    line = GridRCLine(
+                clmanager = self._handle_child_layouts(meta, child_layouts, rclines_loaded)
+            meta.container_manager = clmanager
+
+    def _handle_child_layouts(self, meta, child_layouts, rclines_loaded):
+        for layout_node in child_layouts:
+            manager = layout_node.get("manager", "grid")
+            if manager != "place":
+                clmanager = manager
+            props = layout_node.findall("./property")
+            if props is not None:
+                for p in props:
+                    ptype = p.get("type", None)
+                    if ptype is not None:
+                        rcid = p.get("id")
+                        rcname = p.get("name")
+                        key = (ptype, rcid, rcname)
+                        if key not in rclines_loaded:
+                            rcvalue = p.text
+                            line = GridRCLine(
                                         ptype, rcid, rcname, rcvalue
                                     )
-                                    meta.gridrc_properties.append(line)
-                                    rclines_loaded.add(key)
-            meta.container_manager = clmanager
+                            meta.gridrc_properties.append(line)
+                            rclines_loaded.add(key)
+        return clmanager
 
     def __load_layout_v_empty(self, element, meta):
         """Load layout with ui version empty."""
