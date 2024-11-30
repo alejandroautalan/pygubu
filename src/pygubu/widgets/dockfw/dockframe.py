@@ -178,7 +178,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
         new_orient = (
             tk.HORIZONTAL if tpane.orient == tk.VERTICAL else tk.VERTICAL
         )
-        main_pane = True if tpane == self._main_pane else False
+        main_pane = tpane == self._main_pane
         new_pane = self.new_pane(main_pane=main_pane, orient=new_orient)
         parent_pane = tpane.parent_pane
         self._add_pane_to_pane(new_pane, tpane)
