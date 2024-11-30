@@ -16,7 +16,7 @@ class TkinterMapViewLoader(BuilderLoaderPlugin, IDesignerPlugin):
     #
     def do_activate(self) -> bool:
         spec = importlib.util.find_spec("tkintermapview")
-        return True if spec is not None else False
+        return spec is not None
 
     def get_designer_plugin(self) -> Optional[IDesignerPlugin]:
         return self
