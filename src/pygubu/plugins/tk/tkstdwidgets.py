@@ -1004,7 +1004,7 @@ class TKMenuitem(BuilderObject):
         index = master.index(tk.END) or 0
         # TODO: index of items is shifted if tearoff is changed
         # for now check tearoff config and recalculate index.
-        has_tearoff = True if master.type(0) == "tearoff" else False
+        has_tearoff = master.type(0) == "tearoff"
         tearoff_conf = parent.wmeta.properties.get("tearoff", "1")
         offset = 0
         if has_tearoff and tearoff_conf in ("0", "false"):
