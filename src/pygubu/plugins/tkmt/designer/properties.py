@@ -18,7 +18,8 @@ tkmt_properties = {
     },
     "columnwidths": {  # Treeview
         "editor": "json_entry",
-        "help": "Width of each column, should be same size as columnnames. In designer, a json list of ints",
+        "help": ("Width of each column, should be same size as columnnames." 
+                 + " In designer, a json list of ints"),
         "json_type": list,
         "json_item_type": int,
     },
