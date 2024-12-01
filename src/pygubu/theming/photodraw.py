@@ -56,115 +56,124 @@ class TkPhotoDraw:
                 self.canvas.name, "copy", tmp.name, "-subsample", -1, -1
             )
         elif angle == 90:
-            bg_rgb = self.tk_master.winfo_rgb(bg_color)
-            buf = []
-            alpha = []
-            for i in range(w - 1, -1, -1):
-                row = []
-                for j in range(0, h):
-                    rgb = tmp.get(i, j)
-                    if rgb == bg_rgb:
-                        alpha.append((i, j))
-                    row.append("#{:02x}{:02x}{:02x}".format(*rgb))
-                buf.append(row)
-            self.canvas.config(width=h, height=w)
-            self.canvas.put(buf)
-            for x, y in alpha:
-                self.canvas.transparency_set(y, x, True)
-            del alpha
-            del buf
+            self._rotate_90(bg_color, w, h, tmp)
         elif angle == -90 or angle == 270:
-            bg_rgb = self.tk_master.winfo_rgb(bg_color)
-            buf = []
-            alpha = []
-            for i in range(0, w):
-                row = []
-                for j in range(h - 1, -1, -1):
-                    rgb = tmp.get(i, j)
-                    if rgb == bg_rgb:
-                        alpha.append((i, j))
-                    row.append("#{:02x}{:02x}{:02x}".format(*rgb))
-                buf.append(row)
-            self.canvas.config(width=h, height=w)
-            self.canvas.put(buf)
-            for x, y in alpha:
-                self.canvas.transparency_set(y, x, True)
-            del alpha
-            del buf
+            self._rotate_270(bg_color, w, h, tmp)
         else:
-            buf = []
-            alpha = []
-            bg_rgb = self.tk_master.winfo_rgb(bg_color)
-            a = math.atan(1) * 8 * angle / 360
-            xm = w / 2
-            ym = h / 2
-            w2 = round(abs(w * math.cos(a)) + abs(h * math.sin(a)))
-            xm2 = w2 / 2
-            h2 = round(abs(h * math.cos(a)) + abs(w * math.sin(a)))
-            ym2 = h2 / 2
-            self.canvas.config(width=w2, height=h2)
-            for i in range(0, h2):
-                to_x = -1
-                for j in range(0, w2):
-                    rad = math.hypot(ym2 - i, xm2 - j)
-                    th = math.atan2(ym2 - i, xm2 - j) + a
-                    x = xm - rad * math.cos(th)
-                    if x < 0 or x >= w:
-                        alpha.append((i, j))
-                        continue
-                    y = ym - rad * math.sin(th)
-                    if y < 0 or y >= h:
-                        alpha.append((i, j))
-                        continue
-                    x0 = int(x)
-                    x1 = x0 + 1 if (x0 + 1) < w else x0
-                    dx = x1 - x
-                    y0 = int(y)
-                    y1 = y0 + 1 if (y0 + 1) < h else y0
-                    dy = y1 - y
-                    R = G = B = 0
+            self._handle_other_rotations(angle, bg_color, w, h, tmp)
+        del tmp
 
-                    rgb1 = tmp.get(x0, y0)
-                    rgb2 = tmp.get(x0, y1)
-                    rgb3 = tmp.get(x1, y0)
-                    rgb4 = tmp.get(x1, y1)
+    def _handle_other_rotations(self, angle, bg_color, w, h, tmp):
+        buf = []
+        alpha = []
+        bg_rgb = self.tk_master.winfo_rgb(bg_color)
+        a = math.atan(1) * 8 * angle / 360
+        xm = w / 2
+        ym = h / 2
+        w2 = round(abs(w * math.cos(a)) + abs(h * math.sin(a)))
+        xm2 = w2 / 2
+        h2 = round(abs(h * math.cos(a)) + abs(w * math.sin(a)))
+        ym2 = h2 / 2
+        self.canvas.config(width=w2, height=h2)
+        for i in range(0, h2):
+            to_x = -1
+            for j in range(0, w2):
+                rad = math.hypot(ym2 - i, xm2 - j)
+                th = math.atan2(ym2 - i, xm2 - j) + a
+                x = xm - rad * math.cos(th)
+                if x < 0 or x >= w:
+                    alpha.append((i, j))
+                    continue
+                y = ym - rad * math.sin(th)
+                if y < 0 or y >= h:
+                    alpha.append((i, j))
+                    continue
+                x0 = int(x)
+                x1 = x0 + 1 if (x0 + 1) < w else x0
+                dx = x1 - x
+                y0 = int(y)
+                y1 = y0 + 1 if (y0 + 1) < h else y0
+                dy = y1 - y
+                R = G = B = 0
 
-                    if (
+                rgb1 = tmp.get(x0, y0)
+                rgb2 = tmp.get(x0, y1)
+                rgb3 = tmp.get(x1, y0)
+                rgb4 = tmp.get(x1, y1)
+
+                if (
                         rgb1 == bg_rgb
                         or rgb2 == bg_rgb
                         or rgb3 == bg_rgb
                         or rgb4 == bg_rgb
                     ):
-                        alpha.append((i, j))
-                    else:
-                        r, g, b = rgb1
-                        R = R + r * dx * dy
-                        G = G + g * dx * dy
-                        B = B + b * dx * dy
-                        r, g, b = rgb2
-                        R = R + r * dx * (1 - dy)
-                        G = G + g * dx * (1 - dy)
-                        B = B + b * dx * (1 - dy)
-                        r, g, b = rgb3
-                        R = R + r * (1 - dx) * dy
-                        G = G + g * (1 - dx) * dy
-                        B = B + b * (1 - dx) * dy
-                        r, g, b = rgb4
-                        R = R + r * (1 - dx) * (1 - dy)
-                        G = G + g * (1 - dx) * (1 - dy)
-                        B = B + b * (1 - dx) * (1 - dy)
-                    rgb = (round(R), round(G), round(B))
-                    buf.append("#{:02x}{:02x}{:02x}".format(*rgb))
-                    if to_x == -1:
-                        to_x = j
-                if to_x >= 0:
-                    self.canvas.put(buf, to=(i, to_x))
-                    for x, y in alpha:
-                        self.canvas.transparency_set(x, y, True)
-                    buf.clear()
-                    alpha.clear()
-            del buf
-        del tmp
+                    alpha.append((i, j))
+                else:
+                    r, g, b = rgb1
+                    R = R + r * dx * dy
+                    G = G + g * dx * dy
+                    B = B + b * dx * dy
+                    r, g, b = rgb2
+                    R = R + r * dx * (1 - dy)
+                    G = G + g * dx * (1 - dy)
+                    B = B + b * dx * (1 - dy)
+                    r, g, b = rgb3
+                    R = R + r * (1 - dx) * dy
+                    G = G + g * (1 - dx) * dy
+                    B = B + b * (1 - dx) * dy
+                    r, g, b = rgb4
+                    R = R + r * (1 - dx) * (1 - dy)
+                    G = G + g * (1 - dx) * (1 - dy)
+                    B = B + b * (1 - dx) * (1 - dy)
+                rgb = (round(R), round(G), round(B))
+                buf.append("#{:02x}{:02x}{:02x}".format(*rgb))
+                if to_x == -1:
+                    to_x = j
+            if to_x >= 0:
+                self.canvas.put(buf, to=(i, to_x))
+                for x, y in alpha:
+                    self.canvas.transparency_set(x, y, True)
+                buf.clear()
+                alpha.clear()
+        del buf
+
+    def _rotate_270(self, bg_color, w, h, tmp):
+        bg_rgb = self.tk_master.winfo_rgb(bg_color)
+        buf = []
+        alpha = []
+        for i in range(0, w):
+            row = []
+            for j in range(h - 1, -1, -1):
+                rgb = tmp.get(i, j)
+                if rgb == bg_rgb:
+                    alpha.append((i, j))
+                row.append("#{:02x}{:02x}{:02x}".format(*rgb))
+            buf.append(row)
+        self.canvas.config(width=h, height=w)
+        self.canvas.put(buf)
+        for x, y in alpha:
+            self.canvas.transparency_set(y, x, True)
+        del alpha
+        del buf
+
+    def _rotate_90(self, bg_color, w, h, tmp):
+        bg_rgb = self.tk_master.winfo_rgb(bg_color)
+        buf = []
+        alpha = []
+        for i in range(w - 1, -1, -1):
+            row = []
+            for j in range(0, h):
+                rgb = tmp.get(i, j)
+                if rgb == bg_rgb:
+                    alpha.append((i, j))
+                row.append("#{:02x}{:02x}{:02x}".format(*rgb))
+            buf.append(row)
+        self.canvas.config(width=h, height=w)
+        self.canvas.put(buf)
+        for x, y in alpha:
+            self.canvas.transparency_set(y, x, True)
+        del alpha
+        del buf
 
     # Canvas related functions end
 
@@ -397,34 +406,37 @@ class TkPhotoDraw:
                         x, y + i, x + a, y + i + 1, border_ink
                     )
             else:
-                ia = (
+                self._handle_lower_i(cuadrant, fill, x, y, fill_ink, border_ink, ir, ix, iy, i, a)
+
+    def _handle_lower_i(self, cuadrant, fill, x, y, fill_ink, border_ink, ir, ix, iy, i, a):
+        ia = (
                     ir if i == 0 else int(math.sqrt(ir * ir - i * i))
                 )  # Pythagoras
-                x1, y1, x2, y2 = (x - a, y - i, x + a, y - i)
-                ix1, iy1, ix2, iy2 = (ix - ia, iy - i, ix + ia, iy - i)
+        x1, y1, x2, y2 = (x - a, y - i, x + a, y - i)
+        ix1, iy1, ix2, iy2 = (ix - ia, iy - i, ix + ia, iy - i)
                 # upper left
-                if 0 == cuadrant:
-                    self._draw_rect_filled(x1, y1, ix1, iy1 + 1, border_ink)
-                    if fill:
-                        self._draw_rect_filled(ix1, iy1, x, iy1 + i, fill_ink)
+        if 0 == cuadrant:
+            self._draw_rect_filled(x1, y1, ix1, iy1 + 1, border_ink)
+            if fill:
+                self._draw_rect_filled(ix1, iy1, x, iy1 + i, fill_ink)
                 # upper right
-                if 1 == cuadrant:
-                    self._draw_rect_filled(ix2, iy2, x2, y2 + 1, border_ink)
-                    if fill:
-                        self._draw_rect_filled(x, iy1, ix2, iy2 + 1, fill_ink)
+        if 1 == cuadrant:
+            self._draw_rect_filled(ix2, iy2, x2, y2 + 1, border_ink)
+            if fill:
+                self._draw_rect_filled(x, iy1, ix2, iy2 + 1, fill_ink)
 
-                x1, y1, x2, y2 = (x - a, y + i, x + a, y + i)
-                ix1, iy1, ix2, iy2 = (ix - ia, iy + i, ix + ia, iy + i)
+        x1, y1, x2, y2 = (x - a, y + i, x + a, y + i)
+        ix1, iy1, ix2, iy2 = (ix - ia, iy + i, ix + ia, iy + i)
                 # bottom left
-                if 2 == cuadrant:
-                    self._draw_rect_filled(x1, y1, ix1, iy1 + 1, border_ink)
-                    if fill:
-                        self._draw_rect_filled(ix1, iy1, x, iy2 + 1, fill_ink)
+        if 2 == cuadrant:
+            self._draw_rect_filled(x1, y1, ix1, iy1 + 1, border_ink)
+            if fill:
+                self._draw_rect_filled(ix1, iy1, x, iy2 + 1, fill_ink)
                 # bottom right
-                if 3 == cuadrant:
-                    self._draw_rect_filled(ix2, iy2, x2, y2 + 1, border_ink)
-                    if fill:
-                        self._draw_rect_filled(x, iy1, ix2, iy2 + 1, fill_ink)
+        if 3 == cuadrant:
+            self._draw_rect_filled(ix2, iy2, x2, y2 + 1, border_ink)
+            if fill:
+                self._draw_rect_filled(x, iy1, ix2, iy2 + 1, fill_ink)
 
     def triangle(self, x1, y1, x2, y2, x3, y3, color):
         self._line(x1, y1, x2, y2, color)
