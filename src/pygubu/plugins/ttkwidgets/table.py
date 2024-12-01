@@ -55,7 +55,8 @@ register_custom_property(
     values=("", "true", "false"),
     default_value="true",
     help=_(
-        "whether columns are sortable by clicking on their headings. The sorting order depends on the type of data (str, float, ...) which can be set with the column method."
+        "whether columns are sortable by clicking on their headings. " 
+        + "The sorting order depends on the type of data (str, float, ...) which can be set with the column method."
     ),
 )
 
