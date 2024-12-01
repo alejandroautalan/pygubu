@@ -97,6 +97,7 @@ register_custom_property(
     "function_new",
     "simplecommandentry",
     help=_(
-        "user defined function for when an item is created, with arg (add_item).\nWhere add_item is a function of this widget."
+        "user defined function for when an item is created, with arg (add_item)." 
+            + "\nWhere add_item is a function of this widget."
     ),
 )
