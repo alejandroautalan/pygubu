@@ -164,6 +164,7 @@ class CalendarFrame(ttk.Frame):
         return super().configure(cnf, **kw)
 
     def _handle_firstweekday(self, kw):
+        calendar_change = False
         key = "firstweekday"
         if key in kw:
             value = kw.pop(key)
