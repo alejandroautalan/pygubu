@@ -266,7 +266,6 @@ class UIDefinition(object):
             # Try to setup:
             #   - container_manager
             #   - gridrc properties. gridrc properties are on the children.
-            clmanager = "grid"
             child_layouts = element.findall("./child/object/layout")
             rclines_loaded = set()
             if child_layouts is not None:
@@ -274,6 +273,7 @@ class UIDefinition(object):
             meta.container_manager = clmanager
 
     def _handle_child_layouts(self, meta, child_layouts, rclines_loaded):
+        clmanager = "grid"
         for layout_node in child_layouts:
             manager = layout_node.get("manager", "grid")
             if manager != "place":
