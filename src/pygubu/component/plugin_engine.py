@@ -27,7 +27,7 @@ class IDesignerPlugin(ABC):
 
     def configure_for_preview(self, builder_uid: str, widget):
         """Make widget just display with minimal functionality."""
-        raise NotImplementedError
+        return None
 
     def ensure_visibility_in_preview(self, builder, selected_uid: str):
         """Ensure visibility of selected_uid in preview.
@@ -35,7 +35,7 @@ class IDesignerPlugin(ABC):
             Activate a tab of a Notebook if the selected widget is
             inside the notebook.
         """
-        raise NotImplementedError
+        return None
 
 
 class IPluginBase(ABC, metaclass=PluginRegistry):
