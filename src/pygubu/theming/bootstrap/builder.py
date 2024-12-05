@@ -85,7 +85,7 @@ class ThemeDefinition:
         self.type = theme_type
 
 
-_colect_styles = True if os.getenv("PYGUBU_DESIGNER_RUNNING") else False
+_colect_styles = bool(os.getenv("PYGUBU_DESIGNER_RUNNING"))
 
 
 class BootstrapThemeBuilder(IThemeBuilder):

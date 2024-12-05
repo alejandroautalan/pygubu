@@ -77,26 +77,15 @@ class ToplevelPreviewMixin(object):
     def configure(self, cnf=None, **kw):
         if cnf:
             return super().configure(cnf, **kw)
-        key = "width"
+        self._handle_width(kw)
+        self._handle_height(kw)
+        key = "menu"
         if key in kw:
-            value = int(kw[key])
-            minsize = self.tl_attrs.get("minsize", None)
-            maxsize = self.tl_attrs.get("maxsize", None)
-            remove = False
-            if minsize and value < minsize[0]:
-                remove = True
-            if maxsize and value > maxsize[0]:
-                remove = True
-            if self._w_set:
-                resizable = self.tl_attrs.get("resizable", None)
-                if resizable and not TKToplevel.RESIZABLE[resizable][0]:
-                    remove = True
-            if remove:
-                kw.pop(key)
-            else:
-                self._w_set = True
-            # save user width setting
-            self._uwidth = value
+            # No menu preview available
+            kw.pop(key)
+        return super().configure(cnf, **kw)
+
+    def _handle_height(self, kw):
         key = "height"
         if key in kw:
             value = int(kw[key])
@@ -117,11 +106,28 @@ class ToplevelPreviewMixin(object):
                 self._h_set = True
             # save user height setting
             self._uheight = value
-        key = "menu"
+
+    def _handle_width(self, kw):
+        key = "width"
         if key in kw:
-            # No menu preview available
-            kw.pop(key)
-        return super().configure(cnf, **kw)
+            value = int(kw[key])
+            minsize = self.tl_attrs.get("minsize", None)
+            maxsize = self.tl_attrs.get("maxsize", None)
+            remove = False
+            if minsize and value < minsize[0]:
+                remove = True
+            if maxsize and value > maxsize[0]:
+                remove = True
+            if self._w_set:
+                resizable = self.tl_attrs.get("resizable", None)
+                if resizable and not TKToplevel.RESIZABLE[resizable][0]:
+                    remove = True
+            if remove:
+                kw.pop(key)
+            else:
+                self._w_set = True
+            # save user width setting
+            self._uwidth = value
 
 
 class ToplevelPreviewBaseBO(BuilderObject):
@@ -206,16 +212,7 @@ class ToplevelPreviewBaseBO(BuilderObject):
                 else:
                     del tw.tl_attrs[pname]
         elif pname == "geometry":
-            if value:
-                w, h = self._get_dimwh(value)
-                if w and h:
-                    w, h = int(w), int(h)
-                    tw.tl_attrs["minsize"] = (w, h)
-                    tw._h_set = tw._w_set = False
-                    tw.configure(width=w, height=h)
-                    tw._geometry_set = True
-                    tw._geom_w = w
-                    tw._geom_h = h
+            self._handle_geometry(value, tw)
         elif pname == "resizable":
             # Do nothing, fake 'resizable' property for Toplevel preview
             pass
@@ -227,3 +224,15 @@ class ToplevelPreviewBaseBO(BuilderObject):
             pass
         else:
             super()._set_property(tw, pname, value)
+
+    def _handle_geometry(self, value, tw):
+        if value:
+            w, h = self._get_dimwh(value)
+            if w and h:
+                w, h = int(w), int(h)
+                tw.tl_attrs["minsize"] = (w, h)
+                tw._h_set = tw._w_set = False
+                tw.configure(width=w, height=h)
+                tw._geometry_set = True
+                tw._geom_w = w
+                tw._geom_h = h

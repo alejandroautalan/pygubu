@@ -245,14 +245,17 @@ class Builder(object):
                 except Exception as e:
                     last_exception = e
 
-            if not module_loaded:
-                error = RuntimeError(
+            self._handle_load_problems(_module, module_loaded, last_exception)
+
+    def _handle_load_problems(self, _module, module_loaded, last_exception):
+        if not module_loaded:
+            error = RuntimeError(
                     f"Failed to import a module for builder id '{_module}'"
                 )
-                logger.exception(error)
-                if last_exception:
-                    raise error from last_exception
-                raise error
+            logger.exception(error)
+            if last_exception:
+                raise error from last_exception
+            raise error
 
     def _load_custom_widgets(self):
         ui_dir = Path().resolve()

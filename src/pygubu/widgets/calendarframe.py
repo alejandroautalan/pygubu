@@ -140,28 +140,11 @@ class CalendarFrame(ttk.Frame):
             if key in kw:
                 self.__options[key] = kw.pop(key)
                 color_change = True
-        key = "state"
-        if key in kw:
-            value = kw.pop(key)
-            self.__options[key] = value
-            self._canvas.config(state=value)
-            for w in self._topframe.winfo_children():
-                if w.winfo_class() == "TButton":
-                    w.config(state=value)
+        self._handle_state(kw)
 
-        calendar_change = False
-        key = "locale"
-        if key in kw:
-            value = locale.normalize(kw.pop(key))
-            self.__options[key] = value
-            calendar_change = True
-        key = "firstweekday"
-        if key in kw:
-            value = kw.pop(key)
-            self.__options[key] = int(value)
-            calendar_change = True
-        if calendar_change:
-            self._reconfigure_calendar()
+ 
+        calendar_change =self._handle_locale(kw)
+        calendar_change = self._handle_firstweekday(kw)
 
         date_change = False
         for key in ("year", "month"):
@@ -179,6 +162,36 @@ class CalendarFrame(ttk.Frame):
                 )
             self._redraw_calendar()
         return super().configure(cnf, **kw)
+
+    def _handle_firstweekday(self, kw):
+        calendar_change = False
+        key = "firstweekday"
+        if key in kw:
+            value = kw.pop(key)
+            self.__options[key] = int(value)
+            calendar_change = True
+        if calendar_change:
+            self._reconfigure_calendar()
+        return calendar_change
+
+    def _handle_locale(self, kw):
+        calendar_change = False
+        key = "locale"
+        if key in kw:
+            value = locale.normalize(kw.pop(key))
+            self.__options[key] = value
+            calendar_change = True
+        return calendar_change
+
+    def _handle_state(self, kw):
+        key = "state"
+        if key in kw:
+            value = kw.pop(key)
+            self.__options[key] = value
+            self._canvas.config(state=value)
+            for w in self._topframe.winfo_children():
+                if w.winfo_class() == "TButton":
+                    w.config(state=value)
 
     config = configure
 

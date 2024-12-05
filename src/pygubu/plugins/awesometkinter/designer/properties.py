@@ -104,7 +104,8 @@ plugin_properties = {
         to=1,
         increment=0.1,
         help=_(
-            "font size to progressbar width ratio, e.g. for a progressbar size 100 pixels, a 0.1 ratio means font size 10"
+            "font size to progressbar width ratio,"
+             + "e.g. for a progressbar size 100 pixels, a 0.1 ratio means font size 10"
         ),
     ),
     "height": [
@@ -165,7 +166,8 @@ plugin_properties = {
         buid=_scrolledtext,
         editor="naturalnumber",
         help=_(
-            "maximum characters allowed in Text widget, text will be truncated from the beginning to match the max chars"
+            "maximum characters allowed in Text widget, "
+             + "text will be truncated from the beginning to match the max chars"
         ),
     ),
     "parent_bg": dict(

@@ -112,7 +112,8 @@ _base_prop_desc = (
             "values": ("", "true", "false"),
             "state": "readonly",
             "help": _(
-                "whether to display the last days of the previous month and the first of the next month."
+                "whether to display the last days of the previous month" 
+                 + " and the first of the next month."
             ),
         },
     ),

@@ -110,12 +110,7 @@ class DockingFramework:
             # avoid errors on pygubu-designer preview
             return
 
-        show_cursor = cls.cursor_moving
-        if cls.moving is False:
-            cls.source_dwidget = cls.curr_dwidget
-            cls.curr_dock.indicators_visible(True)
-            cls.curr_dpane.indicators_visible(True)
-            cls.moving = True
+        cls._handle_cursor_moving()
 
         # If drag ends in a menu, a key error is produced.
         widget_below = None
@@ -165,6 +160,22 @@ class DockingFramework:
         ):
             last_indicator.configure(background=last_indicator._ocolor)
 
+        show_cursor = cls._handle_nootbook(event, widget_below)
+
+        if cls.cursor_showing != show_cursor:
+            cls.curr_dock.configure(cursor=show_cursor)
+
+    @classmethod
+    def _handle_cursor_moving(cls):
+        show_cursor = cls.cursor_moving
+        if cls.moving is False:
+            cls.source_dwidget = cls.curr_dwidget
+            cls.curr_dock.indicators_visible(True)
+            cls.curr_dpane.indicators_visible(True)
+            cls.moving = True
+
+    @classmethod
+    def _handle_nootbook(cls, event, widget_below):
         if cls.bmouse_dwidget and isinstance(widget_below, ttk.Notebook):
             tab_clicked = tab_below_mouse(
                 widget_below, event.x_root, event.y_root
@@ -177,9 +188,7 @@ class DockingFramework:
                     show_cursor = show_cursor = cls.cursor_tab_target
             elif tab_clicked is not None:
                 show_cursor = cls.cursor_tab_target
-
-        if cls.cursor_showing != show_cursor:
-            cls.curr_dock.configure(cursor=show_cursor)
+        return show_cursor
 
     @classmethod
     def drag_end(cls, event):

@@ -153,7 +153,8 @@ register_custom_property(
     "callback",
     "simplecommandentry",
     help=_(
-        "name of the callback function with arguments: (family: str, size: int, bold: bool, italic: bool, underline: bool)"
+        "name of the callback function with arguments: " 
+        + "(family: str, size: int, bold: bool, italic: bool, underline: bool)"
     ),
 )
 
@@ -194,7 +195,8 @@ register_custom_property(
     "callback",
     "simplecommandentry",
     help=_(
-        "name of the callback function with arguments: (bold: bool, italic: bool, underline: bool, overstrike: bool)"
+        "name of the callback function with arguments: " 
+        + "(bold: bool, italic: bool, underline: bool, overstrike: bool)"
     ),
 )
 register_custom_property(

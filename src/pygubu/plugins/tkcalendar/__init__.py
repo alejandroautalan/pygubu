@@ -15,7 +15,7 @@ class TkcalendarLoader(BuilderLoaderPlugin):
 
     def do_activate(self) -> bool:
         spec = importlib.util.find_spec("tkcalendar")
-        return True if spec is not None else False
+        return spec is not None
 
     def get_module_for(self, identifier: str) -> str:
         for module, identifiers in self.module_map.items():
