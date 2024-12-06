@@ -28,3 +28,9 @@ class TkcalendarLoader(BuilderLoaderPlugin):
 
     def can_load(self, identifier: str) -> bool:
         return identifier.startswith("tkcalendar.")
+
+    def get_designer_plugin(self):
+        """Load class that implements IDesignerPlugin"""
+        from .designer.designerplugin import TkcalendarPlugin
+
+        return TkcalendarPlugin()

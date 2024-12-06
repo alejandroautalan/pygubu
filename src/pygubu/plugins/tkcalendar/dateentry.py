@@ -1,9 +1,9 @@
-from pygubu.api.v1 import register_widget, register_custom_property
+from pygubu.api.v1 import register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import TTKEntry
 from tkcalendar import DateEntry
 
 from ..tkcalendar import _designer_tab_label, _plugin_uid
-from .basecalendar import CalendarBaseBO, _base_prop_desc
+from .basecalendar import CalendarBaseBO
 
 
 class DateEntryBO(CalendarBaseBO, TTKEntry):
@@ -23,13 +23,4 @@ register_widget(
     DateEntryBO,
     "DateEntry",
     ("ttk", _designer_tab_label),
-)
-
-for pname, editor, options in _base_prop_desc:
-    register_custom_property(_builder_id, pname, editor, **options)
-
-register_custom_property(
-    _builder_id,
-    "calendar_cursor",
-    "cursorentry",
 )
