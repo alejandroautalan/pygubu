@@ -51,7 +51,6 @@ class DateEntryPreview(DateEntry):
         self.bind("<<ThemeChanged>>", self.schedule_style_update)
 
     def _setup_style(self, event=None):
-        print("DateEntry::setting up style")
         super()._setup_style(event)
         self._theme_name = self.style.theme_use()
 
