@@ -239,7 +239,11 @@ register_widget(
 )
 
 
-_v9_pbar_options = ("text",) if has_tk_version_9 else tuple()
+_v9_pbar_options = (
+    ("anchor", "font", "foreground", "justify", "text", "wraplength")
+    if has_tk_version_9
+    else tuple()
+)
 
 
 class TTKProgressbar(TTKWidgetBO):
