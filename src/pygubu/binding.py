@@ -88,8 +88,11 @@ class AppBindManagerBase(object):
             cls.master = master.winfo_toplevel()
             _os = platform.system()
             if _os in ("Linux", "OpenBSD", "FreeBSD"):
-                master.bind_all("<4>", cls.on_mousewheel, add="+")
-                master.bind_all("<5>", cls.on_mousewheel, add="+")
+                if tk.TkVersion >= 9:
+                    master.bind_all("<MouseWheel>", cls.on_mousewheel, add="+")
+                else:
+                    master.bind_all("<4>", cls.on_mousewheel, add="+")
+                    master.bind_all("<5>", cls.on_mousewheel, add="+")
             else:
                 # Windows and MacOS
                 master.bind_all(
@@ -109,18 +112,35 @@ class AppBindManagerBase(object):
         _os = platform.system()
         view_command = getattr(widget, orient + "view")
         if _os in ("Linux", "OpenBSD", "FreeBSD"):
+            if tk.TkVersion >= 9:
 
-            def on_mousewheel(event):
-                can_keep_scrolling = True
-                if event.num == 4:
-                    view_command("scroll", (-1) * factor, "units")
+                def on_mousewheel(event):
+                    view_command(
+                        "scroll",
+                        (-1) * int((event.delta / 120) * factor),
+                        "units",
+                    )
                     scroll_rs = view_command()
+                    if scroll_rs is None:
+                        return False
                     can_keep_scrolling = scroll_rs[0] != 0.0
-                elif event.num == 5:
-                    view_command("scroll", factor, "units")
-                    scroll_rs = view_command()
-                    can_keep_scrolling = scroll_rs[1] != 1.0
-                return can_keep_scrolling
+                    if event.delta < 0:
+                        can_keep_scrolling = scroll_rs[1] != 1.0
+                    return can_keep_scrolling
+
+            else:
+
+                def on_mousewheel(event):
+                    can_keep_scrolling = True
+                    if event.num == 4:
+                        view_command("scroll", (-1) * factor, "units")
+                        scroll_rs = view_command()
+                        can_keep_scrolling = scroll_rs[0] != 0.0
+                    elif event.num == 5:
+                        view_command("scroll", factor, "units")
+                        scroll_rs = view_command()
+                        can_keep_scrolling = scroll_rs[1] != 1.0
+                    return can_keep_scrolling
 
         elif _os == "Windows":
 
