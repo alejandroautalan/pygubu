@@ -18,9 +18,9 @@ logger = logging.getLogger(__name__)
 #
 # tkinter widgets
 #
-_toplevel_87 = tuple()
-if tk.TkVersion >= 8.7:
-    _toplevel_87 = ("backgroundimage", "tile")
+has_tk_version_9 = tk.TkVersion >= 9
+
+_v9_frame_options = ("backgroundimage", "tile") if has_tk_version_9 else tuple()
 
 
 class TKRootBO(WmMixin, BuilderObject):
@@ -55,7 +55,7 @@ class TKRootBO(WmMixin, BuilderObject):
         "resizable",
         "iconbitmap",
         "iconphoto",
-    ) + _toplevel_87
+    ) + _v9_frame_options
     ro_properties = (
         "baseName",
         "className",
@@ -89,7 +89,7 @@ class TKToplevel(WmMixin, BuilderObject):
         "container",
         "height",
         "width",
-    ) + _toplevel_87
+    ) + _v9_frame_options
     OPTIONS_CUSTOM = (
         "title",
         "geometry",
@@ -139,7 +139,7 @@ class TKFrame(BuilderObject):
         "container",
         "height",
         "width",
-    )
+    ) + _v9_frame_options
     class_ = tk.Frame
     container = True
     container_layout = True

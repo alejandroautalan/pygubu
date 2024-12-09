@@ -86,6 +86,7 @@ class ThemeDefinition:
 
 
 _colect_styles = bool(os.getenv("PYGUBU_DESIGNER_RUNNING"))
+has_tk_version_9 = tk.TkVersion >= 9
 
 
 class BootstrapThemeBuilder(IThemeBuilder):
@@ -1427,10 +1428,12 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         if any([colorname is None, not colorname]):
             background = self.colors.primary
+            foreground = self.colors.fg
             h_ttkstyle = H_STYLE
             v_ttkstyle = V_STYLE
         else:
             background = self.colors.get_color(colorname)
+            foreground = self.colors.get_color(colorname)
             h_ttkstyle = f"{colorname}.{H_STYLE}"
             v_ttkstyle = f"{colorname}.{V_STYLE}"
 
@@ -1438,6 +1441,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         h_element = h_ttkstyle.replace(".TP", ".P")
         htrough_element = f"{h_element}.trough"
         hpbar_element = f"{h_element}.pbar"
+        hpbar_text_element = f"{h_element}.ctext"
+
         if htrough_element not in self.existing_elements:
             settings[htrough_element] = {
                 "element create": ("from", TTK_CLAM),
@@ -1456,6 +1461,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 "pbarrelief": tk.FLAT,
                 "troughcolor": troughcolor,
                 "background": background,
+                "foreground": foreground,
             },
             "layout": [
                 (
@@ -1469,11 +1475,16 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        if has_tk_version_9:
+            children = settings[h_ttkstyle]["layout"][0][1]["children"]
+            pbar_text = (hpbar_text_element, {"side": "left", "sticky": ""})
+            children.append(pbar_text)
 
         # vertical progressbar
         v_element = v_ttkstyle.replace(".TP", ".P")
         vtrough_element = f"{v_element}.trough"
         vpbar_element = f"{v_element}.pbar"
+        # vpbar_text_element = f"{v_element}.ctext"
         if vtrough_element not in self.existing_elements:
             settings[vtrough_element] = {
                 "element create": ("from", TTK_CLAM),
@@ -1505,6 +1516,10 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 )
             ],
         }
+        # if has_tk_version_9:
+        #     children = settings[h_ttkstyle]["layout"][0][1]["children"]
+        #     pbar_text = (vpbar_text_element, {"side": "top", "sticky": ""})
+        #     children.append(pbar_text)
         if colorname:
             self._register_style(h_ttkstyle)
             self._register_style(v_ttkstyle)

@@ -13,6 +13,9 @@ from pygubu.component.builderobject import (
 )
 
 
+has_tk_version_9 = tk.TkVersion >= 9
+
+
 #
 # ttk widgets
 #
@@ -137,6 +140,37 @@ register_widget(
 )
 
 
+_v9_entry_opts = (
+    ("placeholder", "placeholderforeground") if has_tk_version_9 else tuple()
+)
+
+
+class TTKEntry(TTKWidgetBO, EntryBaseBO):
+    OPTIONS_STANDARD = TTKWidgetBO.OPTIONS_STANDARD + ("xscrollcommand",)
+    OPTIONS_SPECIFIC = (
+        "exportselection",
+        "font",
+        "invalidcommand",
+        "justify",
+        "show",
+        "state",
+        "textvariable",
+        "validate",
+        "validatecommand",
+        "width",
+    ) + _v9_entry_opts
+    OPTIONS_CUSTOM = ("text",)
+    class_ = ttk.Entry
+    container = False
+    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
+    command_properties = ("validatecommand", "invalidcommand", "xscrollcommand")
+
+
+register_widget(
+    "ttk.Entry", TTKEntry, "ttk.Entry", (_("Control & Display"), "ttk")
+)
+
+
 class TTKCombobox(TTKWidgetBO):
     OPTIONS_SPECIFIC = (
         "exportselection",
@@ -151,7 +185,7 @@ class TTKCombobox(TTKWidgetBO):
         "validatecommand",
         "invalidcommand",
         "xscrollcommand",
-    )
+    ) + _v9_entry_opts
     class_ = ttk.Combobox
     container = False
     properties = (
@@ -205,30 +239,7 @@ register_widget(
 )
 
 
-class TTKEntry(TTKWidgetBO, EntryBaseBO):
-    OPTIONS_STANDARD = TTKWidgetBO.OPTIONS_STANDARD + ("xscrollcommand",)
-    OPTIONS_SPECIFIC = (
-        "exportselection",
-        "font",
-        "invalidcommand",
-        "justify",
-        "show",
-        "state",
-        "textvariable",
-        "validate",
-        "validatecommand",
-        "width",
-    )
-    OPTIONS_CUSTOM = ("text",)
-    class_ = ttk.Entry
-    container = False
-    properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
-    command_properties = ("validatecommand", "invalidcommand", "xscrollcommand")
-
-
-register_widget(
-    "ttk.Entry", TTKEntry, "ttk.Entry", (_("Control & Display"), "ttk")
-)
+_v9_pbar_options = ("text",) if has_tk_version_9 else tuple()
 
 
 class TTKProgressbar(TTKWidgetBO):
@@ -239,7 +250,7 @@ class TTKProgressbar(TTKWidgetBO):
         "maximum",
         "value",
         "variable",
-    )  # 'phase' is read-only
+    ) + _v9_pbar_options
     class_ = ttk.Progressbar
     container = False
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
@@ -672,14 +683,18 @@ register_widget(
 
 class TTKSpinboxBO(TTKWidgetBO, EntryBaseBO):
     OPTIONS_STANDARD = TTKEntry.OPTIONS_STANDARD
-    OPTIONS_SPECIFIC = TTKEntry.OPTIONS_SPECIFIC + (
-        "from_",
-        "to",
-        "increment",
-        "values",
-        "wrap",
-        "format",
-        "command",
+    OPTIONS_SPECIFIC = (
+        TTKEntry.OPTIONS_SPECIFIC
+        + (
+            "from_",
+            "to",
+            "increment",
+            "values",
+            "wrap",
+            "format",
+            "command",
+        )
+        + _v9_entry_opts
     )
     OPTIONS_CUSTOM = TTKEntry.OPTIONS_CUSTOM
     class_ = None

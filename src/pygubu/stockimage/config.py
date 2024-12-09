@@ -13,6 +13,9 @@ if os.name == "nt":
 if tk.TkVersion >= 8.6:
     TK_PHOTO_FORMATS.append(".png")
 
+if tk.TkVersion >= 9.0:
+    TK_PHOTO_FORMATS.append(".svg")
+
 
 TK_IMAGE_FORMATS = TK_PHOTO_FORMATS + TK_BITMAP_FORMATS
 
