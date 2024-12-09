@@ -1169,11 +1169,11 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         if any([colorname is None, not colorname]):
             ttkstyle = STYLE
-            element = f"{ttkstyle.replace('TC','C')}"
+            element = f"{ttkstyle.replace('TC', 'C')}"
             focuscolor = self.colors.primary
         else:
             ttkstyle = f"{colorname}.{STYLE}"
-            element = f"{ttkstyle.replace('TC','C')}"
+            element = f"{ttkstyle.replace('TC', 'C')}"
             focuscolor = self.colors.get_color(colorname)
 
         if all([colorname, colorname is not None]):

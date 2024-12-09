@@ -735,8 +735,10 @@ class OptionMenuBO(OptionMenuBaseMixin, BuilderObject):
         variable_arg,
         command_arg,
     ):
-        return (f"{identifier} = {classname}({master}, {variable_arg}," 
-                    + f" {value_arg}, *__values, command={command_arg})")
+        return (
+            f"{identifier} = {classname}({master}, {variable_arg},"
+            + f" {value_arg}, *__values, command={command_arg})"
+        )
 
 
 register_widget(
