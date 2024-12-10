@@ -65,7 +65,7 @@ class ExecutionContext:
             self._noop_trans if translator is None else translator
         )
 
-    def _noop_trans(s):
+    def _noop_trans(self, s):
         """Default no-op translator"""
         return s
 
