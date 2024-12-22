@@ -21,11 +21,13 @@ has_tk_version_9 = tk.TkVersion >= 9
 #
 class TTKWidgetBO(BuilderObject):
     OPTIONS_LABEL = (
+        "compound",
+        "font",
+        "image",
+        "padding",
         "text",
         "textvariable",
         "underline",
-        "image",
-        "compound",
         "width",
     )
     OPTIONS_COMPATIBILITY = ("state",)
