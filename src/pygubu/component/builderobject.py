@@ -207,7 +207,9 @@ class BuilderObject(object):
             elif "value" in self.wmeta.properties and pname == "variable":
                 propvalue.set(self.wmeta.properties["value"])
         elif pname in self.tkimage_properties:
-            propvalue = self.builder.get_image(value)
+            if value:
+                # image value should not be empty here.
+                propvalue = self.builder.get_image(value)
         elif pname == "takefocus":
             if value:
                 propvalue = tk.getboolean(value)
