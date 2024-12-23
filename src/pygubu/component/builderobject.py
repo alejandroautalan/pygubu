@@ -230,6 +230,40 @@ class BuilderObject(object):
                 logger.error(msg, pname, repr(self.class_), str(e))
                 # logger.exception(e)
 
+    def _get_default_value(self, widget: tk.Widget, pname: str, default=None):
+        """
+        Query widget instance for property default value.
+        Follow tk configure convention.
+        """
+        try:
+            description = widget.configure(pname)
+            # print(description)
+        except tk.TclError:
+            logger.error("Failed to get default value for property %s", pname)
+            return default
+
+        has_default = False
+        value = None
+        if isinstance(description, (tuple, list)):
+            if len(description) == 5:
+                #  0: option name     1: database name
+                #  2: database class  3: default value,
+                #  4: current value
+                value = description[3]
+                has_default = True
+
+                # Post processing for special values:
+                if pname == "takefocus" and value == "ttk::takefocus":
+                    wname = str(widget)
+                    value = widget.tk.eval(f"{value} {wname}")
+        return value if has_default else default
+
+    def unset_property(self, pname, target=None):
+        """Try setting the widget property to its default value."""
+        widget = target if target is not None else self.widget
+        unset_value = self._get_default_value(widget, pname)
+        self._set_property(widget, pname, unset_value)
+
     def _parent_cancels_children_layout(self) -> bool:
         override = False
         if self.parent_bo is not None:
