@@ -39,8 +39,8 @@ h_state = _("Combobox state.")  # combobox
 h_modal = _("Determines if dialog is run in normal or modal mode.")  # Dialog
 h_weight = _("The weight value for the pane.")  # DockPane
 h_mustexist = _(
-    "Dialog option. Determines if path must exist for directory and file dialogs." 
-        + " The default value is True."
+    "Dialog option. Determines if path must exist for directory and file dialogs."
+    + " The default value is True."
 )  # PathChooserInput
 h_initialdir = _("Dialog option. Sets initial directory.")  # PathChooserInput
 h_title = _("Dialog option. Sets dialog title.")  # PathChooserInput
@@ -101,6 +101,11 @@ plugin_properties = {
         dict(buid=_HideableFrame, editor="dimensionentry", default_value=200),
         dict(
             buid=_forms_FrameFormBuilder,
+            editor="dimensionentry",
+            default_value=200,
+        ),
+        dict(
+            buid=[_Dialog, _Dialog_old],
             editor="dimensionentry",
             default_value=200,
         ),
@@ -269,6 +274,11 @@ plugin_properties = {
             default_value=200,
         ),
         dict(buid=_PathChoserButton, editor="integernumber"),
+        dict(
+            buid=[_Dialog, _Dialog_old],
+            editor="dimensionentry",
+            default_value=200,
+        ),
     ],
     "year": dict(
         buid=[_CalendarFrame, _CalendarFrame_old], editor="naturalnumber"

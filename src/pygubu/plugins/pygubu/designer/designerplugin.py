@@ -10,7 +10,8 @@ class PygubuDesignerPlugin(IDesignerPlugin):
         if builder_uid in (
             "tk.Tk",
             "tk.Toplevel",
-            "pygubu.builder.widgets.dialog",
+            "pygubu.widgets.Dialog",
+            "pygubu.builder.widgets.dialog",  # This will be removed
         ):
             return ToplevelFramePreviewBO
         return None
