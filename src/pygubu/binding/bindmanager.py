@@ -1,5 +1,3 @@
-__all__ = ["remove_binding", "ApplicationLevelBindManager"]
-
 import logging
 import platform
 import tkinter as tk
@@ -8,44 +6,6 @@ from pygubu.utils.widget import iter_to_toplevel
 
 
 logger = logging.getLogger(__name__)
-
-
-def bindings(widget, seq):
-    return [x for x in widget.bind(seq).splitlines() if x.strip()]
-
-
-def _funcid(binding):
-    return binding.split()[1][3:]
-
-
-def remove_binding(widget, seq, index=None, funcid=None):
-    b = bindings(widget, seq)
-
-    if index is not None:
-        try:
-            binding = b[index]
-            widget.unbind(seq, _funcid(binding))
-            b.remove(binding)
-        except IndexError:
-            logger.info("Binding #%d not defined.", index)
-            return
-
-    elif funcid:
-        binding = None
-        for x in b:
-            if _funcid(x) == funcid:
-                binding = x
-                b.remove(binding)
-                widget.unbind(seq, funcid)
-                break
-        if not binding:
-            logger.info('Binding "%s" not defined.', funcid)
-            return
-    else:
-        raise ValueError("No index or function id defined.")
-
-    for x in b:
-        widget.bind(seq, "+" + x, 1)
 
 
 class AppBindManagerBase(object):
@@ -57,6 +17,7 @@ class AppBindManagerBase(object):
 
     @classmethod
     def on_mousewheel(cls, event):
+        # print("on_mousewheel, cls", event)
         widget_below = event.widget
         if not isinstance(widget_below, tk.Widget):
             try:
@@ -66,6 +27,11 @@ class AppBindManagerBase(object):
             except KeyError:
                 widget_below = None
         if widget_below:
+            # print("widget:", type(widget_below), widget_below)
+            # print("widget_bindings:", widget_below.bind())
+            # cname = widget_below.winfo_class()
+            # print("class_bindings:", cname, widget_below.bind_class(cname))
+            # print("tags:", widget_below.bindtags())
             for w in iter_to_toplevel(widget_below):
                 if w in cls.mw_listeners:
                     can_keep_scrolling = w.on_mousewheel(event)
