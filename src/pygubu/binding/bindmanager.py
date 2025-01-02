@@ -8,6 +8,70 @@ from pygubu.utils.widget import iter_to_toplevel
 logger = logging.getLogger(__name__)
 
 
+class MouseWheelCommand:
+    def __init__(self, view_command, factor=1):
+        self.view_command = view_command
+        self.factor = factor
+
+
+class UnixMouseWheelCommandTk9(MouseWheelCommand):
+    def __call__(self, event=None) -> bool:
+        self.view_command(
+            "scroll",
+            (-1) * int((event.delta / 120) * self.factor),
+            "units",
+        )
+        scroll_rs = self.view_command()
+        if scroll_rs is None:
+            return False
+        can_keep_scrolling = scroll_rs[0] != 0.0
+        if event.delta < 0:
+            can_keep_scrolling = scroll_rs[1] != 1.0
+        return can_keep_scrolling
+
+
+class UnixMouseWheelCommandTk8(MouseWheelCommand):
+    def __call__(self, event=None) -> bool:
+        can_keep_scrolling = True
+        if event.num == 4:
+            self.view_command("scroll", (-1) * self.factor, "units")
+            scroll_rs = self.view_command()
+            can_keep_scrolling = scroll_rs[0] != 0.0
+        elif event.num == 5:
+            self.view_command("scroll", self.factor, "units")
+            scroll_rs = self.view_command()
+            can_keep_scrolling = scroll_rs[1] != 1.0
+        return can_keep_scrolling
+
+
+class WindowsMouseWheelCommand(MouseWheelCommand):
+    def __call__(self, event=None) -> bool:
+        self.view_command(
+            "scroll", (-1) * int((event.delta / 120) * self.factor), "units"
+        )
+        scroll_rs = self.view_command()
+        can_keep_scrolling = scroll_rs[0] != 0.0
+        if event.delta < 0:
+            can_keep_scrolling = scroll_rs[1] != 1.0
+        return can_keep_scrolling
+
+
+class DarwingMouseWheelCommand(MouseWheelCommand):
+    def __call__(self, event=None) -> bool:
+        self.view_command("scroll", event.delta, "units")
+        scroll_rs = self.view_command()
+        can_keep_scrolling = scroll_rs[0] != 0.0
+        if event.delta < 0:
+            can_keep_scrolling = scroll_rs[1] != 1.0
+        return can_keep_scrolling
+
+
+class UnknownMouseWheelCommand(MouseWheelCommand):
+    def __call__(self, event=None) -> bool:
+        # Unknown platform scroll method
+        return False
+
+
 class AppBindManagerBase(object):
     # Acces to tk instance
     master: tk.Widget = None
@@ -17,6 +81,13 @@ class AppBindManagerBase(object):
 
     @classmethod
     def on_mousewheel(cls, event):
+        """
+        Manage Application level mousewheel event
+
+        Here we expect that the widget in wm_listeners list,
+        have a method "on_mousewheel" created with the
+        make_onmousewheel_cb function of this class.
+        """
         # print("on_mousewheel, cls", event)
         widget_below = event.widget
         if not isinstance(widget_below, tk.Widget):
@@ -77,63 +148,18 @@ class AppBindManagerBase(object):
         """
         _os = platform.system()
         view_command = getattr(widget, orient + "view")
+        on_mousewheel = None
         if _os in ("Linux", "OpenBSD", "FreeBSD"):
             if tk.TkVersion >= 9:
-
-                def on_mousewheel(event):
-                    view_command(
-                        "scroll",
-                        (-1) * int((event.delta / 120) * factor),
-                        "units",
-                    )
-                    scroll_rs = view_command()
-                    if scroll_rs is None:
-                        return False
-                    can_keep_scrolling = scroll_rs[0] != 0.0
-                    if event.delta < 0:
-                        can_keep_scrolling = scroll_rs[1] != 1.0
-                    return can_keep_scrolling
-
+                on_mousewheel = UnixMouseWheelCommandTk9(view_command, factor)
             else:
-
-                def on_mousewheel(event):
-                    can_keep_scrolling = True
-                    if event.num == 4:
-                        view_command("scroll", (-1) * factor, "units")
-                        scroll_rs = view_command()
-                        can_keep_scrolling = scroll_rs[0] != 0.0
-                    elif event.num == 5:
-                        view_command("scroll", factor, "units")
-                        scroll_rs = view_command()
-                        can_keep_scrolling = scroll_rs[1] != 1.0
-                    return can_keep_scrolling
-
+                on_mousewheel = UnixMouseWheelCommandTk8(view_command, factor)
         elif _os == "Windows":
-
-            def on_mousewheel(event):
-                view_command(
-                    "scroll", (-1) * int((event.delta / 120) * factor), "units"
-                )
-                scroll_rs = view_command()
-                can_keep_scrolling = scroll_rs[0] != 0.0
-                if event.delta < 0:
-                    can_keep_scrolling = scroll_rs[1] != 1.0
-                return can_keep_scrolling
-
+            on_mousewheel = WindowsMouseWheelCommand(view_command, factor)
         elif _os == "Darwin":
-
-            def on_mousewheel(event):
-                view_command("scroll", event.delta, "units")
-                scroll_rs = view_command()
-                can_keep_scrolling = scroll_rs[0] != 0.0
-                if event.delta < 0:
-                    can_keep_scrolling = scroll_rs[1] != 1.0
-                return can_keep_scrolling
-
+            on_mousewheel = DarwingMouseWheelCommand(view_command, factor)
         else:
-            # FIXME: unknown platform scroll method
-            def on_mousewheel(event):
-                pass
+            on_mousewheel = UnknownMouseWheelCommand(view_command, factor)
 
         return on_mousewheel
 
