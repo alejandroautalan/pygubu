@@ -73,11 +73,45 @@ class UnknownMouseWheelCommand(MouseWheelCommand):
 
 
 class AppBindManagerBase(object):
-    # Acces to tk instance
-    master: tk.Widget = None
+    CLASS_NAME = "TAppBindManager"
+    FLAG_NAME = "_appbind_visited"
+    # Acces to tk instances
+    masters: list[tk.Widget] = []
     # Mouse wheel support
     mw_listeners = []  # Mousewheel listeners
-    mw_initialized = False
+
+    @classmethod
+    def master_for_path(cls, widget_path: str):
+        master_found = None
+        for master in cls.masters:
+            exists = master.tk.eval(f"winfo exists {widget_path}")
+            if exists:
+                master_found = master
+                break
+        return master_found
+
+    @classmethod
+    def on_mousewheel_enter(cls, event):
+        """Prepare widget for future mousewheel event."""
+        widget_below = event.widget
+        if not isinstance(widget_below, tk.Widget):
+            return
+        if not hasattr(widget_below, cls.FLAG_NAME):
+            flag_value = cls.has_mousewheel_listener(widget_below)
+            setattr(widget_below, cls.FLAG_NAME, flag_value)
+            if flag_value:
+                # print(f"Preparing widget for mousewheel {widget_below}")
+                # cname = widget_below.winfo_class()
+                tags = list(widget_below.bindtags())
+                tags.insert(0, cls.CLASS_NAME)
+                widget_below.bindtags(tags)
+
+    @classmethod
+    def has_mousewheel_listener(cls, widget: tk.Widget) -> bool:
+        for w in iter_to_toplevel(widget):
+            if w in cls.mw_listeners:
+                return True
+        return False
 
     @classmethod
     def on_mousewheel(cls, event):
@@ -92,22 +126,25 @@ class AppBindManagerBase(object):
         widget_below = event.widget
         if not isinstance(widget_below, tk.Widget):
             try:
-                widget_below = cls.master.winfo_containing(
+                master = cls.master_for_path(widget_below)
+                widget_below = master.winfo_containing(
                     event.x_root, event.y_root
                 )
-            except KeyError:
+            except (AttributeError, KeyError):
                 widget_below = None
+        # scroll_performed = False
         if widget_below:
-            # print("widget:", type(widget_below), widget_below)
-            # print("widget_bindings:", widget_below.bind())
-            # cname = widget_below.winfo_class()
-            # print("class_bindings:", cname, widget_below.bind_class(cname))
-            # print("tags:", widget_below.bindtags())
             for w in iter_to_toplevel(widget_below):
                 if w in cls.mw_listeners:
                     can_keep_scrolling = w.on_mousewheel(event)
                     if can_keep_scrolling:
+                        # scroll_performed = True
                         break
+        # if scroll_performed:
+        #    print("scroll performed")
+
+        # For now just stop event propagation.
+        return "break"
 
     @classmethod
     def mousewheel_bind(cls, widget):
@@ -121,23 +158,38 @@ class AppBindManagerBase(object):
 
     @classmethod
     def init_mousewheel_binding(cls, master):
-        if not cls.mw_initialized:
-            cls.master = master.winfo_toplevel()
+        top = master.winfo_toplevel()
+        if top not in cls.masters:
+            cls.masters.append(top)
+            # Bind to Enter event to prepare widgets
+            top.bind_all("<Enter>", cls.on_mousewheel_enter)
+
+            # Bind Wheel events to a specific class name
+            # so we cant "break" the event and stop propagation
             _os = platform.system()
             if _os in ("Linux", "OpenBSD", "FreeBSD"):
                 if tk.TkVersion >= 9:
-                    master.bind_all("<MouseWheel>", cls.on_mousewheel, add="+")
+                    top.bind_class(
+                        cls.CLASS_NAME,
+                        "<MouseWheel>",
+                        cls.on_mousewheel,
+                        add="+",
+                    )
                 else:
-                    master.bind_all("<4>", cls.on_mousewheel, add="+")
-                    master.bind_all("<5>", cls.on_mousewheel, add="+")
+                    top.bind_class(
+                        cls.CLASS_NAME, "<4>", cls.on_mousewheel, add="+"
+                    )
+                    top.bind_class(
+                        cls.CLASS_NAME, "<5>", cls.on_mousewheel, add="+"
+                    )
             else:
                 # Windows and MacOS
-                master.bind_all(
+                top.bind_class(
+                    cls.CLASS_NAME,
                     "<MouseWheel>",
                     cls.on_mousewheel,
                     add="+",
                 )
-            cls.mw_initialized = True
 
     @classmethod
     def make_onmousewheel_cb(cls, widget, orient, factor=1):
