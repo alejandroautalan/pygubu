@@ -162,7 +162,7 @@ class AppBindManagerBase(object):
         if top not in cls.masters:
             cls.masters.append(top)
             # Bind to Enter event to prepare widgets
-            top.bind_all("<Enter>", cls.on_mousewheel_enter)
+            top.bind_all("<Enter>", cls.on_mousewheel_enter, add="+")
 
             # Bind Wheel events to a specific class name
             # so we cant "break" the event and stop propagation
