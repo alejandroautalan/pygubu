@@ -15,7 +15,7 @@ from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
 
 class FloodgaugeBO(TTKProgressbar):
     class_ = Floodgauge
-    properties = TTKProgressbar.properties + ("mask", "textvariable")
+    properties = TTKProgressbar.properties + ("mask", "text", "textvariable")
 
 
 _builder_uid = f"{_plugin_uid}.Floodgauge"
