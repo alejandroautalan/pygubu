@@ -2738,6 +2738,17 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 "element create": ("from", from_),
             }
 
+        h_layout = None
+        v_layout = None
+        if tk.TkVersion >= 9:
+            h_layout, v_layout = self.floodgauge_layout_tk9(
+                h_element, v_element
+            )
+        else:
+            h_layout, v_layout = self.floodgauge_layout_tk8(
+                h_element, v_element
+            )
+
         settings[h_ttkstyle] = {
             "configure": dict(
                 thickness=50,
@@ -2752,18 +2763,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 anchor=tk.CENTER,
                 font=FLOOD_FONT,
             ),
-            "layout": [
-                (
-                    f"{h_element}.trough",
-                    {
-                        "children": [
-                            (f"{h_element}.pbar", {"sticky": tk.NS}),
-                            ("Floodgauge.label", {"sticky": ""}),
-                        ],
-                        "sticky": tk.NSEW,
-                    },
-                )
-            ],
+            "layout": h_layout,
         }
         settings[v_ttkstyle] = {
             "configure": dict(
@@ -2779,20 +2779,78 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 anchor=tk.CENTER,
                 font=FLOOD_FONT,
             ),
-            "layout": [
-                (
-                    f"{v_element}.trough",
-                    {
-                        "children": [
-                            (f"{v_element}.pbar", {"sticky": tk.EW}),
-                            ("Floodgauge.label", {"sticky": ""}),
-                        ],
-                        "sticky": tk.NSEW,
-                    },
-                )
-            ],
+            "layout": v_layout,
         }
 
         if colorname:
             self._register_style(h_ttkstyle)
             self._register_style(v_ttkstyle)
+
+    def floodgauge_layout_tk9(self, h_element: str, v_element: str) -> tuple:
+        h_layout = [
+            (
+                f"{h_element}.trough",
+                {
+                    "children": [
+                        (f"{h_element}.pbar", {"side": "left", "sticky": "ns"}),
+                        (
+                            f"{h_element}.ctext",
+                            # {"side": "left", "sticky": ""}
+                            {"side": "left", "sticky": "", "expand": True},
+                        ),
+                    ],
+                    "sticky": "nswe",
+                },
+            )
+        ]
+
+        v_layout = [
+            (
+                f"{v_element}.trough",
+                {
+                    "children": [
+                        (
+                            f"{v_element}.pbar",
+                            {"side": "bottom", "sticky": "we"},
+                        ),
+                        (f"{v_element}.ctext", {"sticky": "", "expand": True}),
+                    ],
+                    "sticky": "nswe",
+                },
+            )
+        ]
+        return h_layout, v_layout
+
+    def floodgauge_layout_tk8(self, h_element: str, v_element: str) -> tuple:
+        TKCLASS_NAME = "Floodgauge"
+        h_layout = [
+            (
+                f"{h_element}.trough",
+                {
+                    "children": [
+                        (
+                            f"{h_element}.pbar",
+                            {"sticky": "ns"},
+                        ),
+                        (f"{TKCLASS_NAME}.label", {"sticky": ""}),
+                    ],
+                    "sticky": "nsew",
+                },
+            )
+        ]
+        v_layout = [
+            (
+                f"{v_element}.trough",
+                {
+                    "children": [
+                        (
+                            f"{v_element}.pbar",
+                            {"sticky": "ew"},
+                        ),
+                        (f"{TKCLASS_NAME}.label", {"sticky": ""}),
+                    ],
+                    "sticky": "nsew",
+                },
+            )
+        ]
+        return h_layout, v_layout
