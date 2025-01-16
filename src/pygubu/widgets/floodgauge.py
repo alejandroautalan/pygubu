@@ -58,6 +58,73 @@ class FloodgaugeStyleManager:
         style.element_create(f"{h_element}.pbar", "from", "default")
         style.element_create(f"{v_element}.trough", "from", "clam")
         style.element_create(f"{v_element}.pbar", "from", "default")
+
+        h_layout = None
+        v_layout = None
+        if tk.TkVersion >= 9:
+            h_layout, v_layout = cls.floodgauge_layout_tk9(h_element, v_element)
+        else:
+            h_layout, v_layout = cls.floodgauge_layout_tk8(h_element, v_element)
+
+        bg_color = style.lookup("TProgressbar", "background")
+        default_conf = dict(
+            background=bg_color,
+            borderwidth=1,
+            font="-size 14",
+            thickness=50,
+            pbarrelief=tk.FLAT,
+            justify=tk.CENTER,
+            anchor=tk.CENTER,
+        )
+        style.layout(H_STYLE, h_layout)
+        style.configure(H_STYLE, **default_conf)
+        style.layout(V_STYLE, v_layout)
+        style.configure(V_STYLE, **default_conf)
+
+        cls.CONFIGURED_THEMES = [style.theme_use()]
+        cls.STYLE_LAYOUT_H = h_layout
+        cls.STYLE_LAYOUT_V = v_layout
+        cls.STYLE_CONF = default_conf
+        cls.STYLE_INITIALIZED = True
+
+    @classmethod
+    def floodgauge_layout_tk9(cls, h_element: str, v_element: str) -> tuple:
+        h_layout = [
+            (
+                f"{h_element}.trough",
+                {
+                    "children": [
+                        (f"{h_element}.pbar", {"side": "left", "sticky": "ns"}),
+                        (
+                            f"{h_element}.ctext",
+                            # {"side": "left", "sticky": ""}
+                            {"side": "left", "sticky": "", "expand": True},
+                        ),
+                    ],
+                    "sticky": "nswe",
+                },
+            )
+        ]
+
+        v_layout = [
+            (
+                f"{v_element}.trough",
+                {
+                    "children": [
+                        (
+                            f"{v_element}.pbar",
+                            {"side": "bottom", "sticky": "we"},
+                        ),
+                        (f"{v_element}.ctext", {"sticky": "", "expand": True}),
+                    ],
+                    "sticky": "nswe",
+                },
+            )
+        ]
+        return h_layout, v_layout
+
+    @classmethod
+    def floodgauge_layout_tk8(cls, h_element: str, v_element: str) -> tuple:
         h_layout = [
             (
                 f"{h_element}.trough",
@@ -88,26 +155,7 @@ class FloodgaugeStyleManager:
                 },
             )
         ]
-        bg_color = style.lookup("TProgressbar", "background")
-        default_conf = dict(
-            background=bg_color,
-            borderwidth=1,
-            font="-size 14",
-            thickness=50,
-            pbarrelief=tk.FLAT,
-            justify=tk.CENTER,
-            anchor=tk.CENTER,
-        )
-        style.layout(H_STYLE, h_layout)
-        style.configure(H_STYLE, **default_conf)
-        style.layout(V_STYLE, v_layout)
-        style.configure(V_STYLE, **default_conf)
-
-        cls.CONFIGURED_THEMES = [style.theme_use()]
-        cls.STYLE_LAYOUT_H = h_layout
-        cls.STYLE_LAYOUT_V = v_layout
-        cls.STYLE_CONF = default_conf
-        cls.STYLE_INITIALIZED = True
+        return h_layout, v_layout
 
     @classmethod
     def reconfigure_layout(cls, master):
@@ -134,7 +182,7 @@ class FloodgaugeStyleManager:
         )
 
 
-class Floodgauge(WidgetConfigureMixin, ttk.Progressbar):
+class FloodgaugeBase(WidgetConfigureMixin, ttk.Progressbar):
     """A widget that shows the status of a long-running operation
     with an optional text indicator.
 
@@ -145,43 +193,137 @@ class Floodgauge(WidgetConfigureMixin, ttk.Progressbar):
     user know that something is happening.
     """
 
-    INSTANCE_COUNT = 0
     FGSM = FloodgaugeStyleManager()
+
+    def __init__(
+        self,
+        master=None,
+        *,
+        mask=None,
+        variable=None,
+        textvariable=None,
+        value=0,
+        text="",
+        style=None,
+        class_=None,
+        **kw,
+    ):
+        self.FGSM.define_layout(master)
+        self._traceid = None
+        self._pmask = mask
+        self._ptextvar = textvariable
+        self._pvariable = variable
+        if variable is None:
+            self._pvariable = tk.IntVar(master, value=value)
+        if textvariable is None:
+            self._ptextvar = tk.StringVar(master, value=text)
+
+        if style is None:
+            orient = kw.get("orient", "horizontal")
+            style = self.FGSM.style_for_orient(orient)
+        if class_ is None:
+            class_ = self.FGSM.TKCLASS_NAME
+
+        kw["value"] = value
+        kw["variable"] = self._pvariable
+        kw["style"] = style
+        kw["class_"] = class_
+        super().__init__(master, **kw)
+        if self._pmask is not None:
+            self._set_mask()
+        self.bind("<<ThemeChanged>>", self._on_theme_change)
+        self.bind("<<Configure>>", self._on_theme_change)
+
+    def _widget_cget(self, option):
+        if option == "value":
+            return self._pvariable.get()
+        if option == "text":
+            return self._ptextvar.get()
+        if option == "textvariable":
+            return self._ptextvar
+        if option == "mask":
+            return self._pmask
+        return super()._widget_cget(option)
+
+    def _configure_get(self, option):
+        if option in ("value", "text", "mask", "textvariable"):
+            return self._widget_cget(option)
+        return super()._configure_get(option)
+
+    def _configure_set(self, **kw):
+        update_text = False
+        if "variable" in kw:
+            new_var = kw["variable"]
+            self._unset_mask()
+            self._pvariable = new_var
+            if new_var and self._pmask:
+                self._set_mask()
+            update_text = True
+        if "value" in kw:
+            self._pvariable.set(kw.pop("value"))
+            update_text = True
+        if "text" in kw:
+            self._ptextvar.set(kw.pop("text"))
+            update_text = True
+        if "mask" in kw:
+            self._pmask = kw.pop("mask")
+            if self._pmask:
+                self._set_mask()
+            update_text = True
+        if "orient" in kw:
+            new_orient = kw.get("orient")
+            current = super()._configure_get("orient")
+            if new_orient != current:
+                style = kw.get("style", super()._configure_get("style"))
+                if new_orient[1:] not in style:
+                    kw["style"] = self.FGSM.style_for_orient(new_orient)
+        if update_text:
+            self._set_widget_text()
+        return super()._configure_set(**kw)
+
+    def _set_mask(self):
+        if self._traceid is None:
+            self._traceid = self._pvariable.trace_add(
+                "write", self._set_widget_text
+            )
+
+    def _unset_mask(self):
+        if self._traceid is not None:
+            self._pvariable.trace_remove("write", self._traceid)
+        self._traceid = None
+
+    def _set_widget_text(self, *_):
+        if self._pmask is None:
+            text = self._ptextvar.get()
+        else:
+            value = self._pvariable.get()
+            text = self._pmask.format(value)
+        super()._configure_set(text=text)
+
+    def _on_theme_change(self, event: tk.Event = None):
+        self.FGSM.reconfigure_layout(self)
+
+
+class FloodgaugeTk8(FloodgaugeBase):
+    INSTANCE_COUNT = 0
 
     def __init__(self, master=None, **kw):
         self.FGSM.define_layout(master)
+
         self._uid = self._new_uid()
-        self._pmask = kw.pop("mask", None)
         self._pfont = kw.pop("font", "helvetica 10")
-        self._pvariable = kw.get("variable", None)
-        self._ptextvar = kw.pop("textvariable", None)
-        self._traceid = None
 
         orient = kw.get("orient", "horizontal")
         default_style = self.FGSM.style_for_orient(orient)
         user_defined_style = kw.get(
             "style", default_style
         )  # user defined style
-        value = kw.get("value", 0)
-
-        text = kw.pop("text", "")
-        if self._pvariable is None:
-            self._pvariable = tk.IntVar(master, value=value)
-        if self._ptextvar is None:
-            self._ptextvar = tk.StringVar(master, value=text)
 
         kw["style"] = self._new_instance_style(
             master, orient, user_defined_style
         )
-        kw["class_"] = self.FGSM.TKCLASS_NAME
-        kw["value"] = value
-        kw["variable"] = self._pvariable
         super().__init__(master, **kw)
-        self.bind("<<ThemeChanged>>", self._on_theme_change)
-        self.bind("<<Configure>>", self._on_theme_change)
         self._set_widget_text()
-        if self._pmask is not None:
-            self._set_mask()
 
     @classmethod
     def _new_uid(cls):
@@ -198,17 +340,6 @@ class Floodgauge(WidgetConfigureMixin, ttk.Progressbar):
         self.tk.call("ttk::style", "configure", ttkstyle, "-text", text)
         self.tk.call("ttk::style", "configure", ttkstyle, "-font", self._pfont)
 
-    def _set_mask(self):
-        if self._traceid is None:
-            self._traceid = self._pvariable.trace_add(
-                "write", self._set_widget_text
-            )
-
-    def _unset_mask(self):
-        if self._traceid is not None:
-            self._pvariable.trace_remove("write", self._traceid)
-        self._traceid = None
-
     def _new_instance_style(self, master, orient: str, style: str) -> str:
         instance_style = style
         uid = f"{self._uid}."
@@ -224,75 +355,52 @@ class Floodgauge(WidgetConfigureMixin, ttk.Progressbar):
             pass
         if not layout_exists:
             s.layout(instance_style, self.FGSM.layout_for_orient(orient))
+            # print(f"creating layout: {instance_style}")
         return instance_style
 
-    def _on_theme_change(self, event=None):
-        self.FGSM.reconfigure_layout(self)
+    def _on_theme_change(self, event: tk.Event = None):
+        super()._on_theme_change(event)
         self._set_widget_text()
 
     def _widget_cget(self, option):
-        if option == "value":
-            return self._pvariable.get()
-        if option == "text":
-            return self._ptextvar.get()
-        if option == "mask":
-            return self._pmask
         if option == "font":
             return self._pfont
-        if option == "textvariable":
-            return self._ptextvar
         return super()._widget_cget(option)
 
     def _configure_get(self, option):
-        if option in ("value", "text", "mask", "font", "textvariable"):
+        if option == "font":
             return self._widget_cget(option)
         return super()._configure_get(option)
 
     def _configure_set(self, **kw):
         update_text = False
         update_style = False
-
-        if "style" in kw or "orient" in kw:
-            update_text = True
+        if "orient" in kw or "style" in kw:
             update_style = True
-        pname = "variable"
-        if pname in kw:
-            new_var = kw[pname]
-            self._unset_mask()
-            self._pvariable = new_var
-            if new_var and self._pmask:
-                self._set_mask()
-            update_text = True
-        pname = "value"
-        if pname in kw:
-            self._pvariable.set(kw.pop(pname))
-            update_text = True
-        pname = "text"
-        if pname in kw:
-            self._ptextvar.set(kw.pop(pname))
-            update_text = True
-        pname = "mask"
-        if pname in kw:
-            self._pmask = kw.pop(pname)
-            if self._pmask:
-                self._set_mask()
-            update_text = True
-        pname = "font"
-        if pname in kw:
-            self._pfont = kw.pop(pname)
-            update_text = True
-        pname = "textvariable"
-        if pname in kw:
-            self._ptextvar = kw.pop(pname)
-            update_text = True
         if update_style:
             orient = kw.get("orient", self.cget("orient"))
-            style = kw.get("style", self.FGSM.style_for_orient(orient))
-            new_style = self._new_instance_style(self, orient, style)
-            kw["style"] = new_style
+            new_style = kw.pop("style", self.FGSM.style_for_orient(orient))
+            style = self._new_instance_style(self, orient, new_style)
+            # super()._configure_set(style=style)
+            kw["style"] = style
+            update_text = True
+        if "variable" in kw or "value" in kw or "text" in kw or "mask" in kw:
+            update_text = True
+        if "font" in kw:
+            self._pfont = kw.pop("font")
+            update_text = True
         if update_text:
             self._set_widget_text()
         return super()._configure_set(**kw)
+
+
+if tk.TkVersion >= 9:
+
+    class Floodgauge(FloodgaugeBase):
+        ...
+
+else:
+    Floodgauge = FloodgaugeTk8
 
 
 if __name__ == "__main__":
