@@ -1,7 +1,11 @@
 History
 =======
 
-Changes for (next) version 0.36:
+Changes for version 0.36.1
+
+  * Fix TypeError, scroll_rs not subscriptable exception.
+
+Changes for version 0.36:
 
   * BuilderObject class: Store reference to parent.
   * BuilderObject class: Add option to override children layout.
