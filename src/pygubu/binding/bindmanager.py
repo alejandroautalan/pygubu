@@ -16,53 +16,59 @@ class MouseWheelCommand:
 
 class UnixMouseWheelCommandTk9(MouseWheelCommand):
     def __call__(self, event=None) -> bool:
+        can_keep_scrolling = False
         self.view_command(
             "scroll",
             (-1) * int((event.delta / 120) * self.factor),
             "units",
         )
         scroll_rs = self.view_command()
-        if scroll_rs is None:
-            return False
-        can_keep_scrolling = scroll_rs[0] != 0.0
-        if event.delta < 0:
-            can_keep_scrolling = scroll_rs[1] != 1.0
+        if scroll_rs is not None:
+            can_keep_scrolling = scroll_rs[0] != 0.0
+            if event.delta < 0:
+                can_keep_scrolling = scroll_rs[1] != 1.0
         return can_keep_scrolling
 
 
 class UnixMouseWheelCommandTk8(MouseWheelCommand):
     def __call__(self, event=None) -> bool:
-        can_keep_scrolling = True
+        can_keep_scrolling = False
         if event.num == 4:
             self.view_command("scroll", (-1) * self.factor, "units")
             scroll_rs = self.view_command()
-            can_keep_scrolling = scroll_rs[0] != 0.0
+            if scroll_rs is not None:
+                can_keep_scrolling = scroll_rs[0] != 0.0
         elif event.num == 5:
             self.view_command("scroll", self.factor, "units")
             scroll_rs = self.view_command()
-            can_keep_scrolling = scroll_rs[1] != 1.0
+            if scroll_rs is not None:
+                can_keep_scrolling = scroll_rs[1] != 1.0
         return can_keep_scrolling
 
 
 class WindowsMouseWheelCommand(MouseWheelCommand):
     def __call__(self, event=None) -> bool:
+        can_keep_scrolling = False
         self.view_command(
             "scroll", (-1) * int((event.delta / 120) * self.factor), "units"
         )
         scroll_rs = self.view_command()
-        can_keep_scrolling = scroll_rs[0] != 0.0
-        if event.delta < 0:
-            can_keep_scrolling = scroll_rs[1] != 1.0
+        if scroll_rs is not None:
+            can_keep_scrolling = scroll_rs[0] != 0.0
+            if event.delta < 0:
+                can_keep_scrolling = scroll_rs[1] != 1.0
         return can_keep_scrolling
 
 
 class DarwingMouseWheelCommand(MouseWheelCommand):
     def __call__(self, event=None) -> bool:
+        can_keep_scrolling = False
         self.view_command("scroll", event.delta, "units")
         scroll_rs = self.view_command()
-        can_keep_scrolling = scroll_rs[0] != 0.0
-        if event.delta < 0:
-            can_keep_scrolling = scroll_rs[1] != 1.0
+        if scroll_rs is not None:
+            can_keep_scrolling = scroll_rs[0] != 0.0
+            if event.delta < 0:
+                can_keep_scrolling = scroll_rs[1] != 1.0
         return can_keep_scrolling
 
 
