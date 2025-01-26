@@ -239,7 +239,8 @@ class BuilderObject(object):
             description = widget.configure(pname)
             # print(description)
         except tk.TclError:
-            logger.error("Failed to get default value for property %s", pname)
+            msg = "Failed to get default value of '%s' property using configure method."
+            logger.warning(msg, pname)
             return default
 
         has_default = False
