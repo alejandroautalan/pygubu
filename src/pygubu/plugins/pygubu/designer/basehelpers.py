@@ -181,7 +181,7 @@ class ToplevelPreviewBaseBO(BuilderObject):
 
     def _process_property_value(self, pname, value):
         if pname in ("maxsize", "minsize"):
-            if "|" in value:
+            if value and "|" in value:
                 w, h = value.split("|")
                 value = (int(w), int(h))
             return value
