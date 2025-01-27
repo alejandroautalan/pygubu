@@ -24,7 +24,7 @@ class ToolTip(object):
         self.background = background if background is not None else "#ffffe0"
         self.foreground = foreground if foreground is not None else "black"
         self.justify = justify if justify is not None else tk.LEFT
-        self.wraplength = wraplength if wraplength is not None else 300
+        self.wraplength = wraplength if wraplength is not None else "300p"
 
     def inside_wbbox(self, rx, ry):
         bbox = self._calc_bbox(self.widget, True)
