@@ -118,11 +118,11 @@ class ToolTip(object):
             background=self.background,
             foreground=self.foreground,
             relief=tk.SOLID,
-            borderwidth=1,
+            borderwidth="1p",
             font=self.font,
             wraplength=self.wraplength,
         )
-        label.pack(ipadx=2)
+        label.pack(ipadx="2p")
         x, y = self._calc_final_pos(
             label.winfo_reqwidth(), label.winfo_reqheight()
         )
