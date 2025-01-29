@@ -12,7 +12,6 @@ __all__ = [
     "WidgetDescription",
     "CLASS_MAP",
     "CB_TYPES",
-    "CUSTOM_PROPERTIES",
     "TRANSLATABLE_PROPERTIES",
 ]
 
@@ -41,7 +40,6 @@ WidgetDescription = namedtuple(
 )
 
 CLASS_MAP = {}
-CUSTOM_PROPERTIES = {}
 
 
 class CB_TYPES:
