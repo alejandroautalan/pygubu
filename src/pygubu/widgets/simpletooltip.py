@@ -7,8 +7,8 @@ import tkinter as tk
 class ToolTip(object):
     def __init__(
         self,
-        widget,
-        text=None,
+        widget: tk.Widget,
+        text: str = None,
         font=None,
         background=None,
         foreground=None,
@@ -33,7 +33,7 @@ class ToolTip(object):
             inside = True
         return inside
 
-    def _calc_bbox(self, widget, screen=False):
+    def _calc_bbox(self, widget: tk.Widget, screen=False):
         rx = widget.winfo_x()
         ry = widget.winfo_y()
         if screen:
@@ -99,6 +99,7 @@ class ToolTip(object):
         if self.tipwindow or not self.text:
             return
         self.tipwindow = tw = tk.Toplevel(self.widget)
+        tw.withdraw()
         tw.wm_overrideredirect(1)
         try:
             # For Mac OS
