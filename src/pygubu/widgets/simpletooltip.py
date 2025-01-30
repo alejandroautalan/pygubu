@@ -2,29 +2,21 @@
 __all__ = ["ToolTip"]
 
 import tkinter as tk
+from contextlib import suppress
 
 
-class ToolTip(object):
-    def __init__(
-        self,
-        widget: tk.Widget,
-        text: str = None,
-        font=None,
-        background=None,
-        foreground=None,
-        justify=None,
-        wraplength=None,
-    ):
+class TooltipBase:
+    tipwindows = {}
+
+    def __init__(self, widget: tk.Widget, /, text: str):
         self.widget = widget
-        self.tipwindow = None
-        self.id = None
-        self.x = self.y = 0
-        self.text = text if text is not None else "¿?"
-        self.font = font if font is not None else ("tahoma", "9", "normal")
-        self.background = background if background is not None else "#ffffe0"
-        self.foreground = foreground if foreground is not None else "black"
-        self.justify = justify if justify is not None else tk.LEFT
-        self.wraplength = wraplength if wraplength is not None else "300p"
+        self.text = text
+        self.x: int = 0
+        self.y: int = 0
+        self._bind_ids = (
+            self.widget.bind("<Enter>", self.on_enter, add=True),
+            self.widget.bind("<Leave>", self.on_leave, add=True),
+        )
 
     def inside_wbbox(self, rx, ry):
         bbox = self._calc_bbox(self.widget, True)
@@ -94,66 +86,121 @@ class ToolTip(object):
         # print(final_region, x, x2, y, y2)
         return (x, y)
 
+    def on_enter(self, event):
+        self.showtip()
+
+    def on_leave(self, event):
+        self.hidetip()
+
+    def __del__(self):
+        with suppress(tk.TclError):
+            if self.widget.winfo_exists():
+                self.widget.unbind("<Enter>", self._bind_ids[0])
+                self.widget.unbind("<Leave>", self._bind_ids[1])
+
+    def _tipwindow_for(self, widget: tk.Widget) -> tk.Toplevel:
+        root = widget.winfo_toplevel()
+        root_id = id(root)
+        tipwindow = self.tipwindows.get(root_id, None)
+        if tipwindow is None:
+            tipwindow = tk.Toplevel(root)
+            tipwindow.wm_overrideredirect(1)
+            with suppress(tk.TclError):
+                # For Mac OS
+                tipwindow.tk.call(
+                    "::tk::unsupported::MacWindowStyle",
+                    "style",
+                    tipwindow._w,
+                    "help",
+                    "noActivates",
+                )
+            tipwindow.label = self._label_create(tipwindow)
+            self.tipwindows[root_id] = tipwindow
+        return tipwindow
+
+    def _label_create(self, tipwindow: tk.Toplevel) -> tk.Widget:
+        label = tk.Label(tipwindow)
+        label.pack(ipadx="2p")
+        return label
+
+    def _label_config(self, label, **kw):
+        label.configure(text=self.text, **kw)
+
     def showtip(self):
         "Display text in tooltip window"
-        if self.tipwindow or not self.text:
-            return
-        self.tipwindow = tw = tk.Toplevel(self.widget)
-        tw.withdraw()
-        tw.wm_overrideredirect(1)
-        try:
-            # For Mac OS
-            tw.tk.call(
-                "::tk::unsupported::MacWindowStyle",
-                "style",
-                tw._w,
-                "help",
-                "noActivates",
-            )
-        except tk.TclError:
-            pass
-        label = tk.Label(
-            tw,
-            text=self.text,
-            justify=self.justify,
-            background=self.background,
-            foreground=self.foreground,
-            relief=tk.SOLID,
-            borderwidth="1p",
-            font=self.font,
-            wraplength=self.wraplength,
-        )
-        label.pack(ipadx="2p")
+        tipwindow = self._tipwindow_for(self.widget)
+        label = tipwindow.label
+        self._label_config(label)
         x, y = self._calc_final_pos(
             label.winfo_reqwidth(), label.winfo_reqheight()
         )
-        tw.wm_geometry("+{0}+{1}".format(x, y))
+        tipwindow.wm_geometry(f"+{x}+{y}")
+        tipwindow.deiconify()
 
     def hidetip(self):
-        tw = self.tipwindow
-        self.tipwindow = None
-        if tw:
-            tw.destroy()
+        tipwindow = self._tipwindow_for(self.widget)
+        tipwindow.withdraw()
 
 
-def create(widget, text):
-    toolTip = ToolTip(widget, text)
+class Tooltip(TooltipBase):
+    def __init__(
+        self,
+        widget: tk.Widget,
+        /,
+        text: str = None,
+        font=None,
+        background=None,
+        foreground=None,
+        justify=None,
+        wraplength=None,
+        relief=None,
+    ):
+        text = "undefined tooltip" if text is None else text
+        self.font = ("tahoma", "9", "normal") if font is None else font
+        self.background = "#ffffe0" if background is None else background
+        self.foreground = "black" if foreground is None else foreground
+        self.justify = tk.LEFT if justify is None else justify
+        self.wraplength = "300p" if wraplength is None else wraplength
+        self.relief = tk.SOLID if relief is None else relief
+        super().__init__(widget, text=text)
 
-    def enter(event):
-        toolTip.showtip()
+    def _label_config(self, label, **kw):
+        label.configure(
+            text=self.text,
+            font=self.font,
+            background=self.background,
+            foreground=self.foreground,
+            wraplength=self.wraplength,
+            justify=self.justify,
+            relief=self.relief,
+            borderwidth="1p",
+        )
 
-    def leave(event):
-        toolTip.hidetip()
 
-    widget.bind("<Enter>", enter)
-    widget.bind("<Leave>", leave)
-    return toolTip
+# Maintain old class name for now
+ToolTip = Tooltip
+
+
+def create(widget, text, **kw):
+    """Creates a Tooltip using a tk.Label."""
+    tooltip = Tooltip(widget, text, **kw)
+    return tooltip
 
 
 if __name__ == "__main__":
     root = tk.Tk()
     for idx in range(0, 2):
-        b = tk.Button(root, text="A button")
-        b.grid()
-        create(b, "A tooltip !!")
+        b = tk.Button(root, text=f"Button({idx})")
+        b.grid(pady="2p")
+        text = f"A tooltip for button {idx}!!"
+        create(b, text)
+
+    root2 = tk.Tk()
+    tip_options = dict(background="blue", foreground="white")
+    for idx in range(0, 2):
+        b = tk.Button(root2, text=f"Button({idx})")
+        b.grid(pady="2p")
+        text = f"A tooltip for button {idx}!!"
+        create(b, text, **tip_options)
+
     root.mainloop()
