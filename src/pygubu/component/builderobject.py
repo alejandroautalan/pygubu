@@ -1,8 +1,10 @@
 # encoding: utf-8
 import json
 import logging
+import enum
 import tkinter as tk
 from collections import defaultdict, namedtuple
+
 
 __all__ = [
     "BuilderObject",
@@ -56,9 +58,11 @@ class CB_TYPES:
 
 TRANSLATABLE_PROPERTIES = ["label", "text", "title"]
 
-#
-# Base class
-#
+
+class FamilyType(enum.Flag):
+    NONE = enum.auto()
+    CONTAINER = enum.auto()  # The object can have children
+    MODIFIER = enum.auto()  # The object is a modifier of another object ?
 
 
 class BuilderObject(object):
@@ -70,6 +74,7 @@ class BuilderObject(object):
     OPTIONS_STANDARD = tuple()
     OPTIONS_SPECIFIC = tuple()
     OPTIONS_CUSTOM = tuple()
+    family = FamilyType.NONE
     class_ = None
     container = False
     container_layout = False
@@ -120,6 +125,12 @@ class BuilderObject(object):
             and classname not in cls.allowed_children
         ):
             allowed = False
+
+        if not allowed:
+            # Check for new family flag
+            # Even if this object is not a container, if the child
+            # has a MODIFIER flag, it can be inserted
+            allowed = FamilyType.MODIFIER in child_builder.family
         return allowed
 
     @classmethod
