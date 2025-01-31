@@ -7,6 +7,8 @@ from contextlib import suppress
 
 
 class TooltipBase:
+    """Base class for tooltips using a Label widget."""
+
     tipwindows = {}
     label_class = tk.Label
 
@@ -14,11 +16,20 @@ class TooltipBase:
         self.widget = widget
         self.x: int = 0
         self.y: int = 0
-        self.label_options = label_options
+        self.label_options: dict = label_options
         self._bind_ids = (
             self.widget.bind("<Enter>", self.on_enter, add=True),
             self.widget.bind("<Leave>", self.on_leave, add=True),
         )
+
+    # Add text property to mantain backward comatibility?
+    @property
+    def text(self):
+        return self.label_options.get("text", "")
+
+    @text.setter
+    def text(self, value):
+        self.label_options["text"] = value
 
     def inside_wbbox(self, rx, ry):
         bbox = self._calc_bbox(self.widget, True)
@@ -122,14 +133,14 @@ class TooltipBase:
 
     def _label_create(self, tipwindow: tk.Toplevel) -> tk.Widget:
         label = self.label_class(tipwindow)
-        label.pack(expand=True, fill=tk.BOTH, ipadx="2p")
+        label.pack(expand=True, fill=tk.BOTH)
         return label
 
     def _label_config(self, label):
         label.configure(**self.label_options)
 
     def showtip(self):
-        "Display text in tooltip window"
+        """Display text in tooltip window"""
         tipwindow = self._tipwindow_for(self.widget)
         label = tipwindow.label
         self._label_config(label)
@@ -147,7 +158,7 @@ class TooltipBase:
 class Tooltip(TooltipBase):
     """A simple tooltip class based on tk.Label"""
 
-    _default_config = dict(
+    default_config = dict(
         text="undefined tooltip",
         font=("tahoma", "9", "normal"),
         background="#ffffe0",
@@ -155,10 +166,13 @@ class Tooltip(TooltipBase):
         justify=tk.LEFT,
         wraplength="300p",
         relief=tk.SOLID,
+        borderwidth="1p",
+        padx="2p",
+        pady="2p",
     )
 
     def __init__(self, widget: tk.Widget, /, **label_options):
-        options = self._default_config.copy()
+        options = self.default_config.copy()
         options.update(label_options)
         super().__init__(widget, **options)
 
