@@ -64,7 +64,7 @@ class StyleManager:
     def _theme_change_monitor(cls, root: tk.Tk):
         info: RootInfo = cls.CONFIGURED_THEMES[root]
         curr_theme = root.tk.eval("return $ttk::currentTheme")
-        print(f"{curr_theme=} root {id(root)=}")
+        # print(f"{curr_theme=} root {id(root)=}")
         if info.current_theme != curr_theme:
             info.current_theme = curr_theme
             cls.reconfigure_all(root, info)
