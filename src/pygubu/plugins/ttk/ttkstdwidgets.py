@@ -78,7 +78,7 @@ register_widget(
 class TTKButton(TTKWidgetBO):
     OPTIONS_STANDARD = (
         TTKWidgetBO.OPTIONS_STANDARD
-        + TTKWidgetBO.OPTIONS_LABEL
+        + tuple(set(TTKWidgetBO.OPTIONS_LABEL) - set(("font",)))
         + TTKWidgetBO.OPTIONS_COMPATIBILITY
     )
     OPTIONS_SPECIFIC = ("command", "default")
