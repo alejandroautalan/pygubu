@@ -154,6 +154,12 @@ class TooltipBase:
         tipwindow = self._tipwindow_for(self.widget)
         tipwindow.withdraw()
 
+    def configure(self, **kw):
+        """Updates label options.
+        Similar to configure method of tk widgets.
+        """
+        self.label_options.update(kw)
+
 
 class Tooltip(TooltipBase):
     """A simple tooltip class based on tk.Label"""
