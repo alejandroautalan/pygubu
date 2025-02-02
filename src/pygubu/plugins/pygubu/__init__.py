@@ -68,6 +68,10 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             "pygubu.builder.widgets.scrolledframe",
             f"{_plugin_uid}.ScrolledFrame",
         ),
+        "pygubu.plugins.pygubu.simpletooltip_bo": (
+            f"{_plugin_uid}.Tooltip",
+            f"{_plugin_uid}.Tooltipttk",
+        ),
         "pygubu.plugins.pygubu.tkscrollbarhelper_bo": (
             "pygubu.builder.widgets.tkscrollbarhelper",
             f"{_plugin_uid}.TkScrollbarHelper",

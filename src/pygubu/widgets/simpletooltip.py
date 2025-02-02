@@ -2,29 +2,34 @@
 __all__ = ["ToolTip"]
 
 import tkinter as tk
+import tkinter.ttk as ttk
+from contextlib import suppress
 
 
-class ToolTip(object):
-    def __init__(
-        self,
-        widget,
-        text=None,
-        font=None,
-        background=None,
-        foreground=None,
-        justify=None,
-        wraplength=None,
-    ):
+class TooltipBase:
+    """Base class for tooltips using a Label widget."""
+
+    tipwindows = {}
+    label_class = tk.Label
+
+    def __init__(self, widget: tk.Widget, /, **label_options):
         self.widget = widget
-        self.tipwindow = None
-        self.id = None
-        self.x = self.y = 0
-        self.text = text if text is not None else "¿?"
-        self.font = font if font is not None else ("tahoma", "9", "normal")
-        self.background = background if background is not None else "#ffffe0"
-        self.foreground = foreground if foreground is not None else "black"
-        self.justify = justify if justify is not None else tk.LEFT
-        self.wraplength = wraplength if wraplength is not None else "300p"
+        self.x: int = 0
+        self.y: int = 0
+        self.label_options: dict = label_options
+        self._bind_ids = (
+            self.widget.bind("<Enter>", self.on_enter, add=True),
+            self.widget.bind("<Leave>", self.on_leave, add=True),
+        )
+
+    # Add text property to mantain backward comatibility?
+    @property
+    def text(self):
+        return self.label_options.get("text", "")
+
+    @text.setter
+    def text(self, value):
+        self.label_options["text"] = value
 
     def inside_wbbox(self, rx, ry):
         bbox = self._calc_bbox(self.widget, True)
@@ -33,7 +38,7 @@ class ToolTip(object):
             inside = True
         return inside
 
-    def _calc_bbox(self, widget, screen=False):
+    def _calc_bbox(self, widget: tk.Widget, screen=False):
         rx = widget.winfo_x()
         ry = widget.winfo_y()
         if screen:
@@ -94,65 +99,166 @@ class ToolTip(object):
         # print(final_region, x, x2, y, y2)
         return (x, y)
 
+    def on_enter(self, event):
+        self.showtip()
+
+    def on_leave(self, event):
+        self.hidetip()
+
+    def __del__(self):
+        with suppress(tk.TclError):
+            if self.widget.winfo_exists():
+                self.widget.unbind("<Enter>", self._bind_ids[0])
+                self.widget.unbind("<Leave>", self._bind_ids[1])
+
+    def _tipwindow_for(self, widget: tk.Widget) -> tk.Toplevel:
+        root = widget.winfo_toplevel()
+        root_id = id(root)
+        tipwindow = self.tipwindows.get(root_id, None)
+        if tipwindow is None:
+            tipwindow = tk.Toplevel(root)
+            tipwindow.wm_overrideredirect(1)
+            with suppress(tk.TclError):
+                # For Mac OS
+                tipwindow.tk.call(
+                    "::tk::unsupported::MacWindowStyle",
+                    "style",
+                    tipwindow._w,
+                    "help",
+                    "noActivates",
+                )
+            tipwindow.label = self._label_create(tipwindow)
+            self.tipwindows[root_id] = tipwindow
+        return tipwindow
+
+    def _label_create(self, tipwindow: tk.Toplevel) -> tk.Widget:
+        label = self.label_class(tipwindow)
+        label.pack(expand=True, fill=tk.BOTH)
+        return label
+
+    def _label_config(self, label):
+        label.configure(**self.label_options)
+
     def showtip(self):
-        "Display text in tooltip window"
-        if self.tipwindow or not self.text:
-            return
-        self.tipwindow = tw = tk.Toplevel(self.widget)
-        tw.wm_overrideredirect(1)
-        try:
-            # For Mac OS
-            tw.tk.call(
-                "::tk::unsupported::MacWindowStyle",
-                "style",
-                tw._w,
-                "help",
-                "noActivates",
-            )
-        except tk.TclError:
-            pass
-        label = tk.Label(
-            tw,
-            text=self.text,
-            justify=self.justify,
-            background=self.background,
-            foreground=self.foreground,
-            relief=tk.SOLID,
-            borderwidth="1p",
-            font=self.font,
-            wraplength=self.wraplength,
-        )
-        label.pack(ipadx="2p")
+        """Display text in tooltip window"""
+        tipwindow = self._tipwindow_for(self.widget)
+        label = tipwindow.label
+        self._label_config(label)
         x, y = self._calc_final_pos(
             label.winfo_reqwidth(), label.winfo_reqheight()
         )
-        tw.wm_geometry("+{0}+{1}".format(x, y))
+        tipwindow.wm_geometry(f"+{x}+{y}")
+        tipwindow.deiconify()
 
     def hidetip(self):
-        tw = self.tipwindow
-        self.tipwindow = None
-        if tw:
-            tw.destroy()
+        tipwindow = self._tipwindow_for(self.widget)
+        tipwindow.withdraw()
 
 
-def create(widget, text):
-    toolTip = ToolTip(widget, text)
+class Tooltip(TooltipBase):
+    """A simple tooltip class based on tk.Label"""
 
-    def enter(event):
-        toolTip.showtip()
+    default_config = dict(
+        text="undefined tooltip",
+        font=("tahoma", "9", "normal"),
+        background="#ffffe0",
+        foreground="black",
+        justify=tk.LEFT,
+        wraplength="300p",
+        relief=tk.SOLID,
+        borderwidth="1p",
+        padx="2p",
+        pady="2p",
+    )
 
-    def leave(event):
-        toolTip.hidetip()
+    def __init__(self, widget: tk.Widget, /, **label_options):
+        options = self.default_config.copy()
+        options.update(label_options)
+        super().__init__(widget, **options)
 
-    widget.bind("<Enter>", enter)
-    widget.bind("<Leave>", leave)
-    return toolTip
+
+# Maintain old class name for now
+ToolTip = Tooltip
+
+
+class Tooltipttk(TooltipBase):
+    """A simple tooltip class based on ttk.Label"""
+
+    STYLE_NAME = "Tooltipttk.TLabel"
+    STYLE_OPTIONS = dict()
+    tipwindows = {}
+    label_class = ttk.Label
+    default_config = dict(style=STYLE_NAME)
+    clear_config = dict(
+        text="",
+        font="",
+        foreground="",
+        background="",
+        justify="left",
+        wraplength="",
+        relief="",
+        borderwidth="",
+        style=STYLE_NAME,
+    )
+
+    def __init__(self, widget: tk.Widget, /, **label_options):
+        options = self.default_config.copy()
+        options.update(label_options)
+        super().__init__(widget, **options)
+
+    def _label_config(self, label):
+        label.configure(**self.clear_config)
+        label.configure(**self.label_options)
+
+
+def create(widget, text, **label_options):
+    """Creates a Tooltip using a tk.Label."""
+    label_options["text"] = text
+    tooltip = Tooltip(widget, **label_options)
+    return tooltip
+
+
+def create_ttk(widget, text, **label_options):
+    """Creates a Tooltip using a ttk.Label."""
+    label_options["text"] = text
+    tooltip = Tooltipttk(widget, **label_options)
+    return tooltip
 
 
 if __name__ == "__main__":
+
+    def build_test(root, tk_options: dict = None, ttk_options: dict = None):
+        tk_options = {} if tk_options is None else tk_options
+        ttk_options = {} if ttk_options is None else ttk_options
+
+        for idx in range(0, 2):
+            b = tk.Button(root, text=f"Button({idx})")
+            b.pack(pady="2p")
+            text = f"A tooltip for button {idx}!!"
+            create(b, text, **tk_options)
+
+        for idx in range(2, 4):
+            b = ttk.Button(root, text=f"Button({idx})")
+            b.pack(pady="2p")
+            text = f"A ttk tooltip for button {idx}!!"
+            create_ttk(b, text, **ttk_options)
+
     root = tk.Tk()
-    for idx in range(0, 2):
-        b = tk.Button(root, text="A button")
-        b.grid()
-        create(b, "A tooltip !!")
+    root.title("Root 1")
+    root.minsize(300, 200)
+    tk_options = {}  # dict(background="darkgreen", foreground="white")
+    ttk_options = {}
+    build_test(root)
+
+    root2 = tk.Tk()
+    root2.title("Root 2")
+    root2.minsize(300, 200)
+
+    s = ttk.Style(root2)
+    s.configure(Tooltipttk.STYLE_NAME, foreground="white", background="red")
+    ttk_options = dict()
+
+    tk_options = dict(background="blue", foreground="white")
+    build_test(root2, tk_options)
+
     root.mainloop()

@@ -28,6 +28,8 @@ _HideableFrame = f"{_plugin_uid}.hideableframe"
 _PathChoser_all = f"{_plugin_uid}.PathChooser.*"
 _PathChoser_old = "pygubu.builder.widgets.pathchooser.*"
 _PathChoserButton = f"{_plugin_uid}.PathChooserButton"
+_Tooltip = f"{_plugin_uid}.Tooltip"
+_Tooltipttk = f"{_plugin_uid}.Tooltipttk"
 
 h_values = _(
     "In designer: json list of key, value pairs\n"
@@ -226,6 +228,11 @@ plugin_properties = {
         buid=_AccordionFrameGroup,
         editor="ttkstylechoice",
         default_value="Toolbutton",
+    ),
+    "text": dict(
+        buid=[_Tooltip, _Tooltipttk],
+        editor="text",
+        help=_("Text to display in tooltip."),
     ),
     "textvariable": [
         dict(
