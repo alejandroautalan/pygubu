@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 
 class StyleDefinitionMeta(ABCMeta):
     managers = []
-    instances = weakref.WeakSet()
+    instances = weakref.WeakKeyDictionary()
 
     def __init__(cls, name, bases, attrs):
         super().__init__(name, bases, attrs)
@@ -18,7 +18,7 @@ class StyleDefinitionMeta(ABCMeta):
 
     def __call__(cls, *args, **kwargs):
         inst = super().__call__(*args, **kwargs)
-        StyleDefinitionMeta.instances.add(inst)
+        StyleDefinitionMeta.instances[inst] = None
 
         return inst
 
