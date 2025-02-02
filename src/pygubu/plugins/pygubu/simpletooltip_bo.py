@@ -7,20 +7,9 @@ from pygubu.widgets.simpletooltip import Tooltip, Tooltipttk
 from pygubu.component.builderobject import FamilyType
 
 
-class SimpleTooltipBO(BuilderObject):
+class TooltipBaseBO(BuilderObject):
+    allow_bindings = False
     layout_required = False
-    properties = (
-        "text",
-        "font",
-        "background",
-        "foreground",
-        "justify",
-        "wraplength",
-        "relief",
-        "padx",
-        "pady",
-    )
-    class_ = Tooltip
     family = FamilyType.MODIFIER
 
     def realize(self, parent, extra_init_args: dict = None):
@@ -32,13 +21,50 @@ class SimpleTooltipBO(BuilderObject):
         target_widget.simple_tooltip.label_options[pname] = value
 
 
+class SimpleTooltipBO(TooltipBaseBO):
+    class_ = Tooltip
+    properties = (
+        "text",
+        "font",
+        "background",
+        "foreground",
+        "justify",
+        "wraplength",
+        "relief",
+        "borderwidth",
+        "padx",
+        "pady",
+    )
+
+
 _builder_uid = f"{_plugin_uid}.Tooltip"
 register_widget(
     _builder_uid,
     SimpleTooltipBO,
     "Tooltip",
-    (_tab_widgets_label, "ttk"),
+    (_tab_widgets_label, "tk", "ttk"),
 )
 
 
-# class SimpleTooltipttkBO(
+class SimpleTooltipttkBO(SimpleTooltipBO):
+    class_ = Tooltipttk
+    properties = (
+        "text",
+        "font",
+        "foreground",
+        "background",
+        "justify",
+        "wraplength",
+        "relief",
+        "borderwidth",
+        "style",
+    )
+
+
+_builder_uid = f"{_plugin_uid}.Tooltipttk"
+register_widget(
+    _builder_uid,
+    SimpleTooltipttkBO,
+    "Tooltipttk",
+    (_tab_widgets_label, "ttk"),
+)

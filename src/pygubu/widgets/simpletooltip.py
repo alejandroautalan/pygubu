@@ -185,14 +185,30 @@ class Tooltipttk(TooltipBase):
     """A simple tooltip class based on ttk.Label"""
 
     STYLE_NAME = "Tooltipttk.TLabel"
+    STYLE_OPTIONS = dict()
     tipwindows = {}
     label_class = ttk.Label
+    default_config = dict(style=STYLE_NAME)
+    clear_config = dict(
+        text="",
+        font="",
+        foreground="",
+        background="",
+        justify="left",
+        wraplength="",
+        relief="",
+        borderwidth="",
+        style=STYLE_NAME,
+    )
 
     def __init__(self, widget: tk.Widget, /, **label_options):
-        option = "style"
-        if option not in label_options:
-            label_options[option] = self.STYLE_NAME
-        super().__init__(widget, **label_options)
+        options = self.default_config.copy()
+        options.update(label_options)
+        super().__init__(widget, **options)
+
+    def _label_config(self, label):
+        label.configure(**self.clear_config)
+        label.configure(**self.label_options)
 
 
 def create(widget, text, **label_options):
