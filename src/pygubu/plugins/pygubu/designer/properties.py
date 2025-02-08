@@ -20,6 +20,7 @@ _DockFrame = f"{_plugin_uid}.docframe"
 _DockPane = f"{_plugin_uid}.docpane"
 _DockWidget = f"{_plugin_uid}.dockwidget"
 _forms_all = f"{forms_uid}.*"
+_forms_Entry = f"{forms_uid}.ttkwidget.Entry"
 _forms_PygubuCombobox = f"{forms_uid}.pygubuwidget.PygubuCombobox"
 _forms_FrameFormBuilder = f"{forms_uid}.ttkwidget.FrameFormBuilder"
 _forms_LabelWidgetInfo = f"{forms_uid}.ttkwidget.LabelWidgetInfo"
@@ -218,7 +219,7 @@ plugin_properties = {
             help=_("Path entry state."),
         ),
         dict(
-            buid=_forms_Combobox,
+            buid=[_forms_Entry, _forms_Combobox],
             editor="choice",
             values=("", "normal", "disabled", "readonly"),
             state="readonly",

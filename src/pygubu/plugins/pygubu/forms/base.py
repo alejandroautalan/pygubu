@@ -34,7 +34,7 @@ class WidgetBOMixin:
 
     def _code_get_init_args(self, code_identifier):
         args = super()._code_get_init_args(code_identifier)
-        field_name_value = args.get("_name", None)
+        field_name_value = args.get(self.FIELD_NAME_PROP, None)
         if not field_name_value:
             field_name_value = self.wmeta.identifier
             args[self.FIELD_NAME_PROP] = self._code_process_property_value(

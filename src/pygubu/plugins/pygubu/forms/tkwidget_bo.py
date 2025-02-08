@@ -18,7 +18,7 @@ from .base import (
 
 
 _plugin_uid = f"{_plugin_forms_uid}.tkwidget"
-_designer_tabs = ("tk", _tab_form_widgets_label)
+_designer_tabs = ("tk", "ttk", _tab_form_widgets_label)
 
 
 class TextBO(WidgetBOMixin, tkw.TKText):
