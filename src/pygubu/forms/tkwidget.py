@@ -26,10 +26,16 @@ class WidgetViewManager:
     """A class to provide default behavior and allow user to inject
     custom code."""
 
-    def mark_invalid(self, widget, state: bool):
+    def mark_invalid(self, widget: tk.Widget, state: bool):
         ...
 
     def is_disabled(self, widget) -> bool:
+        ...
+
+    def show_error(self, widget: tk.Widget):
+        ...
+
+    def show_help(self, widget: tk.Widget):
         ...
 
 
