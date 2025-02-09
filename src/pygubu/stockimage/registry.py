@@ -143,7 +143,7 @@ class StockRegistry:
         return self._stock[image_id]
 
     def register_all_from_dir(
-        self, dir_path, prefix=None, ext=None, recurse=False
+        self, dir_path, prefix=None, ext=None, recurse=False, fullname_key=False
     ):
         """List files from dir_path and register images with
             filename as key (without extension)
@@ -154,6 +154,7 @@ class StockRegistry:
         :param iterable ext: list of file extensions to load. Defaults to
             tk supported image extensions. Example ('.jpg', '.png')
         :param boolean recurse: search recursivelly.
+        :param boolean fullname_key: use filename and extension as key
         """
         prefix = "" if prefix is None else prefix
         if ext is None:
@@ -169,9 +170,13 @@ class StockRegistry:
                 file_ext = filename.suffix
                 if file_ext in ext:
                     fkey = f"{prefix}{name}"
+                    if fullname_key:
+                        fkey = f"{prefix}{name}{file_ext}"
                     self.register(fkey, filename)
 
-    def register_all_from_pkg(self, pkg, prefix=None, ext=None, recurse=False):
+    def register_all_from_pkg(
+        self, pkg, prefix=None, ext=None, recurse=False, fullname_key=False
+    ):
         """List files from package and register images with
             filename as key (without extension)
 
@@ -181,6 +186,7 @@ class StockRegistry:
         :param iterable ext: list of file extensions to load. Defaults to
             tk supported image extensions. Example ('.jpg', '.png')
         :param boolean recurse: search recursivelly.
+        :param boolean fullname_key: use filename and extension as key
         """
         prefix = "" if prefix is None else prefix
         if ext is None:
@@ -195,6 +201,8 @@ class StockRegistry:
                 file_ext = fpath.suffix
                 if file_ext in ext:
                     image_id = f"{prefix}{name}"
+                    if fullname_key:
+                        image_id = f"{prefix}{name}{file_ext}"
                     self.register_from_package(image_id, pkg_path)
 
     def add_resource_path(self, path):

@@ -49,12 +49,18 @@ class StockImageCache:
         return image_id in self._cached or self.registry.is_registered(image_id)
 
     def register_all_from_dir(
-        self, dir_path, prefix=None, ext=None, recurse=False
+        self, dir_path, prefix=None, ext=None, recurse=False, fullname_key=False
     ):
-        self.registry.register_all_from_dir(dir_path, prefix, ext, recurse)
+        self.registry.register_all_from_dir(
+            dir_path, prefix, ext, recurse, fullname_key
+        )
 
-    def register_all_from_pkg(self, pkg, prefix=None, ext=None, recurse=False):
-        self.registry.register_all_from_pkg(pkg, prefix, ext, recurse)
+    def register_all_from_pkg(
+        self, pkg, prefix=None, ext=None, recurse=False, fullname_key=False
+    ):
+        self.registry.register_all_from_pkg(
+            pkg, prefix, ext, recurse, fullname_key
+        )
 
     def get(self, image_id, custom_loader=None):
         """Get image previously registered with key image_id.
