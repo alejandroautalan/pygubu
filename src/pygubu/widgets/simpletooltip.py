@@ -21,6 +21,8 @@ class TooltipBase:
             self.widget.bind("<Enter>", self.on_enter, add=True),
             self.widget.bind("<Leave>", self.on_leave, add=True),
         )
+        # save reference for simple acces from wiget
+        widget.stooltip = self
 
     # Add text property to mantain backward comatibility?
     @property
