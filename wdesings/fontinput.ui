@@ -1,0 +1,136 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.4" author="PygubuDesigner 0.40.1">
+  <project>
+    <settings>
+      <setting id="name">FontInput</setting>
+      <setting id="description">A font input for pygubu.</setting>
+      <setting id="module_name">fontinput</setting>
+      <setting id="template">widget</setting>
+      <setting id="main_widget">fmain</setting>
+      <setting id="main_classname">FontInput</setting>
+      <setting id="main_menu" />
+      <setting id="output_dir">../src/pygubu/widgets</setting>
+      <setting id="output_dir2">../src/pygubu/plugins/pygubu</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">False</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="generate_code_onsave">True</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file" />
+    </settings>
+    <customwidgets />
+  </project>
+  <object class="ttk.Frame" id="fmain" named="True">
+    <property name="height">25</property>
+    <property name="width">100</property>
+    <layout manager="pack">
+      <property name="expand">True</property>
+      <property name="fill">x</property>
+      <property name="side">top</property>
+    </layout>
+    <child>
+      <object class="ttk.Combobox" id="wfamily" named="True">
+        <property name="textvariable">string:family_var</property>
+        <bind sequence="&lt;&lt;ComboboxSelected&gt;&gt;" handler="call_process_form" add="" />
+        <bind sequence="&lt;FocusOut&gt;" handler="call_process_form" add="" />
+        <bind sequence="&lt;KeyPress&gt;" handler="on_keypress" add="" />
+        <layout manager="pack">
+          <property name="expand">false</property>
+          <property name="fill">x</property>
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Frame" id="frame3">
+        <property name="height">200</property>
+        <property name="padding">0 1p 0 0</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">false</property>
+          <property name="fill">x</property>
+          <property name="side">top</property>
+        </layout>
+        <containerlayout manager="grid">
+          <property type="col" id="0" name="weight">1</property>
+          <property type="col" id="1" name="pad">6p</property>
+          <property type="col" id="1" name="uniform">b</property>
+          <property type="col" id="2" name="uniform">b</property>
+          <property type="col" id="3" name="uniform">b</property>
+          <property type="col" id="4" name="uniform">b</property>
+        </containerlayout>
+        <child>
+          <object class="ttk.Spinbox" id="wsize" named="True">
+            <property name="from_">2</property>
+            <property name="textvariable">string:size_var</property>
+            <property name="to">900</property>
+            <property name="validate">key</property>
+            <property name="validatecommand" type="command" cbtype="entry_validate" args="%P">on_validate_size</property>
+            <property name="width">4</property>
+            <bind sequence="&lt;&lt;Decrement&gt;&gt;" handler="call_process_form" add="" />
+            <bind sequence="&lt;&lt;Increment&gt;&gt;" handler="call_process_form" add="" />
+            <bind sequence="&lt;KeyPress&gt;" handler="on_keypress" add="" />
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+              <property name="sticky">ew</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="wweight" named="True">
+            <property name="command" type="command" cbtype="simple">on_modifier_clicked</property>
+            <property name="compound">center</property>
+            <property name="style">Toolbutton</property>
+            <property name="text" translatable="yes">W</property>
+            <property name="variable">boolean:w_var</property>
+            <layout manager="grid">
+              <property name="column">1</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="wslant" named="True">
+            <property name="command" type="command" cbtype="simple">on_modifier_clicked</property>
+            <property name="compound">center</property>
+            <property name="style">Toolbutton</property>
+            <property name="text" translatable="yes">S</property>
+            <property name="variable">boolean:s_var</property>
+            <layout manager="grid">
+              <property name="column">2</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="wunderline" named="True">
+            <property name="command" type="command" cbtype="simple">on_modifier_clicked</property>
+            <property name="compound">center</property>
+            <property name="style">Toolbutton</property>
+            <property name="text" translatable="yes">U</property>
+            <property name="variable">boolean:u_var</property>
+            <layout manager="grid">
+              <property name="column">3</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Checkbutton" id="woverstrike" named="True">
+            <property name="command" type="command" cbtype="simple">on_modifier_clicked</property>
+            <property name="compound">center</property>
+            <property name="style">Toolbutton</property>
+            <property name="text" translatable="yes">O</property>
+            <property name="variable">boolean:o_var</property>
+            <layout manager="grid">
+              <property name="column">4</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
