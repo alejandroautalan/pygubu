@@ -3,6 +3,7 @@ from pygubu.api.v1 import IDesignerPlugin
 from pygubu.utils.widget import crop_widget
 from pygubu.stockimage import StockRegistry, StockImageCache, StockImage
 from .toplevelframe import ToplevelFramePreviewBO
+from .basehelpers import TKTextPreviewBO
 
 
 class PygubuDesignerPlugin(IDesignerPlugin):
@@ -14,6 +15,8 @@ class PygubuDesignerPlugin(IDesignerPlugin):
             "pygubu.builder.widgets.dialog",  # This will be removed
         ):
             return ToplevelFramePreviewBO
+        elif builder_uid == "tk.Text":
+            return TKTextPreviewBO
         return None
 
     def get_toplevel_preview_for(
