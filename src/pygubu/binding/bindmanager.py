@@ -2,6 +2,7 @@ import logging
 import platform
 import tkinter as tk
 
+from typing import List
 from pygubu.utils.widget import iter_to_toplevel
 
 
@@ -82,7 +83,7 @@ class AppBindManagerBase(object):
     CLASS_NAME = "TAppBindManager"
     FLAG_NAME = "_appbind_visited"
     # Acces to tk instances
-    masters: list[tk.Widget] = []
+    masters: List[tk.Widget] = []
     # Mouse wheel support
     mw_listeners = []  # Mousewheel listeners
 
