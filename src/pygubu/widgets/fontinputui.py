@@ -34,28 +34,40 @@ class FontInputUI(ttk.Frame):
         self.wweight = ttk.Checkbutton(frame3, name="wweight")
         self.w_var = tk.BooleanVar()
         self.wweight.configure(
-            compound="center", style="Toolbutton", text="W", variable=self.w_var
+            compound="center",
+            style="weight.FontInput.Toolbutton",
+            variable=self.w_var,
+            width=-1,
         )
         self.wweight.grid(column=1, row=0)
         self.wweight.configure(command=self.on_modifier_clicked)
         self.wslant = ttk.Checkbutton(frame3, name="wslant")
         self.s_var = tk.BooleanVar()
         self.wslant.configure(
-            compound="center", style="Toolbutton", text="S", variable=self.s_var
+            compound="center",
+            style="slant.FontInput.Toolbutton",
+            variable=self.s_var,
+            width=-1,
         )
         self.wslant.grid(column=2, row=0)
         self.wslant.configure(command=self.on_modifier_clicked)
         self.wunderline = ttk.Checkbutton(frame3, name="wunderline")
         self.u_var = tk.BooleanVar()
         self.wunderline.configure(
-            compound="center", style="Toolbutton", text="U", variable=self.u_var
+            compound="center",
+            style="underline.FontInput.Toolbutton",
+            variable=self.u_var,
+            width=-1,
         )
         self.wunderline.grid(column=3, row=0)
         self.wunderline.configure(command=self.on_modifier_clicked)
         self.woverstrike = ttk.Checkbutton(frame3, name="woverstrike")
         self.o_var = tk.BooleanVar()
         self.woverstrike.configure(
-            compound="center", style="Toolbutton", text="O", variable=self.o_var
+            compound="center",
+            style="overstrike.FontInput.Toolbutton",
+            variable=self.o_var,
+            width=-1,
         )
         self.woverstrike.grid(column=4, row=0)
         self.woverstrike.configure(command=self.on_modifier_clicked)

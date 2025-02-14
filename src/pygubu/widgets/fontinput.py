@@ -8,6 +8,7 @@ import pygubu.widgets.fontinputui as baseui
 from contextlib import suppress
 from pygubu.utils.widget import WidgetConfigureMixin
 from pygubu.utils.font import tkfontstr_to_dict
+from pygubu.component.style_manager import IStyleDefinition
 
 
 PREDEFINED_FONTS = [
@@ -56,15 +57,57 @@ if _sp == "darwin":
     )
 
 
-#
-# Manual user code
-#
+class Icon:
+    WEIGHT: str = "weight"
+    SLANT: str = "slant"
+    UNDERLINE: str = "underline"
+    OVERSTRIKE: str = "overstrike"
+    _KDATA = 1
+    _KIMG = 2
+    _META = {
+        WEIGHT: {
+            _KDATA: b"iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAApElEQVQ4y83SMQ5BQRSF4Q8lhVIUWpFoLMACWAClvehtwibUCo1EdKLQSHSUJF5EnmYkIooxDSeZTM7M5L9zTy6/VuHDWRe1F3/HFptY6A35hzVFMQaQY/DiS+jhitH74xjiHTPMQ3tfA6CKNvYxIeZYYxd8B3VkaOIY84PsrYUDypikhPhUP9y1UjKARdgbKYAKxrhglTpIZwxTRlmovMTJ3+kBfHQpHDGWZagAAAAASUVORK5CYII=",
+        },
+        SLANT: {
+            _KDATA: b"iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAj0lEQVQ4y83SMQ4BURCH8Z8tcASNiMYdFCoaLsLxREGlcgeFZqPTU5AtaKYQid31FEwymeJNvvle8ufX1Sh5a2MWs48DTtjVhQ9R4P7UeYrlCsvULzZxxjwVMAn13ruFrAIwxR7HbwCbVP1u6I9TAQtc0Cpbyir0t7h9ejl/CU8Roaod5RE6GATsinXMP6wH1K8dDvLj3yoAAAAASUVORK5CYII=",
+        },
+        UNDERLINE: {
+            _KDATA: b"iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAl0lEQVQ4y83TMQrCQBCF4S9RIZfRUrGyt5JcRy+lgq2Nd9B72AhBtJkikY0JCJIHU+z/lsfs7ixD1BJFghfhdapCmeBleA3liY3jqF48//W8qYBnCx+F1xlwwzTBZ7j26WqHO+Y1tgi27RMwwTFu/BJV4RBeQ1lLSIYNVrE+Y/+XCazw6qiqPpHZx6iu47m+6YkTHsP4eW9nXx7XH08P8gAAAABJRU5ErkJggg==",
+        },
+        OVERSTRIKE: {
+            _KDATA: b"iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAA3XAAAN1wFCKJt4AAAAyUlEQVQ4y83Sv0rCYRTG8Y8aKC3SHiSCQ0GBY0OjEXQPgpfR4Cx4DQ1BV9AQBN1GhEsRPxC3oKZ+g3+WM8QPlVcXfeCFF855vzznOS+7VmVN7QxXaGGK71RoGY+YF84TaimAHv5wEw6ruEaGyxTAPV42sVtUhnPUUwAH/+4NDHCII0wiuBl+8YE8Ar3D1yoHOV7xGY/LaKITeWylOsbop2SwTD94w0lK8xDPOI01VnAbo3VTABcxf/EjPSxzXFqznTaOo+cdI3upBXtuKCA7o2yvAAAAAElFTkSuQmCC",
+        },
+    }
+
+    @classmethod
+    def load(cls, icon_id, master=None):
+        icon = None
+        if icon_id in cls._META:
+            icon = cls._META[icon_id].get(cls._KIMG, None)
+            if icon is None:
+                icon = tk.PhotoImage(
+                    data=cls._META[icon_id][cls._KDATA], master=master
+                )
+                cls._META[icon_id][cls._KIMG] = icon
+        return icon
+
+
+class FontInputStyleManager(IStyleDefinition):
+    UID = "FontInput"
+
+    def setup(self, style: ttk.Style) -> None:
+        buttons = (Icon.WEIGHT, Icon.SLANT, Icon.UNDERLINE, Icon.OVERSTRIKE)
+        for bname in buttons:
+            style_name = f"{bname}.{self.UID}.Toolbutton"
+            icon = Icon.load(bname)
+            style.configure(style_name, image=icon)
 
 
 class FontInput(WidgetConfigureMixin, baseui.FontInputUI):
     EVENT_FONT_CHANGED = "<<FontInput:FontChanged>>"
     KEY_PRESS_MS = 850
     FONT_SIZE_DEFAULT = None
+    SM = FontInputStyleManager()
 
     def __init__(self, master=None, variable: tk.Variable = None, **kw):
         super().__init__(master, **kw)
@@ -74,6 +117,7 @@ class FontInput(WidgetConfigureMixin, baseui.FontInputUI):
         self._fp_cb = None
         self._init_font_size()
         self._populate_options()
+        self.SM.initialize(self)
 
     @classmethod
     def _init_font_size(cls):
@@ -137,6 +181,9 @@ class FontInput(WidgetConfigureMixin, baseui.FontInputUI):
             48,
             60,
             72,
+            84,
+            96,
+            120,
         )
         self.wsize.configure(values=sizes)
 

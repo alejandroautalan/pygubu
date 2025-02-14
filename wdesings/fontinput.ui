@@ -82,9 +82,9 @@
           <object class="ttk.Checkbutton" id="wweight" named="True">
             <property name="command" type="command" cbtype="simple">on_modifier_clicked</property>
             <property name="compound">center</property>
-            <property name="style">Toolbutton</property>
-            <property name="text" translatable="yes">W</property>
+            <property name="style">weight.FontInput.Toolbutton</property>
             <property name="variable">boolean:w_var</property>
+            <property name="width">-1</property>
             <layout manager="grid">
               <property name="column">1</property>
               <property name="row">0</property>
@@ -95,9 +95,9 @@
           <object class="ttk.Checkbutton" id="wslant" named="True">
             <property name="command" type="command" cbtype="simple">on_modifier_clicked</property>
             <property name="compound">center</property>
-            <property name="style">Toolbutton</property>
-            <property name="text" translatable="yes">S</property>
+            <property name="style">slant.FontInput.Toolbutton</property>
             <property name="variable">boolean:s_var</property>
+            <property name="width">-1</property>
             <layout manager="grid">
               <property name="column">2</property>
               <property name="row">0</property>
@@ -108,9 +108,9 @@
           <object class="ttk.Checkbutton" id="wunderline" named="True">
             <property name="command" type="command" cbtype="simple">on_modifier_clicked</property>
             <property name="compound">center</property>
-            <property name="style">Toolbutton</property>
-            <property name="text" translatable="yes">U</property>
+            <property name="style">underline.FontInput.Toolbutton</property>
             <property name="variable">boolean:u_var</property>
+            <property name="width">-1</property>
             <layout manager="grid">
               <property name="column">3</property>
               <property name="row">0</property>
@@ -121,9 +121,9 @@
           <object class="ttk.Checkbutton" id="woverstrike" named="True">
             <property name="command" type="command" cbtype="simple">on_modifier_clicked</property>
             <property name="compound">center</property>
-            <property name="style">Toolbutton</property>
-            <property name="text" translatable="yes">O</property>
+            <property name="style">overstrike.FontInput.Toolbutton</property>
             <property name="variable">boolean:o_var</property>
+            <property name="width">-1</property>
             <layout manager="grid">
               <property name="column">4</property>
               <property name="row">0</property>
