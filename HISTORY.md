@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.36.3
+
+  * Fix python 3.8, 3.9 compatibility. refs #301, alejandroautalan/pygubu-designer#288
+
 Changes for version 0.36.2
 
   * Fix issue with setgrid tk.Text property. refs alejandroautalan/pygubu-designer#287
