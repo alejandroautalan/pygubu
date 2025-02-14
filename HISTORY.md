@@ -1,6 +1,11 @@
 History
 =======
 
+Changes for version 0.36.2
+
+  * Fix issue with setgrid tk.Text property. refs alejandroautalan/pygubu-designer#287
+  * Fix showing unsupported font property for ttk.Button.  refs #300
+
 Changes for version 0.36.1
 
   * Fix TypeError, scroll_rs not subscriptable exception.
