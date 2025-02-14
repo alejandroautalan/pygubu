@@ -1,6 +1,6 @@
 import tkinter as tk
 from pygubu.api.v1 import BuilderObject
-from pygubu.plugins.tk.tkstdwidgets import TKToplevel
+from pygubu.plugins.tk.tkstdwidgets import TKToplevel, TKText
 
 
 class ToplevelPreviewFactory(type):
@@ -181,7 +181,7 @@ class ToplevelPreviewBaseBO(BuilderObject):
 
     def _process_property_value(self, pname, value):
         if pname in ("maxsize", "minsize"):
-            if "|" in value:
+            if value and "|" in value:
                 w, h = value.split("|")
                 value = (int(w), int(h))
             return value
@@ -236,3 +236,13 @@ class ToplevelPreviewBaseBO(BuilderObject):
                 tw._geometry_set = True
                 tw._geom_w = w
                 tw._geom_h = h
+
+
+class TKTextPreviewBO(TKText):
+    """Text widget builder that ignores setgrid property in preview mode."""
+
+    def _set_property(self, target_widget, pname, value):
+        if pname == "setgrid":
+            # Ignore this property in Designer Preview
+            return
+        return super()._set_property(target_widget, pname, value)
