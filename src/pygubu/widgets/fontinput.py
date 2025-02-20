@@ -122,10 +122,10 @@ class FontInput(WidgetConfigureMixin, baseui.FontInputUI):
     @classmethod
     def _init_font_size(cls):
         if cls.FONT_SIZE_DEFAULT is None:
-            font = tk.font.nametofont("TkDefaultFont")
+            font: tk.font.Font = tk.font.nametofont("TkDefaultFont")
             size = font.cget("size")
-            cls.FONT_SIZE_DEFAULT = size
-            print(size)
+            cls.FONT_SIZE_DEFAULT = abs(size)
+            # print(abs(size), font.actual())
 
     def _widget_cget(self, option):
         if option == "value":
