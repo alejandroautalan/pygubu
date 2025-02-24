@@ -5,6 +5,7 @@ from abc import ABC, ABCMeta, abstractmethod
 from collections import defaultdict
 from contextlib import suppress
 from dataclasses import dataclass, field
+from typing import Optional, DefaultDict
 
 
 class StyleDefinitionMeta(ABCMeta):
@@ -23,10 +24,10 @@ class StyleDefinitionMeta(ABCMeta):
         return inst
 
 
-@dataclass(slots=True)
+@dataclass
 class RootInfo:
-    current_theme: str | None = None
-    configured_themes: defaultdict[dict] = field(
+    current_theme: Optional[str] = None
+    configured_themes: DefaultDict[str, list] = field(
         default_factory=lambda: defaultdict(list)
     )  # theme > [definitions]
 
