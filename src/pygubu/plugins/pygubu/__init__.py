@@ -39,6 +39,7 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             f"{_plugin_uid}.FilterableTreeview",
         ),
         "pygubu.plugins.pygubu.floodgauge_bo": (f"{_plugin_uid}.Floodgauge",),
+        "pygubu.plugins.pygubu.fontinputbo": (f"{_plugin_uid}.FontInput",),
         # Forms are not finished so expect changes
         "pygubu.plugins.pygubu.forms.pygubuwidget_bo": (
             "pygubu.forms.pygubuwidget.PygubuCombobox"

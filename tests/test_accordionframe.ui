@@ -1,0 +1,54 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.4" author="PygubuDesigner 0.40.2">
+  <project>
+    <settings />
+    <customwidgets />
+  </project>
+  <object class="ttk.Frame" id="mainframe">
+    <property name="height">200</property>
+    <property name="padding">2</property>
+    <property name="width">200</property>
+    <layout manager="grid">
+      <property name="column">0</property>
+      <property name="row">0</property>
+      <property name="sticky">nesw</property>
+    </layout>
+    <child>
+      <object class="pygubu.widgets.AccordionFrame" id="accordionframe1">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="pygubu.widgets.AccordionFrameGroup" id="accordionframegroup1">
+            <property name="label" translatable="yes">Group1</property>
+            <property name="style">Toolbutton</property>
+            <child>
+              <object class="tk.Canvas" id="canvas1">
+                <property name="background">#0051d9</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="pygubu.widgets.AccordionFrameGroup" id="accordionframegroup2">
+            <property name="label" translatable="yes">Group2</property>
+            <property name="style">Toolbutton</property>
+            <child>
+              <object class="tk.Canvas" id="canvas2">
+                <property name="background">#00bb00</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

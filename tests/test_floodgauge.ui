@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.4" author="PygubuDesigner 0.40.2">
+  <project>
+    <settings />
+    <customwidgets />
+  </project>
+  <object class="ttk.Frame" id="mainframe">
+    <property name="height">200</property>
+    <property name="padding">2</property>
+    <property name="width">200</property>
+    <layout manager="grid">
+      <property name="column">0</property>
+      <property name="row">0</property>
+      <property name="sticky">nesw</property>
+    </layout>
+    <child>
+      <object class="pygubu.widgets.Floodgauge" id="floodgauge1">
+        <property name="orient">horizontal</property>
+        <property name="text" translatable="yes">floodgauge1</property>
+        <property name="value">15</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>
