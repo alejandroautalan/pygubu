@@ -38,9 +38,9 @@ class AccordionFrameGroupBO(BuilderObject):
     def realize(self, parent, extra_init_args: dict = None):
         args = self._get_init_args(extra_init_args)
         master = parent.get_child_master()
-        self._accordion = parent.widget
         gid = self.wmeta.identifier
         self.widget = master.add_group(gid, **args)
+        self.widget._accordion = parent.widget
         return self.widget
 
     def _process_property_value(self, pname, value):
@@ -51,7 +51,7 @@ class AccordionFrameGroupBO(BuilderObject):
     def _set_property(self, target_widget, pname, value):
         if pname in self.properties:
             propvalue = self._process_property_value(pname, value)
-            self._accordion.group_config(
+            self.widget._accordion.group_config(
                 self.wmeta.identifier, **{pname: propvalue}
             )
         else:
