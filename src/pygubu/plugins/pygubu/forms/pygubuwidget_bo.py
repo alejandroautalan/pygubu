@@ -1,5 +1,6 @@
 import tkinter as tk
 import pygubu.plugins.pygubu.combobox_bo as cbb
+import pygubu.plugins.pygubu.fontinputbo as fib
 import pygubu.forms.pygubuwidget as pygubuwidget
 
 from pygubu.api.v1 import (
@@ -16,7 +17,7 @@ from .base import (
 
 
 _plugin_uid = f"{_plugin_forms_uid}.pygubuwidget"
-_designer_tabs = ("tk", _tab_form_widgets_label)
+_designer_tabs = ("tk", "ttk", _tab_form_widgets_label)
 
 
 class PygubuComboboxBO(WidgetBOMixin, cbb.ComboboxBO):
@@ -32,5 +33,23 @@ register_widget(
     _builder_uid,
     PygubuComboboxBO,
     "PygubuCombobox",
+    _designer_tabs,
+)
+
+
+class FontInputFWBO(WidgetBOMixin, fib.FontInputBO):
+    class_ = pygubuwidget.FontInputFW
+    properties = fib.FontInputBO.properties + WidgetBOMixin.base_properties
+    ro_properties = (
+        fib.FontInputBO.ro_properties + WidgetBOMixin.base_properties
+    )
+
+
+_wname = "FontInput"
+_builder_uid = f"{_plugin_uid}.{_wname}"
+register_widget(
+    _builder_uid,
+    FontInputFWBO,
+    _wname,
     _designer_tabs,
 )
