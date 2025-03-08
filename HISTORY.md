@@ -1,6 +1,18 @@
 History
 =======
 
+Changes for next version
+
+  * New property registry to manage custom properties
+  * Allow pygubu bootstrap themes (pbs) on multiple roots.
+  * Refactored simple tooltip module. Changed Tooltip class and added
+    new Tooltipttk class.
+  * New simple tooltip builders. Allows to use simple tooltips on designer.
+  * New IStyleDefinition class to make easy custom styles definitions and
+    management.
+  * New font input widget.
+
+
 Changes for version 0.36.3
 
   * Fix python 3.8, 3.9 compatibility. refs #301, alejandroautalan/pygubu-designer#288
