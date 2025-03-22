@@ -1,7 +1,7 @@
 History
 =======
 
-Changes for next version
+Changes for version 0.37
 
   * New property registry to manage custom properties
   * Allow pygubu bootstrap themes (pbs) on multiple roots.
