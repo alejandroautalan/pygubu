@@ -87,7 +87,7 @@ class PropertyRegistryBase(IPropertyRegistry):
         self._is_sorted = False
         logger.debug("Registered property %s", name)
 
-    def _update_existent(self: str, name, description: dict):
+    def _update_existent(self, name: str, description: dict):
         self.properties[name].update(description)
         logger.debug("Updating registered property %s", name)
 
@@ -146,12 +146,17 @@ if "PYGUBU_DESIGNER_RUNNING" in os.environ:
 
     class PropertyRegistryWithSignals(PropertyRegistryBase):
         on_property_new = Signal()
-        # on_property_update = signal()
+        on_property_update = Signal()
 
         def _add_new(self, name: str, description: dict):
             super()._add_new(name, description)
             if self.on_property_new.receivers:
                 self.on_property_new.send(name=name)
+
+        def _update_existent(self, name: str, description: dict):
+            super()._update_existent(name, description)
+            if self.on_property_update.receivers:
+                self.on_property_update.send(name=name, description=description)
 
     PropertyRegistry = PropertyRegistryWithSignals()
 
