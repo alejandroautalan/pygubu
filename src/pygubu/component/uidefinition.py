@@ -6,7 +6,7 @@ import xml.etree.ElementTree as ET
 
 from .builderobject import CLASS_MAP, TRANSLATABLE_PROPERTIES
 from .widgetmeta import BindingMeta, GridRCLine, WidgetMeta
-from .datapool import ResouceDefinition
+from .resource import ResouceDefinition
 
 
 # in-place prettyprint formatter
