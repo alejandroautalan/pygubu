@@ -10,7 +10,7 @@ from .component.widgetmeta import WidgetMeta
 from .stockimage import StockImage, StockImageException
 from .component.uidefinition import UIDefinition
 from .component.plugin_manager import PluginManager
-from .component.resource import IDataPool, DictDataPool, InvalidURIError
+from .component.resource import IDataPool, DictDataPool, ResourceError
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ class Builder(object):
         data = None
         try:
             data = self.data_pool.get_resource(uri)
-        except InvalidURIError as e:
+        except ResourceError as e:
             logger.exception(e)
         return data
 
