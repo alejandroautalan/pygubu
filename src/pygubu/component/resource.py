@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 from functools import reduce
 
 
-class InvalidURIError(Exception):
+class ResourceError(Exception):
     ...
 
 
@@ -31,7 +31,7 @@ class IDataPool(ABC):
                 return f"{result.netloc}{result.path}"
         except AttributeError:
             pass
-        raise InvalidURIError(uri)
+        raise ResourceError(f"Invalid URI: {uri}")
 
 
 class DictDataPool(IDataPool):
@@ -65,5 +65,5 @@ if __name__ == "__main__":
         try:
             res = pool.get_resource(uri)
             print(res)
-        except InvalidURIError:
+        except ResourceError:
             print("Invalid uri error:", uri)
