@@ -25,6 +25,10 @@ class ResouceDefinition:
 class IDataPool(ABC):
     """A generic pool of data."""
 
+    def add_definition(self, rdef: ResouceDefinition):
+        """Add a resouce definition to the pool."""
+        ...
+
     @abstractmethod
     def get_resource(
         self, uri: str, *, default_value=ResourceValue.UNDEFINED, **kw
@@ -71,6 +75,10 @@ class ChainedResoucePool(IDataPool):
     def __init__(self, chain: List[IDataPool]):
         self.chain = chain
 
+    def add_definition(self, definition: ResouceDefinition):
+        for pool in self.chain:
+            pool.add_definition(definition)
+
     def get_resource(
         self, uri: str, *, default_value=ResourceValue.UNDEFINED, **kw
     ) -> Any:
@@ -93,7 +101,43 @@ class ChainedResoucePool(IDataPool):
 
 
 class PygubuResourcePool(IDataPool):
-    ...
+    def __init__(self):
+        self._definitions = {}
+        self.translator = None
+        self.value_cache = {}
+
+    def add_definition(self, definition: ResouceDefinition):
+        self._definitions[definition.uid] = definition
+
+    def get_resource(
+        self, uri: str, *, default_value=ResourceValue.UNDEFINED, **kw
+    ) -> Any:
+        value = ResourceValue.UNDEFINED
+        uid = self.get_uri_path(uri)
+        if uid in self.value_cache:
+            return self.value_cache[uid]
+        if uid in self._definitions:
+            value = self.create_value(uid)
+        is_undefined = (
+            isinstance(value, ResourceValue)
+            and value == ResourceValue.UNDEFINED
+        )
+        if is_undefined:
+            value = default_value
+        else:
+            # store value in cache
+            self.value_cache[uid] = value
+        return value
+
+    def create_value(self, res_uid: str):
+        rdef: ResouceDefinition = self._definitions[res_uid]
+
+        def_uri = rdef.meta["uri"]
+        if def_uri == "pygubu://text":
+            return self.create_text(rdef)
+
+    def create_text(self, definition: ResouceDefinition):
+        return definition.meta["text"]
 
 
 if __name__ == "__main__":
@@ -134,3 +178,24 @@ if __name__ == "__main__":
     uri = "res://dog_not_exist"
     value = pool_chain.get_resource(uri, default_value=None)
     print(f"Value for {uri} -> {value}")
+
+    print("Test pygubu resource pool:\n")
+    res_def = [
+        ResouceDefinition(
+            "string1",
+            meta=dict(
+                uri="pygubu://text",
+                i18n_translatable=True,
+                i18n_context="Main window",
+                i18n_comment="Es un boton grande",
+                text="simple button",
+            ),
+        )
+    ]
+    pool = PygubuResourcePool()
+    for rdef in res_def:
+        pool.add(rdef)
+
+    uri = "res://string1"
+    value = pool.get_resource(uri)
+    print(f"Value for {uri} is {value}")
