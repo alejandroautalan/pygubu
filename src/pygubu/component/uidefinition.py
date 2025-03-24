@@ -269,7 +269,9 @@ class UIDefinition(object):
             child_layouts = element.findall("./child/object/layout")
             rclines_loaded = set()
             if child_layouts is not None:
-                clmanager = self._handle_child_layouts(meta, child_layouts, rclines_loaded)
+                clmanager = self._handle_child_layouts(
+                    meta, child_layouts, rclines_loaded
+                )
             meta.container_manager = clmanager
 
     def _handle_child_layouts(self, meta, child_layouts, rclines_loaded):
@@ -288,9 +290,7 @@ class UIDefinition(object):
                         key = (ptype, rcid, rcname)
                         if key not in rclines_loaded:
                             rcvalue = p.text
-                            line = GridRCLine(
-                                        ptype, rcid, rcname, rcvalue
-                                    )
+                            line = GridRCLine(ptype, rcid, rcname, rcvalue)
                             meta.gridrc_properties.append(line)
                             rclines_loaded.add(key)
         return clmanager
