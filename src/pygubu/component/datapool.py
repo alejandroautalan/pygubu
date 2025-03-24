@@ -8,6 +8,15 @@ class InvalidURIError(Exception):
     ...
 
 
+class ResouceDefinition:
+    def __init__(self, uid: str, meta: dict = None):
+        self.uid = uid
+        self.meta = {} if meta is None else meta
+
+    def __repr__(self):
+        return f"ResouceDefinition({self.uid}, {self.meta})"
+
+
 class IDataPool(ABC):
     """A generic pool of data."""
 
