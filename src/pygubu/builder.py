@@ -10,7 +10,7 @@ from .component.widgetmeta import WidgetMeta
 from .stockimage import StockImage, StockImageException
 from .component.uidefinition import UIDefinition
 from .component.plugin_manager import PluginManager
-from .component.datapool import IDataPool, DictDataPool, InvalidURIError
+from .component.resource import IDataPool, DictDataPool, InvalidURIError
 
 logger = logging.getLogger(__name__)
 
