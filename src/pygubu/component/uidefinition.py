@@ -6,6 +6,7 @@ import xml.etree.ElementTree as ET
 
 from .builderobject import CLASS_MAP, TRANSLATABLE_PROPERTIES
 from .widgetmeta import BindingMeta, GridRCLine, WidgetMeta
+from .datapool import ResouceDefinition
 
 
 # in-place prettyprint formatter
@@ -62,6 +63,7 @@ class UIDefinition(object):
         self.project_node = None
         self._project_settings = {}
         self._custom_widgets = []
+        self._resources = []
         self.uifile = None
         self.__create()
 
@@ -91,6 +93,58 @@ class UIDefinition(object):
             cnode = ET.Element("customwidget")
             cnode.attrib["path"] = str(value)
             node.append(cnode)
+
+    def _load_resources(self):
+        xpath = "./resources/resource"
+        node_list: ET.Element = self.project_node.findall(xpath)
+        # print(node_list)
+        if node_list is not None:
+            for node in node_list:
+                resource = self.xmlnode_to_resource(node)
+                self._resources.append(resource)
+
+    def _save_resources(self):
+        xpath = "./resources"
+        node: ET.Element = self.project_node.find(xpath)
+        if node is None:
+            node = ET.Element("resources")
+            self.project_node.append(node)
+        node.clear()
+        for resource in self._resources:
+            cnode = self.resource_to_xmlnode(resource)
+            node.append(cnode)
+
+    def xmlnode_to_resource(self, node: ET.Element):
+        uid = node.get("id")
+        meta_txt = node.find("meta").text
+        meta = json.loads(meta_txt)
+        return ResouceDefinition(uid, meta)
+
+    def resource_to_xmlnode(self, resource):
+        node = ET.Element("resource")
+        node.attrib["id"] = str(resource.uid)
+        meta_node = ET.Element("meta")
+        meta_node.text = json.dumps(resource.meta)
+        node.append(meta_node)
+        # Special treatment for translatable nodes
+        i18n_key = "i18n_translatable"
+        if i18n_key in resource.meta:
+            i18n_node = ET.Element("i18n")
+            i18n_node.attrib["translatable"] = "True"
+            context = resource.meta.get("i18n_context", "")
+            comment = resource.meta.get("i18n_comment", "")
+            i18n_node.attrib["context"] = str(context)
+            i18n_node.attrib["comment"] = str(comment)
+            node.append(i18n_node)
+        return node
+
+    @property
+    def project_resources(self) -> list:
+        return self._resources
+
+    @project_resources.setter
+    def project_resources(self, res_list):
+        self._resources = res_list
 
     @property
     def project_settings(self) -> dict:
@@ -475,6 +529,7 @@ class UIDefinition(object):
             root.append(self.project_node)
         self._load_project_settings()
         self._load_custom_widgets()
+        self._load_resources()
 
     def load_file(self, file_or_filename):
         tree = ET.parse(file_or_filename)
@@ -512,6 +567,7 @@ class UIDefinition(object):
     def save(self, file_or_filename):
         self._save_project_settings()
         self._save_custom_widgets()
+        self._save_resources()
         indent(self.root)
         self.tree.write(
             file_or_filename, xml_declaration=True, encoding="utf-8"
