@@ -34,8 +34,8 @@ class ToplevelPreviewMixin(object):
 
         if "minsize" in self.tl_attrs:
             minsize = self.tl_attrs.get("minsize", (1, 1))
-            min_w = minsize[0]
-            min_h = minsize[1]
+            min_w = self.winfo_fpixels(minsize[0])
+            min_h = self.winfo_fpixels(minsize[1])
             has_minsize = True
 
         content_w = content_h = 0
@@ -56,6 +56,7 @@ class ToplevelPreviewMixin(object):
                 # No children, show frame with user configured size
                 final_w = max(my_w, min_w)
                 final_h = max(my_h, min_h)
+                # print(f"{my_w=} {min_w=} {my_h=} {min_h=}")
         else:
             # Propagate is false, fixed w/h frame.
             final_w = max(min_w, my_w)
@@ -88,13 +89,13 @@ class ToplevelPreviewMixin(object):
     def _handle_height(self, kw):
         key = "height"
         if key in kw:
-            value = int(kw[key])
+            value = int(self.winfo_fpixels(kw[key]))
             minsize = self.tl_attrs.get("minsize", None)
             maxsize = self.tl_attrs.get("maxsize", None)
             remove = False
-            if minsize and value < minsize[1]:
+            if minsize and value < int(self.winfo_fpixels(minsize[1])):
                 remove = True
-            if maxsize and value > maxsize[1]:
+            if maxsize and value > int(self.winfo_fpixels(maxsize[1])):
                 remove = True
             if self._h_set:
                 resizable = self.tl_attrs.get("resizable", None)
@@ -110,13 +111,13 @@ class ToplevelPreviewMixin(object):
     def _handle_width(self, kw):
         key = "width"
         if key in kw:
-            value = int(kw[key])
+            value = int(self.winfo_fpixels(kw[key]))
             minsize = self.tl_attrs.get("minsize", None)
             maxsize = self.tl_attrs.get("maxsize", None)
             remove = False
-            if minsize and value < minsize[0]:
+            if minsize and value < int(self.winfo_fpixels(minsize[0])):
                 remove = True
-            if maxsize and value > maxsize[0]:
+            if maxsize and value > int(self.winfo_fpixels(maxsize[0])):
                 remove = True
             if self._w_set:
                 resizable = self.tl_attrs.get("resizable", None)
@@ -183,7 +184,7 @@ class ToplevelPreviewBaseBO(BuilderObject):
         if pname in ("maxsize", "minsize"):
             if value and "|" in value:
                 w, h = value.split("|")
-                value = (int(w), int(h))
+                value = (w, h)
             return value
         if pname == "propagate":
             return tk.getboolean(value)
@@ -207,8 +208,8 @@ class ToplevelPreviewBaseBO(BuilderObject):
             else:
                 if isinstance(pvalue, tuple):
                     tw.tl_attrs[pname] = pvalue
-                    if pname == "minsize":
-                        tw.configure(width=pvalue[0], height=pvalue[1])
+                    # if pname == "minsize":
+                    #     tw.configure(width=pvalue[0], height=pvalue[1])
                 else:
                     del tw.tl_attrs[pname]
         elif pname == "geometry":

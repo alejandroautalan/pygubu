@@ -916,7 +916,7 @@ class WmMixin:
         if pname in ("maxsize", "minsize"):
             if "|" in value:
                 w, h = value.split("|")
-                value = (int(w), int(h))
+                value = (w, h)
             return value
         return super()._process_property_value(pname, value)
 
@@ -958,7 +958,9 @@ class WmMixin:
         elif pname in ("maxsize", "minsize"):
             if "|" in value:
                 w, h = value.split("|")
-                line = "{0}.{1}({2}, {3})".format(targetid, pname, w, h)
+                wval = w if w.isnumeric() else f'"{w}"'
+                hval = h if h.isnumeric() else f'"{h}"'
+                line = "{0}.{1}({2}, {3})".format(targetid, pname, wval, hval)
                 code_bag[pname] = (line,)
         elif pname == "iconbitmap":
             bitmap = self.builder.code_create_iconbitmap(value)
