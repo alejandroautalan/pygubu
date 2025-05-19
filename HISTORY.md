@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.37.1
+
+  * Fix: Use dimension values for minsize, maxsize properties. refs alejandroautalan/pygubu-designer#295
+
 Changes for version 0.37
 
   * New property registry to manage custom properties
