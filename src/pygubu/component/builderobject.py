@@ -930,11 +930,15 @@ class WmMixin:
         elif pname == "maxsize":
             maxsize = self._process_property_value(pname, value)
             if isinstance(maxsize, tuple):
-                target_widget.maxsize(maxsize[0], maxsize[1])
+                width = target_widget.winfo_pixels(maxsize[0])
+                height = target_widget.winfo_pixels(maxsize[1])
+                target_widget.maxsize(width, height)
         elif pname == "minsize":
             minsize = self._process_property_value(pname, value)
             if isinstance(minsize, tuple):
-                target_widget.minsize(minsize[0], minsize[1])
+                width = target_widget.winfo_pixels(minsize[0])
+                height = target_widget.winfo_pixels(minsize[1])
+                target_widget.minsize(width, height)
         elif pname == "iconphoto":
             icon = self.builder.get_image(value)
             target_widget.iconphoto(True, icon)
@@ -960,8 +964,12 @@ class WmMixin:
                 w, h = value.split("|")
                 wval = w if w.isnumeric() else f'"{w}"'
                 hval = h if h.isnumeric() else f'"{h}"'
-                line = "{0}.{1}({2}, {3})".format(targetid, pname, wval, hval)
-                code_bag[pname] = (line,)
+                lines = [
+                    f"mw_ = {targetid}.winfo_pixels({wval})",
+                    f"mh_ = {targetid}.winfo_pixels({hval})",
+                    f"{targetid}.{pname}(mw_, mh_)",
+                ]
+                code_bag[pname] = lines
         elif pname == "iconbitmap":
             bitmap = self.builder.code_create_iconbitmap(value)
             line = f'{targetid}.iconbitmap("{bitmap}")'
