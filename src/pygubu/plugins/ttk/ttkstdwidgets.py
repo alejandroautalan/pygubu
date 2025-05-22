@@ -535,6 +535,7 @@ class TTKNotebookTab(TTKWidgetBO):
     layout_required = False
     allow_bindings = False
     allowed_parents = ("ttk.Notebook",)
+    children_layout_override = True
     maxchildren = 1
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
