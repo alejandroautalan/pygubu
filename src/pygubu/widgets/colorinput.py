@@ -44,7 +44,7 @@ class ColorInput(WidgetConfigureMixin, ColorInputUI):
     def _configure_set(self, **kw):
         key = "textvariable"
         if key in kw:
-            value = kw[key]
+            value = kw.pop(key)
             self._entry_var = value
             self._entry.configure(textvariable=value)
         key = "value"
