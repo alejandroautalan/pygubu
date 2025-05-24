@@ -31,6 +31,8 @@ _PathChoser_old = "pygubu.builder.widgets.pathchooser.*"
 _PathChoserButton = f"{_plugin_uid}.PathChooserButton"
 _Tooltip = f"{_plugin_uid}.Tooltip"
 _Tooltipttk = f"{_plugin_uid}.Tooltipttk"
+_FilterableTreeview = f"{_plugin_uid}.FilterableTreeview"
+_EditableTreeview = f"{_plugin_uid}.EditableTreeview"
 
 h_values = _(
     "In designer: json list of key, value pairs\n"
@@ -288,8 +290,16 @@ plugin_properties = {
             default_value=200,
         ),
     ],
+    "xscrollcommand": dict(
+        buid=[_FilterableTreeview, _EditableTreeview],
+        editor="scrollsetcommandentry",
+    ),
     "year": dict(
         buid=[_CalendarFrame, _CalendarFrame_old], editor="naturalnumber"
+    ),
+    "yscrollcommand": dict(
+        buid=[_FilterableTreeview, _EditableTreeview],
+        editor="scrollsetcommandentry",
     ),
 }
 
