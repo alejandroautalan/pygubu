@@ -399,6 +399,7 @@ class TTKTreeviewBO(TTKWidgetBO):
     container = True
     allowed_children = ("ttk.Treeview.Column",)
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
+    command_properties = ("xscrollcommand", "yscrollcommand")
     virtual_events = (
         "<<TreeviewSelect>>",
         "<<TreeviewOpen>>",
