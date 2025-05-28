@@ -10,6 +10,7 @@ from pygubu.component.builderobject import (
     PanedWindowBO,
     PanedWindowPaneBO,
     OptionMenuBaseMixin,
+    CB_TYPES,
 )
 
 
@@ -672,6 +673,7 @@ class TTKTreeviewColumnBO(TTKWidgetBO):
     # Code generation methods
     #
     def code_realize(self, boparent, code_identifier=None):
+        self.parent_bo = boparent
         self._code_identifier = boparent.code_child_master()
         col_props = dict(self.wmeta.properties)  # copy properties
         self._setup_column(boparent, col_props)
@@ -679,6 +681,28 @@ class TTKTreeviewColumnBO(TTKWidgetBO):
 
     def code_configure(self, targetid=None):
         return tuple()
+
+    def _code_connect_command(self, cmd_pname, cmd, cbname):
+        target = self.parent_bo.code_identifier()
+
+        args = cmd.get("args", "")
+        args = args.split() if args else None
+        lines = []
+        cmdtype = cmd["cbtype"]
+        if cmdtype == CB_TYPES.WITH_WID:
+            wid = self.wmeta.identifier
+            fname = f"{wid}_cmd_"
+            fdef = f"""def {fname}(): {cbname}("{wid}")\n"""
+            cbname = fname
+            lines.append(fdef)
+
+        tree_column = self.wmeta.properties.get("tree_column", "false")
+        tree_column = True if tree_column.lower() == "true" else False
+        column_id = "#0" if tree_column else self.wmeta.identifier
+        lines.append(
+            f"""{target}.heading("{column_id}", {cmd_pname}={cbname})"""
+        )
+        return lines
 
 
 register_widget(
