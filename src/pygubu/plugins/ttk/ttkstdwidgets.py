@@ -552,7 +552,11 @@ class TTKNotebookTab(TTKWidgetBO):
         pass
 
     def add_child(self, bobject):
-        self.widget.add(bobject.widget, **self.wmeta.properties)
+        properties = {
+            pname: self._process_property_value(pname, value)
+            for (pname, value) in self.wmeta.properties.items()
+        }
+        self.widget.add(bobject.widget, **properties)
 
     #
     # Code generation methods
