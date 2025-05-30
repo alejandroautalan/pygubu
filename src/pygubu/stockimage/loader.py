@@ -3,7 +3,7 @@ import math
 import tkinter as tk
 from .exceptions import ImageFormatNotSupportedError, StockImageException
 from .registry import StockRegistry, StockItem
-from .config import _img_notsupported
+from .config import _img_notsupported, _img_notfound
 
 
 logger = logging.getLogger(__name__)
@@ -11,6 +11,7 @@ logger = logging.getLogger(__name__)
 
 class StockImageCache:
     IMAGE_NOT_SUPPORTED = "img_not_supported"
+    IMAGE_NOT_FOUND = "img_not_found"
     BASELINE = 1.33398982438864281
 
     def __init__(
@@ -23,6 +24,8 @@ class StockImageCache:
             self.register_from_data(
                 self.IMAGE_NOT_SUPPORTED, "gif", _img_notsupported
             )
+        if not registry.is_registered(self.IMAGE_NOT_FOUND):
+            self.register_from_data(self.IMAGE_NOT_FOUND, "gif", _img_notfound)
         self.auto_scaling = auto_scaling
         self._scale_factor = None
 
