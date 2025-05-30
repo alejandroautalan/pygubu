@@ -250,8 +250,8 @@ class Builder(object):
     def _handle_load_problems(self, _module, module_loaded, last_exception):
         if not module_loaded:
             error = RuntimeError(
-                    f"Failed to import a module for builder id '{_module}'"
-                )
+                f"Failed to import a module for builder id '{_module}'"
+            )
             logger.exception(error)
             if last_exception:
                 raise error from last_exception
