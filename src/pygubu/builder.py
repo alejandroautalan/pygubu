@@ -89,13 +89,13 @@ class Builder(object):
         """Return tk image corresponding to name which is taken form path."""
         image = ""
         name = Path(path).name
-        if not self.image_cache.is_registered(name):
-            self.image_cache.find_and_register(name)
         try:
+            if not self.image_cache.is_registered(name):
+                self.image_cache.find_and_register(name)
             image = self.image_cache.get(name)
         except StockImageException:
-            # TODO: notify something here.
-            pass
+            # Use default IMAGE_NOT_FOUND
+            image = self.image_cache.get(self.image_cache.IMAGE_NOT_FOUND)
         return image
 
     def get_iconbitmap(self, path):
