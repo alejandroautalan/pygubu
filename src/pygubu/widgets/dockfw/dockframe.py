@@ -285,8 +285,8 @@ class DockFrame(DockWidgetBase, IDockFrame):
                         tabs = widget.tabs()
                         if len(tabs) > 1:
                             # FIXME: simplify a pane with grouped widgets.
-                            logger.warn("Grouped widgets not managed yet.")
-                            logger.warn("Aborting simplification.")
+                            logger.warning("Grouped widgets not managed yet.")
+                            logger.warning("Aborting simplification.")
                             return
                         widget = pane.nametowidget(widget.tabs()[0])
                     side = "n" if parent.orient == tk.VERTICAL else "w"
@@ -314,7 +314,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
         return config
 
     def load_layout(self, config: dict):
-        """Restore layout from previusly saved config dictionary."""
+        """Restore layout from previously saved config dictionary."""
         if not self._layout_config_valid(config):
             raise ValueError("Invalid layout configuration.")
         self._remove_layout()
