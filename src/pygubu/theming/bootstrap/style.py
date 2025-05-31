@@ -59,6 +59,7 @@ class Style(ttk.Style):
         if themename not in self.bs_configured_roots[self.master]:
             builder.create(self.master)
             builder.apply(self.master)
+            self.bs_configured_roots[self.master].append(themename)
         else:
             builder.apply(self.master)
         builder.update_current_widgets(self.master)
