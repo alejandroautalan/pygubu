@@ -1,6 +1,19 @@
 History
 =======
 
+Changes for version 0.38
+
+  * StockImage: Add default not found image.
+  * Builder: Avoid raising error and use default not found image.
+  * Treeview BO, fix missing command properties.
+  * Treeview BO, fix incorrect code generated for yscroll and xscroll commands.
+  * Fix code generation for treeview column command.
+  * Notebook: Fix setting image in tab.
+  * ColorInput: Fix error when setting textvariable.
+  * Fix: Do not show layout properties for Notebook.Tab child.
+  * Fix: setting minsize and maxsize on toplevels. hotfix
+  * Theming: Fix error when pbs theme is selected again.
+
 Changes for version 0.37.1
 
   * Fix: Use dimension values for minsize, maxsize properties. refs alejandroautalan/pygubu-designer#295
