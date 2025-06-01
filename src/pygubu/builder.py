@@ -10,7 +10,13 @@ from .component.widgetmeta import WidgetMeta
 from .stockimage import StockImage, StockImageException
 from .component.uidefinition import UIDefinition
 from .component.plugin_manager import PluginManager
-from .component.datapool import IDataPool, DictDataPool, InvalidURIError
+from .component.resource import (
+    IDataPool,
+    DictDataPool,
+    ResourceError,
+    PygubuResourcePool,
+    ChainedResoucePool,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -55,11 +61,16 @@ class Builder(object):
         if image_cache is None:
             image_cache = StockImage
         self.image_cache = image_cache
-        self.data_pool: IDataPool = (
-            data_pool
-            if isinstance(data_pool, IDataPool)
-            else DictDataPool(data_pool)
-        )
+
+        # Configure data pool
+        if data_pool is None:
+            self.data_pool = PygubuResourcePool()
+        else:
+            if isinstance(data_pool, dict):
+                data_pool = DictDataPool(data_pool)
+            self.data_pool = ChainedResoucePool(
+                [data_pool, PygubuResourcePool()]
+            )
 
     def get_resource(self, uri: str):
         """Gets a generic resource from the data pool.
@@ -69,7 +80,7 @@ class Builder(object):
         data = None
         try:
             data = self.data_pool.get_resource(uri)
-        except InvalidURIError as e:
+        except ResourceError as e:
             logger.exception(e)
         return data
 
@@ -164,12 +175,18 @@ class Builder(object):
             self.tkvariables[vname] = var
         return var
 
+    def _load_resource_definitions(self):
+        for res in self.uidefinition.project_resources:
+            self.data_pool.add_definition(res)
+
     def add_from_file(self, file_or_filename):
         """Load ui definition from file."""
         self.uidefinition.load_file(file_or_filename)
+        self._load_resource_definitions()
 
     def add_from_string(self, strdata):
         self.uidefinition.load_from_string(strdata)
+        self._load_resource_definitions()
 
     def add_from_xmlnode(self, element):
         """Load ui definition from xml.etree.Element node."""
