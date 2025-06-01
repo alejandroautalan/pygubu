@@ -4,10 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pygubu"
+version="0.38"
 description = "A simple GUI builder for the python tkinter module"
 readme = "README.md"
 requires-python = ">=3.8"
-license = { text = "MIT" }
+license = "MIT"
 keywords = ["gui", "tkinter", "designer"]
 authors = [
   { name = "Alejandro Autalan", email = "alejandroautalan@gmail.com" },
@@ -21,7 +22,6 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
-  "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
   "Intended Audience :: Developers",
   "Topic :: Software Development :: Libraries :: Python Modules",
@@ -31,7 +31,6 @@ classifiers = [
 dependencies = [
   "importlib_resources;python_version<'3.9'",
 ]
-dynamic = ["version"]
 
 [project.urls]
 Documentation = "https://github.com/alejandroautalan/pygubu#readme"
@@ -59,9 +58,6 @@ all = [
 
 [project.entry-points."pyinstaller40"]
 hook-dirs = "pygubu.__pyinstaller:get_hook_dirs"
-
-[tool.setuptools.dynamic]
-version = {attr = "pygubu.__version__"}
 
 [tool.setuptools.packages.find]
 where = ["src"]
