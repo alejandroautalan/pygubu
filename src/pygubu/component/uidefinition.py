@@ -47,7 +47,7 @@ class UIDefinition(object):
         super(UIDefinition, self).__init__()
         self.tree = None
         self.root = None
-        self._latest_version = "1.4"
+        self._latest_version = "1.5"
         self.version = self._latest_version
         self.author = "" if author is None else author
         self._ignore_properties = (
