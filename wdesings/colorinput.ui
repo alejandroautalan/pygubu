@@ -1,5 +1,27 @@
 <?xml version='1.0' encoding='utf-8'?>
-<interface version="1.4" author="PygubuDesigner 0.38">
+<interface version="1.5" author="PygubuDesigner 0.41.2">
+  <project>
+    <settings>
+      <setting id="name">ColorInput</setting>
+      <setting id="description">A color input for pygubu.</setting>
+      <setting id="module_name">colorinput</setting>
+      <setting id="template">widget</setting>
+      <setting id="main_widget">frame1</setting>
+      <setting id="main_classname">ColorInput</setting>
+      <setting id="main_menu" />
+      <setting id="output_dir">../src/pygubu/widgets</setting>
+      <setting id="output_dir2">../src/pygubu/plugins/pygubu</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">False</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="generate_code_onsave">False</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file" />
+    </settings>
+    <customwidgets />
+    <resources />
+  </project>
   <object class="ttk.Frame" id="frame1">
     <property name="height">25</property>
     <property name="width">100</property>
@@ -21,6 +43,7 @@
     <child>
       <object class="ttk.Entry" id="_entry" named="True">
         <property name="validate">all</property>
+        <property name="width">10</property>
         <bind sequence="&lt;FocusOut&gt;" handler="on_focusout" add="" />
         <bind sequence="&lt;KeyPress&gt;" handler="on_keypress" add="" />
         <layout manager="pack">
@@ -46,25 +69,4 @@
       </object>
     </child>
   </object>
-  <project>
-    <settings>
-      <setting id="name">ColorInput</setting>
-      <setting id="description">A color input for pygubu.</setting>
-      <setting id="module_name">colorinput</setting>
-      <setting id="template">widget</setting>
-      <setting id="main_widget">frame1</setting>
-      <setting id="main_classname">ColorInput</setting>
-      <setting id="main_menu" />
-      <setting id="output_dir">../src/pygubu/widgets</setting>
-      <setting id="output_dir2">../src/pygubu/plugins/pygubu</setting>
-      <setting id="import_tkvariables">False</setting>
-      <setting id="use_ttk_styledefinition_file">False</setting>
-      <setting id="use_i18n">False</setting>
-      <setting id="all_ids_attributes">False</setting>
-      <setting id="generate_code_onsave">False</setting>
-      <setting id="use_window_centering_code">False</setting>
-      <setting id="ttk_style_definition_file" />
-    </settings>
-    <customwidgets />
-  </project>
 </interface>

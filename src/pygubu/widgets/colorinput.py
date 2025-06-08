@@ -65,7 +65,7 @@ class ColorInput(WidgetConfigureMixin, ColorInputUI):
     def _set_value(self, txtcolor):
         self._color = txtcolor
         self._entry_var.set(txtcolor)
-        self._show_color(txtcolor)
+        self.after_idle(self._show_color)
 
     def on_focusout(self, event=None):
         self.validate_change(self._entry_var.get())
@@ -100,8 +100,8 @@ class ColorInput(WidgetConfigureMixin, ColorInputUI):
             self._set_value(newcolor)
             self.event_generate(self.EVENT_COLOR_CHANGED)
 
-    def _show_color(self, newcolor):
-        newcolor = newcolor if newcolor else self.BGCOLOR
+    def _show_color(self):
+        newcolor = self._color if self._color else self.BGCOLOR
         self._frame.configure(background=newcolor)
 
 

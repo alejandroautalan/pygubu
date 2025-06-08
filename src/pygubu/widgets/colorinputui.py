@@ -13,7 +13,7 @@ class ColorInputUI(ttk.Frame):
         self._frame.configure(borderwidth=0, height=10, relief="flat", width=24)
         self._frame.pack(fill="y", side="left")
         self._entry = ttk.Entry(self, name="_entry")
-        self._entry.configure(validate="all")
+        self._entry.configure(validate="all", width=10)
         self._entry.pack(expand=True, fill="both", padx=2, side="left")
         self._entry.bind("<FocusOut>", self.on_focusout, add="")
         self._entry.bind("<KeyPress>", self.on_keypress, add="")
