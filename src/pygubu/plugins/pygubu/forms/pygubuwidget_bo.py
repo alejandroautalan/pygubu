@@ -1,6 +1,7 @@
 import tkinter as tk
 import pygubu.plugins.pygubu.combobox_bo as cbb
 import pygubu.plugins.pygubu.fontinputbo as fib
+import pygubu.plugins.pygubu.colorinput_bo as cib
 import pygubu.forms.pygubuwidget as pygubuwidget
 
 from pygubu.api.v1 import (
@@ -50,6 +51,24 @@ _builder_uid = f"{_plugin_uid}.{_wname}"
 register_widget(
     _builder_uid,
     FontInputFWBO,
+    _wname,
+    _designer_tabs,
+)
+
+
+class ColorInputFWBO(WidgetBOMixin, cib.ColorInputBO):
+    class_ = pygubuwidget.ColorInputFW
+    properties = cib.ColorInputBO.properties + WidgetBOMixin.base_properties
+    ro_properties = (
+        cib.ColorInputBO.ro_properties + WidgetBOMixin.base_properties
+    )
+
+
+_wname = "ColorInput"
+_builder_uid = f"{_plugin_uid}.{_wname}"
+register_widget(
+    _builder_uid,
+    ColorInputFWBO,
     _wname,
     _designer_tabs,
 )

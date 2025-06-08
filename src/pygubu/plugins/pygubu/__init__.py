@@ -42,7 +42,9 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
         "pygubu.plugins.pygubu.fontinputbo": (f"{_plugin_uid}.FontInput",),
         # Forms are not finished so expect changes
         "pygubu.plugins.pygubu.forms.pygubuwidget_bo": (
-            "pygubu.forms.pygubuwidget.PygubuCombobox"
+            "pygubu.forms.pygubuwidget.PygubuCombobox",
+            "pygubu.forms.pygubuwidget.FontInput",
+            "pygubu.forms.pygubuwidget.ColorInput",
         ),
         "pygubu.plugins.pygubu.forms.tkwidget_bo": (
             "pygubu.forms.tkwidget.Text",
