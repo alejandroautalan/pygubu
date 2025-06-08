@@ -1,6 +1,7 @@
 import functools
 import tkinter as tk
 import tkinter.ttk as ttk
+import platform
 from abc import ABC, abstractmethod
 from collections import defaultdict
 from enum import Enum
@@ -152,9 +153,6 @@ class EditableTreeview(ttk.Treeview):
         self._update_callback_id = None
 
         self.bind("<<TreeviewSelect>>", self.__check_focus)
-        # Wheel events?
-        self.bind("<4>", self._schedule_update)
-        self.bind("<5>", self._schedule_update)
         self.bind("<KeyRelease>", self.__check_focus)
         self.bind("<Home>", functools.partial(self.__on_key_press, "Home"))
         self.bind("<End>", functools.partial(self.__on_key_press, "End"))
@@ -162,6 +160,16 @@ class EditableTreeview(ttk.Treeview):
         self.bind("<ButtonRelease-1>", self.__on_button1_release)
         self.bind("<Motion>", self.__on_mouse_motion)
         self.bind("<Configure>", self._schedule_update)
+        # Wheel events?
+        _os = platform.system()
+        if _os in ("Linux", "OpenBSD", "FreeBSD"):
+            if tk.TkVersion >= 9:
+                self.bind("<MouseWheel>", self._schedule_update)
+            else:
+                self.bind("<4>", self._schedule_update)
+                self.bind("<5>", self._schedule_update)
+        else:
+            self.bind("<MouseWheel>", self._schedule_update)
 
     def _schedule_update(self, event=None):
         if self._update_callback_id is None:
