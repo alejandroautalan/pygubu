@@ -22,3 +22,6 @@ class ColorInputFW(TtkVarBasedWidget, ColorInput):
 
     def wset_value(self, value):
         ColorInput.configure(self, value=value)
+
+    def wis_disabled(self) -> bool:
+        return self.view_manager.is_disabled(self._entry)
