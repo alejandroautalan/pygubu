@@ -60,6 +60,7 @@ class Form:
         self.transformation_error = None
         self._errors = {}
         self.translator = None
+        self.is_bound = False
 
     def add(self, name: str, field: FormField):
         self.fields[name] = field
