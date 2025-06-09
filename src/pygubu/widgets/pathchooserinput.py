@@ -85,6 +85,7 @@ class PathChooserBase:
 
     def _do_path_selection(self):
         fname = None
+        self._oldvalue = self._path
         fdoptions = self._fdoptions.copy()
         fdoptions["parent"] = self.winfo_toplevel()
         if fdoptions["initialdir"] is None:
