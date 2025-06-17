@@ -26,7 +26,7 @@ def crop_widget(widget, *, recursive=False):
 def iter_parents(widget: tk.Widget):
     top = str(widget.winfo_toplevel())
     parent = widget.winfo_parent()
-    if not parent or parent == ".":
+    if not parent or parent == "." or isinstance(widget, tk.Menu):
         return None
     while top != parent:
         pw = widget.nametowidget(parent)
