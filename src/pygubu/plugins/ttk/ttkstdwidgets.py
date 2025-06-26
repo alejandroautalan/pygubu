@@ -622,14 +622,16 @@ class TTKTreeviewColumnBO(TTKWidgetBO):
         self._setup_column(parent, col_props)
         return self.widget
 
-    def _get_heading_properties(self, props):
+    def _get_heading_properties(self, props, code_gen=False):
         text = props.pop("text", None)
         if text is None:
             text = self.wmeta.identifier
         hprops = {"anchor": props.pop("heading_anchor", tk.W), "text": text}
         # Only add image if has value. Fix code generation
         imgvalue = props.pop("image", None)
-        if imgvalue:
+        if imgvalue and code_gen:
+            hprops["image"] = imgvalue
+        elif imgvalue:
             hprops["image"] = self._process_property_value("image", imgvalue)
         return hprops
 
@@ -642,7 +644,7 @@ class TTKTreeviewColumnBO(TTKWidgetBO):
         }
         return cprops
 
-    def _setup_column(self, parent, col_props):
+    def _setup_column(self, parent, col_props, code_gen=False):
         tree_column = col_props.pop("tree_column", "false")
         tree_column = tree_column.lower()
         tree_column = True if tree_column == "true" else False
@@ -653,7 +655,7 @@ class TTKTreeviewColumnBO(TTKWidgetBO):
 
         # configure heading properties
         col_props.pop("command", "")
-        hprops = self._get_heading_properties(col_props)
+        hprops = self._get_heading_properties(col_props, code_gen)
         parent.set_heading(column_id, hprops)
 
         # configure column properties
@@ -680,7 +682,7 @@ class TTKTreeviewColumnBO(TTKWidgetBO):
         self.parent_bo = boparent
         self._code_identifier = boparent.code_child_master()
         col_props = dict(self.wmeta.properties)  # copy properties
-        self._setup_column(boparent, col_props)
+        self._setup_column(boparent, col_props, code_gen=True)
         return tuple()
 
     def code_configure(self, targetid=None):
