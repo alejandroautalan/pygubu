@@ -260,6 +260,16 @@ class EditableTreeview(ttk.Treeview):
             self.__event_info = (col, item)
             self.event_generate("<<TreeviewInplaceEdit>>")
 
+    def _editor_bbox(self, item, column):
+        pady = self.winfo_pixels("1p")
+        bbox = self.bbox(item, column=column)
+        if bbox:
+            x, y, w, h = bbox
+            y = y + pady
+            h = h - (pady * 2)
+            bbox = (x, y, w, h)
+        return bbox
+
     def __updateWnds(self, event=None):
         if not self._curfocus:
             for col, editor in self._editors.items():
@@ -274,7 +284,7 @@ class EditableTreeview(ttk.Treeview):
         for index, col in enumerate(cols):
             if col in self._editors:
                 editor = self._editors[col]
-                bbox = "" if not item_exists else self.bbox(item, column=col)
+                bbox = "" if not item_exists else self._editor_bbox(item, col)
                 if bbox == "":
                     editor.widget.place_forget()
                 elif col in self._editors_show:
