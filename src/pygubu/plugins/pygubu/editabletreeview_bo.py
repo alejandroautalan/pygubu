@@ -32,6 +32,9 @@ register_widget(
 )
 
 # Register old name until removal
-register_widget(
-    "pygubu.builder.widgets.editabletreeview", EditableTreeviewBO, public=False
-)
+_old_name = "pygubu.builder.widgets.editabletreeview"
+register_widget(_old_name, EditableTreeviewBO, public=False)
+if _old_name not in TTKTreeviewColumnBO.allowed_parents:
+    TTKTreeviewColumnBO.add_allowed_parent(_old_name)
+if _old_name not in TTKSBHelperBO.allowed_children:
+    TTKSBHelperBO.add_allowed_child(_old_name)
