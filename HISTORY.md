@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.38.1
+
+  * Fix adding columns to Editabletreeview from old version xml. refs alejandroautalan/pygubu-designer#301
+
 Changes for version 0.38
 
   * StockImage: Add default not found image.
