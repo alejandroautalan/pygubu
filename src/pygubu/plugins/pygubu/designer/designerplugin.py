@@ -33,7 +33,10 @@ class PygubuDesignerPlugin(IDesignerPlugin):
 
             builder.on_first_object = on_root_created
             top = builder.get_object(widget_id)
-        elif builder_uid == "pygubu.builder.widgets.dialog":
+        elif builder_uid in (
+            "pygubu.widgets.Dialog",
+            "pygubu.builder.widgets.dialog",
+        ):
             dialog = builder.get_object(widget_id, top_master)
             dialog.run()
             top = dialog.toplevel
