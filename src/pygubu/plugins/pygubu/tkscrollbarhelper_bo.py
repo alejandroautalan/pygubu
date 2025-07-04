@@ -10,6 +10,7 @@ class TKSBHelperBO(BuilderObject):
     class_ = TkScrollbarHelper
     container = True
     maxchildren = 1
+    children_layout_override = True
     allowed_children = (
         "tk.Entry",
         "ttk.Entry",
