@@ -745,7 +745,10 @@ class TTKSpinboxBO(TTKWidgetBO, EntryBaseBO):
     virtual_events = ("<<Increment>>", "<<Decrement>>")
 
 
-if tk.TkVersion >= 8.6:
+if tk.TkVersion >= 8.5:
+    # Note:
+    # ttk::Spinbox was added in tk 8.5.9 so it may fail in lower 8.5 patch versions
+
     if not hasattr(ttk, "Spinbox"):
         from pygubu.widgets.ttkspinbox import Spinbox
 
