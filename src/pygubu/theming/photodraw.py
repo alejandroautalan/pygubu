@@ -96,10 +96,10 @@ class TkPhotoDraw:
                 dy = y1 - y
                 R = G = B = 0
 
-                rgb1 = tmp.get(x0, y0)
-                rgb2 = tmp.get(x0, y1)
-                rgb3 = tmp.get(x1, y0)
-                rgb4 = tmp.get(x1, y1)
+                rgb1 = self._get_img_pixel(tmp, x0, y0)
+                rgb2 = self._get_img_pixel(tmp, x0, y1)
+                rgb3 = self._get_img_pixel(tmp, x1, y0)
+                rgb4 = self._get_img_pixel(tmp, x1, y1)
 
                 if (
                         rgb1 == bg_rgb
@@ -144,7 +144,7 @@ class TkPhotoDraw:
         for i in range(0, w):
             row = []
             for j in range(h - 1, -1, -1):
-                rgb = tmp.get(i, j)
+                rgb = self._get_img_pixel(tmp, i, j)
                 if rgb == bg_rgb:
                     alpha.append((i, j))
                 row.append("#{:02x}{:02x}{:02x}".format(*rgb))
@@ -156,6 +156,14 @@ class TkPhotoDraw:
         del alpha
         del buf
 
+    def _get_img_pixel(self, img, x:int, y:int):
+        rgb = img.get(x, y)
+        if isinstance(rgb, str):
+            # Fix python tk 8.5 issue
+            r, g, b = rgb.split()
+            rgb = (int(r), int(g), int(b))
+        return rgb
+
     def _rotate_90(self, bg_color, w, h, tmp):
         bg_rgb = self.tk_master.winfo_rgb(bg_color)
         buf = []
@@ -163,7 +171,7 @@ class TkPhotoDraw:
         for i in range(w - 1, -1, -1):
             row = []
             for j in range(0, h):
-                rgb = tmp.get(i, j)
+                rgb = self._get_img_pixel(tmp, i, j)
                 if rgb == bg_rgb:
                     alpha.append((i, j))
                 row.append("#{:02x}{:02x}{:02x}".format(*rgb))
