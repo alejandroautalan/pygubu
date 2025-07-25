@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.38.2
+
+  * Fix errors with tk 8.5
+
 Changes for version 0.38.1
 
   * Fix adding columns to Editabletreeview from old version xml. refs alejandroautalan/pygubu-designer#301
