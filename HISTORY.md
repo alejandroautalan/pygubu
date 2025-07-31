@@ -1,6 +1,19 @@
 History
 =======
 
+Changes for next version
+
+  * Use version number from project.toml
+  * Fix Dialog widget toplevel preview in designer.
+  * Disable layout options for scrollbarhelper child in designer.
+  * Editabletreeview: Add minimal padding.
+  * Treeview: fix code generation for header images.
+  * PathChooserInput: Update old value before user selection.
+  * Fix issue when scrolling in tk 9.
+  * ColorInput: reduce entry size. Fix issue setting frame color.
+  * Add ColorInput in pygubu forms.
+  * Internal iter_parents function, fix issue when mouse is over menu, from menubutton.
+
 Changes for version 0.38.2
 
   * Fix errors with tk 8.5
