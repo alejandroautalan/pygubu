@@ -192,6 +192,12 @@ plugin_properties = {
     "selectfg": dict(
         buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
     ),
+    "show": dict(
+        buid=[_FilterableTreeview, _EditableTreeview],
+        editor="choice",
+        values=("", "tree", "headings"),
+        state="readonly",
+    ),
     "state": [
         dict(
             buid=[_CalendarFrame, _CalendarFrame_old],
