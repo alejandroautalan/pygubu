@@ -19,6 +19,13 @@ class HtmlFrameBO(TTKFrame):
         TTKFrame.OPTIONS_STANDARD + TTKFrame.OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     )
     ro_properties = OPTIONS_CUSTOM
+    virtual_events = (
+        "<<DoneLoading>>",
+        "<<DownloadingResource>>",
+        "<<IconChanged>>",
+        "<<TitleChanged>>",
+        "<<UrlChanged>>",
+    )
 
     def _process_property_value(self, pname, value):
         if pname == "messages_enabled":
@@ -28,7 +35,7 @@ class HtmlFrameBO(TTKFrame):
         return super()._process_property_value(pname, value)
 
     def _code_process_property_value(self, targetid, pname, value):
-        if pname in self.OPTIONS_CUSTOM:
+        if pname in HtmlFrameBO.OPTIONS_CUSTOM:
             newval = self._process_property_value(pname, value)
             return newval if isinstance(newval, bool) else f"'{newval}'"
         return super()._code_process_property_value(targetid, pname, value)

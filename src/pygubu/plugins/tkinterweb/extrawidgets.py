@@ -2,7 +2,7 @@ import tkinter as tk
 
 from pygubu.api.v1 import BuilderObject, register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import TTKNotebookTab
-from tkinterweb.utilities import Notebook, ColourSelector
+from tkinterweb.subwidgets import Notebook, ColourSelector
 from ..tkinterweb import _designer_tab_label, _plugin_uid
 
 
