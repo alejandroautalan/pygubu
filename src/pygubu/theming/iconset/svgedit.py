@@ -7,7 +7,7 @@ SVG_NAMESPACE = "http://www.w3.org/2000/svg"
 etree.register_namespace("", SVG_NAMESPACE)
 
 
-def svg_load(source, fill=None) -> str:
+def svgload(source, fill=None) -> str:
     """Load svg from source and apply modifiers."""
     tree: etree.Element = etree.parse(source)
     root = tree.getroot()

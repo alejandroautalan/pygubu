@@ -5,6 +5,7 @@ from pygubu.theming.iconset.photoreusable import (
     PhotoImageReusable,
     ReusableImageMixin,
 )
+from pygubu.theming.iconset.svgedit import svgload
 
 
 USE_TK9SVG = False
@@ -55,19 +56,19 @@ if USE_CAIROSVG:
 
 
 def svg2photo(
-    name,
-    fill=None,
+    source,
     *,
+    fill=None,
     scaletowidth=None,
     scaletoheight=None,
     scale=None,
     master=None,
     tcl_name=None,
 ) -> tk.PhotoImage:
-    """Icon name to PhotoImage.
+    """SVG to PhotoImage.
     Only one of scale, scaletowidth, scaletoheight
     is applied"""
-    img_svg = "icon_to_svg(name, fill)"  # FIXME
+    img_svg = svgload(source, fill=fill)
     img_data = img_svg.encode()
 
     tk_image = None
