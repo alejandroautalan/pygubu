@@ -40,6 +40,11 @@ class DialogBO(TKToplevel):
     def _code_set_property(self, targetid, pname, value, code_bag):
         if pname == "modal":
             code_bag[pname] = '"{0}"'.format(value)
+        elif pname in ("maxsize", "minsize", "title"):
+            new_target = f"{targetid}.toplevel"
+            super(DialogBO, self)._code_set_property(
+                new_target, pname, value, code_bag
+            )
         else:
             super(DialogBO, self)._code_set_property(
                 targetid, pname, value, code_bag

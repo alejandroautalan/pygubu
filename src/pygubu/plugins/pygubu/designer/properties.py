@@ -145,6 +145,18 @@ plugin_properties = {
     "markfg": dict(
         buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
     ),
+    "maxsize": [
+        dict(
+            buid=[_Dialog, _Dialog_old],
+            editor="whentry",
+        ),
+    ],
+    "minsize": [
+        dict(
+            buid=[_Dialog, _Dialog_old],
+            editor="whentry",
+        ),
+    ],
     "modal": [
         dict(
             buid=[_Dialog, _Dialog_old],
