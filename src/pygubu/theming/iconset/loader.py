@@ -51,7 +51,6 @@ class IconSetLoader:
 
     def get_image(self, master, image_uid):
         if image_uid in self.cache:
-            print("cache hit", image_uid)
             return self.cache[image_uid]
         return self._load_image(master, image_uid)
 
