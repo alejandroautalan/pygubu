@@ -13,6 +13,10 @@ Changes for next version
   * ColorInput: reduce entry size. Fix issue setting frame color.
   * Add ColorInput in pygubu forms.
   * Internal iter_parents function, fix issue when mouse is over menu, from menubutton.
+  * Builder: Add helper function to avoid calling get_object for every widget. refs #302
+  * New iconset module.
+  * Fix code generation issues for pygubu.widgets.dialog
+  * Update tkinterweb plugin to support tkinterweb version 4.4.4
 
 Changes for version 0.38.2
 
