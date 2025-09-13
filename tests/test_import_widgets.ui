@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings />
+    <customwidgets />
+    <resources />
+  </project>
+  <object class="ttk.Frame" id="mainwindow" named="True">
+    <property name="height">200</property>
+    <property name="padding">5p</property>
+    <property name="width">200</property>
+    <layout manager="grid">
+      <property name="column">0</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="ttk.Frame" id="frame2">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="ttk.Label" id="label_username" named="True">
+            <property name="text" translatable="yes">Username:</property>
+            <layout manager="pack">
+              <property name="anchor">w</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Entry" id="entry_username" named="True">
+            <layout manager="pack">
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="ttk.Button" id="button1">
+            <property name="text" translatable="yes">Accept</property>
+            <layout manager="pack">
+              <property name="anchor">e</property>
+              <property name="side">top</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

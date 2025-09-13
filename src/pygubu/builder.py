@@ -136,6 +136,18 @@ class Builder(object):
                 if keyword in self.tkvariables:
                     setattr(container, keyword, self.tkvariables[keyword])
 
+    def import_widgets(self, container, *, user_named=True) -> None:
+        """Helper method to avoid call get_object for every widget.
+
+        If user_named is True, will import only widgets marked as named in the designer.
+
+        User should call this method after calling get_object('your_main_widget').
+        """
+        for name, bo in self.objects.items():
+            do_import = not user_named or (user_named and bo.wmeta.is_named)
+            if do_import:
+                setattr(container, name, bo.widget)
+
     def _process_variable_description(self, name_or_desc):
         vname = name_or_desc
         vtype = "string"  # default type if not defined
