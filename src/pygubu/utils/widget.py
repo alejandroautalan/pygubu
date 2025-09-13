@@ -112,6 +112,33 @@ class WidgetConfigureMixin:
         cget(option) to get a widget option.
         configure(option=value) to set widget option
         configure(option) to get info about option
+
+    Usage example: Manage a new "help" property
+
+        class EntryWithHelp(WidgetConfigureMixin, ttk.Entry)
+            PROP_HELP = "help"
+
+            def __init__(self, args, **kw):
+                self._help = ""
+                super().__init__(args, **kw)
+
+            def _widget_cget(self, option):
+                if option == self.PROP_HELP:
+                    return self._help
+                return super()._widget_cget(option)
+
+            def _configure_set(self, **kw):
+                if self.PROP_HELP in kw:
+                    self._help = kw.pop(self.PROP_HELP)
+                return super()._configure_set(**kw)
+
+            def _configure_get(self, option):
+                ip option == self.PROP_HELP:
+                    # Option information:
+                    # (argvName, dbName, dbClass, defValue, current value)
+                    return (self.PROP_HELP, None, None, "", self._help)
+                return super()._configure_get(option)
+
     """
 
     def _configure_get(self, option):
