@@ -449,6 +449,14 @@ class BuilderObject(object):
     def code_escape_str(value: str) -> str:
         return repr(value)
 
+    @staticmethod
+    def code_make_kwargs_str(args: dict, prefix="") -> str:
+        bag = [f"{pname}={value}" for pname, value in args.items()]
+        kwargs = ""
+        if bag:
+            kwargs = prefix + ", ".join(bag)
+        return kwargs
+
     def _code_get_init_args(self, code_identifier):
         """Creates dict with properties marked as readonly"""
         args = {}
