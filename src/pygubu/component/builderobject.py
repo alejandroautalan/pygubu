@@ -487,12 +487,7 @@ class BuilderObject(object):
         lines = []
         master = boparent.code_child_master()
         init_args = self._code_get_init_args(self.code_identifier())
-        bag = []
-        for pname, value in init_args.items():
-            bag.append(f"{pname}={value}")
-        kwargs = ""
-        if bag:
-            kwargs = f""", {", ".join(bag)}"""
+        kwargs = self.code_make_kwargs_str(init_args, prefix=", ")
         s = f"{self.code_identifier()} = {self._code_class_name()}({master}{kwargs})"
         lines.append(s)
         return lines
