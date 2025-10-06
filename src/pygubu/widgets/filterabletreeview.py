@@ -14,7 +14,7 @@ class BasicFilter:
         return match_found
 
 
-class FilterableTreeview(ttk.Treeview):
+class FilterableTreeviewMixin:
     def __init__(self, *args, filter_func: Optional[_filter_func] = None, **kw):
         super().__init__(*args, **kw)
         self.filter_active = False
@@ -173,3 +173,7 @@ class FilterableTreeview(ttk.Treeview):
     #
     # End Filter functions
     #
+
+
+class FilterableTreeview(FilterableTreeviewMixin, ttk.Treeview):
+    pass
