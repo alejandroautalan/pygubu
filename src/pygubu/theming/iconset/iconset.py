@@ -26,8 +26,9 @@ class IconSet:
         if uid in icons:
             size = icons[uid].get("size", self.icon_size)
             fn = icons[uid].get("fn", uid)
+            color_override = icons[uid].get("color_override", True)
             color = icons[uid].get("light_color", self.light_color)
             if theme == type(self).THEME_DARK:
                 color = icons[uid].get("dark_color", self.dark_color)
-            return (fn, size, color)
+            return (fn, size, color_override, color)
         return (None, None, None)

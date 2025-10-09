@@ -59,10 +59,13 @@ class IconSetLoader:
             self.master = master
         tkimage = None
         if image_uid in self.iconset:
-            fn, size, color = self.iconset.icon_props(image_uid, self._theme)
+            fn, size, color_override, color = self.iconset.icon_props(
+                image_uid, self._theme
+            )
             with resources.open_binary(self.data_module, fn) as fileio:
                 tkimage = svg2photo(
                     fileio,
+                    color_override=color_override,
                     fill=color,
                     scaletowidth=size,
                     master=master,

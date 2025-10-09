@@ -58,6 +58,7 @@ if USE_CAIROSVG:
 def svg2photo(
     source,
     *,
+    color_override=False,
     fill=None,
     scaletowidth=None,
     scaletoheight=None,
@@ -68,7 +69,7 @@ def svg2photo(
     """SVG to PhotoImage.
     Only one of scale, scaletowidth, scaletoheight
     is applied"""
-    img_svg = svgload(source, fill=fill)
+    img_svg = svgload(source, color_override=color_override, fill=fill)
     img_data = img_svg.encode()
 
     tk_image = None
