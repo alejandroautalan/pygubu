@@ -5,7 +5,7 @@ from pygubu.theming.iconset.photoreusable import (
     PhotoImageReusable,
     ReusableImageMixin,
 )
-from pygubu.theming.iconset.svgedit import svgload
+from pygubu.theming.iconset.svgedit import svg_load, ETreeModifierFunc
 
 
 USE_TK9SVG = False
@@ -60,6 +60,7 @@ def svg2photo(
     *,
     color_override=False,
     fill=None,
+    modifier_func: ETreeModifierFunc = None,
     scaletowidth=None,
     scaletoheight=None,
     scale=None,
@@ -69,9 +70,26 @@ def svg2photo(
     """SVG to PhotoImage.
     Only one of scale, scaletowidth, scaletoheight
     is applied"""
-    img_svg = svgload(source, color_override=color_override, fill=fill)
-    img_data = img_svg.encode()
+    img_svg = svg_load(
+        source,
+        color_override=color_override,
+        fill=fill,
+        modifier_func=modifier_func,
+    )
+    return svg_data2photo(
+        img_svg, scaletowidth, scaletoheight, scale, master, tcl_name
+    )
 
+
+def svg_data2photo(
+    data: str,
+    scaletowidth=None,
+    scaletoheight=None,
+    scale=None,
+    master=None,
+    tcl_name=None,
+) -> tk.PhotoImage:
+    img_data = data.encode()
     tk_image = None
     if USE_TK9SVG:
         tk_image = tk9_svg2photo(

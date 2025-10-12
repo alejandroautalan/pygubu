@@ -1,11 +1,16 @@
 import xml.etree.ElementTree as etree
+from typing import Callable
 
 
 SVG_NAMESPACE = "http://www.w3.org/2000/svg"
 etree.register_namespace("", SVG_NAMESPACE)
 
 
+ETreeModifierFunc = Callable[[etree.ElementTree, str], None]
+
+
 def replace_color(root: etree.ElementTree, fill):
+    """Default color replace function for pygubu iconsets."""
     # Apply fill color override if provided
     pfill = "fill"
     pstroke = "stroke"
@@ -30,12 +35,23 @@ def replace_color(root: etree.ElementTree, fill):
             root.attrib[pfill] = fill
 
 
-def svgload(source, color_override=False, fill=None) -> str:
-    """Load svg from source and apply modifiers."""
+def svg_load(
+    source,
+    color_override=False,
+    fill=None,
+    modifier_func: ETreeModifierFunc = None,
+) -> str:
+    """Load svg from source and apply modifiers.
+    Modifier function is called only if color_override is True and a fill color
+    is provided.
+    """
     tree: etree.Element = etree.parse(source)
     root = tree.getroot()
 
     if color_override and fill is not None:
-        replace_color(root, fill)
+        modifier_func = (
+            replace_color if modifier_func is None else modifier_func
+        )
+        modifier_func(root, fill)
     data = etree.tostring(root, "unicode")
     return data
