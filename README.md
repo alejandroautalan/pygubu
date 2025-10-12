@@ -131,7 +131,8 @@ The following are some good tkinter (and tk) references:
 - [Graphical User Interfaces with Tk](https://docs.python.org/3/library/tk.html)
 - [Tkinter 8.5 reference: a GUI for Python](https://tkdocs.com/shipman)
 - [An Introduction to Tkinter](http://effbot.org/tkinterbook) [(archive)](http://web.archive.org/web/20200504141939/http://www.effbot.org/tkinterbook)
-- [Tcl/Tk 8.5 Manual](http://www.tcl.tk/man/tcl8.5/)
+- [Tcl/Tk 9.0 Manual](https://www.tcl-lang.org/man/tcl9.0/TkCmd/index.html)
+- [Tcl/Tk 8.6 Manual](https://www.tcl-lang.org/man/tcl8.6/TkCmd/contents.htm)
 
 
 You can also see the [examples](https://github.com/alejandroautalan/pygubu-designer/tree/master/examples) directory or watch [this introductory video tutorial](http://youtu.be/wuzV9P8geDg).
