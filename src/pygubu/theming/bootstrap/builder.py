@@ -1187,9 +1187,9 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
             bordercolor = focuscolor
 
         ttk_elements = (
-            (f"{element}.downarrow", TTK_DEFAULT),
-            (f"{element}.padding", TTK_CLAM),
-            (f"{element}.textarea", TTK_CLAM),
+            (f"{element}PBS.downarrow", TTK_DEFAULT),
+            (f"{element}PBS.padding", TTK_CLAM),
+            (f"{element}PBS.textarea", TTK_CLAM),
         )
         for element_name, from_ in ttk_elements:
             settings[element_name] = {
@@ -1246,17 +1246,17 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                         "sticky": tk.EW,
                         "children": [
                             (
-                                "Combobox.downarrow",
+                                "ComboboxPBS.downarrow",
                                 {"side": tk.RIGHT, "sticky": tk.NS},
                             ),
                             (
-                                "Combobox.padding",
+                                "ComboboxPBS.padding",
                                 {
                                     "expand": "1",
                                     "sticky": tk.NSEW,
                                     "children": [
                                         (
-                                            "Combobox.textarea",
+                                            "ComboboxPBS.textarea",
                                             {"sticky": tk.NSEW},
                                         )
                                     ],
@@ -1395,7 +1395,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         # horizontal separator
         h_element = h_ttkstyle.replace(".TS", ".S")
-        h_element_uid = f"{h_element}.separator"
+        h_element_uid = f"{h_element}PBS.separator"
         settings[h_element_uid] = {
             "element create": ("image", h_name),
         }
@@ -1403,7 +1403,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         # vertical separator
         v_element = v_ttkstyle.replace(".TS", ".S")
-        v_element_uid = f"{v_element}.separator"
+        v_element_uid = f"{v_element}PBS.separator"
         settings[v_element_uid] = {
             "element create": ("image", v_name),
         }
@@ -1445,9 +1445,9 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         # horizontal progressbar
         h_element = h_ttkstyle.replace(".TP", ".P")
-        htrough_element = f"{h_element}.trough"
-        hpbar_element = f"{h_element}.pbar"
-        hpbar_text_element = f"{h_element}.ctext"
+        htrough_element = f"{h_element}PBS.trough"
+        hpbar_element = f"{h_element}PBS.pbar"
+        hpbar_text_element = f"{h_element}PBS.ctext"
 
         if htrough_element not in self.existing_elements:
             settings[htrough_element] = {
@@ -1488,8 +1488,8 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         # vertical progressbar
         v_element = v_ttkstyle.replace(".TP", ".P")
-        vtrough_element = f"{v_element}.trough"
-        vpbar_element = f"{v_element}.pbar"
+        vtrough_element = f"{v_element}PBS.trough"
+        vpbar_element = f"{v_element}PBS.pbar"
         # vpbar_text_element = f"{v_element}.ctext"
         if vtrough_element not in self.existing_elements:
             settings[vtrough_element] = {
@@ -1547,7 +1547,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         # horizontal scale
         h_element = h_ttkstyle.replace(".TS", ".S")
 
-        settings[f"{h_element}.slider"] = {
+        settings[f"{h_element}PBS.slider"] = {
             "element create": (
                 "image",
                 images[0],
@@ -1556,7 +1556,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ("hover", images[2]),
             ),
         }
-        settings[f"{h_element}.track"] = {
+        settings[f"{h_element}PBS.track"] = {
             "element create": (
                 "image",
                 images[4],
@@ -1565,14 +1565,14 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         settings[h_ttkstyle] = {
             "layout": [
                 (
-                    f"{h_element}.focus",
+                    f"{h_element}PBS.focus",
                     {
                         "expand": "1",
                         "sticky": tk.NSEW,
                         "children": [
-                            (f"{h_element}.track", {"sticky": tk.EW}),
+                            (f"{h_element}PBS.track", {"sticky": tk.EW}),
                             (
-                                f"{h_element}.slider",
+                                f"{h_element}PBS.slider",
                                 {"side": tk.LEFT, "sticky": ""},
                             ),
                         ],
@@ -1582,7 +1582,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         }
         # vertical scale
         v_element = v_ttkstyle.replace(".TS", ".S")
-        settings[f"{v_element}.slider"] = {
+        settings[f"{v_element}PBS.slider"] = {
             "element create": (
                 "image",
                 images[0],
@@ -1591,7 +1591,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                 ("hover", images[2]),
             ),
         }
-        settings[f"{v_element}.track"] = {
+        settings[f"{v_element}PBS.track"] = {
             "element create": (
                 "image",
                 images[5],
@@ -1600,14 +1600,14 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         settings[v_ttkstyle] = {
             "layout": [
                 (
-                    f"{v_element}.focus",
+                    f"{v_element}PBS.focus",
                     {
                         "expand": "1",
                         "sticky": tk.NSEW,
                         "children": [
-                            (f"{v_element}.track", {"sticky": tk.NS}),
+                            (f"{v_element}PBS.track", {"sticky": tk.NS}),
                             (
-                                f"{v_element}.slider",
+                                f"{v_element}PBS.slider",
                                 {"side": tk.TOP, "sticky": ""},
                             ),
                         ],
@@ -1655,7 +1655,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         )
 
         # horizontal scrollbar
-        settings[f"{h_ttkstyle}.thumb"] = {
+        settings[f"{h_ttkstyle}PBS.thumb"] = {
             "element create": (
                 "image",
                 scroll_images[0],
@@ -1695,7 +1695,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                                 {"side": "right", "sticky": ""},
                             ),
                             (
-                                f"{h_ttkstyle}.thumb",
+                                f"{h_ttkstyle}PBS.thumb",
                                 {"expand": "1", "sticky": "nswe"},
                             ),
                         ],
@@ -1705,7 +1705,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         }
 
         # vertical scrollbar
-        settings[f"{v_ttkstyle}.thumb"] = {
+        settings[f"{v_ttkstyle}PBS.thumb"] = {
             "element create": (
                 "image",
                 scroll_images[3],
@@ -1745,7 +1745,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                                 {"side": "bottom", "sticky": ""},
                             ),
                             (
-                                f"{v_ttkstyle}.thumb",
+                                f"{v_ttkstyle}PBS.thumb",
                                 {"expand": "1", "sticky": "nswe"},
                             ),
                         ],
@@ -1786,10 +1786,10 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
             arrowfocus = focuscolor
 
         element = ttkstyle.replace(".TS", ".S")
-        settings[f"{element}.uparrow"] = {
+        settings[f"{element}PBS.uparrow"] = {
             "element create": ("from", TTK_DEFAULT),
         }
-        settings[f"{element}.downarrow"] = {
+        settings[f"{element}PBS.downarrow"] = {
             "element create": ("from", TTK_DEFAULT),
         }
         settings[ttkstyle] = {
@@ -1846,11 +1846,11 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                                     "sticky": "",
                                     "children": [
                                         (
-                                            f"{element}.uparrow",
+                                            f"{element}PBS.uparrow",
                                             {"side": tk.TOP, "sticky": tk.E},
                                         ),
                                         (
-                                            f"{element}.downarrow",
+                                            f"{element}PBS.downarrow",
                                             {
                                                 "side": tk.BOTTOM,
                                                 "sticky": tk.E,
@@ -2014,7 +2014,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         width = self.scale_size(20)
         borderpad = self.scale_size(4)
 
-        settings[f"{ttkstyle}.indicator"] = {
+        settings[f"{ttkstyle}PBS.indicator"] = {
             "element create": (
                 "image",
                 images[1],
@@ -2037,7 +2037,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                     {
                         "children": [
                             (
-                                f"{ttkstyle}.indicator",
+                                f"{ttkstyle}PBS.indicator",
                                 {"side": tk.LEFT, "sticky": ""},
                             ),
                             (
@@ -2083,7 +2083,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         width = self.scale_size(20)
         borderpad = self.scale_size(4)
 
-        settings[f"{element}.indicator"] = {
+        settings[f"{element}PBS.indicator"] = {
             "element create": (
                 "image",
                 images[1],
@@ -2108,7 +2108,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                     {
                         "children": [
                             (
-                                f"{element}.indicator",
+                                f"{element}PBS.indicator",
                                 {"side": tk.LEFT, "sticky": ""},
                             ),
                             (
@@ -2150,13 +2150,13 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         image = self.assets.create_sizegrip_assets(grip_color)
 
-        settings[f"{ttkstyle}.Sizegrip.sizegrip"] = {
+        settings[f"{ttkstyle}PBS.Sizegrip.sizegrip"] = {
             "element create": ("image", image)
         }
         settings[ttkstyle] = {
             "layout": [
                 (
-                    f"{ttkstyle}.Sizegrip.sizegrip",
+                    f"{ttkstyle}PBS.Sizegrip.sizegrip",
                     {"side": tk.BOTTOM, "sticky": tk.SE},
                 )
             ],
@@ -2204,7 +2204,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         # horizontal progressbar
         h_element = h_ttkstyle.replace(".TP", ".P")
-        settings[f"{h_element}.pbar"] = {
+        settings[f"{h_element}PBS.pbar"] = {
             "element create": (
                 "image",
                 images[0],
@@ -2228,7 +2228,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                         "sticky": tk.NSEW,
                         "children": [
                             (
-                                f"{h_element}.pbar",
+                                f"{h_element}PBS.pbar",
                                 {"side": tk.LEFT, "sticky": tk.NS},
                             )
                         ],
@@ -2239,7 +2239,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         # vertical progressbar
         v_element = v_ttkstyle.replace(".TP", ".P")
-        settings[f"{v_element}.pbar"] = {
+        settings[f"{v_element}PBS.pbar"] = {
             "element create": (
                 "image",
                 images[1],
@@ -2263,7 +2263,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                         "sticky": tk.NSEW,
                         "children": [
                             (
-                                f"{v_element}.pbar",
+                                f"{v_element}PBS.pbar",
                                 {"side": tk.BOTTOM, "sticky": tk.EW},
                             )
                         ],
@@ -2300,7 +2300,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         width = self.scale_size(28)
         borderpad = self.scale_size(4)
 
-        settings[f"{ttkstyle}.indicator"] = {
+        settings[f"{ttkstyle}PBS.indicator"] = {
             "element create": (
                 "image",
                 images[1],
@@ -2332,7 +2332,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                                     "sticky": tk.NSEW,
                                     "children": [
                                         (
-                                            f"{ttkstyle}.indicator",
+                                            f"{ttkstyle}PBS.indicator",
                                             {"side": tk.LEFT},
                                         ),
                                         (
@@ -2379,7 +2379,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         # ( off, on, disabled )
         images = self.assets.create_round_toggle_assets(colorname)
 
-        indicator_element = f"{ttkstyle}.indicator"
+        indicator_element = f"{ttkstyle}PBS.indicator"
         if indicator_element not in self.existing_elements:
             width = self.scale_size(28)
             borderpad = self.scale_size(4)
@@ -2424,7 +2424,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                                     "sticky": tk.NSEW,
                                     "children": [
                                         (
-                                            f"{ttkstyle}.indicator",
+                                            f"{ttkstyle}PBS.indicator",
                                             {"side": tk.LEFT},
                                         ),
                                         (
@@ -2483,7 +2483,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         )
 
         # horizontal scrollbar
-        settings[f"{h_ttkstyle}.thumb"] = {
+        settings[f"{h_ttkstyle}PBS.thumb"] = {
             "element create": (
                 "image",
                 scroll_images[0],
@@ -2523,7 +2523,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                                 {"side": "right", "sticky": ""},
                             ),
                             (
-                                f"{h_ttkstyle}.thumb",
+                                f"{h_ttkstyle}PBS.thumb",
                                 {"expand": "1", "sticky": "nswe"},
                             ),
                         ],
@@ -2534,7 +2534,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         }
 
         # vertical scrollbar
-        settings[f"{v_ttkstyle}.thumb"] = {
+        settings[f"{v_ttkstyle}PBS.thumb"] = {
             "element create": (
                 "image",
                 scroll_images[3],
@@ -2574,7 +2574,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
                                 {"side": "bottom", "sticky": ""},
                             ),
                             (
-                                f"{v_ttkstyle}.thumb",
+                                f"{v_ttkstyle}PBS.thumb",
                                 {"expand": "1", "sticky": "nswe"},
                             ),
                         ],
@@ -2734,10 +2734,10 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         v_element = v_ttkstyle.replace(".TF", ".F")
 
         ttk_elements = (
-            (f"{h_element}.trough", TTK_CLAM),
-            (f"{h_element}.pbar", TTK_DEFAULT),
-            (f"{v_element}.trough", TTK_CLAM),
-            (f"{v_element}.pbar", TTK_DEFAULT),
+            (f"{h_element}PBS.trough", TTK_CLAM),
+            (f"{h_element}PBS.pbar", TTK_DEFAULT),
+            (f"{v_element}PBS.trough", TTK_CLAM),
+            (f"{v_element}PBS.pbar", TTK_DEFAULT),
         )
         for element_name, from_ in ttk_elements:
             settings[element_name] = {
@@ -2795,10 +2795,13 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
     def floodgauge_layout_tk9(self, h_element: str, v_element: str) -> tuple:
         h_layout = [
             (
-                f"{h_element}.trough",
+                f"{h_element}PBS.trough",
                 {
                     "children": [
-                        (f"{h_element}.pbar", {"side": "left", "sticky": "ns"}),
+                        (
+                            f"{h_element}PBS.pbar",
+                            {"side": "left", "sticky": "ns"},
+                        ),
                         (
                             f"{h_element}.ctext",
                             # {"side": "left", "sticky": ""}
@@ -2812,11 +2815,11 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         v_layout = [
             (
-                f"{v_element}.trough",
+                f"{v_element}PBS.trough",
                 {
                     "children": [
                         (
-                            f"{v_element}.pbar",
+                            f"{v_element}PBS.pbar",
                             {"side": "bottom", "sticky": "we"},
                         ),
                         (f"{v_element}.ctext", {"sticky": "", "expand": True}),
@@ -2831,11 +2834,11 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         TKCLASS_NAME = "Floodgauge"
         h_layout = [
             (
-                f"{h_element}.trough",
+                f"{h_element}PBS.trough",
                 {
                     "children": [
                         (
-                            f"{h_element}.pbar",
+                            f"{h_element}PBS.pbar",
                             {"sticky": "ns"},
                         ),
                         (f"{TKCLASS_NAME}.label", {"sticky": ""}),
@@ -2846,11 +2849,11 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         ]
         v_layout = [
             (
-                f"{v_element}.trough",
+                f"{v_element}PBS.trough",
                 {
                     "children": [
                         (
-                            f"{v_element}.pbar",
+                            f"{v_element}PBS.pbar",
                             {"sticky": "ew"},
                         ),
                         (f"{TKCLASS_NAME}.label", {"sticky": ""}),
