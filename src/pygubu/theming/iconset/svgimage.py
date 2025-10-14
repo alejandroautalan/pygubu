@@ -1,12 +1,18 @@
 import os
 import importlib.util
+import xml.etree.ElementTree as etree
 import tkinter as tk
+
+from typing import Callable
 from pygubu.theming.iconset.photoreusable import (
     PhotoImageReusable,
     ReusableImageMixin,
 )
-from pygubu.theming.iconset.svgedit import svg_load, ETreeModifierFunc
 
+
+SVG_NAMESPACE = "http://www.w3.org/2000/svg"
+etree.register_namespace("", SVG_NAMESPACE)
+ETreeModifierFun = Callable[[etree.ElementTree, str], None]
 
 USE_TK9SVG = False
 USE_TKSVG = False
@@ -58,9 +64,8 @@ if USE_CAIROSVG:
 def svg2photo(
     source,
     *,
-    color_override=False,
     fill=None,
-    modifier_func: ETreeModifierFunc = None,
+    modifier_fun: ETreeModifierFun = None,
     scaletowidth=None,
     scaletoheight=None,
     scale=None,
@@ -70,18 +75,18 @@ def svg2photo(
     """SVG to PhotoImage.
     Only one of scale, scaletowidth, scaletoheight
     is applied"""
-    img_svg = svg_load(
-        source,
-        color_override=color_override,
-        fill=fill,
-        modifier_func=modifier_func,
-    )
-    return svg_data2photo(
-        img_svg, scaletowidth, scaletoheight, scale, master, tcl_name
+    tree: etree.Element = etree.parse(source)
+    root = tree.getroot()
+    if callable(modifier_fun):
+        modifier_fun(root, fill)
+    svgdata = etree.tostring(root, "unicode")
+
+    return photo_from_svgdata(
+        svgdata, scaletowidth, scaletoheight, scale, master, tcl_name
     )
 
 
-def svg_data2photo(
+def photo_from_svgdata(
     data: str,
     scaletowidth=None,
     scaletoheight=None,

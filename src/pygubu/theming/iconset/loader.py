@@ -1,10 +1,42 @@
 import pathlib
 import json
 import importlib.resources as resources
+import xml.etree.ElementTree as etree
 from contextlib import suppress
 from pygubu.theming.iconset.iconset import IconSet
 from pygubu.theming.iconset.photoreusable import PhotoImageReusable
-from pygubu.theming.iconset.svg2photo import svg2photo
+from pygubu.theming.iconset.svgimage import svg2photo
+
+
+def change_icon_color(root: etree.ElementTree, fill):
+    """Default color replace function for pygubu iconsets."""
+    # Apply fill color override if provided
+    pfill = "fill"
+    pstroke = "stroke"
+    color_none = "none"
+    has_fill = root.attrib.get(pfill, None)
+    has_stroke = root.attrib.get(pstroke, None)
+
+    if not has_fill and not has_stroke:
+        # Missing color information. FA Icon?
+        root.attrib[pfill] = fill
+    else:
+        if has_fill and has_stroke:
+            # Tabler icon ?
+            fill_color = root.attrib.get(pfill, color_none)
+            stroke_color = root.attrib.get(pstroke, color_none)
+            if fill_color == color_none and stroke_color != color_none:
+                root.attrib[pstroke] = fill
+            if fill_color != color_none and stroke_color == color_none:
+                root.attrib[pfill] = fill
+        if has_fill and not has_stroke:
+            # bootstrap icon ?
+            root.attrib[pfill] = fill
+        if has_fill == "currentColor":
+            # some tabler filled icon?
+            nodes = root.findall(".//*[@fill='currentColor']")
+            for node in nodes:
+                node.attrib[pfill] = fill
 
 
 class IconSetLoader:
@@ -62,11 +94,12 @@ class IconSetLoader:
             fn, size, color_override, color = self.iconset.icon_props(
                 image_uid, self._theme
             )
+            replace_color_fun = change_icon_color if color_override else None
             with resources.open_binary(self.data_module, fn) as fileio:
                 tkimage = svg2photo(
                     fileio,
-                    color_override=color_override,
                     fill=color,
+                    modifier_fun=replace_color_fun,
                     scaletowidth=size,
                     master=master,
                     tcl_name=image_uid,
