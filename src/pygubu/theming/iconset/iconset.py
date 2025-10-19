@@ -31,4 +31,4 @@ class IconSet:
             if theme == type(self).THEME_DARK:
                 color = icons[uid].get("dark_color", self.dark_color)
             return (fn, size, color_override, color)
-        return (None, None, None)
+        return (None, None, None, None)
