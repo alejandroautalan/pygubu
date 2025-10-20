@@ -43,6 +43,7 @@ elif USER_SVG_BACKEND == "TKSVG":
 elif USER_SVG_BACKEND == "CAIROSVG":
     USE_CAIROSVG = True
 
+HAS_SVG_SUPPORT = any((USE_TK9SVG, USE_CAIROSVG, USE_TKSVG))
 
 if USE_TK9SVG:
     # Nothing to do here
