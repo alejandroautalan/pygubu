@@ -2,10 +2,12 @@ import pathlib
 import json
 import importlib.resources as resources
 import xml.etree.ElementTree as etree
+import tkinter as tk
 from contextlib import suppress
 from pygubu.theming.iconset.iconset import IconSet
 from pygubu.theming.iconset.photoreusable import PhotoImageReusable
-from pygubu.theming.iconset.svgimage import svg2photo
+from pygubu.theming.iconset.svgimage import HAS_SVG_SUPPORT, svg2photo
+from pygubu.theming.photoresize import PhotoResizer
 
 
 def change_icon_color(root: etree.ElementTree, fill):
@@ -58,6 +60,12 @@ class IconSetLoader:
         with resources.open_binary(data_module, data_filename) as cf:
             self.iconset = IconSet(json.load(cf))
 
+        self.has_bitmaps = self.iconset.with_png or self.iconset.with_gif
+        self.bitmap_suffix = ".png" if tk.TkVersion >= 8.6 else ".gif"
+        self.photo_resizer = None
+        if self.has_bitmaps:
+            self.photo_resizer = PhotoResizer()
+
     def _check_master(self):
         if self.master is None:
             raise RuntimeError("master is not configured")
@@ -90,6 +98,16 @@ class IconSetLoader:
         if self.master is None and master is not None:
             self.master = master
         tkimage = None
+        if HAS_SVG_SUPPORT:
+            tkimage = self._load_svg_image(image_uid)
+        elif self.has_bitmaps:
+            tkimage = self._load_bitmap_image(image_uid)
+        if tkimage is not None:
+            self.cache[image_uid] = tkimage
+        return tkimage
+
+    def _load_svg_image(self, image_uid):
+        tkimage = None
         if image_uid in self.iconset:
             fn, size, color_override, color = self.iconset.icon_props(
                 image_uid, self._theme
@@ -101,11 +119,26 @@ class IconSetLoader:
                     fill=color,
                     modifier_fun=replace_color_fun,
                     scaletowidth=size,
-                    master=master,
+                    master=self.master,
                     tcl_name=image_uid,
                 )
-                self.cache[image_uid] = tkimage
         return tkimage
+
+    def _load_bitmap_image(self, image_uid):
+        img_final = None
+        img_tmp = None
+        fn, size, color_override, color = self.iconset.icon_props(
+            image_uid, self._theme
+        )
+        bitmap_name = f"{self._theme}-{fn}"
+        bitmap_name = pathlib.Path(bitmap_name).with_suffix(self.bitmap_suffix)
+        with resources.path(self.data_module, bitmap_name) as fpath:
+            img_tmp = tk.PhotoImage(master=self.master, file=str(fpath))
+        img_final = self.photo_resizer.image_resize(
+            img_tmp, size, size, PhotoImageReusable
+        )
+
+        return img_final
 
     def __call__(self, master, image_uid):
         return self.get_image(master, image_uid)
