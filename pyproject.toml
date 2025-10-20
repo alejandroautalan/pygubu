@@ -7,7 +7,7 @@ name = "pygubu"
 version="0.38.2"
 description = "A simple GUI builder for the python tkinter module"
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 license = "MIT"
 keywords = ["gui", "tkinter", "designer"]
 authors = [
@@ -16,20 +16,17 @@ authors = [
 classifiers = [
   "Development Status :: 4 - Beta",
   "Programming Language :: Python",
-  "Programming Language :: Python :: 3.8",
   "Programming Language :: Python :: 3.9",
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Operating System :: OS Independent",
   "Intended Audience :: Developers",
   "Topic :: Software Development :: Libraries :: Python Modules",
   "Topic :: Utilities",
   "Topic :: Software Development :: User Interfaces",
-]
-dependencies = [
-  "importlib_resources;python_version<'3.9'",
 ]
 
 [project.urls]
@@ -64,7 +61,7 @@ where = ["src"]
 
 [tool.black]
 line-length = 80
-target-version = ["py38", "py39", "py310"]
+target-version = ["py39", "py310", "py311", "py312", "py313"]
 include = '\\.pyi?$'
 exclude = '''
 /(

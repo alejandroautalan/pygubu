@@ -3,6 +3,7 @@ History
 
 Changes for next version
 
+  * Dropping support for Python 3.8 (was already not installable)
   * Use version number from project.toml
   * Fix Dialog widget toplevel preview in designer.
   * Disable layout options for scrollbarhelper child in designer.
