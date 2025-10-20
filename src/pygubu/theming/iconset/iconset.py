@@ -17,6 +17,14 @@ class IconSet:
     def icon_size(self):
         return self.data.get("default_size", 24)
 
+    @property
+    def with_png(self):
+        return self.data.get("with_png", False)
+
+    @property
+    def with_gif(self):
+        return self.data.get("with_gif", False)
+
     def __contains__(self, item):
         return item in self.data["icons"]
 
