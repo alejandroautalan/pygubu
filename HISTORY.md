@@ -1,7 +1,7 @@
 History
 =======
 
-Changes for next version
+Changes for version 0.39
 
   * Dropping support for Python 3.8 (was already not installable)
   * Use version number from project.toml
@@ -15,7 +15,7 @@ Changes for next version
   * Add ColorInput in pygubu forms.
   * Internal iter_parents function, fix issue when mouse is over menu, from menubutton.
   * Builder: Add helper function to avoid calling get_object for every widget. refs #302
-  * New iconset module.
+  * New theming.iconset module (feature preview).
   * Fix code generation issues for pygubu.widgets.dialog
   * Update tkinterweb plugin to support tkinterweb version 4.4.4
 
