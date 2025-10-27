@@ -94,46 +94,56 @@ class IconSetLoader:
             return self.cache[image_uid]
         return self._load_image(master, image_uid)
 
-    def _load_image(self, master, image_uid):
+    def reload_image(self, master, image_uid, image_options: dict = None):
+        """Reload image posible with custom options."""
+        cached_image = self.cache.get(image_uid, None)
+        if cached_image:
+            cached_image.tcl_keep()
+        return self._load_image(master, image_uid, image_options)
+
+    def _load_image(self, master, image_uid, image_options: dict = None):
         if self.master is None and master is not None:
             self.master = master
-        tkimage = None
-        if HAS_SVG_SUPPORT:
-            tkimage = self._load_svg_image(image_uid)
-        elif self.has_bitmaps:
-            tkimage = self._load_bitmap_image(image_uid)
-        if tkimage is not None:
-            self.cache[image_uid] = tkimage
-        return tkimage
-
-    def _load_svg_image(self, image_uid):
         tkimage = None
         if image_uid in self.iconset:
             fn, size, color_override, color = self.iconset.icon_props(
                 image_uid, self._theme
             )
-            replace_color_fun = change_icon_color if color_override else None
-            with resources.open_binary(self.data_module, fn) as fileio:
-                tkimage = svg2photo(
-                    fileio,
-                    fill=color,
-                    modifier_fun=replace_color_fun,
-                    scaletowidth=size,
-                    master=self.master,
-                    tcl_name=image_uid,
-                )
+            options = dict(
+                fill=color,
+                color_override=color_override,
+                scaletowidth=size,
+                master=self.master,
+                tcl_name=image_uid,
+            )
+            if image_options:
+                options.update(image_options)
+            if HAS_SVG_SUPPORT:
+                tkimage = self._load_svg_image(fn, options)
+            elif self.has_bitmaps:
+                tkimage = self._load_bitmap_image(fn, options)
+        if tkimage is not None:
+            self.cache[image_uid] = tkimage
         return tkimage
 
-    def _load_bitmap_image(self, image_uid):
+    def _load_svg_image(self, image_fn, image_options: dict):
+        tkimage = None
+        color_override = image_options.pop("color_override", False)
+        image_options["modifier_fun"] = (
+            change_icon_color if color_override else None
+        )
+        with resources.open_binary(self.data_module, image_fn) as fileio:
+            tkimage = svg2photo(fileio, **image_options)
+        return tkimage
+
+    def _load_bitmap_image(self, image_fn, image_options: dict):
         img_final = None
         img_tmp = None
-        fn, size, color_override, color = self.iconset.icon_props(
-            image_uid, self._theme
-        )
-        bitmap_name = f"{self._theme}-{fn}"
+        bitmap_name = f"{self._theme}-{image_fn}"
         bitmap_name = pathlib.Path(bitmap_name).with_suffix(self.bitmap_suffix)
         with resources.path(self.data_module, bitmap_name) as fpath:
             img_tmp = tk.PhotoImage(master=self.master, file=str(fpath))
+        size = image_options["scaletowidth"]
         img_final = self.photo_resizer.image_resize(
             img_tmp, size, size, PhotoImageReusable
         )
