@@ -13,32 +13,38 @@ from pygubu.theming.photoresize import PhotoResizer
 def change_icon_color(root: etree.ElementTree, fill):
     """Default color replace function for pygubu iconsets."""
     # Apply fill color override if provided
-    pfill = "fill"
-    pstroke = "stroke"
-    color_none = "none"
-    has_fill = root.attrib.get(pfill, None)
-    has_stroke = root.attrib.get(pstroke, None)
+    FILL = "fill"
+    STROKE = "stroke"
+    STYLE = "style"
+    COLOR_NONE = "none"
 
-    if not has_fill and not has_stroke:
-        # Missing color information. FA Icon?
-        root.attrib[pfill] = fill
-    else:
-        if has_fill and has_stroke:
-            # Tabler icon ?
-            fill_color = root.attrib.get(pfill, color_none)
-            stroke_color = root.attrib.get(pstroke, color_none)
-            if fill_color == color_none and stroke_color != color_none:
-                root.attrib[pstroke] = fill
-            if fill_color != color_none and stroke_color == color_none:
-                root.attrib[pfill] = fill
-        if has_fill and not has_stroke:
-            # bootstrap icon ?
-            root.attrib[pfill] = fill
-        if has_fill == "currentColor":
-            # some tabler filled icon?
-            nodes = root.findall(".//*[@fill='currentColor']")
-            for node in nodes:
-                node.attrib[pfill] = fill
+    # check if uses color information
+    # some tabler filled icon? or new FA icons?
+    colored_nodes = set(
+        [node for node in root.findall("*[@fill]")]
+        + [node for node in root.findall("*[@stroke]")]
+    )
+    root_has_color = any(
+        (
+            root.attrib.get(FILL, None),
+            root.attrib.get(STROKE, None),
+            root.attrib.get(STYLE, None),
+        )
+    )
+    if root_has_color:
+        colored_nodes.add(root)
+
+    for node in colored_nodes:
+        fill_color = root.attrib.get(FILL, COLOR_NONE)
+        stroke_color = root.attrib.get(STROKE, COLOR_NONE)
+        if fill_color == COLOR_NONE and stroke_color != COLOR_NONE:
+            root.attrib[STROKE] = fill
+        if fill_color != COLOR_NONE and stroke_color == COLOR_NONE:
+            root.attrib[FILL] = fill
+
+    if not colored_nodes:
+        # Missing color information ?
+        root.attrib[FILL] = fill
 
 
 class IconSetLoader:
