@@ -4,7 +4,7 @@ import importlib.resources as resources
 import xml.etree.ElementTree as etree
 import tkinter as tk
 from contextlib import suppress
-from pygubu.theming.iconset.iconset import IconSet
+from pygubu.theming.iconset.iconset import IconSet, IconItem, ThemeType
 from pygubu.theming.iconset.photoreusable import PhotoImageReusable
 from pygubu.theming.iconset.svgimage import HAS_SVG_SUPPORT, svg2photo
 from pygubu.theming.photoresize import PhotoResizer
@@ -60,11 +60,11 @@ class IconSetLoader:
         self.data_module = data_module
         self.data_filename = data_filename
         self.iconset = None
-        self._theme = IconSet.THEME_LIGHT
+        self._theme = ThemeType.LIGHT
         self.cache = {}
 
         with resources.open_binary(data_module, data_filename) as cf:
-            self.iconset = IconSet(json.load(cf))
+            self.iconset = IconSet.from_dict(json.load(cf))
 
         self.has_bitmaps = self.iconset.with_png or self.iconset.with_gif
         self.bitmap_suffix = ".png" if tk.TkVersion >= 8.6 else ".gif"
@@ -81,9 +81,8 @@ class IconSetLoader:
         return self._theme
 
     @theme.setter
-    def theme(self, value):
-        theme_values = (IconSet.THEME_LIGHT, IconSet.THEME_DARK)
-        if value not in theme_values:
+    def theme(self, value: ThemeType):
+        if value not in ThemeType:
             raise ValueError()
         self._theme = value
         if self.master is not None:
@@ -91,6 +90,7 @@ class IconSetLoader:
 
     def _reload_images(self):
         self._check_master()
+
         for key, photo in self.cache.items():
             photo.tcl_keep()
             self._load_image(self.master, key)
@@ -111,23 +111,26 @@ class IconSetLoader:
         if self.master is None and master is not None:
             self.master = master
         tkimage = None
-        if image_uid in self.iconset:
-            fn, size, color_override, color = self.iconset.icon_props(
-                image_uid, self._theme
+        if image_uid in self.iconset.icons:
+            item: IconItem = self.iconset.item(image_uid, self._theme)
+            color = (
+                item.color_onlight
+                if self._theme == ThemeType.LIGHT
+                else item.color_ondark
             )
             options = dict(
                 fill=color,
-                color_override=color_override,
-                scaletowidth=size,
+                color_override=item.color_override,
+                scaletowidth=item.width,
                 master=self.master,
                 tcl_name=image_uid,
             )
             if image_options:
                 options.update(image_options)
             if HAS_SVG_SUPPORT:
-                tkimage = self._load_svg_image(fn, options)
+                tkimage = self._load_svg_image(item.fn, options)
             elif self.has_bitmaps:
-                tkimage = self._load_bitmap_image(fn, options)
+                tkimage = self._load_bitmap_image(item.fn, options)
         if tkimage is not None:
             self.cache[image_uid] = tkimage
         return tkimage
@@ -145,7 +148,7 @@ class IconSetLoader:
     def _load_bitmap_image(self, image_fn, image_options: dict):
         img_final = None
         img_tmp = None
-        bitmap_name = f"{self._theme}-{image_fn}"
+        bitmap_name = f"{self._theme.name}-{image_fn}"
         bitmap_name = pathlib.Path(bitmap_name).with_suffix(self.bitmap_suffix)
         with resources.path(self.data_module, bitmap_name) as fpath:
             img_tmp = tk.PhotoImage(master=self.master, file=str(fpath))
