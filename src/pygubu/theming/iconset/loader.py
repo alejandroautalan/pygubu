@@ -111,8 +111,8 @@ class IconSetLoader:
         if self.master is None and master is not None:
             self.master = master
         tkimage = None
-        if image_uid in self.iconset.icons:
-            item: IconItem = self.iconset.item(image_uid, self._theme)
+        if image_uid in self.iconset:
+            item: IconItem = self.iconset.item_on_theme(image_uid, self._theme)
             color = (
                 item.color_onlight
                 if self._theme == ThemeType.LIGHT
@@ -120,7 +120,7 @@ class IconSetLoader:
             )
             options = dict(
                 fill=color,
-                color_override=item.color_override,
+                color_keep=item.color_keep,
                 scaletowidth=item.width,
                 master=self.master,
                 tcl_name=image_uid,
@@ -137,9 +137,9 @@ class IconSetLoader:
 
     def _load_svg_image(self, image_fn, image_options: dict):
         tkimage = None
-        color_override = image_options.pop("color_override", False)
+        color_keep = image_options.pop("color_keep", False)
         image_options["modifier_fun"] = (
-            change_icon_color if color_override else None
+            change_icon_color if not color_keep else None
         )
         with resources.open_binary(self.data_module, image_fn) as fileio:
             tkimage = svg2photo(fileio, **image_options)
