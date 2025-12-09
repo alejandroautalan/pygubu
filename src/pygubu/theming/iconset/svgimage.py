@@ -3,6 +3,7 @@ import importlib.util
 import xml.etree.ElementTree as etree
 import tkinter as tk
 
+from enum import Enum, auto
 from typing import Callable
 from pygubu.theming.iconset.photoreusable import (
     PhotoImageReusable,
@@ -10,46 +11,63 @@ from pygubu.theming.iconset.photoreusable import (
 )
 
 
+class SVGBackend(Enum):
+    AUTO = auto()
+    NONE = auto()
+    TK9 = auto()
+    TKSVG = auto()
+    CAIROSVG = auto()
+
+
 SVG_NAMESPACE = "http://www.w3.org/2000/svg"
 etree.register_namespace("", SVG_NAMESPACE)
 ETreeModifierFun = Callable[[etree.ElementTree, str], None]
 
-USE_TK9SVG = False
-USE_TKSVG = False
-USE_CAIROSVG = False
 
 # Available svg backends: AUTO, TK9, TKSVG, CAIROSVG
-USER_SVG_BACKEND = os.getenv("ICONSET_SVG_BACKEND", "AUTO")
+SVG_BACKEND = SVGBackend.NONE
+USER_SVG_BACKEND = SVGBackend.AUTO
+_env_backend = str(os.getenv("ICONSET_SVG_BACKEND", "AUTO")).upper()
+try:
+    USER_SVG_BACKEND = getattr(SVGBackend, _env_backend)
+except AttributeError as e:
+    msg = f"Invalid value '{_env_backend}' for ICONSET_SVG_BACKEND."
+    raise ValueError(msg) from e
 
-if USER_SVG_BACKEND == "AUTO":
+AVAILABLE_BACKENDS = []
+
+
+def _check_svg_backends():
     if tk.TkVersion >= 9:
-        USE_TK9SVG = True
+        AVAILABLE_BACKENDS.append(SVGBackend.TK9)
+    # try tksvg
+    spec = importlib.util.find_spec("tksvg")
+    if spec is not None:
+        AVAILABLE_BACKENDS.append(SVGBackend.TKSVG)
+    # try cairo svg
+    spec = importlib.util.find_spec("cairosvg")
+    if spec is not None:
+        AVAILABLE_BACKENDS.append(SVGBackend.CAIROSVG)
+    if not AVAILABLE_BACKENDS:
+        AVAILABLE_BACKENDS.append(SVGBackend.NONE)
 
-    if not USE_TK9SVG:
-        # try tksvg
-        spec = importlib.util.find_spec("tksvg")
-        if spec is not None:
-            USE_TKSVG = True
 
-    if not USE_TK9SVG and not USE_TKSVG:
-        # try cairo svg
-        spec = importlib.util.find_spec("cairosvg")
-        if spec is not None:
-            USE_CAIROSVG = True
-elif USER_SVG_BACKEND == "TK9":
-    USE_TK9SVG = True
-elif USER_SVG_BACKEND == "TKSVG":
-    USE_TKSVG = True
-elif USER_SVG_BACKEND == "CAIROSVG":
-    USE_CAIROSVG = True
+_check_svg_backends()
 
-HAS_SVG_SUPPORT = any((USE_TK9SVG, USE_CAIROSVG, USE_TKSVG))
+if USER_SVG_BACKEND == SVGBackend.AUTO:
+    SVG_BACKEND = AVAILABLE_BACKENDS[0]
+elif USER_SVG_BACKEND in AVAILABLE_BACKENDS:
+    SVG_BACKEND = USER_SVG_BACKEND
+else:
+    raise RuntimeError(f"SVG backend '{USER_SVG_BACKEND.name}' not available.")
 
-if USE_TK9SVG:
+HAS_SVG_SUPPORT = SVG_BACKEND != SVGBackend.NONE
+
+if SVG_BACKEND == SVGBackend.TK9:
     # Nothing to do here
     pass
 
-if USE_TKSVG:
+if SVG_BACKEND == SVGBackend.TKSVG:
     import tksvg
 
     class SvgImageReusable(ReusableImageMixin, tksvg.SvgImage):
@@ -58,7 +76,7 @@ if USE_TKSVG:
         ...
 
 
-if USE_CAIROSVG:
+if SVG_BACKEND == SVGBackend.CAIROSVG:
     import cairosvg
 
 
@@ -97,15 +115,15 @@ def photo_from_svgdata(
 ) -> tk.PhotoImage:
     img_data = data.encode()
     tk_image = None
-    if USE_TK9SVG:
+    if SVG_BACKEND == SVGBackend.TK9:
         tk_image = tk9_svg2photo(
             img_data, scaletowidth, scaletoheight, scale, master, tcl_name
         )
-    elif USE_TKSVG:
+    elif SVG_BACKEND == SVGBackend.TKSVG:
         tk_image = tksvg_svg2photo(
             img_data, scaletowidth, scaletoheight, scale, master, tcl_name
         )
-    elif USE_CAIROSVG:
+    elif SVG_BACKEND == SVGBackend.CAIROSVG:
         tk_image = cairosvg_svg2photo(
             img_data, scaletowidth, scaletoheight, scale, master, tcl_name
         )
