@@ -148,7 +148,7 @@ class IconSetLoader:
     def _load_bitmap_image(self, image_fn, image_options: dict):
         img_final = None
         img_tmp = None
-        bitmap_name = f"{self._theme.name}-{image_fn}"
+        bitmap_name = f"{self._theme.name.lower()}-{image_fn}"
         bitmap_name = pathlib.Path(bitmap_name).with_suffix(self.bitmap_suffix)
         with resources.path(self.data_module, bitmap_name) as fpath:
             img_tmp = tk.PhotoImage(master=self.master, file=str(fpath))
