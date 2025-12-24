@@ -45,6 +45,12 @@ class Dialog(object):
     def center_window(self):
         """Center a window on its parent or screen."""
         window = self.toplevel
+
+        if not window.winfo_ismapped():
+            # Window is not mapped, wait and try again later.
+            window.after(5, self.center_window)
+            return
+
         height = window.winfo_height()
         width = window.winfo_width()
         parent = self.parent
@@ -59,7 +65,11 @@ class Dialog(object):
             x_coord = int(window.winfo_screenwidth() / 2 - width / 2)
             y_coord = int(window.winfo_screenheight() / 2 - height / 2)
         geom = "{0}x{1}+{2}+{3}".format(width, height, x_coord, y_coord)
-        window.geometry(geom)
+
+        def set_geometry_later():
+            window.geometry(geom)
+
+        window.after_idle(set_geometry_later)
 
     def run(self):
         self.toplevel.transient(self.parent)
