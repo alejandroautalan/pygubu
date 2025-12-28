@@ -84,21 +84,21 @@ class DockPaneBO(DockWidgetBaseBO):
         if code_identifier is not None:
             self._code_identifier = code_identifier
 
-        this_pane = self.code_identifier()
         dockframe = boparent.code_child_master()
+        this_pane = self.code_identifier()
         args = self._code_get_init_args(this_pane)
 
-        if not self.parent_bo.main_pane:
+        if isinstance(boparent, DockFrameBO):
             args["main_pane"] = True
-            self.parent_bo.main_pane = self
+        else:
+            dockframe = f"{dockframe}.maindock"
 
         pweight = args.pop("weight", 1)
         kwargs = self.code_make_kwargs_str(args)
 
         lines = [f"{this_pane} = {dockframe}.new_pane({kwargs})"]
         if isinstance(boparent, DockPaneBO):
-            main_pane = self.parent_bo.main_pane.code_identifier()
-            main_pane = self.code_escape_str(main_pane)
+            main_pane = self.parent_bo.code_identifier()
             line = f"{main_pane}.add_pane({this_pane}, weight={pweight})"
             lines.append(line)
         return lines
@@ -164,7 +164,10 @@ class DockWidgetBO(DockWidgetBaseBO):
         if code_identifier is not None:
             self._code_identifier = code_identifier
 
-        dockframe = boparent.parent_bo.code_child_master()
+        dockframe = boparent.code_child_master()
+        if not isinstance(boparent, DockFrameBO):
+            dockframe = f"{dockframe}.maindock"
+
         pane = boparent.code_child_master()
         this_widget = self.code_identifier()
         args = self._code_get_init_args(this_widget)
