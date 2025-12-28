@@ -8,7 +8,7 @@ _designer_tab_label = _("tkintertable")
 _plugin_uid = "tkintertable"
 
 
-class StandardTKWidgetsLoader(BuilderLoaderPlugin, IDesignerPlugin):
+class TkintertableLoader(BuilderLoaderPlugin, IDesignerPlugin):
     _module = "pygubu.plugins.tkintertable.table"
 
     #
