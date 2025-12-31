@@ -84,8 +84,9 @@ class IconSetLoader:
     def theme(self, value: ThemeType):
         if value not in ThemeType:
             raise ValueError()
+        prev_value = self._theme
         self._theme = value
-        if self.master is not None:
+        if value != prev_value:
             self._reload_images()
 
     def _reload_images(self):
