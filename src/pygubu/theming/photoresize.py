@@ -10,6 +10,7 @@ class PhotoResizer:
         target_w: int,
         target_h: int = None,
         tk_photo_class=None,
+        tcl_image_name=None,
     ):
         tk_photo_class = (
             tk.PhotoImage if tk_photo_class is None else tk_photo_class
@@ -19,7 +20,7 @@ class PhotoResizer:
         source_h = simg.height()
 
         result_image = tk_photo_class(
-            master=simg.tk, width=target_w, height=target_h
+            name=tcl_image_name, master=simg.tk, width=target_w, height=target_h
         )
         operations = list()
         if target_w < source_w and target_h < source_h:

@@ -153,8 +153,9 @@ class IconSetLoader:
         with resources.path(self.data_module, bitmap_name) as fpath:
             img_tmp = tk.PhotoImage(master=self.master, file=str(fpath))
         size = image_options["scaletowidth"]
+        tcl_name = image_options["tcl_name"]
         img_final = self.photo_resizer.image_resize(
-            img_tmp, size, size, PhotoImageReusable
+            img_tmp, size, size, PhotoImageReusable, tcl_name
         )
 
         return img_final
