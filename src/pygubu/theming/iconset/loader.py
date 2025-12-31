@@ -86,7 +86,8 @@ class IconSetLoader:
             raise ValueError()
         prev_value = self._theme
         self._theme = value
-        if value != prev_value:
+        do_reload = value != prev_value and self.master is not None
+        if do_reload:
             self._reload_images()
 
     def _reload_images(self):
