@@ -18,11 +18,13 @@ class IconItem:
     color_ondark: Optional[str] = None
     custom: Optional[bool] = None
 
-    def asdict_cleaned(self) -> dict:
+    def asdict_cleaned(self, empty_values=None) -> dict:
+        if empty_values is None:
+            empty_values = {}
         return {
             key: value
             for key, value in asdict(self).items()
-            if value is not None
+            if (value is not None and value != empty_values.get(key, None))
         }
 
 
@@ -78,12 +80,10 @@ class IconSet:
         return cls(**iconset_definition)
 
     @staticmethod
-    def to_dict(iconset: "IconSet") -> dict:
+    def to_dict(iconset: "IconSet", empty_values=None) -> dict:
         definition = asdict(iconset)
-        icons = definition["icons"]
-        for index, values in enumerate(icons):
-            cleaned = {
-                key: value for key, value in values.items() if value is not None
-            }
-            icons[index] = cleaned
+        cleaned = []
+        for item in iconset.icons:
+            cleaned.append(item.asdict_cleaned(empty_values))
+        definition["icons"] = cleaned
         return definition
