@@ -28,6 +28,9 @@ classifiers = [
   "Topic :: Utilities",
   "Topic :: Software Development :: User Interfaces",
 ]
+dependencies = [
+    "importlib_metadata >= 3.6;python_version<'3.10'",
+]
 
 [project.urls]
 Documentation = "https://github.com/alejandroautalan/pygubu#readme"

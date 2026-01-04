@@ -1,8 +1,14 @@
+import sys
 import importlib
 import pkgutil
 import pygubu.plugins
 
 from .plugin_engine import PluginRegistry, IBuilderLoaderPlugin, IDesignerPlugin
+
+if sys.version_info < (3, 10):
+    from importlib_metadata import entry_points
+else:
+    from importlib.metadata import entry_points
 
 
 def iter_namespace(ns_pkg):
@@ -23,6 +29,10 @@ class PluginManager:
     def load_plugins(cls):
         for _, name, _ in iter_namespace(pygubu.plugins):
             importlib.import_module(name)
+
+        discovered_plugins = entry_points(group="pygubu.plugins")
+        for plugin_module in discovered_plugins:
+            plugin_module.load()
 
         for class_ in PluginRegistry.plugins:
             plugin = class_()
