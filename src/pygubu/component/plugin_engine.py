@@ -14,6 +14,14 @@ class PluginRegistry(ABCMeta):
 
 
 class IDesignerPlugin(ABC):
+
+    def is_toplevel_widget(self, builder_uid: str) -> bool:
+        """Return True if builder widget is a toplevel widget.
+
+        Example: for tk.Tk, tk.Toplevel should return True.
+        """
+        return False
+
     def get_preview_builder(self, builder_uid: str):
         """Return a BuilderObject subclass used to build a preview
         for the target builder_uid"""

@@ -85,3 +85,12 @@ class PluginManager:
     def ensure_visibility_in_preview(cls, builder, selected_uid: str):
         for plugin in cls.designer_plugins:
             plugin.ensure_visibility_in_preview(builder, selected_uid)
+
+    @classmethod
+    def is_toplevel_widget(cls, builder_uid: str) -> bool:
+        is_toplevel = False
+        for plugin in cls.designer_plugins:
+            is_toplevel = plugin.is_toplevel_widget(builder_uid)
+            if is_toplevel:
+                break
+        return is_toplevel
