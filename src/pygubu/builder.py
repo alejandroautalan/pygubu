@@ -229,6 +229,12 @@ class Builder(object):
         for loader in PluginManager.builder_plugins():
             if loader.can_load(builder_id):
                 _module = loader.get_module_for(builder_id)
+                if not _module:
+                    msg = (
+                        f"A plugin claims that can manage '{builder_id}'"
+                        " but does not report a module to import."
+                    )
+                    raise RuntimeError(msg)
                 try:
                     importlib.import_module(_module)
                     plugin_managed = True
