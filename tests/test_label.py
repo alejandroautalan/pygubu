@@ -10,7 +10,7 @@ import tkinter.ttk as ttk
 import fixpath
 
 
-class TestEntry(unittest.TestCase):
+class TestLabel(unittest.TestCase):
     def setUp(self):
         support.root_deiconify()
         xmldata = """<?xml version="1.0" ?>
