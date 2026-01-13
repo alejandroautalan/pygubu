@@ -25,17 +25,25 @@ plugin_properties = dict(
         ],
         editor="colorentry",
     ),
-    compound=dict(
-        buid=nspygubu.widgets.AccordionFrameGroup,
-        editor="choice",
-        values=(
-            "",
-            tk.LEFT,
-            tk.RIGHT,
-            tk.NONE,
+    compound=[
+        dict(
+            buid=nspygubu.widgets.AccordionFrameGroup,
+            editor="choice",
+            values=(
+                "",
+                tk.LEFT,
+                tk.RIGHT,
+                tk.NONE,
+            ),
+            state="readonly",
         ),
-        state="readonly",
-    ),
+        dict(
+            buid=nspygubu.widgets.dockwidget,
+            help=_(
+                "Specifies how to display the image relative to the text, in the case both text and image are present."
+            ),
+        ),
+    ],
     defaultextension=dict(
         buid=[_pathchoser_all, _pathchoser_all_old],
         help=_("Dialog option. Sets default file extension."),
@@ -68,6 +76,7 @@ plugin_properties = dict(
         editor="choice",
         values=("", "true", "false"),
         state="readonly",
+        help=_("When True, the widget is grouped within the container panel."),
     ),
     headerbg=dict(
         buid=[
@@ -306,10 +315,16 @@ plugin_properties = dict(
             help=_("Tk variable associated to the path property."),
         ),
     ],
-    title=dict(
-        buid=[_pathchoser_all, _pathchoser_all_old],
-        help=_("Dialog option. Sets dialog title."),
-    ),
+    title=[
+        dict(
+            buid=[_pathchoser_all, _pathchoser_all_old],
+            help=_("Dialog option. Sets dialog title."),
+        ),
+        dict(
+            buid=nspygubu.widgets.dockwidget,
+            help=_("Sets the widget title."),
+        ),
+    ],
     type=dict(
         buid=[_pathchoser_all, _pathchoser_all_old],
         editor="choice",
