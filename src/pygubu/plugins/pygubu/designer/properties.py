@@ -1,65 +1,32 @@
 import tkinter as tk
 from pygubu.i18n import _
 from pygubu.api.v1 import register_custom_property
-from pygubu.plugins.pygubu import _plugin_uid
-from pygubu.plugins.pygubu.forms.base import _plugin_forms_uid as forms_uid
 from pygubu.widgets.pathchooserinput import PathChooserInput
+from pygubu.plugins.pygubu._config import namespace, nspygubu
 
+_builder_all = f"{namespace}.*"
 
-_builder_all = f"{_plugin_uid}.*"
-_AccordionFrame = f"{_plugin_uid}.AccordionFrame"
-_AccordionFrameGroup = f"{_plugin_uid}.AccordionFrameGroup"
-_CalendarFrame = f"{_plugin_uid}.CalendarFrame"
-_CalendarFrame_old = "pygubu.builder.widgets.calendarframe"
-_ColorInput = f"{_plugin_uid}.ColorInput"
-_Combobox = f"{_plugin_uid}.Combobox"
-_Combobox_old = "pygubu.builder.widgets.combobox"
-_Dialog = f"{_plugin_uid}.Dialog"
-_Dialog_old = "pygubu.builder.widgets.dialog"
-_DockFrame = f"{_plugin_uid}.docframe"
-_DockPane = f"{_plugin_uid}.docpane"
-_DockWidget = f"{_plugin_uid}.dockwidget"
-_forms_all = f"{forms_uid}.*"
-_forms_Entry = f"{forms_uid}.ttkwidget.Entry"
-_forms_PygubuCombobox = f"{forms_uid}.pygubuwidget.PygubuCombobox"
-_forms_FrameFormBuilder = f"{forms_uid}.ttkwidget.FrameFormBuilder"
-_forms_LabelWidgetInfo = f"{forms_uid}.ttkwidget.LabelWidgetInfo"
-_forms_Combobox = f"{forms_uid}.ttkwidget.Combobox"
-_HideableFrame = f"{_plugin_uid}.hideableframe"
-_PathChoser_all = f"{_plugin_uid}.PathChooser.*"
-_PathChoser_old = "pygubu.builder.widgets.pathchooser.*"
-_PathChoserButton = f"{_plugin_uid}.PathChooserButton"
-_Tooltip = f"{_plugin_uid}.Tooltip"
-_Tooltipttk = f"{_plugin_uid}.Tooltipttk"
-_FilterableTreeview = f"{_plugin_uid}.FilterableTreeview"
-_EditableTreeview = f"{_plugin_uid}.EditableTreeview"
+_forms_all = f"{nspygubu.forms}.*"
+_pathchoser_all = f"{nspygubu.widgets}.PathChooser.*"
+_pathchoser_all_old = f"{nspygubu.builder_old}.pathchooser.*"
 
-h_values = _(
-    "In designer: json list of key, value pairs\n"
-    '    Example: [["A", "Option 1 Label"], ["B", "Option 2 Label"]]\n'
-    "In code: an iterable of key, value pairs"
-)  # combobox
-h_keyvariable = _("Tk variable associated to the key value.")  # combobox
-h_state = _("Combobox state.")  # combobox
-h_modal = _("Determines if dialog is run in normal or modal mode.")  # Dialog
-h_weight = _("The weight value for the pane.")  # DockPane
-h_mustexist = _(
-    "Dialog option. Determines if path must exist for directory and file dialogs."
-    + " The default value is True."
-)  # PathChooserInput
-h_initialdir = _("Dialog option. Sets initial directory.")  # PathChooserInput
-h_title = _("Dialog option. Sets dialog title.")  # PathChooserInput
-h_defaultextension = _help = _("Dialog option. Sets default file extension.")
-
-plugin_properties = {
-    "calendarfg": dict(
-        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+plugin_properties = dict(
+    calendarfg=dict(
+        buid=[
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
+        ],
+        editor="colorentry",
     ),
-    "calendarbg": dict(
-        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    calendarbg=dict(
+        buid=[
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
+        ],
+        editor="colorentry",
     ),
-    "compound": dict(
-        buid=_AccordionFrameGroup,
+    compound=dict(
+        buid=nspygubu.widgets.AccordionFrameGroup,
         editor="choice",
         values=(
             "",
@@ -69,112 +36,154 @@ plugin_properties = {
         ),
         state="readonly",
     ),
-    "defaultextension": dict(
-        buid=[_PathChoser_all, _PathChoser_old], help=h_defaultextension
+    defaultextension=dict(
+        buid=[_pathchoser_all, _pathchoser_all_old],
+        help=_("Dialog option. Sets default file extension."),
     ),
-    "expanded": dict(
-        buid=_AccordionFrameGroup,
+    expanded=dict(
+        buid=nspygubu.widgets.AccordionFrameGroup,
         editor="choice",
         values=("", "false", "true"),
         state="readonly",
     ),
-    "field_name": [
+    field_name=[
         dict(buid=_forms_all, editor="fieldname_entry"),
-        dict(buid=_forms_LabelWidgetInfo, editor="fieldname_selector"),
+        dict(
+            buid=nspygubu.forms.ttkwidget.LabelWidgetInfo,
+            editor="fieldname_selector",
+        ),
     ],
-    "firstweekday": dict(
-        buid=[_CalendarFrame, _CalendarFrame_old],
+    firstweekday=dict(
+        buid=[
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
+        ],
         editor="choice",
         values=("0", "6"),
         state="readonly",
         default_value="6",
     ),
-    "grouped": dict(
-        buid=_DockWidget,
+    grouped=dict(
+        buid=nspygubu.widgets.dockwidget,
         editor="choice",
         values=("", "true", "false"),
         state="readonly",
     ),
-    "headerbg": dict(
-        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    headerbg=dict(
+        buid=[
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
+        ],
+        editor="colorentry",
     ),
-    "headerfg": dict(
-        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    headerfg=dict(
+        buid=[
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
+        ],
+        editor="colorentry",
     ),
-    "height": [
-        dict(buid=_AccordionFrame, editor="dimensionentry", default_value=200),
-        dict(buid=_HideableFrame, editor="dimensionentry", default_value=200),
+    height=[
         dict(
-            buid=_forms_FrameFormBuilder,
+            buid=nspygubu.widgets.AccordionFrame,
             editor="dimensionentry",
             default_value=200,
         ),
         dict(
-            buid=[_Dialog, _Dialog_old],
+            buid=nspygubu.widgets.hideableframe,
+            editor="dimensionentry",
+            default_value=200,
+        ),
+        dict(
+            buid=nspygubu.forms.ttkwidget.FrameFormBuilder,
+            editor="dimensionentry",
+            default_value=200,
+        ),
+        dict(
+            buid=[nspygubu.widgets.Dialog, nspygubu.builder_old.dialog],
             editor="dimensionentry",
             default_value=200,
         ),
     ],
-    "image": [
+    image=[
         dict(
-            buid=[_PathChoser_all, _PathChoser_old],
+            buid=[_pathchoser_all, _pathchoser_all_old],
             editor="imageentry",
             help=_("Image for the button."),
         ),
         dict(
-            buid=_DockWidget,
+            buid=nspygubu.widgets.dockwidget,
             editor="imageentry",
             help=_("Image to use as icon."),
         ),
     ],
-    "img_expand": dict(editor="imageentry"),
-    "img_collapse": dict(editor="imageentry"),
-    "initialdir": dict(
-        buid=[_PathChoser_all, _PathChoser_old], help=h_initialdir
+    img_expand=dict(editor="imageentry"),
+    img_collapse=dict(editor="imageentry"),
+    initialdir=dict(
+        buid=[_pathchoser_all, _pathchoser_all_old],
+        help=_("Dialog option. Sets initial directory."),
     ),
-    "keyvariable": dict(
-        buid=[_Combobox, _Combobox_old, _forms_PygubuCombobox],
+    keyvariable=dict(
+        buid=[
+            nspygubu.widgets.Combobox,
+            nspygubu.builder_old.combobox,
+            nspygubu.forms.pygubuwidget.PygubuCombobox,
+        ],
         editor="tkvarentry",
-        help=h_keyvariable,
+        help=_("Tk variable associated to the key value."),
     ),
-    "label": dict(buid=_AccordionFrameGroup),
-    "linewidth": dict(
-        buid=[_CalendarFrame, _CalendarFrame_old],
+    label=dict(buid=nspygubu.widgets.AccordionFrameGroup),
+    linewidth=dict(
+        buid=[
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
+        ],
         editor="choice",
         values=("1", "2", "3", "4"),
         state="readonly",
         default_value="1",
     ),
-    "mask": dict(buid=f"{_plugin_uid}.Floodgauge"),
-    "markbg": dict(
-        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    mask=dict(buid=nspygubu.widgets.Floodgauge),
+    markbg=dict(
+        buid=[
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
+        ],
+        editor="colorentry",
     ),
-    "markfg": dict(
-        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    markfg=dict(
+        buid=[
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
+        ],
+        editor="colorentry",
     ),
-    "maxsize": [
+    maxsize=[
         dict(
-            buid=[_Dialog, _Dialog_old],
+            buid=[nspygubu.widgets.Dialog, nspygubu.builder_old.dialog],
             editor="whentry",
         ),
     ],
-    "minsize": [
+    minsize=[
         dict(
-            buid=[_Dialog, _Dialog_old],
+            buid=[nspygubu.widgets.Dialog, nspygubu.builder_old.dialog],
             editor="whentry",
         ),
     ],
-    "modal": [
+    modal=[
         dict(
-            buid=[_Dialog, _Dialog_old],
+            buid=[nspygubu.widgets.Dialog, nspygubu.builder_old.dialog],
             editor="choice",
             values=("true", "false"),
             state="readonly",
-            help=h_modal,
+            help=_("Determines if dialog is run in normal or modal mode."),
         ),
     ],
-    "month": dict(
-        buid=[_CalendarFrame, _CalendarFrame_old],
+    month=dict(
+        buid=[
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
+        ],
         editor="choice",
         values=(
             "",
@@ -193,140 +202,196 @@ plugin_properties = {
         ),
         state="readonly",
     ),
-    "mustexist": dict(
-        buid=[_PathChoser_all, _PathChoser_old],
+    mustexist=dict(
+        buid=[_pathchoser_all, _pathchoser_all_old],
         editor="choice",
         values=("", "true", "false"),
         state="readonly",
         default_value="true",
-        help=h_mustexist,
+        help=_(
+            "Dialog option. Determines if path must exist for directory and file dialogs."
+            + " The default value is True."
+        ),
     ),
-    "path": dict(
-        buid=[_PathChoser_all, _PathChoser_old],
+    path=dict(
+        buid=[_pathchoser_all, _pathchoser_all_old],
         help=_("Initial path value."),
     ),
-    "selectbg": dict(
-        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    selectbg=dict(
+        buid=[
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
+        ],
+        editor="colorentry",
     ),
-    "selectfg": dict(
-        buid=[_CalendarFrame, _CalendarFrame_old], editor="colorentry"
+    selectfg=dict(
+        buid=[
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
+        ],
+        editor="colorentry",
     ),
-    "show": dict(
-        buid=[_FilterableTreeview, _EditableTreeview],
+    show=dict(
+        buid=[
+            nspygubu.widgets.FilterableTreeview,
+            nspygubu.widgets.EditableTreeview,
+            nspygubu.builder_old.editabletreeview,
+        ],
         editor="choice",
         values=("", "tree", "headings"),
         state="readonly",
     ),
-    "state": [
+    state=[
         dict(
-            buid=[_CalendarFrame, _CalendarFrame_old],
+            buid=[
+                nspygubu.widgets.CalendarFrame,
+                nspygubu.builder_old.calendarframe,
+            ],
             editor="choice",
             values=("", "normal", "disabled"),
             state="readonly",
         ),
         dict(
-            buid=[_Combobox, _Combobox_old],
+            buid=[nspygubu.widgets.Combobox, nspygubu.builder_old.combobox],
             editor="choice",
             values=("", "normal", "disabled"),
             state="readonly",
-            help=h_state,
+            help=_("Combobox state."),
         ),
         dict(
-            buid=_forms_PygubuCombobox,
+            buid=nspygubu.forms.pygubuwidget.PygubuCombobox,
             editor="choice",
             values=("", "normal", "disabled"),
             state="readonly",
-            help=h_state,
+            help=_("Combobox state."),
         ),
         dict(
-            buid=[_PathChoser_all, _PathChoser_old],
+            buid=[_pathchoser_all, _pathchoser_all_old],
             editor="choice",
             values=("", "normal", "disabled", "readonly"),
             state="readonly",
             help=_("Path entry state."),
         ),
         dict(
-            buid=[_forms_Entry, _forms_Combobox],
+            buid=[
+                nspygubu.forms.ttkwidget.Entry,
+                nspygubu.forms.ttkwidget.Combobox,
+            ],
             editor="choice",
             values=("", "normal", "disabled", "readonly"),
             state="readonly",
         ),
     ],
-    "style": dict(
-        buid=_AccordionFrameGroup,
+    style=dict(
+        buid=nspygubu.widgets.AccordionFrameGroup,
         editor="ttkstylechoice",
         default_value="Toolbutton",
     ),
-    "text": dict(
-        buid=[_Tooltip, _Tooltipttk],
+    text=dict(
+        buid=[nspygubu.widgets.Tooltip, nspygubu.widgets.Tooltipttk],
         editor="text",
         help=_("Text to display in tooltip."),
     ),
-    "textvariable": [
+    textvariable=[
         dict(
-            buid=[_PathChoserButton],
+            buid=[nspygubu.widgets.PathChooserButton],
             editor="tkvarentry",
             help=_(
                 "Tk variable whose value will be used in place of the text resource."
             ),
         ),
         dict(
-            buid=[_PathChoser_all, _PathChoser_old],
+            buid=[_pathchoser_all, _pathchoser_all_old],
             editor="tkvarentry",
             help=_("Tk variable associated to the path property."),
         ),
     ],
-    "title": dict(buid=[_PathChoser_all, _PathChoser_old], help=h_title),
-    "type": dict(
-        buid=[_PathChoser_all, _PathChoser_old],
+    title=dict(
+        buid=[_pathchoser_all, _pathchoser_all_old],
+        help=_("Dialog option. Sets dialog title."),
+    ),
+    type=dict(
+        buid=[_pathchoser_all, _pathchoser_all_old],
         editor="choice",
         values=(PathChooserInput.FILE, PathChooserInput.DIR),
         state="readonly",
         default_value=PathChooserInput.FILE,
         help=_("Dialog type"),  # PathChooserInput
     ),
-    "value": dict(buid=_ColorInput, editor="colorentry"),
-    "values": [
+    value=dict(buid=nspygubu.widgets.ColorInput, editor="colorentry"),
+    values=[
         dict(
-            buid=[_Combobox, _Combobox_old, _forms_PygubuCombobox],
-            help=h_values,
+            buid=[
+                nspygubu.widgets.Combobox,
+                nspygubu.builder_old.combobox,
+                nspygubu.forms.pygubuwidget.PygubuCombobox,
+            ],
+            help=_(
+                "In designer: json list of key, value pairs\n"
+                '    Example: [["A", "Option 1 Label"], ["B", "Option 2 Label"]]\n'
+                "In code: an iterable of key, value pairs"
+            ),
         ),
     ],
-    "weight": [
-        dict(buid=_DockPane, editor="integernumber", help=h_weight),
+    weight=[
         dict(
-            buid=_DockWidget,
+            buid=nspygubu.widgets.dockpane,
+            editor="integernumber",
+            help=_("The weight value for the pane."),
+        ),
+        dict(
+            buid=nspygubu.widgets.dockwidget,
             editor="integernumber",
             help=_("The weight value of the widget in the pane"),
         ),
     ],
-    "width": [
-        dict(buid=_AccordionFrame, editor="dimensionentry", default_value=200),
-        dict(buid=_HideableFrame, editor="dimensionentry", default_value=200),
+    width=[
         dict(
-            buid=_forms_FrameFormBuilder,
+            buid=nspygubu.widgets.AccordionFrame,
             editor="dimensionentry",
             default_value=200,
         ),
-        dict(buid=_PathChoserButton, editor="integernumber"),
         dict(
-            buid=[_Dialog, _Dialog_old],
+            buid=nspygubu.widgets.hideableframe,
+            editor="dimensionentry",
+            default_value=200,
+        ),
+        dict(
+            buid=nspygubu.forms.ttkwidget.FrameFormBuilder,
+            editor="dimensionentry",
+            default_value=200,
+        ),
+        dict(buid=nspygubu.widgets.PathChooserButton, editor="integernumber"),
+        dict(
+            buid=[nspygubu.widgets.Dialog, nspygubu.builder_old.dialog],
             editor="dimensionentry",
             default_value=200,
         ),
     ],
-    "xscrollcommand": dict(
-        buid=[_FilterableTreeview, _EditableTreeview],
+    xscrollcommand=dict(
+        buid=[
+            nspygubu.widgets.FilterableTreeview,
+            nspygubu.widgets.EditableTreeview,
+            nspygubu.builder_old.editabletreeview,
+        ],
         editor="scrollsetcommandentry",
     ),
-    "year": dict(
-        buid=[_CalendarFrame, _CalendarFrame_old], editor="naturalnumber"
+    year=dict(
+        buid=[
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
+        ],
+        editor="naturalnumber",
     ),
-    "yscrollcommand": dict(
-        buid=[_FilterableTreeview, _EditableTreeview],
+    yscrollcommand=dict(
+        buid=[
+            nspygubu.widgets.FilterableTreeview,
+            nspygubu.widgets.EditableTreeview,
+            nspygubu.builder_old.editabletreeview,
+        ],
         editor="scrollsetcommandentry",
     ),
-}
+)
 
 for prop in plugin_properties:
     definitions = plugin_properties[prop]

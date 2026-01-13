@@ -2,9 +2,9 @@ from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
 )
-from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
 from pygubu.widgets.simpletooltip import Tooltip, Tooltipttk
 from pygubu.component.builderobject import FamilyType
+from ._config import nspygubu, _designer_tabs_widgets_ttk
 
 
 class TooltipBaseBO(BuilderObject):
@@ -37,12 +37,11 @@ class SimpleTooltipBO(TooltipBaseBO):
     )
 
 
-_builder_uid = f"{_plugin_uid}.Tooltip"
 register_widget(
-    _builder_uid,
+    nspygubu.widgets.Tooltip,
     SimpleTooltipBO,
     "Tooltip",
-    (_tab_widgets_label, "tk", "ttk"),
+    _designer_tabs_widgets_ttk,
 )
 
 
@@ -61,10 +60,9 @@ class SimpleTooltipttkBO(SimpleTooltipBO):
     )
 
 
-_builder_uid = f"{_plugin_uid}.Tooltipttk"
 register_widget(
-    _builder_uid,
+    nspygubu.widgets.Tooltipttk,
     SimpleTooltipttkBO,
     "Tooltipttk",
-    (_tab_widgets_label, "ttk"),
+    _designer_tabs_widgets_ttk,
 )

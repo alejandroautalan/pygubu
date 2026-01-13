@@ -3,10 +3,6 @@ from pygubu.api.v1 import BuilderObject
 from pygubu.i18n import _
 
 
-_plugin_forms_uid = "pygubu.forms"
-_tab_form_widgets_label = _("Pygubu Forms")
-
-
 class WidgetBOMixin:
     """Manages base widget properties."""
 

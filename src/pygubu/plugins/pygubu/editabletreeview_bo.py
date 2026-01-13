@@ -6,7 +6,7 @@ from pygubu.plugins.ttk.ttkstdwidgets import (
 )
 from .scrollbarhelper_bo import TTKSBHelperBO
 from pygubu.widgets.editabletreeview import EditableTreeview
-from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
+from ._config import nspygubu, _designer_tabs_widgets_ttk
 
 
 class EditableTreeviewBO(TTKTreeviewBO):
@@ -18,7 +18,7 @@ class EditableTreeviewBO(TTKTreeviewBO):
     )
 
 
-_builder_uid = f"{_plugin_uid}.EditableTreeview"
+_builder_uid = nspygubu.widgets.EditableTreeview
 if _builder_uid not in TTKTreeviewColumnBO.allowed_parents:
     TTKTreeviewColumnBO.add_allowed_parent(_builder_uid)
 if _builder_uid not in TTKSBHelperBO.allowed_children:
@@ -28,11 +28,11 @@ register_widget(
     _builder_uid,
     EditableTreeviewBO,
     "EditableTreeview",
-    (_tab_widgets_label, "ttk"),
+    _designer_tabs_widgets_ttk,
 )
 
 # Register old name until removal
-_old_name = "pygubu.builder.widgets.editabletreeview"
+_old_name = nspygubu.builder_old.editabletreeview
 register_widget(_old_name, EditableTreeviewBO, public=False)
 if _old_name not in TTKTreeviewColumnBO.allowed_parents:
     TTKTreeviewColumnBO.add_allowed_parent(_old_name)

@@ -10,15 +10,11 @@ from pygubu.api.v1 import (
 )
 from pygubu.i18n import _
 from pygubu.plugins.pygubu.tkscrollbarhelper_bo import TKSBHelperBO
-from .base import (
-    WidgetBOMixin,
-    _plugin_forms_uid,
-    _tab_form_widgets_label,
+from pygubu.plugins.pygubu._config import (
+    nspygubu,
+    _designer_tabs_forms as _designer_tabs,
 )
-
-
-_plugin_uid = f"{_plugin_forms_uid}.tkwidget"
-_designer_tabs = ("tk", "ttk", _tab_form_widgets_label)
+from .base import WidgetBOMixin
 
 
 class TextBO(WidgetBOMixin, tkw.TKText):
@@ -27,11 +23,10 @@ class TextBO(WidgetBOMixin, tkw.TKText):
     ro_properties = tkw.TKText.ro_properties + WidgetBOMixin.base_properties
 
 
-_builder_uid = f"{_plugin_uid}.Text"
-_tk_text_builder_uid = _builder_uid
+_tk_text_builder_uid = nspygubu.forms.tkwidget.Text
 
 register_widget(
-    _builder_uid,
+    _tk_text_builder_uid,
     TextBO,
     "Text",
     _designer_tabs,
@@ -39,4 +34,4 @@ register_widget(
 )
 
 
-TKSBHelperBO.add_allowed_child(_builder_uid)
+TKSBHelperBO.add_allowed_child(_tk_text_builder_uid)

@@ -7,7 +7,7 @@ from pygubu.api.v1 import (
 )
 
 import pygubu.widgets.dockfw.widgets as widgets
-from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
+from ._config import nspygubu, _designer_tabs_widgets_ttk
 
 
 class DockWidgetBaseBO(BuilderObject):
@@ -36,9 +36,11 @@ class DockFrameBO(DockWidgetBaseBO):
     virtual_events = (widgets.DockFrame.EVENT_LAYOUT_CHANGED,)
 
 
-_builder_id = dockframe_uid = f"{_plugin_uid}.dockframe"
 register_widget(
-    _builder_id, DockFrameBO, "DockFrame", ("ttk", _tab_widgets_label)
+    nspygubu.widgets.dockframe,
+    DockFrameBO,
+    "DockFrame",
+    _designer_tabs_widgets_ttk,
 )
 
 
@@ -49,7 +51,7 @@ class DockPaneBO(DockWidgetBaseBO):
     layout_required = False
     properties = ("orient", "weight")
     ro_properties = properties
-    allowed_parents = (dockframe_uid,)
+    allowed_parents = (nspygubu.widgets.dockframe,)
 
     @classmethod
     def canbe_child_of(cls, parent_builder, classname):
@@ -110,11 +112,13 @@ class DockPaneBO(DockWidgetBaseBO):
         return []
 
 
-_builder_id = dockpane_uid = f"{_plugin_uid}.dockpane"
-DockPaneBO.add_allowed_child(_builder_id)
+DockPaneBO.add_allowed_child(nspygubu.widgets.dockpane)
 
 register_widget(
-    _builder_id, DockPaneBO, "DockPane", ("ttk", _tab_widgets_label)
+    nspygubu.widgets.dockpane,
+    DockPaneBO,
+    "DockPane",
+    _designer_tabs_widgets_ttk,
 )
 
 
@@ -125,7 +129,7 @@ class DockWidgetBO(DockWidgetBaseBO):
     layout_required = False
     properties = ("grouped", "weight", "title", "image", "compound")
     ro_properties = ("grouped", "weight")
-    allowed_parents = (dockframe_uid, dockpane_uid)
+    allowed_parents = (nspygubu.widgets.dockframe, nspygubu.widgets.dockpane)
 
     @classmethod
     def canbe_child_of(cls, parent_builder, classname):
@@ -187,9 +191,11 @@ class DockWidgetBO(DockWidgetBaseBO):
         return []
 
 
-_builder_id = f"{_plugin_uid}.dockwidget"
-DockPaneBO.add_allowed_child(_builder_id)
+DockPaneBO.add_allowed_child(nspygubu.widgets.dockwidget)
 
 register_widget(
-    _builder_id, DockWidgetBO, "DockWidget", ("ttk", _tab_widgets_label)
+    nspygubu.widgets.dockwidget,
+    DockWidgetBO,
+    "DockWidget",
+    _designer_tabs_widgets_ttk,
 )

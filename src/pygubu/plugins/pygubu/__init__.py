@@ -1,87 +1,86 @@
 import os
 from pygubu.api.v1 import BuilderLoaderPlugin
 from pygubu.i18n import _
-
-
-_tab_widgets_label = _("Pygubu Widgets")
-_tab_helpers_label = _("Pygubu Helpers")
-_plugin_uid = "pygubu.widgets"
+from ._config import nspygubu
 
 
 class PygubuWidgetsLoader(BuilderLoaderPlugin):
     module_map = {
         "pygubu.plugins.pygubu.accordionframe_bo": (
-            f"{_plugin_uid}.AccordionFrame",
+            nspygubu.widgets.AccordionFrame,
+            nspygubu.widgets.AccordionFrameGroup,
         ),
         "pygubu.plugins.pygubu.calendarframe_bo": (
-            f"{_plugin_uid}.CalendarFrame",
-            "pygubu.builder.widgets.calendarframe",
+            nspygubu.widgets.CalendarFrame,
+            nspygubu.builder_old.calendarframe,
         ),
-        "pygubu.plugins.pygubu.colorinput_bo": (f"{_plugin_uid}.ColorInput",),
+        "pygubu.plugins.pygubu.colorinput_bo": (nspygubu.widgets.ColorInput,),
         "pygubu.plugins.pygubu.combobox_bo": (
-            f"{_plugin_uid}.Combobox",
-            "pygubu.builder.widgets.combobox",
+            nspygubu.widgets.Combobox,
+            nspygubu.builder_old.combobox,
         ),
         "pygubu.plugins.pygubu.dialog_bo": (
-            f"{_plugin_uid}.Dialog",
-            "pygubu.builder.widgets.dialog",
+            nspygubu.widgets.Dialog,
+            nspygubu.builder_old.dialog,
         ),
         "pygubu.plugins.pygubu.dockfw_bo": (
-            f"{_plugin_uid}.dockframe",
-            f"{_plugin_uid}.dockpane",
-            f"{_plugin_uid}.dockwidget",
+            nspygubu.widgets.dockframe,
+            nspygubu.widgets.dockpane,
+            nspygubu.widgets.dockwidget,
         ),
         "pygubu.plugins.pygubu.editabletreeview_bo": (
-            f"{_plugin_uid}.EditableTreeview",
-            "pygubu.builder.widgets.editabletreeview",
+            nspygubu.widgets.EditableTreeview,
+            nspygubu.builder_old.editabletreeview,
         ),
         "pygubu.plugins.pygubu.filterabletreeview_bo": (
-            f"{_plugin_uid}.FilterableTreeview",
+            nspygubu.widgets.FilterableTreeview,
         ),
-        "pygubu.plugins.pygubu.floodgauge_bo": (f"{_plugin_uid}.Floodgauge",),
-        "pygubu.plugins.pygubu.fontinputbo": (f"{_plugin_uid}.FontInput",),
+        "pygubu.plugins.pygubu.floodgauge_bo": (nspygubu.widgets.Floodgauge,),
+        "pygubu.plugins.pygubu.fontinputbo": (nspygubu.widgets.FontInput,),
         # Forms are not finished so expect changes
         "pygubu.plugins.pygubu.forms.pygubuwidget_bo": (
-            "pygubu.forms.pygubuwidget.PygubuCombobox",
-            "pygubu.forms.pygubuwidget.FontInput",
-            "pygubu.forms.pygubuwidget.ColorInput",
+            nspygubu.forms.pygubuwidget.PygubuCombobox,
+            nspygubu.forms.pygubuwidget.FontInput,
+            nspygubu.forms.pygubuwidget.ColorInput,
         ),
         "pygubu.plugins.pygubu.forms.tkwidget_bo": (
-            "pygubu.forms.tkwidget.Text",
+            nspygubu.forms.tkwidget.Text,
         ),
         "pygubu.plugins.pygubu.forms.ttkwidget_bo": (
-            "pygubu.forms.ttkwidget.FrameFormBuilder",
-            "pygubu.forms.ttkwidget.Label",
-            "pygubu.forms.ttkwidget.Entry",
-            "pygubu.forms.ttkwidget.LabelWidgetInfo",
+            nspygubu.forms.ttkwidget.FrameFormBuilder,
+            nspygubu.forms.ttkwidget.Label,
+            nspygubu.forms.ttkwidget.Entry,
+            nspygubu.forms.ttkwidget.LabelWidgetInfo,
+            nspygubu.forms.ttkwidget.Combobox,
+            nspygubu.forms.ttkwidget.Checkbutton,
         ),
         "pygubu.plugins.pygubu.hideableframe_bo": (
-            f"{_plugin_uid}.hideableframe",
+            nspygubu.widgets.hideableframe,
         ),
         "pygubu.plugins.pygubu.pathchooserinput_bo": (
-            "pygubu.builder.widgets.pathchooserinput",
-            "pygubu.widgets.PathChooserInput",
-            f"{_plugin_uid}.PathChooserButton",
+            nspygubu.builder_old.pathchooserinput,
+            nspygubu.widgets.PathChooserInput,
+            nspygubu.widgets.PathChooserButton,
         ),
         "pygubu.plugins.pygubu.scrollbarhelper_bo": (
-            "pygubu.builder.widgets.scrollbarhelper",
-            f"{_plugin_uid}.ScrollbarHelper",
+            nspygubu.builder_old.scrollbarhelper,
+            nspygubu.widgets.ScrollbarHelper,
         ),
         "pygubu.plugins.pygubu.scrolledframe_bo": (
-            "pygubu.builder.widgets.scrolledframe",
-            f"{_plugin_uid}.ScrolledFrame",
+            nspygubu.builder_old.scrolledframe,
+            nspygubu.widgets.ScrolledFrame,
         ),
         "pygubu.plugins.pygubu.simpletooltip_bo": (
-            f"{_plugin_uid}.Tooltip",
-            f"{_plugin_uid}.Tooltipttk",
+            nspygubu.widgets.Tooltip,
+            nspygubu.widgets.Tooltipttk,
         ),
         "pygubu.plugins.pygubu.tkscrollbarhelper_bo": (
-            "pygubu.builder.widgets.tkscrollbarhelper",
-            f"{_plugin_uid}.TkScrollbarHelper",
+            nspygubu.builder_old.tkscrollbarhelper,
+            nspygubu.widgets.TkScrollbarHelper,
         ),
         "pygubu.plugins.pygubu.tkscrolledframe_bo": (
-            "pygubu.builder.widgets.tkscrolledframe",
-            f"{_plugin_uid}.TkScrolledFrame",
+            nspygubu.builder_old.tkscrolledframe,
+            nspygubu.widgets.TkScrolledFrame,
         ),
     }
 

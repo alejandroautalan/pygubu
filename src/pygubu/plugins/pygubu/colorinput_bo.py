@@ -6,7 +6,7 @@ from pygubu.api.v1 import (
     register_widget,
 )
 from pygubu.widgets.colorinput import ColorInput
-from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
+from ._config import nspygubu, _designer_tabs_widgets_ttk
 
 
 #
@@ -20,7 +20,9 @@ class ColorInputBO(BuilderObject):
     properties = ("value", "textvariable")
 
 
-_builder_id = f"{_plugin_uid}.ColorInput"
 register_widget(
-    _builder_id, ColorInputBO, "ColorInput", ("ttk", _tab_widgets_label)
+    nspygubu.widgets.ColorInput,
+    ColorInputBO,
+    "ColorInput",
+    _designer_tabs_widgets_ttk,
 )

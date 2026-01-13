@@ -10,15 +10,11 @@ from pygubu.api.v1 import (
     register_custom_property,
     copy_custom_property,
 )
-from .base import (
-    WidgetBOMixin,
-    _plugin_forms_uid,
-    _tab_form_widgets_label,
+from pygubu.plugins.pygubu._config import (
+    nspygubu,
+    _designer_tabs_forms as _designer_tabs,
 )
-
-
-_plugin_uid = f"{_plugin_forms_uid}.pygubuwidget"
-_designer_tabs = ("tk", "ttk", _tab_form_widgets_label)
+from .base import WidgetBOMixin
 
 
 class PygubuComboboxBO(WidgetBOMixin, cbb.ComboboxBO):
@@ -29,9 +25,8 @@ class PygubuComboboxBO(WidgetBOMixin, cbb.ComboboxBO):
     )
 
 
-_builder_uid = f"{_plugin_uid}.PygubuCombobox"
 register_widget(
-    _builder_uid,
+    nspygubu.forms.pygubuwidget.PygubuCombobox,
     PygubuComboboxBO,
     "PygubuCombobox",
     _designer_tabs,
@@ -46,12 +41,10 @@ class FontInputFWBO(WidgetBOMixin, fib.FontInputBO):
     )
 
 
-_wname = "FontInput"
-_builder_uid = f"{_plugin_uid}.{_wname}"
 register_widget(
-    _builder_uid,
+    nspygubu.forms.pygubuwidget.FontInput,
     FontInputFWBO,
-    _wname,
+    "FontInput",
     _designer_tabs,
 )
 
@@ -64,11 +57,9 @@ class ColorInputFWBO(WidgetBOMixin, cib.ColorInputBO):
     )
 
 
-_wname = "ColorInput"
-_builder_uid = f"{_plugin_uid}.{_wname}"
 register_widget(
-    _builder_uid,
+    nspygubu.forms.pygubuwidget.ColorInput,
     ColorInputFWBO,
-    _wname,
+    "ColorInput",
     _designer_tabs,
 )

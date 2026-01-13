@@ -3,7 +3,7 @@ import tkinter as tk
 
 from pygubu.api.v1 import BuilderObject, register_widget
 from pygubu.widgets.tkscrolledframe import TkScrolledFrame
-from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
+from ._config import nspygubu, _designer_tabs_helpers_tk
 
 
 class TKScrolledFrameBO(BuilderObject):
@@ -77,18 +77,16 @@ class TKScrolledFrameBO(BuilderObject):
             )
 
 
-_builder_id = f"{_plugin_uid}.TkScrolledFrame"
 register_widget(
-    _builder_id,
+    nspygubu.widgets.TkScrolledFrame,
     TKScrolledFrameBO,
     "TkScrolledFrame",
-    (_tab_widgets_label, "tk"),
+    _designer_tabs_helpers_tk,
     group=0,
 )
 
-_builder_old = "pygubu.builder.widgets.tkscrolledframe"
 register_widget(
-    _builder_old,
+    nspygubu.builder_old.tkscrolledframe,
     TKScrolledFrameBO,
     public=False,
 )

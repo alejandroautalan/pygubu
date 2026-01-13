@@ -3,7 +3,7 @@ import tkinter as tk
 from pygubu.api.v1 import BuilderObject, register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import TTKButton
 from pygubu.widgets.pathchooserinput import PathChooserInput, PathChooserButton
-from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
+from ._config import nspygubu, _designer_tabs_widgets_ttk
 
 
 class PathChooserBaseMixin:
@@ -37,16 +37,14 @@ class PathChooserInputBO(PathChooserBaseMixin, BuilderObject):
     virtual_events = ("<<PathChooserPathChanged>>",)
 
 
-_builder_id = f"{_plugin_uid}.PathChooserInput"
 register_widget(
-    _builder_id,
+    nspygubu.widgets.PathChooserInput,
     PathChooserInputBO,
     "PathChooserInput",
-    ("ttk", _tab_widgets_label),
+    _designer_tabs_widgets_ttk,
 )
-_old_bid = "pygubu.builder.widgets.pathchooserinput"
 register_widget(
-    _old_bid,
+    nspygubu.builder_old.pathchooserinput,
     PathChooserInputBO,
     public=False,
 )
@@ -60,10 +58,9 @@ class PathChooserButtonBO(PathChooserBaseMixin, BuilderObject):
     virtual_events = ("<<PathChooserPathChanged>>",)
 
 
-_builder_id = f"{_plugin_uid}.PathChooserButton"
 register_widget(
-    _builder_id,
+    nspygubu.widgets.PathChooserButton,
     PathChooserButtonBO,
     "PathChooserButton",
-    ("ttk", _tab_widgets_label),
+    _designer_tabs_widgets_ttk,
 )

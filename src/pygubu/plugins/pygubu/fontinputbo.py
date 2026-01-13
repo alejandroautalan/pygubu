@@ -6,8 +6,8 @@ from pygubu.api.v1 import (
     register_widget,
 )
 
-from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
 from pygubu.widgets.fontinput import FontInput
+from ._config import nspygubu, _designer_tabs_widgets_ttk
 
 
 #
@@ -20,7 +20,9 @@ class FontInputBO(BuilderObject):
     virtual_events = (FontInput.EVENT_FONT_CHANGED,)
 
 
-_wname = "FontInput"
-_builder_id = f"{_plugin_uid}.{_wname}"
-
-register_widget(_builder_id, FontInputBO, _wname, ("ttk", _tab_widgets_label))
+register_widget(
+    nspygubu.widgets.FontInput,
+    FontInputBO,
+    "FontInput",
+    _designer_tabs_widgets_ttk,
+)

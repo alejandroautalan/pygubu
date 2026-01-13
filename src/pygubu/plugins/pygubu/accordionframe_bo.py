@@ -6,29 +6,27 @@ from pygubu.api.v1 import (
 )
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 from pygubu.widgets.accordionframe import AccordionFrame
-from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
+from ._config import nspygubu, _designer_tabs_widgets_ttk
 
 
 class AccordionFrameBO(TTKFrame):
     class_ = AccordionFrame
-    allowed_children = (f"{_plugin_uid}.AccordionFrameGroup",)
+    allowed_children = (nspygubu.widgets.AccordionFrameGroup,)
     _img_properties = ("img_expand", "img_collapse")
     properties = TTKFrame.properties + _img_properties
     tkimage_properties = TTKFrame.tkimage_properties + _img_properties
 
 
-_builder_uid = f"{_plugin_uid}.AccordionFrame"
-
 register_widget(
-    _builder_uid,
+    nspygubu.widgets.AccordionFrame,
     AccordionFrameBO,
     "AccordionFrame",
-    (_tab_widgets_label, "ttk"),
+    _designer_tabs_widgets_ttk,
 )
 
 
 class AccordionFrameGroupBO(BuilderObject):
-    allowed_parents = (f"{_plugin_uid}.AccordionFrame",)
+    allowed_parents = (nspygubu.widgets.AccordionFrame,)
     properties = ("label", "expanded", "compound", "style")
     layout_required = False
     container = True
@@ -58,11 +56,9 @@ class AccordionFrameGroupBO(BuilderObject):
             super()._set_property(target_widget, pname, value)
 
 
-_builder_uid = f"{_plugin_uid}.AccordionFrameGroup"
-
 register_widget(
-    _builder_uid,
+    nspygubu.widgets.AccordionFrameGroup,
     AccordionFrameGroupBO,
     "AccordionFrame.Group",
-    (_tab_widgets_label, "ttk"),
+    _designer_tabs_widgets_ttk,
 )

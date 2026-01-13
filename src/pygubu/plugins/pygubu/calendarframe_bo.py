@@ -6,7 +6,7 @@ from pygubu.api.v1 import (
 )
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 from pygubu.widgets.calendarframe import CalendarFrame
-from pygubu.plugins.pygubu import _tab_widgets_label, _plugin_uid
+from ._config import nspygubu, _designer_tabs_widgets_ttk
 
 
 class CalendarFrameBuilder(BuilderObject):
@@ -33,14 +33,13 @@ class CalendarFrameBuilder(BuilderObject):
     virtual_events = ("<<CalendarFrameDateSelected>>",)
 
 
-_builder_id = f"{_plugin_uid}.CalendarFrame"
 register_widget(
-    _builder_id,
+    nspygubu.widgets.CalendarFrame,
     CalendarFrameBuilder,
     "CalendarFrame",
-    ("ttk", _tab_widgets_label),
+    _designer_tabs_widgets_ttk,
 )
 # Register old name until removal
 register_widget(
-    "pygubu.builder.widgets.calendarframe", CalendarFrameBuilder, public=False
+    nspygubu.builder_old.calendarframe, CalendarFrameBuilder, public=False
 )
