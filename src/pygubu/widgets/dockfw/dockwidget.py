@@ -94,6 +94,8 @@ class DockWidget(DockWidgetBase, IDockWidget):
         super().__init__(*args, **kw)
         self.noteb: ttk.Notebook = None
         self._title = None
+        self._image = None
+        self._compound = None
 
     @property
     def is_grouped(self):
@@ -107,10 +109,24 @@ class DockWidget(DockWidgetBase, IDockWidget):
     def title(self):
         return self._title if self._title is not None else self.uid
 
+    @property
+    def image(self):
+        return self._image if self._image is not None else ""
+
+    @property
+    def compound(self):
+        return self._compound if self._compound is not None else ""
+
     def configure(self, cnf=None, **kw):
         if cnf:
             return super().configure(cnf, **kw)
         key = "title"
         if key in kw:
             self._title = kw.pop(key)
+        key = "image"
+        if key in kw:
+            self._image = kw.pop(key)
+        key = "compound"
+        if key in kw:
+            self._compound = kw.pop(key)
         return super().configure(cnf, **kw)

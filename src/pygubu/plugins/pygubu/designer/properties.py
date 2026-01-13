@@ -115,11 +115,18 @@ plugin_properties = {
             default_value=200,
         ),
     ],
-    "image": dict(
-        buid=[_PathChoser_all, _PathChoser_old],
-        editor="imageentry",
-        help=_("Image for the button."),
-    ),
+    "image": [
+        dict(
+            buid=[_PathChoser_all, _PathChoser_old],
+            editor="imageentry",
+            help=_("Image for the button."),
+        ),
+        dict(
+            buid=_DockWidget,
+            editor="imageentry",
+            help=_("Image to use as icon."),
+        ),
+    ],
     "img_expand": dict(editor="imageentry"),
     "img_collapse": dict(editor="imageentry"),
     "initialdir": dict(

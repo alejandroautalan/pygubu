@@ -64,7 +64,12 @@ class DockFrame(DockWidgetBase, IDockFrame):
             DockingFramework.init_binding(nb)
             # topane.panedw.add(nb, weight=1)
             topane.panedw.insert(position, nb, weight=weight)
-        nb.add(widget, text=widget.title)
+        nb.add(
+            widget,
+            text=widget.title,
+            compound=widget.compound,
+            image=widget.image,
+        )
         widget.tkraise()
         widget.detach_from_parent()
         topane.add_dwchild(widget)
@@ -92,7 +97,13 @@ class DockFrame(DockWidgetBase, IDockFrame):
         self, tgroup, swidget: DockWidget, position=tk.END
     ):
         nb: ttk.Notebook = tgroup.noteb
-        nb.insert(position, swidget, text=swidget.title)
+        nb.insert(
+            position,
+            swidget,
+            text=swidget.title,
+            compound=swidget.compound,
+            image=swidget.image,
+        )
         nb.select(position)
         swidget.noteb = nb
         if tgroup != swidget:

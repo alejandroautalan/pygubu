@@ -123,7 +123,7 @@ class DockWidgetBO(DockWidgetBaseBO):
     container = True
     container_layout = True
     layout_required = False
-    properties = ("grouped", "weight", "title")
+    properties = ("grouped", "weight", "title", "image", "compound")
     ro_properties = ("grouped", "weight")
     allowed_parents = (dockframe_uid, dockpane_uid)
 
