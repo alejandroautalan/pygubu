@@ -116,7 +116,7 @@ class FilterableTreeviewMixin:
     def expand_all(self, rootitem=""):
         children = self.get_children(rootitem)
         for item in children:
-            self._expand_all(item)
+            self.expand_all(item)
         if rootitem != "" and children:
             self.item(rootitem, open=True)
 
