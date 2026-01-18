@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings />
+    <customwidgets />
+    <resources />
+  </project>
+  <object class="tk.Frame" id="myframe1" named="True">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout manager="grid">
+      <property name="column">0</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="tk.Label" id="mylabel1" named="True">
+        <property name="text" translatable="yes">label1</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Button" id="mybutton1" named="True">
+        <property name="text" translatable="yes">button1</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Entry" id="myentry1" named="True">
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+      </object>
+    </child>
+    <child>
+      <object class="ttk.Menubutton" id="mbtn" named="True">
+        <property name="text" translatable="yes">menubutton1</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="tk.Menu" id="mmain" named="True">
+            <property name="tearoff">false</property>
+            <child>
+              <object class="tk.Menuitem.Submenu" id="mfile" named="True">
+                <property name="label" translatable="yes">File</property>
+                <property name="tearoff">false</property>
+                <child>
+                  <object class="tk.Menuitem.Command" id="command1">
+                    <property name="label" translatable="yes">command1</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="tk.Menuitem.Submenu" id="mrecent" named="True">
+                    <property name="label" translatable="yes">Recent Files</property>
+                    <property name="tearoff">false</property>
+                    <child>
+                      <object class="tk.Menuitem.Command" id="command2">
+                        <property name="label" translatable="yes">command2</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Menuitem.Submenu" id="mhelp_special" named="True">
+                <property name="label" translatable="yes">submenu1</property>
+                <property name="specialmenu">help</property>
+                <property name="tearoff">false</property>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

@@ -1191,9 +1191,13 @@ class TKMenuitemSubmenu(TKMenuitem):
         menu_properties = dict(
             (k, v)
             for k, v in self.wmeta.properties.items()
-            if k in TKMenu.properties or k == "specialmenu"
+            if k in TKMenu.properties
         )
         self._setup_item_properties(menu_properties)
+        submenu_name = self.wmeta.properties.get("specialmenu", None)
+        if submenu_name is None:
+            submenu_name = str(self.wmeta.identifier).lower()
+        menu_properties["name"] = submenu_name
 
         item_properties = dict(
             (k, v)
@@ -1206,13 +1210,6 @@ class TKMenuitemSubmenu(TKMenuitem):
         item_properties["menu"] = submenu
         master.add(tk.CASCADE, **item_properties)
         return self.widget
-
-    def _setup_item_properties(self, itemprops):
-        super(TKMenuitemSubmenu, self)._setup_item_properties(itemprops)
-        pname = "specialmenu"
-        if pname in itemprops:
-            specialmenu = itemprops.pop(pname)
-            itemprops["name"] = specialmenu
 
     def configure(self):
         pass
@@ -1234,11 +1231,13 @@ class TKMenuitemSubmenu(TKMenuitem):
         lines = []
         # menu properties
         menuprop = {}
+        submenu_name = str(self.wmeta.identifier).lower()
         for pname, value in self.wmeta.properties.items():
             if pname in TKMenu.properties:
                 menuprop[pname] = value
             if pname == "specialmenu":
-                menuprop["name"] = value
+                submenu_name = value
+        menuprop["name"] = submenu_name
 
         (
             code_bag,
