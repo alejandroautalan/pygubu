@@ -33,7 +33,7 @@ The core also includes:
 - A widget set: Pygubu widgets
 - Themes: Pygubu bootstrap themes, a set of themes based on ttkbootstrap but
 implemented only with tkinter.
-- And many helper clases that you can use to build your application.
+- And many helper classes that you can use to build your application.
 
 Pygubu widgets:
 
