@@ -10,6 +10,12 @@ _designer_tabs_helpers_tk = ("tk", _tab_helpers_label)
 _designer_tabs_helpers_ttk = ("ttk", _tab_helpers_label)
 _designer_tabs_forms = ("ttk", _tab_form_widgets_label)
 
+# used for group ordering in designer.
+GROOT: int = 100
+GCONTAINER: int = 200
+GDISPLAY: int = 300
+GINPUT: int = 400
+
 namespace = "pygubu"
 
 ns_pygubu = SN(

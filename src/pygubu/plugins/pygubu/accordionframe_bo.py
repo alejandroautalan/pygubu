@@ -6,7 +6,7 @@ from pygubu.api.v1 import (
 )
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 from pygubu.widgets.accordionframe import AccordionFrame
-from ._config import nspygubu, _designer_tabs_widgets_ttk
+from ._config import nspygubu, _designer_tabs_widgets_ttk, GCONTAINER
 
 
 class AccordionFrameBO(TTKFrame):
@@ -15,6 +15,7 @@ class AccordionFrameBO(TTKFrame):
     _img_properties = ("img_expand", "img_collapse")
     properties = TTKFrame.properties + _img_properties
     tkimage_properties = TTKFrame.tkimage_properties + _img_properties
+    virtual_events = ("<<AccordionGroupToggle>>",)
 
 
 register_widget(
@@ -22,6 +23,7 @@ register_widget(
     AccordionFrameBO,
     "AccordionFrame",
     _designer_tabs_widgets_ttk,
+    group=GCONTAINER,
 )
 
 
@@ -61,4 +63,5 @@ register_widget(
     AccordionFrameGroupBO,
     "AccordionFrame.Group",
     _designer_tabs_widgets_ttk,
+    group=GCONTAINER,
 )

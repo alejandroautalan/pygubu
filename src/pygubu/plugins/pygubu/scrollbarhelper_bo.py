@@ -3,7 +3,7 @@ import tkinter as tk
 
 from pygubu.api.v1 import BuilderObject, register_widget
 from pygubu.widgets.scrollbarhelper import ScrollbarHelper
-from ._config import nspygubu, _designer_tabs_helpers_ttk
+from ._config import nspygubu, _designer_tabs_helpers_ttk, GCONTAINER
 
 
 class TTKSBHelperBO(BuilderObject):
@@ -59,6 +59,7 @@ register_widget(
     TTKSBHelperBO,
     "ScrollbarHelper",
     _designer_tabs_helpers_ttk,
+    group=GCONTAINER,
 )
 
 register_widget(

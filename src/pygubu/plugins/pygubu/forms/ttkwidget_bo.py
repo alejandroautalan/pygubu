@@ -11,15 +11,12 @@ from pygubu.plugins.pygubu.scrollbarhelper_bo import TTKSBHelperBO
 from pygubu.plugins.pygubu._config import (
     nspygubu,
     _designer_tabs_forms as _designer_tabs,
+    GCONTAINER,
+    GDISPLAY,
+    GINPUT,
 )
 from .base import WidgetBOMixin
 from .tkwidget_bo import _tk_text_builder_uid
-
-# Groups for ordering buttons in designer palette.
-GROUP0: int = 0
-GROUP1: int = 10
-GROUP2: int = 20
-GROUP3: int = 30
 
 # Register text as child of TTKSBHelperBO
 TTKSBHelperBO.add_allowed_child(_tk_text_builder_uid)
@@ -36,7 +33,7 @@ register_widget(
     FrameFormBuilderBO,
     "FrameFormBuilder",
     _designer_tabs,
-    group=GROUP0,
+    group=GCONTAINER,
 )
 
 
@@ -51,7 +48,7 @@ register_widget(
     EntryBO,
     "Entry",
     _designer_tabs,
-    group=GROUP0,
+    group=GINPUT,
 )
 
 
@@ -66,7 +63,7 @@ register_widget(
     LabelWidgetInfoBO,
     "LabelWidgetInfo",
     _designer_tabs,
-    group=GROUP1,
+    group=GDISPLAY,
 )
 
 
@@ -81,7 +78,7 @@ register_widget(
     LabelBO,
     "Label",
     _designer_tabs,
-    group=GROUP0,
+    group=GDISPLAY,
 )
 
 
@@ -98,7 +95,7 @@ register_widget(
     CheckbuttonBO,
     "Checkbutton",
     _designer_tabs,
-    group=GROUP0,
+    group=GINPUT,
 )
 
 
@@ -115,5 +112,5 @@ register_widget(
     ComboboxBO,
     "Combobox",
     _designer_tabs,
-    group=GROUP0,
+    group=GINPUT,
 )

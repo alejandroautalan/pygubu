@@ -6,7 +6,7 @@ from pygubu.api.v1 import (
     register_widget,
 )
 from pygubu.widgets.colorinput import ColorInput
-from ._config import nspygubu, _designer_tabs_widgets_ttk
+from ._config import nspygubu, _designer_tabs_widgets_ttk, GINPUT
 
 
 #
@@ -25,4 +25,5 @@ register_widget(
     ColorInputBO,
     "ColorInput",
     _designer_tabs_widgets_ttk,
+    group=GINPUT,
 )

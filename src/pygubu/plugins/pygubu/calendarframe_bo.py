@@ -6,7 +6,7 @@ from pygubu.api.v1 import (
 )
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 from pygubu.widgets.calendarframe import CalendarFrame
-from ._config import nspygubu, _designer_tabs_widgets_ttk
+from ._config import nspygubu, _designer_tabs_widgets_ttk, GDISPLAY
 
 
 class CalendarFrameBuilder(BuilderObject):
@@ -38,6 +38,7 @@ register_widget(
     CalendarFrameBuilder,
     "CalendarFrame",
     _designer_tabs_widgets_ttk,
+    group=GDISPLAY,
 )
 # Register old name until removal
 register_widget(

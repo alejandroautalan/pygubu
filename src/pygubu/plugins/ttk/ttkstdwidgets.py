@@ -14,6 +14,11 @@ from pygubu.component.builderobject import (
 )
 
 
+GROOT = 100
+GCONTAINER = 200
+GDISPLAY = 300
+GINPUT = 400
+
 has_tk_version_9 = tk.TkVersion >= 9
 
 
@@ -46,7 +51,13 @@ class TTKFrame(TTKWidgetBO):
     properties = TTKWidgetBO.OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 
-register_widget("ttk.Frame", TTKFrame, "ttk.Frame", (_("Containers"), "ttk"))
+register_widget(
+    "ttk.Frame",
+    TTKFrame,
+    "ttk.Frame",
+    (_("Containers"), "ttk"),
+    group=GCONTAINER,
+)
 
 
 class TTKLabel(TTKWidgetBO):
@@ -72,7 +83,11 @@ class TTKLabel(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Label", TTKLabel, "ttk.Label", (_("Control & Display"), "ttk")
+    "ttk.Label",
+    TTKLabel,
+    "ttk.Label",
+    (_("Control & Display"), "ttk"),
+    group=GDISPLAY,
 )
 
 
@@ -92,7 +107,11 @@ class TTKButton(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Button", TTKButton, "ttk.Button", (_("Control & Display"), "ttk")
+    "ttk.Button",
+    TTKButton,
+    "ttk.Button",
+    (_("Control & Display"), "ttk"),
+    group=GINPUT,
 )
 
 
@@ -116,6 +135,7 @@ register_widget(
     TTKCheckbutton,
     "ttk.Checkbutton",
     (_("Control & Display"), "ttk"),
+    group=GINPUT,
 )
 
 
@@ -140,6 +160,7 @@ register_widget(
     TTKRadiobutton,
     "ttk.Radiobutton",
     (_("Control & Display"), "ttk"),
+    group=GINPUT,
 )
 
 
@@ -170,7 +191,11 @@ class TTKEntry(TTKWidgetBO, EntryBaseBO):
 
 
 register_widget(
-    "ttk.Entry", TTKEntry, "ttk.Entry", (_("Control & Display"), "ttk")
+    "ttk.Entry",
+    TTKEntry,
+    "ttk.Entry",
+    (_("Control & Display"), "ttk"),
+    group=GINPUT,
 )
 
 
@@ -211,7 +236,11 @@ class TTKCombobox(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Combobox", TTKCombobox, "ttk.Combobox", (_("Control & Display"), "ttk")
+    "ttk.Combobox",
+    TTKCombobox,
+    "ttk.Combobox",
+    (_("Control & Display"), "ttk"),
+    group=GINPUT,
 )
 
 
@@ -228,6 +257,7 @@ register_widget(
     TTKScrollbar,
     "ttk.Scrollbar",
     (_("Control & Display"), "ttk"),
+    group=GINPUT,
 )
 
 
@@ -238,7 +268,11 @@ class TTKSizegrip(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Sizegrip", TTKSizegrip, "ttk.Sizegrip", (_("Control & Display"), "ttk")
+    "ttk.Sizegrip",
+    TTKSizegrip,
+    "ttk.Sizegrip",
+    (_("Control & Display"), "ttk"),
+    group=GINPUT,
 )
 
 
@@ -268,6 +302,7 @@ register_widget(
     TTKProgressbar,
     "ttk.Progressbar",
     (_("Control & Display"), "ttk"),
+    group=GDISPLAY,
 )
 
 
@@ -289,7 +324,11 @@ class TTKScale(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Scale", TTKScale, "ttk.Scale", (_("Control & Display"), "ttk")
+    "ttk.Scale",
+    TTKScale,
+    "ttk.Scale",
+    (_("Control & Display"), "ttk"),
+    group=GINPUT,
 )
 
 
@@ -305,6 +344,7 @@ register_widget(
     TTKSeparator,
     "ttk.Separator",
     (_("Control & Display"), "ttk"),
+    group=GDISPLAY,
 )
 
 
@@ -322,7 +362,11 @@ class TTKLabelframe(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Labelframe", TTKLabelframe, "ttk.Labelframe", (_("Containers"), "ttk")
+    "ttk.Labelframe",
+    TTKLabelframe,
+    "ttk.Labelframe",
+    (_("Containers"), "ttk"),
+    group=GCONTAINER,
 )
 
 
@@ -340,6 +384,7 @@ register_widget(
     TTKPanedwindow,
     "ttk.Panedwindow",
     (_("Containers"), "ttk"),
+    group=GCONTAINER,
 )
 
 
@@ -353,7 +398,11 @@ class TTKNotebook(TTKWidgetBO):
 
 
 register_widget(
-    "ttk.Notebook", TTKNotebook, "ttk.Notebook", (_("Containers"), "ttk")
+    "ttk.Notebook",
+    TTKNotebook,
+    "ttk.Notebook",
+    (_("Containers"), "ttk"),
+    group=GCONTAINER,
 )
 
 
@@ -387,6 +436,7 @@ register_widget(
         _("Control & Display"),
         "ttk",
     ),
+    group=GINPUT,
 )
 
 
@@ -495,6 +545,7 @@ register_widget(
     TTKTreeviewBO,
     "ttk.Treeview",
     (_("Control & Display"), "ttk"),
+    group=GDISPLAY,
 )
 
 
@@ -517,7 +568,8 @@ register_widget(
     "ttk.Panedwindow.Pane",
     TTKPanedwindowPane,
     "ttk.Panedwindow.Pane",
-    (_("Pygubu Helpers"), "ttk"),
+    (_("Containers"), _("Pygubu Helpers"), "ttk"),
+    group=GCONTAINER,
 )
 
 
@@ -587,8 +639,9 @@ class TTKNotebookTab(TTKWidgetBO):
 register_widget(
     "ttk.Notebook.Tab",
     TTKNotebookTab,
-    "Notebook.Tab",
-    (_("Pygubu Helpers"), "ttk"),
+    "ttk.Notebook.Tab",
+    (_("Containers"), _("Pygubu Helpers"), "ttk"),
+    group=GCONTAINER,
 )
 
 
@@ -714,8 +767,9 @@ class TTKTreeviewColumnBO(TTKWidgetBO):
 register_widget(
     "ttk.Treeview.Column",
     TTKTreeviewColumnBO,
-    "Treeview.Column",
-    (_("Pygubu Helpers"), "ttk"),
+    "ttk.Treeview.Column",
+    (_("Containers"), _("Pygubu Helpers"), "ttk"),
+    group=GDISPLAY,
 )
 
 
@@ -763,6 +817,7 @@ if tk.TkVersion >= 8.5:
         TTKSpinboxBO,
         "ttk.Spinbox",
         (_("Control & Display"), "ttk"),
+        group=GINPUT,
     )
 
 
@@ -802,6 +857,7 @@ register_widget(
     OptionMenuBO,
     "ttk.OptionMenu",
     (_("Control & Display"), "ttk"),
+    group=GINPUT,
 )
 
 
@@ -831,4 +887,5 @@ register_widget(
     LabeledScaleBO,
     "ttk.LabeledScale",
     (_("Control & Display"), "ttk"),
+    group=GINPUT,
 )

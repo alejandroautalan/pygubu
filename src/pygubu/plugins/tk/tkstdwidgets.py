@@ -18,6 +18,11 @@ logger = logging.getLogger(__name__)
 #
 # tkinter widgets
 #
+GROOT = 100
+GCONTAINER = 200
+GDISPLAY = 300
+GINPUT = 400
+
 has_tk_version_9 = tk.TkVersion >= 9
 
 _v9_frame_options = ("backgroundimage", "tile") if has_tk_version_9 else tuple()
@@ -62,7 +67,9 @@ class TKRootBO(WmMixin, BuilderObject):
     )
 
 
-register_widget("tk.Tk", TKRootBO, "tk.Tk", (_("Containers"), "tk", "ttk"))
+register_widget(
+    "tk.Tk", TKRootBO, "tk.Tk", (_("Containers"), "tk", "ttk"), group=GROOT
+)
 
 
 class TKToplevel(WmMixin, BuilderObject):
@@ -117,7 +124,11 @@ class TKToplevel(WmMixin, BuilderObject):
 
 
 register_widget(
-    "tk.Toplevel", TKToplevel, "tk.Toplevel", (_("Containers"), "tk", "ttk")
+    "tk.Toplevel",
+    TKToplevel,
+    "tk.Toplevel",
+    (_("Containers"), "tk", "ttk"),
+    group=GROOT,
 )
 
 
@@ -147,7 +158,9 @@ class TKFrame(BuilderObject):
     ro_properties = ("class_", "container")
 
 
-register_widget("tk.Frame", TKFrame, "tk.Frame", (_("Containers"), "tk"))
+register_widget(
+    "tk.Frame", TKFrame, "tk.Frame", (_("Containers"), "tk"), group=GCONTAINER
+)
 
 
 class TKLabel(BuilderObject):
@@ -184,7 +197,13 @@ class TKLabel(BuilderObject):
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC
 
 
-register_widget("tk.Label", TKLabel, "tk.Label", (_("Control & Display"), "tk"))
+register_widget(
+    "tk.Label",
+    TKLabel,
+    "tk.Label",
+    (_("Control & Display"), "tk"),
+    group=GDISPLAY,
+)
 
 
 class TKLabelFrame(BuilderObject):
@@ -217,7 +236,11 @@ class TKLabelFrame(BuilderObject):
 
 
 register_widget(
-    "tk.LabelFrame", TKLabelFrame, "tk.LabelFrame", (_("Containers"), "tk")
+    "tk.LabelFrame",
+    TKLabelFrame,
+    "tk.LabelFrame",
+    (_("Containers"), "tk"),
+    group=GCONTAINER,
 )
 
 
@@ -268,7 +291,13 @@ class TKEntry(EntryBaseBO):
     )
 
 
-register_widget("tk.Entry", TKEntry, "tk.Entry", (_("Control & Display"), "tk"))
+register_widget(
+    "tk.Entry",
+    TKEntry,
+    "tk.Entry",
+    (_("Control & Display"), "tk"),
+    group=GINPUT,
+)
 
 
 class TKButton(BuilderObject):
@@ -317,7 +346,11 @@ class TKButton(BuilderObject):
 
 
 register_widget(
-    "tk.Button", TKButton, "tk.Button", (_("Control & Display"), "tk")
+    "tk.Button",
+    TKButton,
+    "tk.Button",
+    (_("Control & Display"), "tk"),
+    group=GINPUT,
 )
 
 
@@ -378,6 +411,7 @@ register_widget(
     TKCheckbutton,
     "tk.Checkbutton",
     (_("Control & Display"), "tk"),
+    group=GINPUT,
 )
 
 
@@ -437,6 +471,7 @@ register_widget(
     TKRadiobutton,
     "tk.Radiobutton",
     (_("Control & Display"), "tk"),
+    group=GINPUT,
 )
 
 
@@ -477,7 +512,11 @@ class TKListbox(BuilderObject):
 
 
 register_widget(
-    "tk.Listbox", TKListbox, "tk.Listbox", (_("Control & Display"), "tk")
+    "tk.Listbox",
+    TKListbox,
+    "tk.Listbox",
+    (_("Control & Display"), "tk"),
+    group=GINPUT,
 )
 
 
@@ -577,7 +616,11 @@ class TKText(BuilderObject):
 
 
 register_widget(
-    "tk.Text", TKText, "tk.Text", (_("Control & Display"), "tk", "ttk")
+    "tk.Text",
+    TKText,
+    "tk.Text",
+    (_("Control & Display"), "tk", "ttk"),
+    group=GINPUT,
 )
 
 
@@ -610,7 +653,11 @@ class TKPanedWindow(PanedWindowBO):
 
 
 register_widget(
-    "tk.PanedWindow", TKPanedWindow, "tk.PanedWindow", (_("Containers"), "tk")
+    "tk.PanedWindow",
+    TKPanedWindow,
+    "tk.PanedWindow",
+    (_("Containers"), "tk"),
+    group=GCONTAINER,
 )
 
 
@@ -671,6 +718,7 @@ register_widget(
         _("Control & Display"),
         "tk",
     ),
+    group=GINPUT,
 )
 
 
@@ -699,7 +747,11 @@ class TKMessage(BuilderObject):
 
 
 register_widget(
-    "tk.Message", TKMessage, "tk.Message", (_("Control & Display"), "tk", "ttk")
+    "tk.Message",
+    TKMessage,
+    "tk.Message",
+    (_("Control & Display"), "tk", "ttk"),
+    group=GDISPLAY,
 )
 
 
@@ -744,7 +796,13 @@ class TKScale(BuilderObject):
     command_properties = ("command",)
 
 
-register_widget("tk.Scale", TKScale, "tk.Scale", (_("Control & Display"), "tk"))
+register_widget(
+    "tk.Scale",
+    TKScale,
+    "tk.Scale",
+    (_("Control & Display"), "tk"),
+    group=GINPUT,
+)
 
 
 class TKScrollbar(BuilderObject):
@@ -777,7 +835,11 @@ class TKScrollbar(BuilderObject):
 
 
 register_widget(
-    "tk.Scrollbar", TKScrollbar, "tk.Scrollbar", (_("Control & Display"), "tk")
+    "tk.Scrollbar",
+    TKScrollbar,
+    "tk.Scrollbar",
+    (_("Control & Display"), "tk"),
+    group=GINPUT,
 )
 
 
@@ -853,7 +915,11 @@ class TKSpinbox(BuilderObject):
 
 
 register_widget(
-    "tk.Spinbox", TKSpinbox, "tk.Spinbox", (_("Control & Display"), "tk")
+    "tk.Spinbox",
+    TKSpinbox,
+    "tk.Spinbox",
+    (_("Control & Display"), "tk"),
+    group=GINPUT,
 )
 
 
@@ -895,7 +961,11 @@ class TKCanvas(BuilderObject):
 
 
 register_widget(
-    "tk.Canvas", TKCanvas, "tk.Canvas", (_("Control & Display"), "tk", "ttk")
+    "tk.Canvas",
+    TKCanvas,
+    "tk.Canvas",
+    (_("Control & Display"), "tk", "ttk"),
+    group=GINPUT,
 )
 
 
@@ -953,7 +1023,9 @@ class TKMenu(BuilderObject):
         return args
 
 
-register_widget("tk.Menu", TKMenu, "tk.Menu", (_("Menu"), "tk", "ttk"))
+register_widget(
+    "tk.Menu", TKMenu, "tk.Menu", (_("Menu"), "tk", "ttk"), group=GROOT
+)
 
 
 #
@@ -1310,6 +1382,7 @@ register_widget(
     TKMenuitemSubmenu,
     "Menuitem.Submenu",
     (_("Menu"), "tk", "ttk"),
+    group=GCONTAINER,
 )
 
 
@@ -1323,6 +1396,7 @@ register_widget(
     TKMenuitemCommand,
     "Menuitem.Command",
     (_("Menu"), "tk", "ttk"),
+    group=GINPUT,
 )
 
 
@@ -1347,6 +1421,7 @@ register_widget(
     TKMenuitemCheckbutton,
     "Menuitem.Checkbutton",
     (_("Menu"), "tk", "ttk"),
+    group=GINPUT,
 )
 
 
@@ -1370,6 +1445,7 @@ register_widget(
     TKMenuitemRadiobutton,
     "Menuitem.Radiobutton",
     (_("Menu"), "tk", "ttk"),
+    group=GINPUT,
 )
 
 
@@ -1388,6 +1464,7 @@ register_widget(
     TKMenuitemSeparator,
     "Menuitem.Separator",
     (_("Menu"), "tk", "ttk"),
+    group=GDISPLAY,
 )
 
 
@@ -1413,7 +1490,8 @@ register_widget(
     "tk.PanedWindow.Pane",
     TKPanedWindowPane,
     "tk.PanedWindow.Pane",
-    (_("Pygubu Helpers"), "tk"),
+    (_("Containers"), _("Pygubu Helpers"), "tk"),
+    group=GCONTAINER,
 )
 
 
@@ -1459,6 +1537,7 @@ register_widget(
     TKLabelwidgetBO,
     "Labelwidget",
     (_("Pygubu Helpers"), "tk", "ttk"),
+    group=GDISPLAY,
 )
 
 
@@ -1504,6 +1583,7 @@ register_widget(
     ToplevelMenuHelperBO,
     "ToplevelMenu",
     (_("Menu"), _("Pygubu Helpers"), "tk", "ttk"),
+    group=GCONTAINER,
 )
 
 
@@ -1519,4 +1599,5 @@ register_widget(
     TKOptionMenu,
     "tk.OptionMenu",
     (_("Control & Display"), "tk"),
+    group=GINPUT,
 )
