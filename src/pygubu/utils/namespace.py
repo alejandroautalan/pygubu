@@ -9,6 +9,9 @@ class walkns:
         node_ns = getattr(node, "_name")
         self.prefix = f"{node_ns}" if prefix is None else f"{prefix}.{node_ns}"
 
+    def __str__(self):
+        return self.prefix
+
     def __getattr__(self, key):
         value = getattr(self.node, key)
         if isinstance(value, SimpleNamespace):
