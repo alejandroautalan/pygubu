@@ -1,6 +1,17 @@
 History
 =======
 
+Changes for version 0.40
+
+  * Use importlib.metadata to search for plugins in "pygubu.plugins" entry point.
+  * Add new method IDesignerPlugin.is_toplevel_widget to inform designer
+    wich widget is a toplevel widget.
+  * Fix setting tk name for Menu and Submenu widgets.
+  * Fix code generation for Docking framework.
+  * Add image and compound properties to DockWidget.
+  * pygubu Dialog, fix center_window method.
+  * Improve theming.iconset module (feature preview).
+
 Changes for version 0.39
 
   * Dropping support for Python 3.8 (was already not installable)
