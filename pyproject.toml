@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pygubu"
-version="0.39"
+version="0.40"
 description = "A simple GUI builder for the python tkinter module"
 readme = "README.md"
 requires-python = ">=3.9"
