@@ -57,6 +57,36 @@ class AccordionFrameGroupBO(BuilderObject):
         else:
             super()._set_property(target_widget, pname, value)
 
+    #
+    # Code generation methods
+    #
+    def code_realize(self, boparent, code_identifier=None):
+        self.parent_bo = boparent
+        if code_identifier is not None:
+            self._code_identifier = code_identifier
+        lines = []
+        master = boparent.code_child_master()
+        target = self.code_identifier()
+        gid_varname = f"{target}_id"
+        gid_value = self.wmeta.identifier
+        (
+            code_bag,
+            _ignore,
+            _ignore,
+        ) = self._code_process_properties(self.wmeta.properties, target)
+        kwargs = self.code_make_kwargs_str(code_bag, prefix=", ")
+        lines.extend(
+            [
+                f'{gid_varname} = "{gid_value}"',
+                f"{target} = {master}.add_group({gid_varname}{kwargs})",
+            ]
+        )
+
+        return lines
+
+    def code_configure(self, targetid=None):
+        return []
+
 
 register_widget(
     nspygubu.widgets.AccordionFrameGroup,
