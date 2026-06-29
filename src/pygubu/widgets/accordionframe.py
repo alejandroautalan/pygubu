@@ -101,12 +101,10 @@ class AccordionFrame(ttk.Frame):
         frame.rowconfigure(0, weight=1)
         frame.columnconfigure(0, weight=1)
 
-        if not expanded:
-            self.after_idle(lambda: self._toggle_group(gid))
-
         # store button, and frame
         self.__groups[gid] = (btn, frame)
 
+        self.after_idle(lambda: self._toggle_group(gid, toggle_to=expanded))
         return frame
 
     def get_group(self, gid):
