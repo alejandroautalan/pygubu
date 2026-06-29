@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.40.1
+
+  * Fix code generation for AccordionFrame widget.
+
 Changes for version 0.40
 
   * Use importlib.metadata to search for plugins in "pygubu.plugins" entry point.
