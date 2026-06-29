@@ -36,6 +36,7 @@ plugin_properties = dict(
                 tk.NONE,
             ),
             state="readonly",
+            help=_("Icon position in the header."),
         ),
         dict(
             buid=nspygubu.widgets.dockwidget,
@@ -53,6 +54,7 @@ plugin_properties = dict(
         editor="choice",
         values=("", "false", "true"),
         state="readonly",
+        help=_("Determine if group is shown expanded or collapsed."),
     ),
     field_name=[
         dict(buid=_forms_all, editor="fieldname_entry"),
