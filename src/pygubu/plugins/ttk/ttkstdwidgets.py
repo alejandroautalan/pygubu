@@ -845,10 +845,21 @@ class OptionMenuBO(OptionMenuBaseMixin, BuilderObject):
         value_arg,
         variable_arg,
         command_arg,
-    ):
+    ) -> str:
+        (
+            code_bag,
+            kwproperties,
+            complex_properties,
+        ) = self._code_process_properties(self.wmeta.properties, identifier)
+        kwargs = {key: code_bag[key] for key in kwproperties}
+        kwargs = self.code_make_kwargs_str(kwargs, prefix=", ")
+
+        # FIXME: An hipotetic user subclass with a complex property should
+        #        override this method or code_realize method.
+
         return (
             f"{identifier} = {classname}({master}, {variable_arg},"
-            + f" {value_arg}, *__values, command={command_arg})"
+            + f" {value_arg}, *__values, command={command_arg}{kwargs})"
         )
 
 

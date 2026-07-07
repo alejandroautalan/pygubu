@@ -1105,7 +1105,7 @@ class OptionMenuBaseMixin:
         value_arg,
         variable_arg,
         command_arg,
-    ):
+    ) -> str:
         return f"{identifier} = {classname}({master}, {variable_arg}, *__values, command={command_arg})"
 
     def code_configure(self, targetid=None):
