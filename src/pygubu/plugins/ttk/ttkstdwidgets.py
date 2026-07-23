@@ -921,3 +921,51 @@ register_widget(
     (_section_controls, _section_ttk),
     group=GINPUT,
 )
+
+
+class ToggleswitchBO(BuilderObject):
+    class_ = None  # Configured later
+    uses_fallback = False  # ttk or pygubu fallback
+    properties = (
+        # standard
+        "class",
+        "cursor",
+        "style",
+        "takefocus"
+        # specific
+        "command",
+        "offvalue",
+        "onvalue",
+        "size",
+        "variable",
+    )
+    command_properties = ("command",)
+
+    def code_imports(self):
+        # will return an iterable of (module, classname/function) to import
+        # or None
+        if self.uses_fallback:
+            return [("pygubu.widgets.ttktoggleswitch", "Toggleswitch")]
+
+        return None
+
+
+if tk.TkVersion >= 9.1:
+    # Note:
+    # ttk::toggleswitch was added in tk 9.1
+
+    if not hasattr(ttk, "Toggleswitch"):
+        from pygubu.widgets.ttktoggleswitch import Toggleswitch
+
+        ttk.Toggleswitch = Toggleswitch
+        ToggleswitchBO.uses_fallback = True
+
+    ToggleswitchBO.class_ = ttk.Toggleswitch
+
+    register_widget(
+        "ttk.Toggleswitch",
+        ToggleswitchBO,
+        "ttk.Toggleswitch",
+        (_section_controls, _section_ttk),
+        group=GINPUT,
+    )
