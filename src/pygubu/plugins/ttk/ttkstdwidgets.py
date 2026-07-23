@@ -774,7 +774,7 @@ register_widget(
     "ttk.Treeview.Column",
     TTKTreeviewColumnBO,
     "ttk.Treeview.Column",
-    (_section_containers, _section_helpers, _section_ttk),
+    (_section_controls, _section_helpers, _section_ttk),
     group=GDISPLAY,
 )
 
