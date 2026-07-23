@@ -21,6 +21,12 @@ GINPUT = 400
 
 has_tk_version_9 = tk.TkVersion >= 9
 
+_section_ttk = "ttk"
+_section_containers = _("Containers")
+_section_controls = _("Control & Display")
+_section_menu = _("Menu")
+_section_helpers = _("Pygubu Helpers")
+
 
 #
 # ttk widgets
@@ -55,7 +61,7 @@ register_widget(
     "ttk.Frame",
     TTKFrame,
     "ttk.Frame",
-    (_("Containers"), "ttk"),
+    (_section_containers, _section_ttk),
     group=GCONTAINER,
 )
 
@@ -86,7 +92,7 @@ register_widget(
     "ttk.Label",
     TTKLabel,
     "ttk.Label",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GDISPLAY,
 )
 
@@ -110,7 +116,7 @@ register_widget(
     "ttk.Button",
     TTKButton,
     "ttk.Button",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GINPUT,
 )
 
@@ -134,7 +140,7 @@ register_widget(
     "ttk.Checkbutton",
     TTKCheckbutton,
     "ttk.Checkbutton",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GINPUT,
 )
 
@@ -159,7 +165,7 @@ register_widget(
     "ttk.Radiobutton",
     TTKRadiobutton,
     "ttk.Radiobutton",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GINPUT,
 )
 
@@ -194,7 +200,7 @@ register_widget(
     "ttk.Entry",
     TTKEntry,
     "ttk.Entry",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GINPUT,
 )
 
@@ -239,7 +245,7 @@ register_widget(
     "ttk.Combobox",
     TTKCombobox,
     "ttk.Combobox",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GINPUT,
 )
 
@@ -256,7 +262,7 @@ register_widget(
     "ttk.Scrollbar",
     TTKScrollbar,
     "ttk.Scrollbar",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GINPUT,
 )
 
@@ -271,7 +277,7 @@ register_widget(
     "ttk.Sizegrip",
     TTKSizegrip,
     "ttk.Sizegrip",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GINPUT,
 )
 
@@ -301,7 +307,7 @@ register_widget(
     "ttk.Progressbar",
     TTKProgressbar,
     "ttk.Progressbar",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GDISPLAY,
 )
 
@@ -327,7 +333,7 @@ register_widget(
     "ttk.Scale",
     TTKScale,
     "ttk.Scale",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GINPUT,
 )
 
@@ -343,7 +349,7 @@ register_widget(
     "ttk.Separator",
     TTKSeparator,
     "ttk.Separator",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GDISPLAY,
 )
 
@@ -365,7 +371,7 @@ register_widget(
     "ttk.Labelframe",
     TTKLabelframe,
     "ttk.Labelframe",
-    (_("Containers"), "ttk"),
+    (_section_containers, _section_ttk),
     group=GCONTAINER,
 )
 
@@ -383,7 +389,7 @@ register_widget(
     "ttk.Panedwindow",
     TTKPanedwindow,
     "ttk.Panedwindow",
-    (_("Containers"), "ttk"),
+    (_section_containers, _section_ttk),
     group=GCONTAINER,
 )
 
@@ -401,7 +407,7 @@ register_widget(
     "ttk.Notebook",
     TTKNotebook,
     "ttk.Notebook",
-    (_("Containers"), "ttk"),
+    (_section_containers, _section_ttk),
     group=GCONTAINER,
 )
 
@@ -432,9 +438,9 @@ register_widget(
     TTKMenubuttonBO,
     "ttk.Menubutton",
     (
-        _("Menu"),
-        _("Control & Display"),
-        "ttk",
+        _section_menu,
+        _section_controls,
+        _section_ttk,
     ),
     group=GINPUT,
 )
@@ -544,7 +550,7 @@ register_widget(
     "ttk.Treeview",
     TTKTreeviewBO,
     "ttk.Treeview",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GDISPLAY,
 )
 
@@ -568,7 +574,7 @@ register_widget(
     "ttk.Panedwindow.Pane",
     TTKPanedwindowPane,
     "ttk.Panedwindow.Pane",
-    (_("Containers"), _("Pygubu Helpers"), "ttk"),
+    (_section_containers, _section_helpers, _section_ttk),
     group=GCONTAINER,
 )
 
@@ -640,7 +646,7 @@ register_widget(
     "ttk.Notebook.Tab",
     TTKNotebookTab,
     "ttk.Notebook.Tab",
-    (_("Containers"), _("Pygubu Helpers"), "ttk"),
+    (_section_containers, _section_helpers, _section_ttk),
     group=GCONTAINER,
 )
 
@@ -768,7 +774,7 @@ register_widget(
     "ttk.Treeview.Column",
     TTKTreeviewColumnBO,
     "ttk.Treeview.Column",
-    (_("Containers"), _("Pygubu Helpers"), "ttk"),
+    (_section_containers, _section_helpers, _section_ttk),
     group=GDISPLAY,
 )
 
@@ -816,7 +822,7 @@ if tk.TkVersion >= 8.5:
         "ttk.Spinbox",
         TTKSpinboxBO,
         "ttk.Spinbox",
-        (_("Control & Display"), "ttk"),
+        (_section_controls, _section_ttk),
         group=GINPUT,
     )
 
@@ -867,7 +873,7 @@ register_widget(
     "ttk.OptionMenu",
     OptionMenuBO,
     "ttk.OptionMenu",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GINPUT,
 )
 
@@ -897,6 +903,6 @@ register_widget(
     "ttk.LabeledScale",
     LabeledScaleBO,
     "ttk.LabeledScale",
-    (_("Control & Display"), "ttk"),
+    (_section_controls, _section_ttk),
     group=GINPUT,
 )
