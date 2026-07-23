@@ -66,11 +66,23 @@ register_widget(
 )
 
 
+_v9_label_prop = (
+    (
+        "anchor",
+        "justify",
+    )
+    if has_tk_version_9
+    else tuple()
+)
+_v9_label_prop += ("textangle",) if tk.TkVersion >= 9.1 else tuple()
+
+
 class TTKLabel(TTKWidgetBO):
     OPTIONS_STANDARD = (
         TTKWidgetBO.OPTIONS_STANDARD
         + TTKWidgetBO.OPTIONS_LABEL
         + ("borderwidth",)
+        + _v9_label_prop
     )
     OPTIONS_SPECIFIC = (
         "anchor",
@@ -96,12 +108,15 @@ register_widget(
     group=GDISPLAY,
 )
 
+_v9_button_prop = ("justify",) if has_tk_version_9 else tuple()
+
 
 class TTKButton(TTKWidgetBO):
     OPTIONS_STANDARD = (
         TTKWidgetBO.OPTIONS_STANDARD
         + tuple(set(TTKWidgetBO.OPTIONS_LABEL) - set(("font",)))
         + TTKWidgetBO.OPTIONS_COMPATIBILITY
+        + _v9_button_prop
     )
     OPTIONS_SPECIFIC = ("command", "default")
     class_ = ttk.Button
