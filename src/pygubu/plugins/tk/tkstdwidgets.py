@@ -15,6 +15,13 @@ from pygubu.component.builderobject import (
 
 logger = logging.getLogger(__name__)
 
+_section_tk = "tk"
+_section_ttk = "ttk"
+_section_containers = _("Containers")
+_section_controls = _("Control & Display")
+_section_menu = _("Menu")
+_section_helpers = _("Pygubu Helpers")
+
 #
 # tkinter widgets
 #
@@ -68,7 +75,11 @@ class TKRootBO(WmMixin, BuilderObject):
 
 
 register_widget(
-    "tk.Tk", TKRootBO, "tk.Tk", (_("Containers"), "tk", "ttk"), group=GROOT
+    "tk.Tk",
+    TKRootBO,
+    "tk.Tk",
+    (_section_containers, _section_tk, _section_ttk),
+    group=GROOT,
 )
 
 
@@ -127,7 +138,7 @@ register_widget(
     "tk.Toplevel",
     TKToplevel,
     "tk.Toplevel",
-    (_("Containers"), "tk", "ttk"),
+    (_section_containers, _section_tk, _section_ttk),
     group=GROOT,
 )
 
@@ -159,7 +170,11 @@ class TKFrame(BuilderObject):
 
 
 register_widget(
-    "tk.Frame", TKFrame, "tk.Frame", (_("Containers"), "tk"), group=GCONTAINER
+    "tk.Frame",
+    TKFrame,
+    "tk.Frame",
+    (_section_containers, _section_tk),
+    group=GCONTAINER,
 )
 
 
@@ -201,7 +216,7 @@ register_widget(
     "tk.Label",
     TKLabel,
     "tk.Label",
-    (_("Control & Display"), "tk"),
+    (_section_controls, _section_tk),
     group=GDISPLAY,
 )
 
@@ -239,7 +254,7 @@ register_widget(
     "tk.LabelFrame",
     TKLabelFrame,
     "tk.LabelFrame",
-    (_("Containers"), "tk"),
+    (_section_containers, _section_tk),
     group=GCONTAINER,
 )
 
@@ -295,7 +310,7 @@ register_widget(
     "tk.Entry",
     TKEntry,
     "tk.Entry",
-    (_("Control & Display"), "tk"),
+    (_section_controls, _section_tk),
     group=GINPUT,
 )
 
@@ -349,7 +364,7 @@ register_widget(
     "tk.Button",
     TKButton,
     "tk.Button",
-    (_("Control & Display"), "tk"),
+    (_section_controls, _section_tk),
     group=GINPUT,
 )
 
@@ -410,7 +425,7 @@ register_widget(
     "tk.Checkbutton",
     TKCheckbutton,
     "tk.Checkbutton",
-    (_("Control & Display"), "tk"),
+    (_section_controls, _section_tk),
     group=GINPUT,
 )
 
@@ -470,7 +485,7 @@ register_widget(
     "tk.Radiobutton",
     TKRadiobutton,
     "tk.Radiobutton",
-    (_("Control & Display"), "tk"),
+    (_section_controls, _section_tk),
     group=GINPUT,
 )
 
@@ -515,7 +530,7 @@ register_widget(
     "tk.Listbox",
     TKListbox,
     "tk.Listbox",
-    (_("Control & Display"), "tk"),
+    (_section_controls, _section_tk),
     group=GINPUT,
 )
 
@@ -619,7 +634,7 @@ register_widget(
     "tk.Text",
     TKText,
     "tk.Text",
-    (_("Control & Display"), "tk", "ttk"),
+    (_section_controls, _section_tk, _section_ttk),
     group=GINPUT,
 )
 
@@ -656,7 +671,7 @@ register_widget(
     "tk.PanedWindow",
     TKPanedWindow,
     "tk.PanedWindow",
-    (_("Containers"), "tk"),
+    (_section_containers, _section_tk),
     group=GCONTAINER,
 )
 
@@ -714,9 +729,9 @@ register_widget(
     TKMenubutton,
     "tk.Menubutton",
     (
-        _("Menu"),
-        _("Control & Display"),
-        "tk",
+        _section_menu,
+        _section_controls,
+        _section_tk,
     ),
     group=GINPUT,
 )
@@ -750,7 +765,7 @@ register_widget(
     "tk.Message",
     TKMessage,
     "tk.Message",
-    (_("Control & Display"), "tk", "ttk"),
+    (_section_controls, _section_tk, _section_ttk),
     group=GDISPLAY,
 )
 
@@ -800,7 +815,7 @@ register_widget(
     "tk.Scale",
     TKScale,
     "tk.Scale",
-    (_("Control & Display"), "tk"),
+    (_section_controls, _section_tk),
     group=GINPUT,
 )
 
@@ -838,7 +853,7 @@ register_widget(
     "tk.Scrollbar",
     TKScrollbar,
     "tk.Scrollbar",
-    (_("Control & Display"), "tk"),
+    (_section_controls, _section_tk),
     group=GINPUT,
 )
 
@@ -918,7 +933,7 @@ register_widget(
     "tk.Spinbox",
     TKSpinbox,
     "tk.Spinbox",
-    (_("Control & Display"), "tk"),
+    (_section_controls, _section_tk),
     group=GINPUT,
 )
 
@@ -964,7 +979,7 @@ register_widget(
     "tk.Canvas",
     TKCanvas,
     "tk.Canvas",
-    (_("Control & Display"), "tk", "ttk"),
+    (_section_controls, _section_tk, _section_ttk),
     group=GINPUT,
 )
 
@@ -1024,7 +1039,11 @@ class TKMenu(BuilderObject):
 
 
 register_widget(
-    "tk.Menu", TKMenu, "tk.Menu", (_("Menu"), "tk", "ttk"), group=GROOT
+    "tk.Menu",
+    TKMenu,
+    "tk.Menu",
+    (_section_menu, _section_tk, _section_ttk),
+    group=GROOT,
 )
 
 
@@ -1381,7 +1400,7 @@ register_widget(
     "tk.Menuitem.Submenu",
     TKMenuitemSubmenu,
     "Menuitem.Submenu",
-    (_("Menu"), "tk", "ttk"),
+    (_section_menu, _section_tk, _section_ttk),
     group=GCONTAINER,
 )
 
@@ -1395,7 +1414,7 @@ register_widget(
     "tk.Menuitem.Command",
     TKMenuitemCommand,
     "Menuitem.Command",
-    (_("Menu"), "tk", "ttk"),
+    (_section_menu, _section_tk, _section_ttk),
     group=GINPUT,
 )
 
@@ -1420,7 +1439,7 @@ register_widget(
     "tk.Menuitem.Checkbutton",
     TKMenuitemCheckbutton,
     "Menuitem.Checkbutton",
-    (_("Menu"), "tk", "ttk"),
+    (_section_menu, _section_tk, _section_ttk),
     group=GINPUT,
 )
 
@@ -1444,7 +1463,7 @@ register_widget(
     "tk.Menuitem.Radiobutton",
     TKMenuitemRadiobutton,
     "Menuitem.Radiobutton",
-    (_("Menu"), "tk", "ttk"),
+    (_section_menu, _section_tk, _section_ttk),
     group=GINPUT,
 )
 
@@ -1463,7 +1482,7 @@ register_widget(
     "tk.Menuitem.Separator",
     TKMenuitemSeparator,
     "Menuitem.Separator",
-    (_("Menu"), "tk", "ttk"),
+    (_section_menu, _section_tk, _section_ttk),
     group=GDISPLAY,
 )
 
@@ -1490,7 +1509,7 @@ register_widget(
     "tk.PanedWindow.Pane",
     TKPanedWindowPane,
     "tk.PanedWindow.Pane",
-    (_("Containers"), _("Pygubu Helpers"), "tk"),
+    (_section_containers, _section_helpers, _section_tk),
     group=GCONTAINER,
 )
 
@@ -1536,7 +1555,7 @@ register_widget(
     "pygubu.builder.widgets.Labelwidget",
     TKLabelwidgetBO,
     "Labelwidget",
-    (_("Pygubu Helpers"), "tk", "ttk"),
+    (_section_helpers, _section_tk, _section_ttk),
     group=GDISPLAY,
 )
 
@@ -1582,7 +1601,7 @@ register_widget(
     "pygubu.builder.widgets.toplevelmenu",
     ToplevelMenuHelperBO,
     "ToplevelMenu",
-    (_("Menu"), _("Pygubu Helpers"), "tk", "ttk"),
+    (_section_menu, _section_helpers, _section_tk, _section_ttk),
     group=GCONTAINER,
 )
 
@@ -1598,6 +1617,6 @@ register_widget(
     "tk.OptionMenu",
     TKOptionMenu,
     "tk.OptionMenu",
-    (_("Control & Display"), "tk"),
+    (_section_controls, _section_tk),
     group=GINPUT,
 )
