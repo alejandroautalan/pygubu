@@ -1,6 +1,12 @@
 History
 =======
 
+Changes for version 0.42
+
+  * pygubu.component: Allow to configure plugin dependency.
+  * pygubu.plugins: reorganize components palette.
+  * pygubu.widgets: rename CalendarFrame to CalendarView
+  
 Changes for version 0.41.2
 
   * Customtkinter: fix Tabview visibility in designer preview. Fix property names.
