@@ -1,5 +1,5 @@
 from abc import ABC, ABCMeta, abstractmethod
-from typing import Optional
+from typing import Optional, List
 
 
 class PluginRegistry(ABCMeta):
@@ -47,6 +47,17 @@ class IDesignerPlugin(ABC):
 
 
 class IPluginBase(ABC, metaclass=PluginRegistry):
+    @classmethod
+    @abstractmethod
+    def get_uid(cls) -> str:
+        """Return plugin unique ID."""
+        ...
+
+    @classmethod
+    def get_dependencies(cls) -> List[str]:
+        """Return a list of required plugins UID."""
+        return []
+
     @abstractmethod
     def do_activate(self) -> bool:
         "Initialize plugin and return if it is operational or not."
