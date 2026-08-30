@@ -1,4 +1,5 @@
 import os
+from typing import List
 from pygubu.api.v1 import BuilderLoaderPlugin
 from pygubu.i18n import _
 from ._config import nspygubu
@@ -84,6 +85,16 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             nspygubu.widgets.TkScrolledFrame,
         ),
     }
+
+    @classmethod
+    def get_uid(cls) -> str:
+        """Return plugin unique ID."""
+        return "pygubu"
+
+    @classmethod
+    def get_dependencies(cls) -> List[str]:
+        """Return a list of required plugins UID."""
+        return ["pygubu_tk", "pygubu_ttk"]
 
     def do_activate(self) -> bool:
         return True

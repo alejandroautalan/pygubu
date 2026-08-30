@@ -14,6 +14,11 @@ class TkinterMapViewLoader(BuilderLoaderPlugin, IDesignerPlugin):
     #
     # IPluginBase interface methods
     #
+    @classmethod
+    def get_uid(cls) -> str:
+        """Return plugin unique ID."""
+        return "pygubu_tkintermapview"
+
     def do_activate(self) -> bool:
         spec = importlib.util.find_spec("tkintermapview")
         return spec is not None

@@ -1,4 +1,5 @@
 import importlib
+from typing import List
 from pygubu.i18n import _
 from pygubu.api.v1 import BuilderLoaderPlugin
 
@@ -12,6 +13,16 @@ class TkcalendarLoader(BuilderLoaderPlugin):
         "pygubu.plugins.tkcalendar.calendar": (f"{_plugin_uid}.Calendar",),
         "pygubu.plugins.tkcalendar.dateentry": (f"{_plugin_uid}.DateEntry",),
     }
+
+    @classmethod
+    def get_uid(cls) -> str:
+        """Return plugin unique ID."""
+        return "pygubu_tkcalendar"
+
+    @classmethod
+    def get_dependencies(cls) -> List[str]:
+        """Return a list of required plugins UID."""
+        return ["pygubu_ttk"]
 
     def do_activate(self) -> bool:
         spec = importlib.util.find_spec("tkcalendar")

@@ -10,6 +10,11 @@ _plugin_uid = "tksheet"
 class TksheetLoader(BuilderLoaderPlugin):
     _module = "pygubu.plugins.tksheet.sheet"
 
+    @classmethod
+    def get_uid(cls) -> str:
+        """Return plugin unique ID."""
+        return "pygubu_tksheet"
+
     def do_activate(self) -> bool:
         spec = importlib.util.find_spec("tksheet")
         return spec is not None

@@ -11,6 +11,11 @@ class StandardTKWidgetsLoader(BuilderLoaderPlugin):
         ),
     }
 
+    @classmethod
+    def get_uid(cls) -> str:
+        """Return plugin unique ID."""
+        return "pygubu_tk"
+
     def do_activate(self) -> bool:
         return True
 

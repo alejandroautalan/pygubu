@@ -14,6 +14,11 @@ class TkintertableLoader(BuilderLoaderPlugin, IDesignerPlugin):
     #
     # IPluginBase interface methods
     #
+    @classmethod
+    def get_uid(cls) -> str:
+        """Return plugin unique ID."""
+        return "pygubu_tkintertable"
+
     def do_activate(self) -> bool:
         spec = importlib.util.find_spec("tkintertable")
         return spec is not None

@@ -1,4 +1,5 @@
 import importlib
+from typing import List
 from pygubu.i18n import _
 from pygubu.api.v1 import BuilderLoaderPlugin
 
@@ -44,6 +45,16 @@ class TtkWidgetsLoader(BuilderLoaderPlugin):
             f"{_plugin_uid}.FontSizeDropdown",
         ),
     }
+
+    @classmethod
+    def get_uid(cls) -> str:
+        """Return plugin unique ID."""
+        return "pygubu_ttkwidgets"
+
+    @classmethod
+    def get_dependencies(cls) -> List[str]:
+        """Return a list of required plugins UID."""
+        return ["pygubu_ttk"]
 
     def do_activate(self) -> bool:
         spec = importlib.util.find_spec("ttkwidgets")

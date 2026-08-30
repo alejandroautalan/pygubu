@@ -1,4 +1,5 @@
 import importlib
+from typing import List
 from pygubu.i18n import _
 from pygubu.api.v1 import IPluginBase, IBuilderLoaderPlugin, IDesignerPlugin
 from ._config import namespace, nsctk
@@ -32,6 +33,16 @@ class CTkBuilderLoader(IBuilderLoaderPlugin, IPluginBase):
             nsctk.CTkScrollableFrame,
         ),
     }
+
+    @classmethod
+    def get_uid(cls) -> str:
+        """Return plugin unique ID."""
+        return "pygubu_customtkinter"
+
+    @classmethod
+    def get_dependencies(cls) -> List[str]:
+        """Return a list of required plugins UID."""
+        return ["pygubu"]
 
     def do_activate(self) -> bool:
         spec = importlib.util.find_spec("customtkinter")

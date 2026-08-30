@@ -12,6 +12,11 @@ class TkmthemesLoader(BuilderLoaderPlugin):
         "pygubu.plugins.tkmt.widgets": (f"{_plugin_uid}.ThemedTKinterFrame",),
     }
 
+    @classmethod
+    def get_uid(cls) -> str:
+        """Return plugin unique ID."""
+        return "pygubu_tkintermodernthemes"
+
     def do_activate(self) -> bool:
         spec = importlib.util.find_spec("TKinterModernThemes")
         return spec is not None

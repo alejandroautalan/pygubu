@@ -4,6 +4,11 @@ from pygubu.api.v1 import BuilderLoaderPlugin
 class StandardTTKWidgetsLoader(BuilderLoaderPlugin):
     _module = "pygubu.plugins.ttk.ttkstdwidgets"
 
+    @classmethod
+    def get_uid(cls) -> str:
+        """Return plugin unique ID."""
+        return "pygubu_ttk"
+
     def do_activate(self) -> bool:
         return True
 
