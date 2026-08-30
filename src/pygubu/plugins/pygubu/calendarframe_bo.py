@@ -43,6 +43,7 @@ register_widget(
 
 
 class CalendarFrameBO(CalendarViewBO):
+    class_ = CalendarFrame
     virtual_events = (CalendarFrame.EVENT_DATE_SELECTED,)
 
 

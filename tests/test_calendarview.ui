@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface>
+  <object class="ttk.Frame" id="mainwindow">
+    <property name="height">200</property>
+    <property name="width">200</property>
+    <layout>
+      <property name="column">0</property>
+      <property name="propagate">True</property>
+      <property name="row">0</property>
+    </layout>
+    <child>
+      <object class="pygubu.widgets.CalendarView" id="calendar">
+        <property name="calendarbg">#f0e3f0</property>
+        <property name="calendarfg">#0000a1</property>
+        <property name="firstweekday">6</property>
+        <property name="headerbg">#abb8f0</property>
+        <property name="headerfg">#ffffff</property>
+        <property name="markbg">#f06ba4</property>
+        <property name="markfg">#ffffff</property>
+        <property name="month">9</property>
+        <property name="selectbg">#d926ff</property>
+        <property name="selectfg">#ffff00</property>
+        <property name="year">2000</property>
+        <bind add="" handler="on_date_selected" sequence="&lt;&lt;CalendarView:DateSelected&gt;&gt;" />
+        <layout>
+          <property name="column">0</property>
+          <property name="propagate">True</property>
+          <property name="row">0</property>
+        </layout>
+      </object>
+    </child>
+  </object>
+</interface>
