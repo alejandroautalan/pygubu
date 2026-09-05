@@ -211,7 +211,6 @@ class CTkEntryBO(CTkBaseMixin, BuilderObject):
         "textvariable",
         "xscrollcommand",
         # specific
-        "invalidcommand",
         "readonlybackground",
         "show",
         "state",
@@ -230,6 +229,9 @@ class CTkEntryBO(CTkBaseMixin, BuilderObject):
         "placeholder_text_color",
         "placeholder_text",
     )
+    # CTkEntry does not accept invalidcommand, so it is not offered above and
+    # is not listed here.
+    command_properties = ("validatecommand", "xscrollcommand")
 
     def _set_property(self, target_widget, pname, value):
         if pname == "text":
