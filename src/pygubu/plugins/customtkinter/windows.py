@@ -48,9 +48,14 @@ class CTkBO(TKRootBO):
 
     def _set_property(self, target_widget, pname, value):
         if pname == "appearance_mode":
-            set_appearance_mode(value)
+            # Blank means "follow the OS", which is CustomTkinter's own
+            # default. unset_property() passes None here, and
+            # set_appearance_mode() then calls .lower() on it.
+            set_appearance_mode(value or "System")
         elif pname == "color_theme":
-            set_default_color_theme(value)
+            # No equivalent unset state -- a theme must always be loaded.
+            if value:
+                set_default_color_theme(value)
         else:
             return super()._set_property(target_widget, pname, value)
 
