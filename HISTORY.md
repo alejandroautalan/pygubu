@@ -1,6 +1,10 @@
 History
 =======
 
+Changes for version 0.42.1
+
+  * pygubu.plugins: fix issues in customtkinter plugin
+
 Changes for version 0.42
 
   * pygubu.component: Allow to configure plugin dependency.
