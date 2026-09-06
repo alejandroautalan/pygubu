@@ -16,6 +16,11 @@ namespace_prefix = f"{namespace}."
 
 
 class CTkDesignerPlugin(IDesignerPlugin):
+    def is_toplevel_widget(self, builder_uid: str) -> bool:
+        if builder_uid in ("customtkinter.CTkToplevel", "customtkinter.CTk"):
+            return True
+        return False
+
     def get_preview_builder(self, builder_uid: str):
         if builder_uid == "customtkinter.CTkToplevel":
             return CTkToplevelPreviewBO
