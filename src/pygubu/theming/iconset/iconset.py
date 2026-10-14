@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field, asdict, replace
-from typing import List, Dict, Optional, Iterator
+from typing import List, Dict, Optional, Iterator, Any
 from enum import Enum, auto
 
 
@@ -31,15 +31,13 @@ class IconItem:
 @dataclass
 class IconSet:
     version: int
-    name: str
-    docs: str
     icon_width: int
     color_onlight: str = "#ffffff"
     color_ondark: str = "#000000"
     with_png: bool = False
     with_gif: bool = False
     icons: List[IconItem] = field(default_factory=list)
-    custom_files: Dict[str, str] = field(default_factory=dict)
+    meta: Dict[str, Any] = field(default_factory=dict)
 
     def __contains__(self, item: str):
         return self.item_by_uid(item) is not None
