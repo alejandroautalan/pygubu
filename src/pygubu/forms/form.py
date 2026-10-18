@@ -93,6 +93,20 @@ class Form:
     def get_data(self):
         return self.cleaned_data
 
+    def has_changed(self) -> bool:
+        return bool(self.changed_data)
+
+    @property
+    def changed_data(self) -> dict:
+        if not self.is_bound:
+            return {}
+        fields_changed = {}
+        for name in self.fields:
+            field_initial = self.fields_initial[name]
+            if field_initial != self.cleaned_data[name]:
+                fields_changed[name] = self.cleaned_data[name]
+        return fields_changed
+
     def submit(self):
         if self.initialized:
             self.is_bound = True
