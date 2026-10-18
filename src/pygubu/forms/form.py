@@ -6,8 +6,7 @@ from .validation.constraint.form import Form as FormConstraint
 from .validation.constraint.form import FormValidator
 
 
-class FormError(Exception):
-    ...
+class FormError(Exception): ...  # noqa: E701
 
 
 class FormField:
