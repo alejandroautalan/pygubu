@@ -2080,7 +2080,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         images = self.assets.create_checkbutton_assets(colorname)
 
         element = ttkstyle.replace(".TC", ".C")
-        width = self.scale_size(20)
+        width = self.scale_size(22)
         borderpad = self.scale_size(4)
 
         settings[f"{element}PBS.indicator"] = {
@@ -2297,7 +2297,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         # ( off, on, disabled )
         images = self.assets.create_square_toggle_assets(colorname)
 
-        width = self.scale_size(28)
+        width = self.scale_size(36)
         borderpad = self.scale_size(4)
 
         settings[f"{ttkstyle}PBS.indicator"] = {
@@ -2381,7 +2381,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         indicator_element = f"{ttkstyle}PBS.indicator"
         if indicator_element not in self.existing_elements:
-            width = self.scale_size(28)
+            width = self.scale_size(36)
             borderpad = self.scale_size(4)
 
             settings[indicator_element] = {

@@ -366,7 +366,7 @@ class AssetCreator:
         else:
             check_color = self.colors.selectfg
 
-        size = self.builder.scale_size([14, 14])
+        size = self.builder.scale_size([16, 16])
 
         canvas_size = 134
         scale_factor = size[0] / canvas_size
@@ -581,7 +581,7 @@ class AssetCreator:
             Tuple[str]:
                 A tuple of PhotoImage names.
         """
-        size = self.builder.scale_size([24, 15])
+        size = self.builder.scale_size([32, 16])
         if any([colorname is None, colorname == ""]):
             colorname = PRIMARY
 
@@ -675,7 +675,7 @@ class AssetCreator:
             Tuple[str]:
                 A tuple of PhotoImage names.
         """
-        size = self.builder.scale_size([24, 15])
+        size = self.builder.scale_size([32, 16])
 
         if any([colorname is None, colorname == ""]):
             colorname = PRIMARY
