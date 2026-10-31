@@ -1,6 +1,7 @@
 import tkinter as tk
 import math
 from ..image.photodraw import Draw
+from ..image.svgimage import HAS_SVG_SUPPORT, photo_from_svgdata
 from .config import (
     PRIMARY,
     SECONDARY,
@@ -16,7 +17,7 @@ from .config import (
 )
 
 
-class AssetCreator:
+class _AssetCreator:
     def __init__(self, theme_builder):
         self.builder = theme_builder
         self.theme_images = {}
@@ -36,6 +37,9 @@ class AssetCreator:
     @property
     def is_light_theme(self):
         return self.builder.is_light_theme
+
+
+class AssetCreatorFromDraw(_AssetCreator):
 
     def create_separator_assets(self, size, color):
         ssize = self.builder.scale_size(size)
@@ -850,3 +854,521 @@ class AssetCreator:
             v_pressed_img,
             v_active_img,
         )
+
+
+class AssetCreatorFromSVG(_AssetCreator):
+    def replace_vars(self, svgdata: str, vbag: dict) -> str:
+        for var_name, value in vbag.items():
+            svgdata = svgdata.replace(f"var(--{var_name})", value)
+        return svgdata
+
+    def create_separator_assets(self, size, color):
+        ssize = self.builder.scale_size(size)
+        w = ssize[0]
+        # h = ssize[1]
+
+        template_h = """<svg xmlns="http://www.w3.org/2000/svg" width="20" height="2" viewBox="0 0 20 2">
+<rect id="r1" width="100%" height="100%" x="0" y="0" fill="white" style="fill: var(--bgcolor);" />
+</svg>"""
+        template_v = """<svg xmlns="http://www.w3.org/2000/svg" width="2" height="20" viewBox="0 0 2 20">
+  <rect id="r1" width="100%" height="100%" x="0" y="0" fill="white" style="fill: var(--bgcolor);" />
+</svg>"""
+
+        steps = [
+            (
+                template_h,
+                dict(scaletowidth=w),
+            ),
+            (
+                template_v,
+                dict(scaletoheight=w),
+            ),
+        ]
+        color_bag = dict(bgcolor=color)
+        imagelist = []
+        for template, args in steps:
+            svgdata = self.replace_vars(template, color_bag)
+            image = photo_from_svgdata(svgdata, **args)
+            self.theme_images[image.name] = image
+            imagelist.append(image.name)
+
+        return imagelist
+
+    def create_sizegrip_assets(self, color):
+        sizegrip = """<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+  <g style="fill: var(--bgcolor);">
+    <rect width="3" height="3" x="11" y="1" />
+    <rect width="3" height="3" x="6" y="6" />
+    <rect width="3" height="3" x="11" y="6" />
+    <rect width="3" height="3" x="1" y="11" />
+    <rect width="3" height="3" x="6" y="11" />
+    <rect width="3" height="3" x="11" y="11" />
+  </g>
+</svg>"""
+        svgdata = self.replace_vars(sizegrip, dict(bgcolor=color))
+        width = self.builder.scale_size(16)
+        img = photo_from_svgdata(svgdata, scaletowidth=width)
+        self.theme_images[img.name] = img
+        return img.name
+
+    def create_radiobutton_assets(self, colorname=None):
+        rb = """<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+    <circle id="container" r="8" cx="8" cy="8" style="fill: var(--container_color);" />
+    <circle id="indicator" r="6" cx="8" cy="8" fill="white" style="fill: var(--indicator_color);" />
+</svg>
+"""
+        rb_selected = """<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+    <circle id="container" r="8" cx="8" cy="8" opacity="1" fill="black" style="fill: var(--container_color);" />
+    <circle id="indicator" r="4" cx="8" cy="8" fill="white" style="fill: var(--indicator_color);" />
+</svg>
+"""
+        prime_color = self.colors.get_color(colorname)
+        on_fill = self.colors.selectfg
+        off_fill = self.colors.bg
+        on_indicator = prime_color
+        size = self.builder.scale_size(16)
+        off_border = self.colorutil.make_transparent(
+            0.4, self.colors.fg, self.colors.bg
+        )
+        disabled = self.colorutil.make_transparent(
+            0.3, self.colors.fg, self.colors.bg
+        )
+
+        if self.is_light_theme and colorname == LIGHT:
+            on_indicator = self.colors.dark
+
+        # radio off
+        colormap = dict(container_color=off_border, indicator_color=off_fill)
+        svgdata = self.replace_vars(rb, colormap)
+        off_img = photo_from_svgdata(svgdata, scaletowidth=size)
+        self.theme_images[off_img.name] = off_img
+
+        # radio on
+        colormap = dict(container_color=on_indicator, indicator_color=on_fill)
+        if self.is_light_theme and colorname == LIGHT:
+            colormap = dict(
+                container_color=self.colors.light,
+                indicator_color=self.colors.dark,
+            )
+        svgdata = self.replace_vars(rb_selected, colormap)
+        on_img = photo_from_svgdata(svgdata, scaletowidth=size)
+        self.theme_images[on_img.name] = on_img
+
+        # radio on/disabled
+        colormap = dict(container_color=off_border, indicator_color=disabled)
+        if self.is_light_theme and colorname == LIGHT:
+            colormap = dict(container_color=off_fill, indicator_color=disabled)
+        svgdata = self.replace_vars(rb_selected, colormap)
+        on_dis_img = photo_from_svgdata(svgdata, scaletowidth=size)
+        self.theme_images[on_dis_img.name] = on_dis_img
+
+        # if colorname == LIGHT and self.is_light_theme:
+
+        # radio disabled
+        colormap = dict(container_color=off_border, indicator_color=disabled)
+        svgdata = self.replace_vars(rb, colormap)
+        disabled_img = photo_from_svgdata(svgdata, scaletowidth=size)
+        self.theme_images[disabled_img.name] = disabled_img
+
+        return off_img.name, on_img.name, disabled_img.name, on_dis_img.name
+
+    def create_scrollbar_assets(self, thumbcolor, pressed, active):
+        hsb = """<svg xmlns="http://www.w3.org/2000/svg" width="30" height="10">
+    <rect width="30" height="10" fill="white" style="fill: var(--bgcolor);" />
+</svg>"""
+        vsb = """<svg xmlns="http://www.w3.org/2000/svg" width="10" height="30">
+    <rect width="10" height="30" fill="white" style="fill: var(--bgcolor);" />
+</svg>"""
+        size = self.builder.scale_size(30)
+        hargs = dict(scaletowidth=size)
+        vargs = dict(scaletoheight=size)
+        steps = [
+            (hsb, thumbcolor, hargs),
+            (hsb, pressed, hargs),
+            (hsb, active, hargs),
+            (vsb, thumbcolor, vargs),
+            (vsb, pressed, vargs),
+            (vsb, active, vargs),
+        ]
+        imagelist = []
+        for template, color, args in steps:
+            svgdata = self.replace_vars(template, dict(bgcolor=color))
+            image = photo_from_svgdata(svgdata, **args)
+            self.theme_images[image.name] = image
+            imagelist.append(image.name)
+
+        return imagelist
+
+    def create_round_scrollbar_assets(self, thumbcolor, pressed, active):
+        hsb = """<svg xmlns="http://www.w3.org/2000/svg" width="30" height="10">
+    <rect width="30" height="10" fill="white" rx="5" style="fill: var(--bgcolor);"/>
+</svg>"""
+        vsb = """<svg xmlns="http://www.w3.org/2000/svg" width="10" height="30">
+    <rect width="10" height="30" fill="white" rx="5" style="fill: var(--bgcolor);"/>
+</svg>"""
+        size = self.builder.scale_size(30)
+        hargs = dict(scaletowidth=size)
+        vargs = dict(scaletoheight=size)
+        steps = [
+            (hsb, thumbcolor, hargs),
+            (hsb, pressed, hargs),
+            (hsb, active, hargs),
+            (vsb, thumbcolor, vargs),
+            (vsb, pressed, vargs),
+            (vsb, active, vargs),
+        ]
+        imagelist = []
+        for template, color, args in steps:
+            svgdata = self.replace_vars(template, dict(bgcolor=color))
+            image = photo_from_svgdata(svgdata, **args)
+            self.theme_images[image.name] = image
+            imagelist.append(image.name)
+
+        return imagelist
+
+    def create_scale_assets(self, colorname=None, size=14):
+        handle = """<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+    <circle r="8" cx="8" cy="8" style="fill: var(--bgcolor);"/>
+</svg>"""
+        htrack = """<svg xmlns="http://www.w3.org/2000/svg" width="30" height="16">
+    <rect width="30" height="6" x="0" y="5" style="fill: var(--bgcolor);" />
+</svg>"""
+        vtrack = """<svg xmlns="http://www.w3.org/2000/svg" width="16" height="30">
+    <rect width="6" height="30" x="5" y="0" style="fill: var(--bgcolor);" />
+</svg>"""
+        size = self.builder.scale_size(size)
+
+        if self.is_light_theme:
+            disabled_color = self.colors.border
+            if colorname == LIGHT:
+                track_color = self.colors.bg
+            else:
+                track_color = self.colors.light
+        else:
+            disabled_color = self.colors.selectbg
+            track_color = self.colorutil.update_hsv(
+                self.colors.selectbg, vd=-0.2
+            )
+
+        if any([colorname is None, not colorname]):
+            normal_color = self.colors.primary
+        else:
+            normal_color = self.colors.get_color(colorname)
+
+        pressed_color = self.colorutil.update_hsv(normal_color, vd=-0.1)
+        hover_color = self.colorutil.update_hsv(normal_color, vd=0.1)
+
+        steps = [
+            (handle, normal_color, size, {}),
+            (handle, pressed_color, size, {}),
+            (handle, hover_color, size, {}),
+            (handle, disabled_color, size, {}),
+            (htrack, track_color, 30, dict(scaletowidth=size)),
+            (vtrack, track_color, 30, dict(scaletoheight=size)),
+        ]
+        imagelist = []
+        for template, color, size, args in steps:
+            svgdata = self.replace_vars(template, dict(bgcolor=color))
+            image = photo_from_svgdata(svgdata, **args)
+            self.theme_images[image.name] = image
+            imagelist.append(image)
+
+        return imagelist
+
+    def create_striped_progressbar_assets(self, thickness, colorname=None):
+        template_h = """<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+    <rect id="bg" width="16" height="16" fill="white" style="fill: var(--bgcolor);" />
+    <g id="stripes" fill="black" style="fill: var(--stripecolor);">
+        <polygon points="0 8 0 16 8 16" />
+        <polygon points="0 0 7.5 0 16 9 16 16 15 16 0 1" />
+    </g>
+</svg>"""
+        template_v = template_h.replace(
+            'id="stripes"', 'id="stripes" transform="rotate(270 8 8)"'
+        )
+
+        if any([colorname is None, colorname == ""]):
+            barcolor = self.colors.primary
+        else:
+            barcolor = self.colors.get_color(colorname)
+
+        # calculate value of the light color
+        brightness = self.colorutil.rgb_to_hsv(
+            *self.colorutil.hex_to_rgb(barcolor)
+        )[2]
+        if brightness < 0.4:
+            value_delta = 0.3
+        elif brightness > 0.8:
+            value_delta = 0
+        else:
+            value_delta = 0.1
+
+        barcolor_light = self.colorutil.update_hsv(
+            barcolor, sd=-0.2, vd=value_delta
+        )
+
+        size = self.builder.scale_size(thickness)
+
+        steps = (template_h, template_v)  # (Horizontal, Vertical)
+        color_bag = dict(bgcolor=barcolor_light, stripecolor=barcolor)
+        imagelist = []
+        for template in steps:
+            svgdata = self.replace_vars(template, color_bag)
+            image = photo_from_svgdata(svgdata, scaletowidth=size)
+            self.theme_images[image.name] = image
+            imagelist.append(image.name)
+
+        return imagelist
+
+    def create_square_toggle_assets(self, colorname=None):
+        template_off = """<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16">
+    <rect id="bg" width="31" height="15" fill="white" stroke="#a0a0a0" x="0.5" y="0.5"
+    style="fill: var(--bg_fill); stroke: var(--bg_stroke);" />
+    <rect id="switch" fill="#afb0b1" width="12" height="12" x="2" y="2"
+    style="fill: var(--switch_fill);" />
+</svg>"""
+        template_on = template_off.replace(
+            'id="switch"', 'id="switch" transform="rotate(180 16 8)" '
+        )
+
+        size = self.builder.scale_size(32)
+        if any([colorname is None, colorname == ""]):
+            colorname = PRIMARY
+
+        # set default style color values
+        prime_color = self.colors.get_color(colorname)
+        on_border = prime_color
+        on_indicator = self.colors.selectfg
+        on_fill = prime_color
+        off_fill = self.colors.bg
+
+        disabled_fg = self.colorutil.make_transparent(
+            0.3, self.colors.fg, self.colors.bg
+        )
+        off_border = self.colorutil.make_transparent(
+            0.4, self.colors.fg, self.colors.bg
+        )
+        off_indicator = self.colorutil.make_transparent(
+            0.4, self.colors.fg, self.colors.bg
+        )
+
+        # override defaults for light and dark colors
+        if colorname == LIGHT:
+            on_border = self.colors.dark
+            on_indicator = on_border
+        elif colorname == DARK:
+            on_border = self.colors.light
+            on_indicator = on_border
+
+        steps = [
+            (
+                template_off,
+                dict(
+                    bg_fill=off_fill,
+                    bg_stroke=off_border,
+                    switch_fill=off_indicator,
+                ),
+            ),  # toggle off
+            (
+                template_on,
+                dict(
+                    bg_fill=on_fill,
+                    bg_stroke=on_border,
+                    switch_fill=on_indicator,
+                ),
+            ),  # toggle on
+            (
+                template_off,
+                dict(
+                    bg_fill=disabled_fg,
+                    bg_stroke=disabled_fg,
+                    switch_fill=disabled_fg,
+                ),
+            ),  # toggle disabled
+            (
+                template_on,
+                dict(
+                    bg_fill=off_fill,
+                    bg_stroke=disabled_fg,
+                    switch_fill=disabled_fg,
+                ),
+            ),  # toggle on / disabled
+        ]
+        imagelist = []
+        for template, color_bag in steps:
+            svgdata = self.replace_vars(template, color_bag)
+            image = photo_from_svgdata(svgdata, scaletowidth=size)
+            self.theme_images[image.name] = image
+            imagelist.append(image)
+
+        return imagelist
+
+    def create_round_toggle_assets(self, colorname=None):
+        template_off = """<svg xmlns="http://www.w3.org/2000/svg" width="32" height="16">
+    <rect id="bg" width="31" height="15" fill="white" stroke="#a0a0a0" rx="5" x="0.5" y="0.5"
+    style="fill: var(--bg_fill); stroke: var(--bg_stroke);" />
+    <circle id="switch" r="6" cx="8" cy="8" fill="#afb0b1"
+    style="fill: var(--switch_fill);" />
+</svg>"""
+        template_on = template_off.replace(
+            'id="switch"', 'id="switch" transform="rotate(180 16 8)"'
+        )
+
+        size = self.builder.scale_size(32)
+        if any([colorname is None, colorname == ""]):
+            colorname = PRIMARY
+
+        # set default style color values
+        prime_color = self.colors.get_color(colorname)
+        on_border = prime_color
+        on_indicator = self.colors.selectfg
+        on_fill = prime_color
+        off_fill = self.colors.bg
+
+        disabled_fg = self.colorutil.make_transparent(
+            0.3, self.colors.fg, self.colors.bg
+        )
+        off_border = self.colorutil.make_transparent(
+            0.4, self.colors.fg, self.colors.bg
+        )
+        off_indicator = self.colorutil.make_transparent(
+            0.4, self.colors.fg, self.colors.bg
+        )
+
+        # override defaults for light and dark colors
+        if colorname == LIGHT:
+            on_border = self.colors.dark
+            on_indicator = on_border
+        elif colorname == DARK:
+            on_border = self.colors.light
+            on_indicator = on_border
+
+        steps = [
+            (
+                template_off,
+                dict(
+                    bg_fill=off_fill,
+                    bg_stroke=off_border,
+                    switch_fill=off_indicator,
+                ),
+            ),  # toggle off
+            (
+                template_on,
+                dict(
+                    bg_fill=on_fill,
+                    bg_stroke=on_border,
+                    switch_fill=on_indicator,
+                ),
+            ),  # toggle on
+            (
+                template_off,
+                dict(
+                    bg_fill=disabled_fg,
+                    bg_stroke=disabled_fg,
+                    switch_fill=disabled_fg,
+                ),
+            ),  # toggle disabled
+            (
+                template_on,
+                dict(
+                    bg_fill=off_fill,
+                    bg_stroke=disabled_fg,
+                    switch_fill=disabled_fg,
+                ),
+            ),  # toggle on / disabled
+        ]
+        imagelist = []
+        for template, color_bag in steps:
+            svgdata = self.replace_vars(template, color_bag)
+            image = photo_from_svgdata(svgdata, scaletowidth=size)
+            self.theme_images[image.name] = image
+            imagelist.append(image)
+
+        return imagelist
+
+    def create_checkbutton_assets(self, colorname=None):
+        template_off = """<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+    <rect id="bg" width="15" height="15" x="0.5" y="0.5" fill="white" stroke="black" rx="2"
+    style="fill: var(--bg_fill); stroke: var(--bg_stroke);" />
+</svg>"""
+        template_on = """<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+    <rect id="bg" width="15" height="15" x="0.5" y="0.5" fill="white" stroke="black" rx="2"
+    style="fill: var(--bg_fill); stroke: var(--bg_stroke);" />
+    <polyline id="mark" fill="none" stroke="black" points="12 4 8 12 4 9" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+    style="fill: var(--mark_fill); stroke: var(--mark_fill);" />
+</svg>"""
+        template_alt = """<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16">
+    <rect id="bg" width="15" height="15" x="0.5" y="0.5" fill="white" stroke="black" rx="2"
+    style="fill: var(--bg_fill); stroke: var(--bg_stroke);" />
+    <rect id="mark" width="10" height="2" x="3" y="7"
+    style="fill: var(--mark_fill);" />
+</svg>"""
+        prime_color = self.colors.get_color(colorname)
+        on_border = prime_color
+        on_fill = prime_color
+        off_fill = self.colors.bg
+        off_border = self.colors.selectbg
+        off_border = self.colorutil.make_transparent(
+            0.4, self.colors.fg, self.colors.bg
+        )
+        disabled_fg = self.colorutil.make_transparent(
+            0.3, self.colors.fg, self.colors.bg
+        )
+
+        if colorname == LIGHT:
+            check_color = self.colors.dark
+            on_border = check_color
+        elif colorname == DARK:
+            check_color = self.colors.light
+            on_border = check_color
+        else:
+            check_color = self.colors.selectfg
+
+        size = self.builder.scale_size(16)
+        steps = [
+            (template_off, dict(bg_fill=off_fill, bg_stroke=off_border)),  # off
+            (
+                template_on,
+                dict(
+                    bg_fill=on_fill, bg_stroke=on_border, mark_fill=check_color
+                ),
+            ),  # on
+            (
+                template_off,
+                dict(bg_fill=disabled_fg, bg_stroke=disabled_fg),
+            ),  # disabled
+            (
+                template_alt,
+                dict(
+                    bg_fill=on_fill, bg_stroke=on_border, mark_fill=check_color
+                ),
+            ),  # alt
+            (
+                template_on,
+                dict(
+                    bg_fill=off_fill, bg_stroke=disabled_fg, mark_fill=off_fill
+                ),
+            ),  # on disabled
+            (
+                template_alt,
+                dict(
+                    bg_fill=disabled_fg,
+                    bg_stroke=disabled_fg,
+                    mark_fill=off_fill,
+                ),
+            ),  # alt disabled
+        ]
+        imagelist = []
+        for template, color_bag in steps:
+            svgdata = self.replace_vars(template, color_bag)
+            image = photo_from_svgdata(svgdata, scaletowidth=size)
+            self.theme_images[image.name] = image
+            imagelist.append(image)
+
+        return imagelist
+
+
+AssetCreator = AssetCreatorFromDraw
+
+if HAS_SVG_SUPPORT:
+    AssetCreator = AssetCreatorFromSVG
