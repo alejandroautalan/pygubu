@@ -5,7 +5,7 @@ import tkinter as tk
 
 from enum import Enum, auto
 from typing import Callable
-from pygubu.theming.iconset.photoreusable import (
+from pygubu.theming.image.photoreusable import (
     PhotoImageReusable,
     ReusableImageMixin,
 )

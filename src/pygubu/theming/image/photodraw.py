@@ -102,11 +102,11 @@ class TkPhotoDraw:
                 rgb4 = self._get_img_pixel(tmp, x1, y1)
 
                 if (
-                        rgb1 == bg_rgb
-                        or rgb2 == bg_rgb
-                        or rgb3 == bg_rgb
-                        or rgb4 == bg_rgb
-                    ):
+                    rgb1 == bg_rgb
+                    or rgb2 == bg_rgb
+                    or rgb3 == bg_rgb
+                    or rgb4 == bg_rgb
+                ):
                     alpha.append((i, j))
                 else:
                     r, g, b = rgb1
@@ -156,7 +156,7 @@ class TkPhotoDraw:
         del alpha
         del buf
 
-    def _get_img_pixel(self, img, x:int, y:int):
+    def _get_img_pixel(self, img, x: int, y: int):
         rgb = img.get(x, y)
         if isinstance(rgb, str):
             # Fix python tk 8.5 issue
@@ -414,15 +414,17 @@ class TkPhotoDraw:
                         x, y + i, x + a, y + i + 1, border_ink
                     )
             else:
-                self._handle_lower_i(cuadrant, fill, x, y, fill_ink, border_ink, ir, ix, iy, i, a)
+                self._handle_lower_i(
+                    cuadrant, fill, x, y, fill_ink, border_ink, ir, ix, iy, i, a
+                )
 
-    def _handle_lower_i(self, cuadrant, fill, x, y, fill_ink, border_ink, ir, ix, iy, i, a):
-        ia = (
-                    ir if i == 0 else int(math.sqrt(ir * ir - i * i))
-                )  # Pythagoras
+    def _handle_lower_i(
+        self, cuadrant, fill, x, y, fill_ink, border_ink, ir, ix, iy, i, a
+    ):
+        ia = ir if i == 0 else int(math.sqrt(ir * ir - i * i))  # Pythagoras
         x1, y1, x2, y2 = (x - a, y - i, x + a, y - i)
         ix1, iy1, ix2, iy2 = (ix - ia, iy - i, ix + ia, iy - i)
-                # upper left
+        # upper left
         if 0 == cuadrant:
             self._draw_rect_filled(x1, y1, ix1, iy1 + 1, border_ink)
             if fill:
@@ -435,7 +437,7 @@ class TkPhotoDraw:
 
         x1, y1, x2, y2 = (x - a, y + i, x + a, y + i)
         ix1, iy1, ix2, iy2 = (ix - ia, iy + i, ix + ia, iy + i)
-                # bottom left
+        # bottom left
         if 2 == cuadrant:
             self._draw_rect_filled(x1, y1, ix1, iy1 + 1, border_ink)
             if fill:

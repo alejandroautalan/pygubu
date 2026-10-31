@@ -5,9 +5,9 @@ import xml.etree.ElementTree as etree
 import tkinter as tk
 from contextlib import suppress
 from pygubu.theming.iconset.iconset import IconSet, IconItem, ThemeType
-from pygubu.theming.iconset.photoreusable import PhotoImageReusable
-from pygubu.theming.iconset.svgimage import HAS_SVG_SUPPORT, svg2photo
-from pygubu.theming.photoresize import PhotoResizer
+from pygubu.theming.image.photoreusable import PhotoImageReusable
+from pygubu.theming.image.svgimage import HAS_SVG_SUPPORT, svg2photo
+from pygubu.theming.image.photoresize import PhotoResizer
 
 
 def change_icon_color(root: etree.ElementTree, fill):

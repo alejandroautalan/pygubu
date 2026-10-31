@@ -1,6 +1,6 @@
 import tkinter as tk
 import math
-from ..photodraw import Draw
+from ..image.photodraw import Draw
 from .config import (
     PRIMARY,
     SECONDARY,
