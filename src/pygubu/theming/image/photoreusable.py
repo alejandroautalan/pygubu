@@ -5,11 +5,11 @@ class ReusableImageMixin:
     """Mixin class to keep image names in tcl."""
 
     def __init__(self, *args, **kw):
-        self._tcl_keep = False
+        self._tcl_keep: bool = False
         super().__init__(*args, **kw)
 
-    def tcl_keep(self):
-        self._tcl_keep = True
+    def tcl_keep(self, value: bool = True):
+        self._tcl_keep = value
 
     def __del__(self):
         if not self._tcl_keep:
