@@ -11,6 +11,7 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             nspygubu.widgets.AccordionFrame,
             nspygubu.widgets.AccordionFrameGroup,
         ),
+        "pygubu.plugins.pygubu.boxframebo": (nspygubu.widgets.BoxFrame,),
         "pygubu.plugins.pygubu.calendarframe_bo": (
             nspygubu.widgets.CalendarView,
             nspygubu.widgets.CalendarFrame,

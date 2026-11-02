@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings>
+      <setting id="name">BoxFrame</setting>
+      <setting id="description">A container that arranges its child widgets horizontally or vertically.
+
+Subclass of ttk.Frame and uses grid manager.
+</setting>
+      <setting id="template">widgetds</setting>
+      <setting id="main_widget">frame1</setting>
+      <setting id="module_namespace">pygubu.widgets</setting>
+      <setting id="module_name">boxframe</setting>
+      <setting id="main_classname">BoxFrame</setting>
+      <setting id="output_dir">../src/pygubu/widgets</setting>
+      <setting id="builder_namespace">pygubu.widgets</setting>
+      <setting id="output_dir2">../src/pygubu/plugins/pygubu</setting>
+      <setting id="generate_code_onsave">False</setting>
+      <setting id="use_i18n">False</setting>
+      <setting id="all_ids_attributes">False</setting>
+      <setting id="import_tkvariables">False</setting>
+      <setting id="use_ttk_styledefinition_file">False</setting>
+      <setting id="use_window_centering_code">False</setting>
+      <setting id="ttk_style_definition_file" />
+    </settings>
+    <customwidgets />
+    <resources />
+  </project>
+  <object class="ttk.Frame" id="frame1">
+    <property name="height">100</property>
+    <property name="width">100</property>
+    <layout manager="pack">
+      <property name="side">top</property>
+    </layout>
+  </object>
+</interface>

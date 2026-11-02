@@ -11,6 +11,69 @@ _pathchoser_all = f"{nspygubu.widgets}.PathChooser.*"
 _pathchoser_all_old = f"{nspygubu.builder_old}.pathchooser.*"
 
 plugin_properties = dict(
+    box_alignment=dict(
+        buid=[nspygubu.widgets.BoxFrame],
+        editor="choice_key",
+        values=[
+            ("begin", "Begin"),
+            ("center", "Center"),
+            ("end", "End"),
+        ],
+        state="readonly",
+        default_value="begin",
+        help=_("Box alignment."),
+    ),
+    box_direction=dict(
+        buid=[nspygubu.widgets.BoxFrame],
+        editor="choice_key",
+        values=[
+            ("row", "Horizontal"),
+            ("column", "Vertical"),
+        ],
+        state="readonly",
+        default_value="row",
+        help=_("Box direction."),
+    ),
+    box_expand=dict(
+        buid=[nspygubu.widgets.BoxFrame],
+        editor="choice",
+        values=("True", "False"),
+        state="readonly",
+        default_value="False",
+        help=_("Take all available space in the box direction."),
+    ),
+    box_hsizing=dict(
+        buid=[nspygubu.widgets.BoxFrame],
+        editor="choice_key",
+        values=[
+            ("fill", "Fill"),
+            ("shrink_begin", "Shrink Begin"),
+            ("shrink_center", "Shrink Center"),
+            ("shrink_end", "Shrink End"),
+        ],
+        state="readonly",
+        default_value="shrink_center",
+        help=_("Horizontal sizing for children."),
+    ),
+    box_gap=dict(
+        buid=[nspygubu.widgets.BoxFrame],
+        editor="dimensionentry",
+        default_value="0",
+        help=_("Gap applied between each child."),
+    ),
+    box_vsizing=dict(
+        buid=[nspygubu.widgets.BoxFrame],
+        editor="choice_key",
+        values=[
+            ("fill", "Fill"),
+            ("shrink_begin", "Shrink Begin"),
+            ("shrink_center", "Shrink Center"),
+            ("shrink_end", "Shrink End"),
+        ],
+        state="readonly",
+        default_value="shrink_center",
+        help=_("Vertical sizing for children."),
+    ),
     calendarfg=dict(
         buid=[
             nspygubu.widgets.CalendarView,
