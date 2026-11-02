@@ -48,6 +48,9 @@ class BoxFrameBO(TTKFrame):
             return tk.getboolean(value)
         return super()._process_property_value(pname, value)
 
+    def code_child_add(self, childid):
+        return [f"{self.code_identifier()}.child_add({childid})"]
+
 
 register_widget(
     nspygubu.widgets.BoxFrame,
