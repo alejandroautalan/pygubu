@@ -493,7 +493,11 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
 
         # set popdown style
         popdown = widget.tk.eval(f"ttk::combobox::PopdownWindow {widget}")
-        widget.tk.call(f"{popdown}.f.l", "configure", *tk_settings)
+        try:
+            widget.tk.call(f"{popdown}.f.l", "configure", *tk_settings)
+        except tk.TclError:
+            # There is no {popdown}.f.l in MacOs? or Tk9? another reason?
+            pass
 
         # set scrollbar style
         sb_style = "TCombobox.Vertical.TScrollbar"
