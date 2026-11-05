@@ -87,14 +87,13 @@ class BoxFrame(WidgetConfigureMixin, ttk.Frame):
         self._box_hsizing = Sizing.SHRINK_CENTER
         self._box_vsizing = Sizing.SHRINK_CENTER
         self._box_direction = box_direction
-        self.ordering = []
         self._layout_cbid = None
         # </CLASS_DEFINITION>
         # widget setup
         self.configure(height=100, width=100)
         # Layout for 'frame1' skipped in custom widget template.
-
-    # <CLASS_BODY>
+        # <CLASS_BODY>
+        self._schedule_layout()
 
     # WidgetConfigureMixin
 
@@ -165,7 +164,7 @@ class BoxFrame(WidgetConfigureMixin, ttk.Frame):
     # End WidgetConfigureMixin
 
     def _apply_layout(self):
-        widgets = self.ordering.copy()
+        widgets = [self.nametowidget(child) for child in self.children]
 
         for child in widgets:
             child.grid_forget()
@@ -208,9 +207,9 @@ class BoxFrame(WidgetConfigureMixin, ttk.Frame):
             child_grid["padx"] = padx
             child_grid["pady"] = pady
             child.grid(**child_grid)
-        if self._box_expand:
-            self.rowconfigure("all", weight=1)
-            self.columnconfigure("all", weight=1)
+        weight_value = 1 if self._box_expand else 0
+        self.rowconfigure("all", weight=weight_value)
+        self.columnconfigure("all", weight=weight_value)
 
         self.grid_anchor(grid_anchor)
         self._layout_cbid = None
@@ -221,7 +220,6 @@ class BoxFrame(WidgetConfigureMixin, ttk.Frame):
         self._layout_cbid = self.after(10, self._apply_layout)
 
     def child_add(self, widget):
-        self.ordering.append(widget)
         self._schedule_layout()
 
     # </CLASS_BODY>
