@@ -69,6 +69,8 @@ class BuilderObject(object):
     """Base class for Widgets created with Builder.
 
     children_layout_override: Determine if children need to cancel layout on themselves.
+
+    children_layout_manager: if children_layout_override is True, set this manager to children (used in Designer).
     """
 
     OPTIONS_STANDARD = tuple()
@@ -82,6 +84,7 @@ class BuilderObject(object):
     allowed_children = None
     maxchildren = None
     children_layout_override = False
+    children_layout_manager = None
     properties = tuple()
     ro_properties = tuple()
     layout_required = True
