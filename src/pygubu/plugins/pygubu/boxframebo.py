@@ -31,20 +31,22 @@ from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 class BoxFrameBO(TTKFrame):
     class_ = BoxFrame
     children_layout_override = True
+    container_layout = False
     properties = (
-        "box_direction",
         "box_alignment",
+        "box_direction",
         "box_expand",
-        "box_hsizing",
         "box_gap",
+        "box_hsizing",
         "box_vsizing",
+        "box_propagate",
     ) + TTKFrame.properties
 
     def add_child(self, bobject):
         self.widget.child_add(bobject.widget)
 
     def _process_property_value(self, pname, value):
-        if pname == "box_expand":
+        if pname in ("box_expand", "box_propagate"):
             return tk.getboolean(value)
         return super()._process_property_value(pname, value)
 
@@ -57,5 +59,5 @@ register_widget(
     BoxFrameBO,
     "BoxFrame",
     _section_containers,
-    group=GCONTAINER,
+    group=GCONTAINER - 1,
 )

@@ -27,8 +27,8 @@ Subclass of ttk.Frame and uses grid manager.
     <resources />
   </project>
   <object class="ttk.Frame" id="frame1">
-    <property name="height">100</property>
-    <property name="width">100</property>
+    <property name="height">200</property>
+    <property name="width">200</property>
     <layout manager="pack">
       <property name="side">top</property>
     </layout>
