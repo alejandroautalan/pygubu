@@ -50,6 +50,7 @@ ns_pygubu = SN(
         dockwidget=1,
         hideableframe=1,
         BoxFrame=1,
+        GridFrame=1,
     ),
     forms=SN(
         _name="forms",

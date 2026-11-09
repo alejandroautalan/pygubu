@@ -57,6 +57,7 @@ class PygubuWidgetsLoader(BuilderLoaderPlugin):
             nspygubu.forms.ttkwidget.Combobox,
             nspygubu.forms.ttkwidget.Checkbutton,
         ),
+        "pygubu.plugins.pygubu.gridframebo": (nspygubu.widgets.GridFrame,),
         "pygubu.plugins.pygubu.hideableframe_bo": (
             nspygubu.widgets.hideableframe,
         ),

@@ -74,6 +74,14 @@ plugin_properties = dict(
         default_value="shrink_center",
         help=_("Vertical sizing for children."),
     ),
+    box_propagate=dict(
+        buid=[nspygubu.widgets.BoxFrame],
+        editor="choice",
+        values=("True", "False"),
+        state="readonly",
+        default_value="True",
+        help=_("Enable/Disable Geometry Propagation"),
+    ),
     calendarfg=dict(
         buid=[
             nspygubu.widgets.CalendarView,
@@ -138,6 +146,117 @@ plugin_properties = dict(
         values=("0", "6"),
         state="readonly",
         default_value="6",
+    ),
+    grid_anchor=dict(
+        buid=[nspygubu.widgets.GridFrame],
+        editor="choice",
+        values=(
+            "nw",
+            "n",
+            "ne",
+            "w",
+            "center",
+            "e",
+            "sw",
+            "s",
+            "se",
+        ),
+        state="readonly",
+        default_value="center",
+        help=_(
+            "The anchor value controls how to place the grid within the container window when no row/column has any weight."
+        ),
+    ),
+    grid_dim_rows=dict(
+        buid=[nspygubu.widgets.GridFrame],
+        editor="choice",
+        values=["auto", "1", "2", "0, 1, 0"],
+        default_value="auto",
+        help=_(
+            """Rows dimension specfication
+Allowed values:
+  Literal string "auto": automatic rows
+  Integer "x": Grid has x rows
+  List of comma separated weights "0, 1, 0": Grid has len(weights) rows.
+  """
+        ),
+    ),
+    grid_dim_cols=dict(
+        buid=[nspygubu.widgets.GridFrame],
+        editor="choice",
+        values=["auto", "1", "2", "0, 1, 0"],
+        default_value="auto",
+        help=_(
+            """Columns dimension specfication
+Allowed values:
+  Literal string "auto": automatic columns
+  Integer "y": Grid has y rows
+  List of comma separated weights "0, 1, 0": Grid has len(weights) columns.
+  """
+        ),
+    ),
+    grid_flow=dict(
+        buid=[nspygubu.widgets.GridFrame],
+        editor="choice_key",
+        values=[
+            ("row", "Row"),
+            ("column", "Column"),
+        ],
+        state="readonly",
+        default_value="row",
+        help=_(
+            "Controls the direction children are placed when flowing across the grid.\nDefault is 'row' (left-to-right, then next row). Use 'column' to fill down first, then move to the next column."
+        ),
+    ),
+    grid_expand=dict(
+        buid=[nspygubu.widgets.GridFrame],
+        editor="choice",
+        values=("True", "False"),
+        state="readonly",
+        default_value="False",
+        help=_("Take all available space in the box direction."),
+    ),
+    grid_propagate=dict(
+        buid=[nspygubu.widgets.GridFrame],
+        editor="choice",
+        values=("True", "False"),
+        state="readonly",
+        default_value="True",
+        help=_("Enable/Disable Geometry Propagation"),
+    ),
+    grid_cell_hsizing=dict(
+        buid=[nspygubu.widgets.GridFrame],
+        editor="choice_key",
+        values=[
+            ("fill", "Fill"),
+            ("shrink_begin", "Shrink Begin"),
+            ("shrink_center", "Shrink Center"),
+            ("shrink_end", "Shrink End"),
+        ],
+        state="readonly",
+        default_value="shrink_center",
+        help=_("Horizontal sizing for children."),
+    ),
+    grid_cell_vsizing=dict(
+        buid=[nspygubu.widgets.GridFrame],
+        editor="choice_key",
+        values=[
+            ("fill", "Fill"),
+            ("shrink_begin", "Shrink Begin"),
+            ("shrink_center", "Shrink Center"),
+            ("shrink_end", "Shrink End"),
+        ],
+        state="readonly",
+        default_value="shrink_center",
+        help=_("Vertical sizing for children."),
+    ),
+    grid_gap=dict(
+        buid=[nspygubu.widgets.GridFrame],
+        editor="twodimensionentry",
+        default_value="0",
+        help=_(
+            "Gap between rows and columns.\nAccepts two dimensions values, one for rows and one for columns. If one dimension is supplied, it applies to both.\n"
+        ),
     ),
     grouped=dict(
         buid=nspygubu.widgets.dockwidget,
