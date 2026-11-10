@@ -41,8 +41,8 @@ class GridFrameBO(TTKFrame):
         "grid_flow",
         "grid_gap",
         "grid_expand",
-        "grid_cell_hsizing",
-        "grid_cell_vsizing",
+        "grid_chsizing",
+        "grid_cvsizing",
     ) + TTKFrame.properties
 
     def add_child(self, bobject):

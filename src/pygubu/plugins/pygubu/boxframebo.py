@@ -37,8 +37,8 @@ class BoxFrameBO(TTKFrame):
         "box_direction",
         "box_expand",
         "box_gap",
-        "box_hsizing",
-        "box_vsizing",
+        "box_chsizing",
+        "box_cvsizing",
         "box_propagate",
     ) + TTKFrame.properties
 

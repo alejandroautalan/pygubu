@@ -205,8 +205,8 @@ class GridFrame(WidgetConfigureMixin, _FlexGrid):
     PROP_GRID_FLOW = "grid_flow"
     PROP_GRID_GAP = "grid_gap"
     PROP_GRID_EXPAND = "grid_expand"
-    PROP_GRID_HSIZING = "grid_cell_hsizing"
-    PROP_GRID_VSIZING = "grid_cell_vsizing"
+    PROP_GRID_HSIZING = "grid_chsizing"
+    PROP_GRID_VSIZING = "grid_cvsizing"
 
     def __init__(self, *args, **kw):
         super().__init__(*args, **kw)

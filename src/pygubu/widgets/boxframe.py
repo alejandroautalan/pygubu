@@ -33,8 +33,8 @@ class BoxFrame(WidgetConfigureMixin, _FlexGrid):
     PROP_BOX_DIRECTION = "box_direction"
     PROP_BOX_GAP = "box_gap"
     PROP_BOX_EXPAND = "box_expand"
-    PROP_BOX_HSIZING = "box_hsizing"
-    PROP_BOX_VSIZING = "box_vsizing"
+    PROP_BOX_HSIZING = "box_chsizing"
+    PROP_BOX_VSIZING = "box_cvsizing"
     PROP_BOX_PROPAGATE = "box_propagate"
 
     ANCHOR_MAP = {

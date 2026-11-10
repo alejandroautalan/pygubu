@@ -21,7 +21,7 @@ plugin_properties = dict(
         ],
         state="readonly",
         default_value="begin",
-        help=_("Box alignment."),
+        help=_("Box alignment. Positioning of the box when not expanded."),
     ),
     box_direction=dict(
         buid=[nspygubu.widgets.BoxFrame],
@@ -32,7 +32,7 @@ plugin_properties = dict(
         ],
         state="readonly",
         default_value="row",
-        help=_("Box direction."),
+        help=_("Box direction or flow."),
     ),
     box_expand=dict(
         buid=[nspygubu.widgets.BoxFrame],
@@ -40,9 +40,9 @@ plugin_properties = dict(
         values=("True", "False"),
         state="readonly",
         default_value="False",
-        help=_("Take all available space in the box direction."),
+        help=_("Take all available space in the frame cavity."),
     ),
-    box_hsizing=dict(
+    box_chsizing=dict(
         buid=[nspygubu.widgets.BoxFrame],
         editor="choice_key",
         values=[
@@ -53,26 +53,26 @@ plugin_properties = dict(
         ],
         state="readonly",
         default_value="shrink_center",
-        help=_("Horizontal sizing for children."),
+        help=_("Horizontal sizing for each box cell."),
+    ),
+    box_cvsizing=dict(
+        buid=[nspygubu.widgets.BoxFrame],
+        editor="choice_key",
+        values=[
+            ("fill", "Fill"),
+            ("shrink_begin", "Shrink Begin"),
+            ("shrink_center", "Shrink Center"),
+            ("shrink_end", "Shrink End"),
+        ],
+        state="readonly",
+        default_value="shrink_center",
+        help=_("Vertical sizing for each box cell."),
     ),
     box_gap=dict(
         buid=[nspygubu.widgets.BoxFrame],
         editor="dimensionentry",
         default_value="0",
-        help=_("Gap applied between each child."),
-    ),
-    box_vsizing=dict(
-        buid=[nspygubu.widgets.BoxFrame],
-        editor="choice_key",
-        values=[
-            ("fill", "Fill"),
-            ("shrink_begin", "Shrink Begin"),
-            ("shrink_center", "Shrink Center"),
-            ("shrink_end", "Shrink End"),
-        ],
-        state="readonly",
-        default_value="shrink_center",
-        help=_("Vertical sizing for children."),
+        help=_("Gap applied between each cell."),
     ),
     box_propagate=dict(
         buid=[nspygubu.widgets.BoxFrame],
@@ -170,7 +170,7 @@ plugin_properties = dict(
     grid_dim_rows=dict(
         buid=[nspygubu.widgets.GridFrame],
         editor="choice",
-        values=["auto", "1", "2", "0, 1, 0"],
+        values=["auto", "1", "2", "3", "4", "5", "0, 1, 0"],
         default_value="auto",
         help=_(
             """Rows dimension specfication
@@ -214,7 +214,7 @@ Allowed values:
         values=("True", "False"),
         state="readonly",
         default_value="False",
-        help=_("Take all available space in the box direction."),
+        help=_("Take all available space in the frame cavity."),
     ),
     grid_propagate=dict(
         buid=[nspygubu.widgets.GridFrame],
@@ -224,7 +224,7 @@ Allowed values:
         default_value="True",
         help=_("Enable/Disable Geometry Propagation"),
     ),
-    grid_cell_hsizing=dict(
+    grid_chsizing=dict(
         buid=[nspygubu.widgets.GridFrame],
         editor="choice_key",
         values=[
@@ -235,9 +235,9 @@ Allowed values:
         ],
         state="readonly",
         default_value="shrink_center",
-        help=_("Horizontal sizing for children."),
+        help=_("Horizontal sizing for each grid cell."),
     ),
-    grid_cell_vsizing=dict(
+    grid_cvsizing=dict(
         buid=[nspygubu.widgets.GridFrame],
         editor="choice_key",
         values=[
@@ -248,7 +248,7 @@ Allowed values:
         ],
         state="readonly",
         default_value="shrink_center",
-        help=_("Vertical sizing for children."),
+        help=_("Vertical sizing for each grid cell."),
     ),
     grid_gap=dict(
         buid=[nspygubu.widgets.GridFrame],
