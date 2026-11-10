@@ -11,77 +11,6 @@ _pathchoser_all = f"{nspygubu.widgets}.PathChooser.*"
 _pathchoser_all_old = f"{nspygubu.builder_old}.pathchooser.*"
 
 plugin_properties = dict(
-    box_alignment=dict(
-        buid=[nspygubu.widgets.BoxFrame],
-        editor="choice_key",
-        values=[
-            ("begin", "Begin"),
-            ("center", "Center"),
-            ("end", "End"),
-        ],
-        state="readonly",
-        default_value="begin",
-        help=_("Box alignment. Positioning of the box when not expanded."),
-    ),
-    box_direction=dict(
-        buid=[nspygubu.widgets.BoxFrame],
-        editor="choice_key",
-        values=[
-            ("row", "Horizontal"),
-            ("column", "Vertical"),
-        ],
-        state="readonly",
-        default_value="row",
-        help=_("Box direction or flow."),
-    ),
-    box_expand=dict(
-        buid=[nspygubu.widgets.BoxFrame],
-        editor="choice",
-        values=("True", "False"),
-        state="readonly",
-        default_value="False",
-        help=_("Take all available space in the frame cavity."),
-    ),
-    box_chsizing=dict(
-        buid=[nspygubu.widgets.BoxFrame],
-        editor="choice_key",
-        values=[
-            ("fill", "Fill"),
-            ("shrink_begin", "Shrink Begin"),
-            ("shrink_center", "Shrink Center"),
-            ("shrink_end", "Shrink End"),
-        ],
-        state="readonly",
-        default_value="shrink_center",
-        help=_("Horizontal sizing for each box cell."),
-    ),
-    box_cvsizing=dict(
-        buid=[nspygubu.widgets.BoxFrame],
-        editor="choice_key",
-        values=[
-            ("fill", "Fill"),
-            ("shrink_begin", "Shrink Begin"),
-            ("shrink_center", "Shrink Center"),
-            ("shrink_end", "Shrink End"),
-        ],
-        state="readonly",
-        default_value="shrink_center",
-        help=_("Vertical sizing for each box cell."),
-    ),
-    box_gap=dict(
-        buid=[nspygubu.widgets.BoxFrame],
-        editor="dimensionentry",
-        default_value="0",
-        help=_("Gap applied between each cell."),
-    ),
-    box_propagate=dict(
-        buid=[nspygubu.widgets.BoxFrame],
-        editor="choice",
-        values=("True", "False"),
-        state="readonly",
-        default_value="True",
-        help=_("Enable/Disable Geometry Propagation"),
-    ),
     calendarfg=dict(
         buid=[
             nspygubu.widgets.CalendarView,
@@ -414,6 +343,77 @@ Allowed values:
             "Dialog option. Determines if path must exist for directory and file dialogs."
             + " The default value is True."
         ),
+    ),
+    pack_alignment=dict(
+        buid=[nspygubu.widgets.PackFrame],
+        editor="choice_key",
+        values=[
+            ("begin", "Begin"),
+            ("center", "Center"),
+            ("end", "End"),
+        ],
+        state="readonly",
+        default_value="begin",
+        help=_("Positioning of the pack when not expanded."),
+    ),
+    pack_direction=dict(
+        buid=[nspygubu.widgets.PackFrame],
+        editor="choice_key",
+        values=[
+            ("row", "Horizontal"),
+            ("column", "Vertical"),
+        ],
+        state="readonly",
+        default_value="row",
+        help=_("Box direction or flow."),
+    ),
+    pack_expand=dict(
+        buid=[nspygubu.widgets.PackFrame],
+        editor="choice",
+        values=("True", "False"),
+        state="readonly",
+        default_value="False",
+        help=_("Take all available space in the frame cavity."),
+    ),
+    pack_chsizing=dict(
+        buid=[nspygubu.widgets.PackFrame],
+        editor="choice_key",
+        values=[
+            ("fill", "Fill"),
+            ("shrink_begin", "Shrink Begin"),
+            ("shrink_center", "Shrink Center"),
+            ("shrink_end", "Shrink End"),
+        ],
+        state="readonly",
+        default_value="shrink_center",
+        help=_("Horizontal sizing for each pack cell."),
+    ),
+    pack_cvsizing=dict(
+        buid=[nspygubu.widgets.PackFrame],
+        editor="choice_key",
+        values=[
+            ("fill", "Fill"),
+            ("shrink_begin", "Shrink Begin"),
+            ("shrink_center", "Shrink Center"),
+            ("shrink_end", "Shrink End"),
+        ],
+        state="readonly",
+        default_value="shrink_center",
+        help=_("Vertical sizing for each pack cell."),
+    ),
+    pack_gap=dict(
+        buid=[nspygubu.widgets.PackFrame],
+        editor="dimensionentry",
+        default_value="0",
+        help=_("Gap applied between each pack cell."),
+    ),
+    pack_propagate=dict(
+        buid=[nspygubu.widgets.PackFrame],
+        editor="choice",
+        values=("True", "False"),
+        state="readonly",
+        default_value="True",
+        help=_("Enable/Disable Geometry Propagation"),
     ),
     path=dict(
         buid=[_pathchoser_all, _pathchoser_all_old],

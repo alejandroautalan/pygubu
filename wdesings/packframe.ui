@@ -2,7 +2,7 @@
 <interface version="1.5" author="PygubuDesigner 0.41.4">
   <project>
     <settings>
-      <setting id="name">BoxFrame</setting>
+      <setting id="name">PackFrame</setting>
       <setting id="description">A container that arranges its child widgets horizontally or vertically.
 
 Subclass of ttk.Frame and uses grid manager.
@@ -10,8 +10,8 @@ Subclass of ttk.Frame and uses grid manager.
       <setting id="template">widgetds</setting>
       <setting id="main_widget">frame1</setting>
       <setting id="module_namespace">pygubu.widgets</setting>
-      <setting id="module_name">boxframe</setting>
-      <setting id="main_classname">BoxFrame</setting>
+      <setting id="module_name">packframe</setting>
+      <setting id="main_classname">PackFrame</setting>
       <setting id="output_dir">../src/pygubu/widgets</setting>
       <setting id="builder_namespace">pygubu.widgets</setting>
       <setting id="output_dir2">../src/pygubu/plugins/pygubu</setting>

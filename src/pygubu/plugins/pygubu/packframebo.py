@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-BoxFrame
+PackFrame
 
 A container that arranges its child widgets horizontally or vertically.
 
@@ -15,7 +15,7 @@ from pygubu.api.v1 import (
     BuilderObject,
     register_widget,
 )
-from pygubu.widgets.boxframe import BoxFrame
+from pygubu.widgets.packframe import PackFrame
 from ._config import nspygubu, _section_containers, GCONTAINER
 from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 
@@ -28,25 +28,25 @@ from pygubu.plugins.ttk.ttkstdwidgets import TTKFrame
 # section_name = "Project Widgets"
 
 
-class BoxFrameBO(TTKFrame):
-    class_ = BoxFrame
+class PackFrameBO(TTKFrame):
+    class_ = PackFrame
     children_layout_override = True
     container_layout = False
     properties = (
-        "box_alignment",
-        "box_direction",
-        "box_expand",
-        "box_gap",
-        "box_chsizing",
-        "box_cvsizing",
-        "box_propagate",
+        "pack_alignment",
+        "pack_direction",
+        "pack_expand",
+        "pack_gap",
+        "pack_chsizing",
+        "pack_cvsizing",
+        "pack_propagate",
     ) + TTKFrame.properties
 
     def add_child(self, bobject):
         self.widget.child_add(bobject.widget)
 
     def _process_property_value(self, pname, value):
-        if pname in ("box_expand", "box_propagate"):
+        if pname in ("pack_expand", "pack_propagate"):
             return tk.getboolean(value)
         return super()._process_property_value(pname, value)
 
@@ -55,9 +55,9 @@ class BoxFrameBO(TTKFrame):
 
 
 register_widget(
-    nspygubu.widgets.BoxFrame,
-    BoxFrameBO,
-    "BoxFrame",
+    nspygubu.widgets.PackFrame,
+    PackFrameBO,
+    "PackFrame",
     _section_containers,
     group=GCONTAINER - 1,
 )
