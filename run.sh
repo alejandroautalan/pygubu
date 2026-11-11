@@ -37,7 +37,7 @@ readonly SCRIPT="$PROJECT_ROOT/$( basename "$0" )"
 python3bin=$(which python3)
 
 function tests {
-    cd tests; $python3bin -W default -m unittest -v; cd ..;
+    cd tests; XMODIFIERS="@im=none"; $python3bin -W default -m unittest -v; cd ..;
 }
 
 function build {
