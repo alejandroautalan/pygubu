@@ -1,4 +1,3 @@
-# encoding: utf-8
 import tkinter as tk
 import tkinter.ttk as ttk
 from collections import OrderedDict
@@ -113,7 +112,7 @@ _v9_button_prop = ("justify",) if has_tk_version_9 else tuple()
 class TTKButton(TTKWidgetBO):
     OPTIONS_STANDARD = (
         TTKWidgetBO.OPTIONS_STANDARD
-        + tuple(set(TTKWidgetBO.OPTIONS_LABEL) - set(("font",)))
+        + tuple(set(TTKWidgetBO.OPTIONS_LABEL) - {"font"})
         + TTKWidgetBO.OPTIONS_COMPATIBILITY
         + _v9_button_prop
     )
@@ -478,7 +477,7 @@ class TTKTreeviewBO(TTKWidgetBO):
     )
 
     def __init__(self, builder, wdescr):
-        super(TTKTreeviewBO, self).__init__(builder, wdescr)
+        super().__init__(builder, wdescr)
         self._columns = None
         self._headings = None
         self._dcolumns = None

@@ -1,4 +1,3 @@
-# encoding: utf-8
 from tkinter.scrolledtext import ScrolledText
 
 from pygubu.api.v1 import register_widget

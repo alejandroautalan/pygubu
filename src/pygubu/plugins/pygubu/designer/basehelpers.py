@@ -8,7 +8,7 @@ class ToplevelPreviewFactory(type):
         return type.__new__(cls, str(clsname), superclasses, attrs)
 
 
-class ToplevelPreviewMixin(object):
+class ToplevelPreviewMixin:
     def __init__(self, master=None, **kw):
         super().__init__(master, **kw)
         self.tl_attrs = {}

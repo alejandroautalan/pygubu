@@ -1,5 +1,5 @@
 import tkinter as tk
-from typing import Mapping
+from collections.abc import Mapping
 from TKinterModernThemes.WidgetFrame import WidgetFrame, Notebook, PanedWindow
 from pygubu.api.v1 import BuilderObject
 from pygubu.utils.datatrans import ListDTO

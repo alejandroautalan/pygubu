@@ -40,7 +40,7 @@ class AwesometkinterLoader(BuilderLoaderPlugin):
         return "pygubu_awesometkinter"
 
     @classmethod
-    def get_dependencies(cls) -> List[str]:
+    def get_dependencies(cls) -> list[str]:
         """Return a list of required plugins UID."""
         return ["pygubu_tk", "pygubu_ttk"]
 
@@ -55,7 +55,7 @@ class AwesometkinterLoader(BuilderLoaderPlugin):
         return None
 
     def get_all_modules(self):
-        return [m for m in self.module_map.keys()]
+        return [*self.module_map.keys()]
 
     def can_load(self, identifier: str) -> bool:
         return identifier.startswith("awesometkinter.")

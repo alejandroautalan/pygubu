@@ -30,7 +30,7 @@ class ItemsCanvasBO(TTKFrame):
     def _process_property_value(self, pname, value):
         if pname in ("canvaswidth", "canvasheight"):
             return int(value)
-        return super(ItemsCanvasBO, self)._process_property_value(pname, value)
+        return super()._process_property_value(pname, value)
 
     def _code_define_callback_args(self, cmd_pname, cmd):
         args = None
@@ -41,9 +41,7 @@ class ItemsCanvasBO(TTKFrame):
         elif cmd_pname == "function_new":
             args = ("add_item",)
         else:
-            args = super(ItemsCanvasBO, self)._code_define_callback_args(
-                cmd_pname, cmd
-            )
+            args = super()._code_define_callback_args(cmd_pname, cmd)
         return args
 
 
@@ -97,7 +95,7 @@ register_custom_property(
     "function_new",
     "simplecommandentry",
     help=_(
-        "user defined function for when an item is created, with arg (add_item)." 
-            + "\nWhere add_item is a function of this widget."
+        "user defined function for when an item is created, with arg (add_item)."
+        + "\nWhere add_item is a function of this widget."
     ),
 )

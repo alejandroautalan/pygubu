@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field, asdict, replace
-from typing import List, Dict, Optional, Iterator, Any
+from typing import List, Dict, Optional, Any
+from collections.abc import Iterator
 from enum import Enum, auto
 
 
@@ -11,12 +12,12 @@ class ThemeType(Enum):
 @dataclass
 class IconItem:
     fn: str
-    uid: Optional[str] = None
-    width: Optional[int] = None
-    color_keep: Optional[bool] = None
-    color_onlight: Optional[str] = None
-    color_ondark: Optional[str] = None
-    custom: Optional[bool] = None
+    uid: str | None = None
+    width: int | None = None
+    color_keep: bool | None = None
+    color_onlight: str | None = None
+    color_ondark: str | None = None
+    custom: bool | None = None
 
     def asdict_cleaned(self, empty_values=None) -> dict:
         if empty_values is None:
@@ -36,8 +37,8 @@ class IconSet:
     color_ondark: str = "#000000"
     with_png: bool = False
     with_gif: bool = False
-    icons: List[IconItem] = field(default_factory=list)
-    meta: Dict[str, Any] = field(default_factory=dict)
+    icons: list[IconItem] = field(default_factory=list)
+    meta: dict[str, Any] = field(default_factory=dict)
 
     def __contains__(self, item: str):
         return self.item_by_uid(item) is not None

@@ -17,9 +17,7 @@ class AutocompleteBaseBO(BuilderObject):
         if pname == "completevalues":
             final_value = value.split()
         else:
-            final_value = super(
-                AutocompleteBaseBO, self
-            )._process_property_value(pname, value)
+            final_value = super()._process_property_value(pname, value)
         return final_value
 
     def _code_process_property_value(self, targetid, pname, value):
@@ -60,14 +58,10 @@ class CallbakInitArgMixin:
         if cmd_pname == "callback":
             self._cb_proxy.real_cb = callback
         else:
-            super(CallbakInitArgMixin, self)._connect_command(
-                cmd_pname, callback
-            )
+            super()._connect_command(cmd_pname, callback)
 
     def _code_get_init_args(self, code_identifier):
-        args = super(CallbakInitArgMixin, self)._code_get_init_args(
-            code_identifier
-        )
+        args = super()._code_get_init_args(code_identifier)
         pname = "callback"
         if pname in self.wmeta.properties:
             pvalue = self.wmeta.properties[pname]
@@ -80,6 +74,4 @@ class CallbakInitArgMixin:
         if cmd_pname == "callback":
             return []
         else:
-            return super(CallbakInitArgMixin, self)._code_connect_command(
-                cmd_pname, cmd, cbname
-            )
+            return super()._code_connect_command(cmd_pname, cmd, cbname)

@@ -320,7 +320,7 @@ class DockFrame(DockWidgetBase, IDockFrame):
                 "ver": 1,
                 "main": self.main_pane.uid,
                 "layout": layout,
-                "dwl": [dw_uid for dw_uid in self.dock_widgets],
+                "dwl": [*self.dock_widgets],
             }
         return config
 

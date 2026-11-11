@@ -1,4 +1,3 @@
-# encoding: utf-8
 from pygubu.api.v1 import register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import (
     TTKTreeviewBO,

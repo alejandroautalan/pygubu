@@ -22,7 +22,7 @@ class FontFamilyDropdownBO(CallbakInitArgMixin, AutocompleteComboboxBO):
     init_completevalues = False
     container = False
     OPTIONS_SPECIFIC = tuple(
-        set(AutocompleteComboboxBO.OPTIONS_SPECIFIC) - set(("textvariable",))
+        set(AutocompleteComboboxBO.OPTIONS_SPECIFIC) - {"textvariable"}
     )
     OPTIONS_CUSTOM = ("callback",)
     properties = (
@@ -64,12 +64,9 @@ class FontFamilyListboxBO(CallbakInitArgMixin, ScrolledListboxBO):
     class_ = FontFamilyListbox
     container = False
     OPTIONS_STANDARD = tuple(
-        set(TKListbox.OPTIONS_STANDARD)
-        - set(("xscrollcommand", "yscrollcommand"))
+        set(TKListbox.OPTIONS_STANDARD) - {"xscrollcommand", "yscrollcommand"}
     )
-    OPTIONS_SPECIFIC = tuple(
-        set(TKListbox.OPTIONS_SPECIFIC) - set(("listvariable",))
-    )
+    OPTIONS_SPECIFIC = tuple(set(TKListbox.OPTIONS_SPECIFIC) - {"listvariable"})
     OPTIONS_CUSTOM = ("autohidescrollbar", "callback")
     properties = OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     ro_properties = TKListbox.ro_properties + ("autohidescrollbar",)
@@ -134,9 +131,7 @@ class FontSelectFrameBO(CallbakInitArgMixin, TTKFrame):
         if cmd_pname == "callback":
             args = ("family", "size", "bold", "italic", "underline")
         else:
-            args = super(FontSelectFrameBO, self)._code_define_callback_args(
-                cmd_pname, cmd
-            )
+            args = super()._code_define_callback_args(cmd_pname, cmd)
         return args
 
 
@@ -153,7 +148,7 @@ register_custom_property(
     "callback",
     "simplecommandentry",
     help=_(
-        "name of the callback function with arguments: " 
+        "name of the callback function with arguments: "
         + "(family: str, size: int, bold: bool, italic: bool, underline: bool)"
     ),
 )
@@ -195,7 +190,7 @@ register_custom_property(
     "callback",
     "simplecommandentry",
     help=_(
-        "name of the callback function with arguments: " 
+        "name of the callback function with arguments: "
         + "(bold: bool, italic: bool, underline: bool, overstrike: bool)"
     ),
 )
@@ -221,7 +216,7 @@ class FontSizeDropdownBO(CallbakInitArgMixin, AutocompleteComboboxBO):
     init_completevalues = False
     container = False
     OPTIONS_SPECIFIC = tuple(
-        set(AutocompleteComboboxBO.OPTIONS_SPECIFIC) - set(("textvariable",))
+        set(AutocompleteComboboxBO.OPTIONS_SPECIFIC) - {"textvariable"}
     )
     OPTIONS_CUSTOM = ("callback",)
     properties = (
@@ -237,9 +232,7 @@ class FontSizeDropdownBO(CallbakInitArgMixin, AutocompleteComboboxBO):
         if cmd_pname == "callback":
             args = ("size",)
         else:
-            args = super(FontSizeDropdownBO, self)._code_define_callback_args(
-                cmd_pname, cmd
-            )
+            args = super()._code_define_callback_args(cmd_pname, cmd)
         return args
 
 

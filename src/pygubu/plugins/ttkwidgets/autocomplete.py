@@ -73,9 +73,7 @@ class AutocompleteEntryListboxBO(AutocompleteBaseBO, TTKFrame):
         ):
             final_value = tk.getboolean(value)
         else:
-            final_value = super(
-                AutocompleteEntryListboxBO, self
-            )._process_property_value(pname, value)
+            final_value = super()._process_property_value(pname, value)
         return final_value
 
     def _code_process_property_value(self, targetid, pname, value):
@@ -145,9 +143,7 @@ register_custom_property(
 
 class AutocompleteComboboxBO(AutocompleteBaseBO, TTKCombobox):
     class_ = AutocompleteCombobox
-    OPTIONS_SPECIFIC = tuple(
-        set(TTKCombobox.OPTIONS_SPECIFIC) - set(("values",))
-    )
+    OPTIONS_SPECIFIC = tuple(set(TTKCombobox.OPTIONS_SPECIFIC) - {"values"})
     OPTIONS_CUSTOM = ("completevalues",)
     properties = (
         TTKCombobox.OPTIONS_STANDARD + OPTIONS_SPECIFIC + OPTIONS_CUSTOM

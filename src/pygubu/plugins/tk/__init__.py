@@ -20,7 +20,7 @@ class StandardTKWidgetsLoader(BuilderLoaderPlugin):
         return True
 
     def get_all_modules(self):
-        return [m for m in self.module_map.keys()]
+        return [*self.module_map.keys()]
 
     def get_module_for(self, identifier: str) -> str:
         for module, identifiers in self.module_map.items():

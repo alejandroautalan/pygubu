@@ -1,4 +1,3 @@
-# encoding: utf-8
 import sys
 import importlib
 import logging
@@ -26,7 +25,7 @@ logger = logging.getLogger(__name__)
 #
 
 
-class Builder(object):
+class Builder:
     """Allows to build a tk interface from xml definition.
 
     Parameters
@@ -158,7 +157,7 @@ class Builder(object):
                 #  Swap order
                 vtype, vname = vname, vtype
                 if vtype not in self.TK_VARIABLE_TYPES:
-                    msg = 'Undefined variable type in "{0}"'.format(vname)
+                    msg = f'Undefined variable type in "{vname}"'
                     raise Exception(msg)
         return (vname, vtype)
 
@@ -220,7 +219,7 @@ class Builder(object):
                 bobject = self._realize(root, wmeta, extra_init_args)
                 widget = bobject.widget
         if widget is None:
-            msg = 'Widget "{0}" not defined.'.format(name)
+            msg = f'Widget "{name}" not defined.'
             raise Exception(msg)
         return widget
 
@@ -356,7 +355,7 @@ class Builder(object):
 
             return parent
         else:
-            msg = 'Class "{0}" not mapped'.format(wmeta.classname)
+            msg = f'Class "{wmeta.classname}" not mapped'
             raise Exception(msg)
 
     def _pre_realize(self, bobject):

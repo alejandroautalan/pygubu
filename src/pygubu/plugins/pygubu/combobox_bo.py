@@ -1,4 +1,3 @@
-# encoding: utf-8
 from pygubu.api.v1 import register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import TTKCombobox
 from pygubu.widgets.combobox import Combobox
@@ -6,9 +5,7 @@ from ._config import nspygubu, _section_widgets, GINPUT
 
 
 class ComboboxBO(TTKCombobox):
-    OPTIONS_SPECIFIC = tuple(
-        set(TTKCombobox.OPTIONS_SPECIFIC) - set(("state",))
-    )
+    OPTIONS_SPECIFIC = tuple(set(TTKCombobox.OPTIONS_SPECIFIC) - {"state"})
     OPTIONS_CUSTOM = TTKCombobox.OPTIONS_CUSTOM + ("keyvariable",)
     properties = (
         TTKCombobox.OPTIONS_STANDARD

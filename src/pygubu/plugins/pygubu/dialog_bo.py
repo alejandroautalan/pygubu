@@ -1,4 +1,3 @@
-# encoding: utf-8
 from pygubu.api.v1 import register_widget
 from pygubu.plugins.tk.tkstdwidgets import TKToplevel
 from pygubu.widgets.dialog import Dialog
@@ -14,7 +13,7 @@ class DialogBO(TKToplevel):
     virtual_events = ("<<DialogClose>>",)
 
     def layout(self, target=None, *, forget=False):
-        super(DialogBO, self).layout(self.widget.toplevel, forget=forget)
+        super().layout(self.widget.toplevel, forget=forget)
 
     def _set_property(self, target_widget, pname, value):
         if pname == "modal":
@@ -24,9 +23,7 @@ class DialogBO(TKToplevel):
                 modal = True
             self.widget.set_modal(modal)
         else:
-            super(DialogBO, self)._set_property(
-                self.widget.toplevel, pname, value
-            )
+            super()._set_property(self.widget.toplevel, pname, value)
 
     def get_child_master(self):
         return self.widget.toplevel
@@ -35,13 +32,11 @@ class DialogBO(TKToplevel):
     # Code generation methods
     #
     def code_child_master(self):
-        return "{0}.toplevel".format(self.code_identifier())
+        return f"{self.code_identifier()}.toplevel"
 
     def _code_set_property(self, targetid, pname, value, code_bag):
         new_target = f"{targetid}.toplevel"
-        super(DialogBO, self)._code_set_property(
-            new_target, pname, value, code_bag
-        )
+        super()._code_set_property(new_target, pname, value, code_bag)
 
 
 register_widget(

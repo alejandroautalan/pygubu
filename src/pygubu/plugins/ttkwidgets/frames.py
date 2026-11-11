@@ -30,9 +30,7 @@ class ScrolledFrameBO(TTKFrame):
             return tk.getboolean(value)
         if pname == "compound":
             return tk.LEFT if value == "left" else tk.RIGHT
-        return super(ScrolledFrameBO, self)._process_property_value(
-            pname, value
-        )
+        return super()._process_property_value(pname, value)
 
     def code_child_master(self):
         return f"{self.code_identifier()}.interior"
@@ -98,9 +96,7 @@ class ToggledFrameBO(TTKFrame):
         if pname in ("autohidescrollbar",):
             final_value = tk.getboolean(value)
         else:
-            final_value = super(ToggledFrameBO, self)._process_property_value(
-                pname, value
-            )
+            final_value = super()._process_property_value(pname, value)
         return final_value
 
     def code_child_master(self):

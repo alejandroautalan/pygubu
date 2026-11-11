@@ -44,9 +44,7 @@ class ScaleEntryBO(TTKFrame):
             if value in values:
                 final_value = values[value]
         else:
-            final_value = super(ScaleEntryBO, self)._process_property_value(
-                pname, value
-            )
+            final_value = super()._process_property_value(pname, value)
         return final_value
 
 

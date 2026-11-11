@@ -17,7 +17,7 @@ class ScrolledListboxBO(TKListbox):
     ro_properties = TKListbox.ro_properties + OPTIONS_CUSTOM
 
     def configure(self, target=None):
-        super(ScrolledListboxBO, self).configure(self.widget.listbox)
+        super().configure(self.widget.listbox)
 
     def _process_property_value(self, pname, value):
         final_value = value
@@ -29,16 +29,14 @@ class ScrolledListboxBO(TKListbox):
             if value in values:
                 final_value = values[value]
         else:
-            final_value = super(
-                ScrolledListboxBO, self
-            )._process_property_value(pname, value)
+            final_value = super()._process_property_value(pname, value)
         return final_value
 
     def code_configure(self, targetid=None):
         if targetid is None:
             targetid = self.code_identifier()
         newtarget = f"{targetid}.listbox"
-        return super(ScrolledListboxBO, self).code_configure(newtarget)
+        return super().code_configure(newtarget)
 
 
 _builder_uid = f"{_plugin_uid}.ScrolledListbox"

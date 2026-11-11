@@ -29,9 +29,7 @@ class TickScaleBO(TTKScale):
         elif pname in ("from", "to_", "resolution", "tickinterval"):
             final_value = float(value)
         else:
-            final_value = super(TickScaleBO, self)._process_property_value(
-                pname, value
-            )
+            final_value = super()._process_property_value(pname, value)
         return final_value
 
 

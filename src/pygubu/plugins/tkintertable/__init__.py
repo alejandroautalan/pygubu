@@ -23,7 +23,7 @@ class TkintertableLoader(BuilderLoaderPlugin, IDesignerPlugin):
         spec = importlib.util.find_spec("tkintertable")
         return spec is not None
 
-    def get_designer_plugin(self) -> Optional[IDesignerPlugin]:
+    def get_designer_plugin(self) -> IDesignerPlugin | None:
         return self
 
     #

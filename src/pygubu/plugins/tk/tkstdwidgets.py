@@ -1,4 +1,3 @@
-# encoding: utf-8
 import logging
 import tkinter as tk
 
@@ -600,7 +599,7 @@ class TKText(BuilderObject):
                 target_widget.delete("0.0", tk.END)
                 target_widget.insert("0.0", value)
         else:
-            super(TKText, self)._set_property(target_widget, pname, value)
+            super()._set_property(target_widget, pname, value)
 
     #
     # Code generation methods
@@ -626,9 +625,7 @@ class TKText(BuilderObject):
                 lines.append(f'{targetid}.insert("0.0", _text_)')
             code_bag[pname] = lines
         else:
-            super(TKText, self)._code_set_property(
-                targetid, pname, value, code_bag
-            )
+            super()._code_set_property(targetid, pname, value, code_bag)
 
 
 register_widget(
@@ -927,7 +924,7 @@ class TKSpinbox(BuilderObject):
                 to = from_ + 1
             target_widget.configure(from_=from_, to=to)
         else:
-            super(TKSpinbox, self)._set_property(target_widget, pname, value)
+            super()._set_property(target_widget, pname, value)
 
 
 register_widget(
@@ -1178,9 +1175,7 @@ class TKMenuitem(BuilderObject):
             # pass, property for command configuration
             pass
         else:
-            super(TKMenuitem, self)._code_set_property(
-                targetid, pname, value, code_bag
-            )
+            super()._code_set_property(targetid, pname, value, code_bag)
 
     def _pass_widgetid_to_callback(self):
         include_id = self.wmeta.properties.get(
@@ -1217,9 +1212,7 @@ class TKMenuitem(BuilderObject):
         if self.itemtype != "submenu":
             return self._code_connect_item_command(cmd_pname, cmd, cbname)
         else:
-            return super(TKMenuitem, self)._code_connect_command(
-                cmd_pname, cmd, cbname
-            )
+            return super()._code_connect_command(cmd_pname, cmd, cbname)
 
     def code_connect_commands(self):
         # Do nothing here because we already called in realize method.
@@ -1280,22 +1273,22 @@ class TKMenuitemSubmenu(TKMenuitem):
         master = parent.get_child_master()
         self._setup_item_index(parent)
 
-        menu_properties = dict(
-            (k, v)
+        menu_properties = {
+            k: v
             for k, v in self.wmeta.properties.items()
             if k in TKMenu.properties
-        )
+        }
         self._setup_item_properties(menu_properties)
         submenu_name = self.wmeta.properties.get("specialmenu", None)
         if submenu_name is None:
             submenu_name = str(self.wmeta.identifier).lower()
         menu_properties["name"] = submenu_name
 
-        item_properties = dict(
-            (k, v)
+        item_properties = {
+            k: v
             for k, v in self.wmeta.properties.items()
             if k in TKMenuitem.properties
-        )
+        }
         self._setup_item_properties(item_properties)
 
         self.widget = submenu = TKMenu.class_(master, **menu_properties)
@@ -1341,7 +1334,7 @@ class TKMenuitemSubmenu(TKMenuitem):
 
         mpbag = []
         for pname in kw_properties:
-            line = "{0}={1}".format(pname, code_bag[pname])
+            line = f"{pname}={code_bag[pname]}"
             mpbag.append(line)
         mprops = ""
         if mpbag:
@@ -1362,21 +1355,21 @@ class TKMenuitemSubmenu(TKMenuitem):
             lines.extend(code_bag[pname])
 
         pbag = []
-        prop = "menu={0}".format(self.code_identifier())
+        prop = f"menu={self.code_identifier()}"
         pbag.append(prop)
         for pname in kw_properties:
-            line = "{0}={1}".format(pname, code_bag[pname])
+            line = f"{pname}={code_bag[pname]}"
             pbag.append(line)
         props = ""
         if pbag:
-            props = ", {0}".format(", ".join(pbag))
+            props = ", {}".format(", ".join(pbag))
 
         # creation
-        line = "{0} = tk.Menu({1}{2})".format(
+        line = "{} = tk.Menu({}{})".format(
             self.code_identifier(), masterid, mprops
         )
         lines.append(line)
-        line = "{0}.add(tk.CASCADE{1})".format(masterid, props)
+        line = f"{masterid}.add(tk.CASCADE{props})"
         lines.append(line)
 
         return lines

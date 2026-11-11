@@ -6,9 +6,7 @@ from ..awesometkinter import _plugin_uid, _designer_tabs
 
 
 class SimpleScrollbarBO(TTKScrollbar):
-    OPTIONS_STANDARD = tuple(
-        set(TTKScrollbar.OPTIONS_STANDARD) - set(("style",))
-    )
+    OPTIONS_STANDARD = tuple(set(TTKScrollbar.OPTIONS_STANDARD) - {"style"})
     OPTIONS_CUSTOM = ("bg", "slider_color", "width")
     properties = (
         OPTIONS_STANDARD + TTKScrollbar.OPTIONS_SPECIFIC + OPTIONS_CUSTOM

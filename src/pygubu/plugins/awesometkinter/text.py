@@ -25,8 +25,7 @@ class ScrolledTextBO(TKText):
         TKText.OPTIONS_STANDARD + TKText.OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     )
     ro_properties = tuple(
-        (set(TKText.ro_properties) | set(OPTIONS_CUSTOM) | set(("wrap",)))
-        - set(("text",))
+        (set(TKText.ro_properties) | set(OPTIONS_CUSTOM) | {"wrap"}) - {"text"}
     )
     class_ = atk.text.ScrolledText
 

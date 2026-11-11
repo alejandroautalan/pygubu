@@ -41,13 +41,13 @@ _properties = (
     (
         "corner_radius",
         "choice",
-        {"values": [""] + [x for x in range(0, 31)], "state": "readonly"},
+        {"values": [""] + [*range(0, 31)], "state": "readonly"},
     ),
     ("bg_color", "colorentry", _none),
     (
         "max_zoom",
         "choice",
-        {"values": [x for x in range(1, 20)], "state": "readonly"},
+        {"values": [*range(1, 20)], "state": "readonly"},
     ),
 )
 

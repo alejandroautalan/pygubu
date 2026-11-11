@@ -23,7 +23,7 @@ class TkinterMapViewLoader(BuilderLoaderPlugin, IDesignerPlugin):
         spec = importlib.util.find_spec("tkintermapview")
         return spec is not None
 
-    def get_designer_plugin(self) -> Optional[IDesignerPlugin]:
+    def get_designer_plugin(self) -> IDesignerPlugin | None:
         return self
 
     #

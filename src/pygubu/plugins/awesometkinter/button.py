@@ -6,7 +6,7 @@ from ..awesometkinter import _plugin_uid, _designer_tabs
 
 
 class Button3dBO(TTKButton):
-    OPTIONS_STANDARD = tuple(set(TTKButton.OPTIONS_STANDARD) - set(("style",)))
+    OPTIONS_STANDARD = tuple(set(TTKButton.OPTIONS_STANDARD) - {"style"})
     OPTIONS_CUSTOM = ("bg", "fg")
     properties = OPTIONS_STANDARD + TTKButton.OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     ro_properties = TTKButton.ro_properties + ("bg", "fg")
@@ -18,9 +18,7 @@ register_widget(_builder_uid, Button3dBO, "Button3d", _designer_tabs, group=2)
 
 
 class RadiobuttonBO(TTKRadiobutton):
-    OPTIONS_STANDARD = tuple(
-        set(TTKRadiobutton.OPTIONS_STANDARD) - set(("style",))
-    )
+    OPTIONS_STANDARD = tuple(set(TTKRadiobutton.OPTIONS_STANDARD) - {"style"})
     OPTIONS_CUSTOM = (
         "bg",
         "fg",

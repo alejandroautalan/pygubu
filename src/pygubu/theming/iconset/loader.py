@@ -21,8 +21,7 @@ def change_icon_color(root: etree.ElementTree, fill):
     # check if uses color information
     # some tabler filled icon? or new FA icons?
     colored_nodes = set(
-        [node for node in root.findall("*[@fill]")]
-        + [node for node in root.findall("*[@stroke]")]
+        [*root.findall("*[@fill]")] + [*root.findall("*[@stroke]")]
     )
     root_has_color = any(
         (

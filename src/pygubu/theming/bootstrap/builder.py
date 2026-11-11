@@ -393,7 +393,7 @@ if { [info exists ::tk::dialog::file::pbs_hack ] == 1 } {
         settings = {}
         self.create_default_style(settings)
 
-        colornames = [c for c in self.colors.names()]
+        colornames = [*self.colors.names()]
         colornames.insert(0, None)
         for name in colornames:
             # Frames

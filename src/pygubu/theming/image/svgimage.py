@@ -4,7 +4,7 @@ import xml.etree.ElementTree as etree
 import tkinter as tk
 
 from enum import Enum, auto
-from typing import Callable
+from collections.abc import Callable
 from pygubu.theming.image.photoreusable import (
     PhotoImageReusable,
     ReusableImageMixin,

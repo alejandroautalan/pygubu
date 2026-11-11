@@ -1,4 +1,3 @@
-# encoding: utf-8
 import tkinter as tk
 from pygubu.api.v1 import BuilderObject, register_widget
 from pygubu.plugins.ttk.ttkstdwidgets import TTKButton
@@ -54,7 +53,7 @@ register_widget(
 class PathChooserButtonBO(PathChooserBaseMixin, BuilderObject):
     class_ = PathChooserButton
     properties = PathChooserBaseMixin.base_properties + tuple(
-        set(TTKButton.properties) - set(("command", "default"))
+        set(TTKButton.properties) - {"command", "default"}
     )
     virtual_events = ("<<PathChooserPathChanged>>",)
 

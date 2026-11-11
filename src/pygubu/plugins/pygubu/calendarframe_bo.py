@@ -1,4 +1,3 @@
-# encoding: utf-8
 from pygubu.api.v1 import (
     BuilderObject,
     register_widget,

@@ -24,9 +24,7 @@ class AlphaBarBO(TKCanvas):
         elif pname == "color":
             final_value = getrgb(value)
         else:
-            final_value = super(AlphaBarBO, self)._process_property_value(
-                pname, value
-            )
+            final_value = super()._process_property_value(pname, value)
         return final_value
 
     def _code_process_property_value(self, targetid, pname, value):
@@ -86,9 +84,7 @@ class ColorSquareBO(TKCanvas):
             rgb = getrgb(value)
             final_value = rgb_to_hsv(*rgb)
         else:
-            final_value = super(ColorSquareBO, self)._process_property_value(
-                pname, value
-            )
+            final_value = super()._process_property_value(pname, value)
         return final_value
 
     def _code_process_property_value(self, targetid, pname, value):
@@ -142,9 +138,7 @@ class GradientBarBO(TKCanvas):
         if pname in ("hue", "height", "width"):
             final_value = int(value)
         else:
-            final_value = super(GradientBarBO, self)._process_property_value(
-                pname, value
-            )
+            final_value = super()._process_property_value(pname, value)
         return final_value
 
     def code_imports(self):

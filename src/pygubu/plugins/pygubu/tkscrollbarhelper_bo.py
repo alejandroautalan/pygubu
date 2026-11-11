@@ -1,4 +1,3 @@
-# encoding: utf-8
 import tkinter as tk
 
 from pygubu.api.v1 import BuilderObject, register_widget
@@ -53,21 +52,19 @@ class TKSBHelperBO(BuilderObject):
     # Code generation methods
     #
     def code_child_master(self):
-        return "{0}.container".format(self.code_identifier())
+        return f"{self.code_identifier()}.container"
 
     def code_child_add(self, childid):
         lines = []
-        line = "{0}.add_child({1})".format(self.code_identifier(), childid)
+        line = f"{self.code_identifier()}.add_child({childid})"
         lines.append(line)
         return lines
 
     def _code_set_property(self, targetid, pname, value, code_bag):
         if pname == "usemousewheel":
-            code_bag[pname] = "{0}".format(tk.getboolean(value))
+            code_bag[pname] = f"{tk.getboolean(value)}"
         else:
-            super(TKSBHelperBO, self)._code_set_property(
-                targetid, pname, value, code_bag
-            )
+            super()._code_set_property(targetid, pname, value, code_bag)
 
 
 register_widget(

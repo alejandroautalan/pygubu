@@ -21,9 +21,7 @@ class TableBO(TTKTreeviewBO):
         if pname in ("drag_cols", "drag_rows", "sortable"):
             final_value = tk.getboolean(value)
         else:
-            final_value = super(TableBO, self)._process_property_value(
-                pname, value
-            )
+            final_value = super()._process_property_value(pname, value)
         return final_value
 
 
@@ -55,7 +53,7 @@ register_custom_property(
     values=("", "true", "false"),
     default_value="true",
     help=_(
-        "whether columns are sortable by clicking on their headings. " 
+        "whether columns are sortable by clicking on their headings. "
         + "The sorting order depends on the type of data (str, float, ...) which can be set with the column method."
     ),
 )
@@ -73,7 +71,7 @@ class TableColumnBO(TTKTreeviewColumnBO):
     allowed_parents = (_table_uid,)
 
     def _get_column_properties(self, props):
-        colprop = super(TableColumnBO, self)._get_column_properties(props)
+        colprop = super()._get_column_properties(props)
         type_value = props.get("type", None)
         if type_value is not None:
             final_value = str

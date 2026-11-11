@@ -79,8 +79,7 @@ class SlotFrame(SlotFrameBase):
         self._indicators_visible = False
 
     def iter_indicators(self) -> tk.Widget:
-        for fi in (self.fn, self.fs, self.fw, self.fe):
-            yield fi
+        yield from (self.fn, self.fs, self.fw, self.fe)
 
     def indicators_visible(self, visible: bool):
         if self._indicators_visible != visible:

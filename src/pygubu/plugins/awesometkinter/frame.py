@@ -3,6 +3,7 @@ Documentation, License etc.
 
 @package pygubu.plugins.awesometkinter
 """
+
 import tkinter as tk
 from pygubu.i18n import _
 from pygubu.api.v1 import register_widget, register_custom_property
@@ -14,7 +15,7 @@ from ..awesometkinter import _plugin_uid, _designer_tabs
 
 
 class Frame3dBO(TTKFrame):
-    OPTIONS_STANDARD = tuple(set(TTKFrame.OPTIONS_STANDARD) - set(("style",)))
+    OPTIONS_STANDARD = tuple(set(TTKFrame.OPTIONS_STANDARD) - {"style"})
     OPTIONS_CUSTOM = ("bg",)
     properties = OPTIONS_STANDARD + TTKFrame.OPTIONS_SPECIFIC + OPTIONS_CUSTOM
     ro_properties = TTKFrame.ro_properties + ("bg",)

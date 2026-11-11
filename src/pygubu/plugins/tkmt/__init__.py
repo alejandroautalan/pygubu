@@ -28,7 +28,7 @@ class TkmthemesLoader(BuilderLoaderPlugin):
         return None
 
     def get_all_modules(self):
-        return [m for m in self.module_map.keys()]
+        return [*self.module_map.keys()]
 
     def can_load(self, identifier: str) -> bool:
         for module, builders in self.module_map.items():

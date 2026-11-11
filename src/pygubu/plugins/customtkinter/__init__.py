@@ -40,7 +40,7 @@ class CTkBuilderLoader(IBuilderLoaderPlugin, IPluginBase):
         return "pygubu_customtkinter"
 
     @classmethod
-    def get_dependencies(cls) -> List[str]:
+    def get_dependencies(cls) -> list[str]:
         """Return a list of required plugins UID."""
         return ["pygubu"]
 
@@ -55,7 +55,7 @@ class CTkBuilderLoader(IBuilderLoaderPlugin, IPluginBase):
         return None
 
     def get_all_modules(self):
-        return [m for m in self.module_map.keys()]
+        return [*self.module_map.keys()]
 
     def can_load(self, identifier: str) -> bool:
         return identifier.startswith("customtkinter.")

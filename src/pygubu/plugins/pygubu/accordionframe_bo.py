@@ -1,4 +1,3 @@
-# encoding: utf-8
 import tkinter as tk
 from pygubu.api.v1 import (
     BuilderObject,

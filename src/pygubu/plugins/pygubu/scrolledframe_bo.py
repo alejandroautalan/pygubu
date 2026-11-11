@@ -1,4 +1,3 @@
-# encoding: utf-8
 import tkinter as tk
 
 from pygubu.api.v1 import BuilderObject, register_widget
@@ -34,34 +33,28 @@ class TTKScrolledFrameBO(BuilderObject):
 
     def _set_property(self, target_widget, pname, value):
         if pname in ("usemousewheel",):
-            super(TTKScrolledFrameBO, self)._set_property(
-                self.widget, pname, value
-            )
+            super()._set_property(self.widget, pname, value)
         else:
-            super(TTKScrolledFrameBO, self)._set_property(
-                target_widget, pname, value
-            )
+            super()._set_property(target_widget, pname, value)
 
     #
     # Code generation methods
     #
     def code_child_master(self):
-        return "{0}.innerframe".format(self.code_identifier())
+        return f"{self.code_identifier()}.innerframe"
 
     def code_configure(self, targetid=None):
-        realtarget = "{0}.innerframe".format(self.code_identifier())
-        return super(TTKScrolledFrameBO, self).code_configure(realtarget)
+        realtarget = f"{self.code_identifier()}.innerframe"
+        return super().code_configure(realtarget)
 
     def _code_set_property(self, targetid, pname, value, code_bag):
         if pname == "usemousewheel":
-            nvalue = "{0}.configure({1}={2})".format(
+            nvalue = "{}.configure({}={})".format(
                 self.code_identifier(), pname, tk.getboolean(value)
             )
             code_bag[pname] = [nvalue]
         else:
-            super(TTKScrolledFrameBO, self)._code_set_property(
-                targetid, pname, value, code_bag
-            )
+            super()._code_set_property(targetid, pname, value, code_bag)
 
 
 register_widget(
