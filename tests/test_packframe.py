@@ -1,14 +1,9 @@
-import os
-import sys
 import unittest
-import tkinter as tk
-import tkinter.ttk as ttk
 
-import fixpath
-import pygubu
 import support
 
-from pygubu.widgets.packframe import PackFrame, Direction
+import pygubu
+from pygubu.widgets.packframe import Direction, PackFrame
 
 
 class TestPackFrame(unittest.TestCase):

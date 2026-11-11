@@ -1,14 +1,9 @@
-import os
-import sys
-import unittest
 import tkinter as tk
-import tkinter.ttk as ttk
-from tkinter.scrolledtext import ScrolledText
+import unittest
 
-
-import fixpath
-import pygubu
 import support
+
+import pygubu
 
 
 class TestText(unittest.TestCase):

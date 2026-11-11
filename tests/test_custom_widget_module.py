@@ -1,4 +1,5 @@
-import tkinter.ttk as ttk
+from tkinter import ttk
+
 from pygubu.api.v1 import BuilderObject, register_widget
 
 

@@ -1,18 +1,15 @@
-import os
-import sys
-import unittest
 import tkinter as tk
-import tkinter.ttk as ttk
+import unittest
 
-import fixpath
-import pygubu
 import support
+
+import pygubu
 
 
 class TestEntryCommands(unittest.TestCase):
     def setUp(self):
         support.root_deiconify()
-        xmldata = xmldata = "test_entry_commands.ui"
+        xmldata = "test_entry_commands.ui"
         self.builder = builder = pygubu.Builder()
         builder.add_from_file(xmldata)
         self.widget = builder.get_object("entry")

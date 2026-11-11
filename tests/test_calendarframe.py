@@ -1,13 +1,9 @@
-import os
-import sys
-import unittest
 import datetime
-import tkinter as tk
-import tkinter.ttk as ttk
+import unittest
 
-import fixpath
-import pygubu
 import support
+
+import pygubu
 from pygubu.widgets.calendarframe import CalendarFrame
 
 

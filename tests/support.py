@@ -20,7 +20,7 @@ def check_tk_availability():
             # process not running under the same user id as the current console
             # user.  To avoid that, raise an exception if the window manager
             # connection is not available.
-            from ctypes import cdll, c_int, pointer, Structure
+            from ctypes import Structure, c_int, cdll, pointer
             from ctypes.util import find_library
 
             app_services = cdll.LoadLibrary(find_library("ApplicationServices"))
@@ -54,7 +54,6 @@ def check_tk_availability():
 
     if _tk_unavailable:
         raise unittest.SkipTest(_tk_unavailable)
-    return
 
 
 def get_tk_root():

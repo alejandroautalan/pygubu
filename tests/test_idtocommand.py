@@ -1,12 +1,8 @@
-import os
-import sys
 import unittest
-import tkinter as tk
-import tkinter.ttk as ttk
 
-import fixpath
-import pygubu
 import support
+
+import pygubu
 
 
 class TestIdtocommand(unittest.TestCase):

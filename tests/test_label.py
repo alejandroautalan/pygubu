@@ -1,12 +1,10 @@
-import support
-import pygubu
-import os
-import sys
-import unittest
 import tkinter as tk
-import tkinter.ttk as ttk
+import unittest
+from tkinter import ttk
 
-import fixpath
+import support
+
+import pygubu
 
 
 class TestLabel(unittest.TestCase):

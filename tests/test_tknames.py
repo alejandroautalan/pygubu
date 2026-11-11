@@ -1,13 +1,8 @@
-import os
-import sys
 import unittest
-import tkinter as tk
-import tkinter.ttk as ttk
 
-import fixpath
-import pygubu
 import support
-from pygubu.widgets.accordionframe import AccordionFrame
+
+import pygubu
 
 
 class TestWidgetTkNames(unittest.TestCase):

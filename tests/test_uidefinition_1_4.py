@@ -1,11 +1,7 @@
-import os
-import sys
 import unittest
-import tkinter as tk
-import tkinter.ttk as ttk
 
-import fixpath
 import support
+
 import pygubu
 
 

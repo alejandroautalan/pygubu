@@ -1,12 +1,10 @@
-import os
-import sys
-import unittest
 import tkinter as tk
-import tkinter.ttk as ttk
+import unittest
+from tkinter import ttk
 
-import fixpath
-import pygubu
 import support
+
+import pygubu
 
 
 class TestEntry(unittest.TestCase):

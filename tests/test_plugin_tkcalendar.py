@@ -1,14 +1,9 @@
-import os
-import sys
 import unittest
-import tkinter as tk
-import tkinter.ttk as ttk
-
-
-import fixpath
-import pygubu
-import support
 from unittest.case import SkipTest
+
+import support
+
+import pygubu
 
 has_tkcalendar = True
 try:
