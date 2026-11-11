@@ -1,4 +1,3 @@
-# encoding: utf-8
 import os
 import sys
 import unittest
@@ -22,7 +21,7 @@ class TestTkcalendarCalendar(unittest.TestCase):
     def setUp(self):
         if not has_tkcalendar:
             raise SkipTest("tkcalendar not installed")
-        
+
         support.root_deiconify()
         xmldata = "test_plugin_tkcalendar.ui"
         self.builder = builder = pygubu.Builder()
@@ -42,7 +41,7 @@ class TestTkcalendarDateEntry(unittest.TestCase):
     def setUp(self):
         if not has_tkcalendar:
             raise SkipTest("tkcalendar not installed")
-        
+
         support.root_deiconify()
         xmldata = "test_plugin_tkcalendar.ui"
         self.builder = builder = pygubu.Builder()

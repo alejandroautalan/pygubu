@@ -1,4 +1,3 @@
-# encoding: utf-8
 # Copyright © 2001-2013 Python Software Foundation; All Rights Reserved
 
 import sys

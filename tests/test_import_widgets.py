@@ -1,4 +1,3 @@
-# encoding: utf-8
 import os
 import sys
 import unittest
@@ -11,7 +10,7 @@ import pygubu
 import support
 
 
-class MyContainer(object):
+class MyContainer:
     pass
 
 

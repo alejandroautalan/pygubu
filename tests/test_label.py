@@ -1,4 +1,3 @@
-# encoding: utf-8
 import support
 import pygubu
 import os
