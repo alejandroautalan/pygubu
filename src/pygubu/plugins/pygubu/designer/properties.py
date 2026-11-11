@@ -96,7 +96,7 @@ plugin_properties = dict(
             "The anchor value controls how to place the grid within the container window when no row/column has any weight."
         ),
     ),
-    grid_dim_rows=dict(
+    grid_dimrows=dict(
         buid=[nspygubu.widgets.GridFrame],
         editor="choice",
         values=["auto", "1", "2", "3", "4", "5", "0, 1, 0"],
@@ -110,7 +110,7 @@ Allowed values:
   """
         ),
     ),
-    grid_dim_cols=dict(
+    grid_dimcols=dict(
         buid=[nspygubu.widgets.GridFrame],
         editor="choice",
         values=["auto", "1", "2", "0, 1, 0"],

@@ -199,8 +199,8 @@ class GridFrame(WidgetConfigureMixin, _FlexGrid):
     """
 
     PROP_GRID_ANCHOR = "grid_anchor"
-    PROP_GRID_ROWS = "grid_dim_rows"
-    PROP_GRID_COLS = "grid_dim_cols"
+    PROP_GRID_ROWS = "grid_dimrows"
+    PROP_GRID_COLS = "grid_dimcols"
     PROP_GRID_PROPAGATE = "grid_propagate"
     PROP_GRID_FLOW = "grid_flow"
     PROP_GRID_GAP = "grid_gap"

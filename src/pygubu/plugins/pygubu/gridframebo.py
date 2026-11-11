@@ -35,8 +35,8 @@ class GridFrameBO(TTKFrame):
     children_layout_manager = "grid"
     properties = (
         "grid_anchor",
-        "grid_dim_rows",
-        "grid_dim_cols",
+        "grid_dimrows",
+        "grid_dimcols",
         "grid_propagate",
         "grid_flow",
         "grid_gap",
