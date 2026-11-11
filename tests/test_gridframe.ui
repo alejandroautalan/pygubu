@@ -1,0 +1,212 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings />
+    <customwidgets />
+    <resources />
+  </project>
+  <object class="ttk.Frame" id="mainframe">
+    <property name="height">400</property>
+    <property name="padding">2</property>
+    <property name="width">300</property>
+    <layout manager="grid">
+      <property name="column">0</property>
+      <property name="row">0</property>
+      <property name="sticky">nesw</property>
+    </layout>
+    <containerlayout manager="pack">
+      <property name="propagate">false</property>
+    </containerlayout>
+    <child>
+      <object class="pygubu.widgets.GridFrame" id="gfh" named="True">
+        <layout manager="pack">
+          <property name="pady">0 10p</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="tk.Frame" id="frame1">
+            <property name="background">#ff0000</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="frame2">
+            <property name="background">#00ff00</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="frame3">
+            <property name="background">#0000ff</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="pygubu.widgets.GridFrame" id="gfv" named="True">
+        <property name="grid_flow">column</property>
+        <layout manager="pack">
+          <property name="pady">0 10</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="tk.Frame" id="frame4">
+            <property name="background">#ff0000</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="frame5">
+            <property name="background">#00ff00</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="frame6">
+            <property name="background">#0000ff</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="pygubu.widgets.GridFrame" id="gf3x3" named="True">
+        <property name="grid_dimcols">3</property>
+        <property name="grid_gap">1p</property>
+        <layout manager="pack">
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="tk.Frame" id="frame7">
+            <property name="background">#8e2100</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="frame8">
+            <property name="background">#8eab00</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="frame9">
+            <property name="background">#8e2100</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="frame11">
+            <property name="background">#8eab00</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="frame10">
+            <property name="background">#8e2100</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="frame17">
+            <property name="background">#8eab00</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="frame12">
+            <property name="background">#8e2100</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="frame16">
+            <property name="background">#8eab00</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+        <child>
+          <object class="tk.Frame" id="frame18">
+            <property name="background">#8e2100</property>
+            <property name="height">50</property>
+            <property name="width">50</property>
+            <layout manager="grid">
+              <property name="column">0</property>
+              <property name="row">0</property>
+            </layout>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>

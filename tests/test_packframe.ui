@@ -1,0 +1,401 @@
+<?xml version='1.0' encoding='utf-8'?>
+<interface version="1.5" author="PygubuDesigner 0.41.4">
+  <project>
+    <settings />
+    <customwidgets />
+    <resources />
+  </project>
+  <object class="ttk.Frame" id="mainframe">
+    <property name="height">700</property>
+    <property name="padding">5p</property>
+    <property name="width">400</property>
+    <layout manager="grid">
+      <property name="column">0</property>
+      <property name="row">0</property>
+      <property name="sticky">nsew</property>
+    </layout>
+    <containerlayout manager="pack">
+      <property name="propagate">false</property>
+    </containerlayout>
+    <child>
+      <object class="tk.Frame" id="frame25">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="pady">0 2p</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="pygubu.widgets.PackFrame" id="pfh" named="True">
+            <layout manager="pack">
+              <property name="padx">0 10p</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="tk.Frame" id="frame19">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame20">
+                <property name="background">#0071d6</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame21">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="pygubu.widgets.PackFrame" id="pfv" named="True">
+            <property name="pack_direction">column</property>
+            <layout manager="pack">
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="tk.Frame" id="frame22">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame23">
+                <property name="background">#0071d6</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame24">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Frame" id="frame29">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">True</property>
+          <property name="fill">x</property>
+          <property name="pady">0 2p</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="pygubu.widgets.PackFrame" id="boxframe3" named="True">
+            <property name="pack_expand">True</property>
+            <property name="pack_chsizing">fill</property>
+            <property name="pack_cvsizing">fill</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="padx">0 10p</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="tk.Frame" id="frame30">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame31">
+                <property name="background">#0071d6</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame32">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="pygubu.widgets.PackFrame" id="boxframe4" named="True">
+            <property name="pack_direction">column</property>
+            <property name="pack_expand">True</property>
+            <property name="pack_chsizing">fill</property>
+            <property name="pack_cvsizing">fill</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">x</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="tk.Frame" id="frame33">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame34">
+                <property name="background">#0071d6</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame35">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Frame" id="frame36">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">True</property>
+          <property name="fill">y</property>
+          <property name="pady">0 2p</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="pygubu.widgets.PackFrame" id="boxframe5" named="True">
+            <property name="pack_expand">True</property>
+            <property name="pack_chsizing">fill</property>
+            <property name="pack_cvsizing">fill</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">y</property>
+              <property name="padx">0 10p</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="tk.Frame" id="frame37">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame38">
+                <property name="background">#0071d6</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame39">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="pygubu.widgets.PackFrame" id="boxframe6" named="True">
+            <property name="pack_direction">column</property>
+            <property name="pack_expand">True</property>
+            <property name="pack_chsizing">fill</property>
+            <property name="pack_cvsizing">fill</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">y</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="tk.Frame" id="frame40">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame41">
+                <property name="background">#0071d6</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame42">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
+      <object class="tk.Frame" id="frame43">
+        <property name="height">200</property>
+        <property name="width">200</property>
+        <layout manager="pack">
+          <property name="expand">True</property>
+          <property name="fill">both</property>
+          <property name="pady">0 2p</property>
+          <property name="side">top</property>
+        </layout>
+        <child>
+          <object class="pygubu.widgets.PackFrame" id="boxframe7" named="True">
+            <property name="pack_expand">True</property>
+            <property name="pack_chsizing">fill</property>
+            <property name="pack_cvsizing">fill</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="padx">0 10p</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="tk.Frame" id="frame44">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame45">
+                <property name="background">#0071d6</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame46">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="pygubu.widgets.PackFrame" id="boxframe8" named="True">
+            <property name="pack_direction">column</property>
+            <property name="pack_expand">True</property>
+            <property name="pack_chsizing">fill</property>
+            <property name="pack_cvsizing">fill</property>
+            <layout manager="pack">
+              <property name="expand">true</property>
+              <property name="fill">both</property>
+              <property name="side">left</property>
+            </layout>
+            <child>
+              <object class="tk.Frame" id="frame47">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame48">
+                <property name="background">#0071d6</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+            <child>
+              <object class="tk.Frame" id="frame49">
+                <property name="background">#0000b4</property>
+                <property name="height">50</property>
+                <property name="width">50</property>
+                <layout manager="pack">
+                  <property name="side">top</property>
+                </layout>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
