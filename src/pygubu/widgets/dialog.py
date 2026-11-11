@@ -1,9 +1,8 @@
-# encoding: UTF-8
 import tkinter as tk
 import tkinter.ttk as ttk
 
 
-class Dialog(object):
+class Dialog:
     """
     Virtual events:
         <<DialogClose>>
@@ -64,7 +63,7 @@ class Dialog(object):
         else:
             x_coord = int(window.winfo_screenwidth() / 2 - width / 2)
             y_coord = int(window.winfo_screenheight() / 2 - height / 2)
-        geom = "{0}x{1}+{2}+{3}".format(width, height, x_coord, y_coord)
+        geom = f"{width}x{height}+{x_coord}+{y_coord}"
 
         def set_geometry_later():
             window.geometry(geom)

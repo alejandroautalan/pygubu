@@ -1,4 +1,3 @@
-# encoding: utf-8
 import json
 import logging
 import enum
@@ -65,7 +64,7 @@ class FamilyType(enum.Flag):
     MODIFIER = enum.auto()  # The object is a modifier of another object ?
 
 
-class BuilderObject(object):
+class BuilderObject:
     """Base class for Widgets created with Builder.
 
     children_layout_override: Determine if children need to cancel layout on themselves.
@@ -147,7 +146,7 @@ class BuilderObject(object):
         return allowed
 
     def __init__(self, builder, wmeta):
-        super(BuilderObject, self).__init__()
+        super().__init__()
         self.widget = None
         self.builder = builder
         self.wmeta = wmeta
@@ -813,7 +812,7 @@ class EntryBaseBO(BuilderObject):
             target_widget.insert("0", value)
             target_widget["state"] = wstate
         else:
-            super(EntryBaseBO, self)._set_property(target_widget, pname, value)
+            super()._set_property(target_widget, pname, value)
 
     #
     # Code generation methods
@@ -834,9 +833,7 @@ class EntryBaseBO(BuilderObject):
                     lines.append(line)
             code_bag[pname] = lines
         else:
-            super(EntryBaseBO, self)._code_set_property(
-                targetid, pname, value, code_bag
-            )
+            super()._code_set_property(targetid, pname, value, code_bag)
 
 
 class PanedWindowBO(BuilderObject):
@@ -963,7 +960,7 @@ class WmMixin:
             code_bag[pname] = (line,)
         elif pname == "resizable":
             p1, p2 = self.RESIZABLE[value]
-            line = "{0}.resizable({1}, {2})".format(targetid, p1, p2)
+            line = f"{targetid}.resizable({p1}, {p2})"
             code_bag[pname] = (line,)
         elif pname in ("maxsize", "minsize"):
             if "|" in value:
@@ -982,7 +979,7 @@ class WmMixin:
             code_bag[pname] = (line,)
         elif pname == "iconphoto":
             image = self.builder.code_create_image(value)
-            line = "{0}.iconphoto(True, {1})".format(targetid, image)
+            line = f"{targetid}.iconphoto(True, {image})"
             code_bag[pname] = (line,)
         else:
             super()._code_set_property(targetid, pname, value, code_bag)
@@ -1000,7 +997,7 @@ class OptionMenuBaseMixin:
         variable = init_args.pop("variable", None)
         value = init_args.pop("value", None)
         if variable is None:
-            varname = "{0}__var".format(self.wmeta.identifier)
+            varname = f"{self.wmeta.identifier}__var"
             variable = self.builder.create_variable(varname)
         if value is not None:
             variable.set(value)
@@ -1008,9 +1005,9 @@ class OptionMenuBaseMixin:
         if values is not None:
             values = values.split(",")
 
-        class _cb_proxy(object):
+        class _cb_proxy:
             def __init__(self):
-                super(_cb_proxy, self).__init__()
+                super().__init__()
                 self.callback = None
 
             def __call__(self, arg1):

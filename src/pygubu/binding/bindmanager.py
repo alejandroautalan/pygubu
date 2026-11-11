@@ -79,11 +79,11 @@ class UnknownMouseWheelCommand(MouseWheelCommand):
         return False
 
 
-class AppBindManagerBase(object):
+class AppBindManagerBase:
     CLASS_NAME = "TAppBindManager"
     FLAG_NAME = "_appbind_visited"
     # Acces to tk instances
-    masters: List[tk.Widget] = []
+    masters: list[tk.Widget] = []
     # Mouse wheel support
     mw_listeners = []  # Mousewheel listeners
 
@@ -223,5 +223,4 @@ class AppBindManagerBase(object):
         return on_mousewheel
 
 
-class ApplicationLevelBindManager(AppBindManagerBase):
-    ...
+class ApplicationLevelBindManager(AppBindManagerBase): ...  # noqa: E701

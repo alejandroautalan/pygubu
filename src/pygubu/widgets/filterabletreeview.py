@@ -1,6 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from typing import Callable, Optional
+from typing import Optional
+from collections.abc import Callable
 
 
 _filter_func = Callable[[ttk.Treeview, str, str], bool]
@@ -15,7 +16,7 @@ class BasicFilter:
 
 
 class FilterableTreeviewMixin:
-    def __init__(self, *args, filter_func: Optional[_filter_func] = None, **kw):
+    def __init__(self, *args, filter_func: _filter_func | None = None, **kw):
         super().__init__(*args, **kw)
         self.filter_active = False
         self.filter_value = ""

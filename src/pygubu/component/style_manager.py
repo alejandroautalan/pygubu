@@ -26,7 +26,7 @@ class StyleDefinitionMeta(ABCMeta):
 
 @dataclass
 class RootInfo:
-    current_theme: Optional[str] = None
+    current_theme: str | None = None
     configured_themes: DefaultDict[str, list] = field(
         default_factory=lambda: defaultdict(list)
     )  # theme > [definitions]

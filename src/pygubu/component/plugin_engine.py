@@ -54,7 +54,7 @@ class IPluginBase(ABC, metaclass=PluginRegistry):
         ...
 
     @classmethod
-    def get_dependencies(cls) -> List[str]:
+    def get_dependencies(cls) -> list[str]:
         """Return a list of required plugins UID."""
         return []
 
@@ -63,7 +63,7 @@ class IPluginBase(ABC, metaclass=PluginRegistry):
         "Initialize plugin and return if it is operational or not."
         ...
 
-    def get_designer_plugin(self) -> Optional[IDesignerPlugin]:
+    def get_designer_plugin(self) -> IDesignerPlugin | None:
         """Return class instance that implements IDesignerPlugin"""
         return None
 

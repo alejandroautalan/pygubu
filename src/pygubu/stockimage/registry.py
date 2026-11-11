@@ -15,10 +15,7 @@ from .config import (
 )
 
 
-if sys.version_info < (3, 9):
-    import importlib_resources as resources
-else:
-    import importlib.resources as resources
+import importlib.resources as resources
 
 
 logger = logging.getLogger(__name__)
@@ -45,8 +42,7 @@ class PitType(Enum):
 
 @dataclass
 class StockItem:
-    def create_image(self, *, tk_master=None, custom_loader=None):
-        ...
+    def create_image(self, *, tk_master=None, custom_loader=None): ...
 
 
 @dataclass

@@ -1,4 +1,3 @@
-# encoding: utf-8
 import logging
 import tkinter as tk
 
@@ -21,7 +20,7 @@ def _autoscroll(sbar, first, last):
     sbar.set(first, last)
 
 
-class ScrollbarHelperBase(object):
+class ScrollbarHelperBase:
     VERTICAL = "vertical"
     HORIZONTAL = "horizontal"
     BOTH = "both"
@@ -31,7 +30,7 @@ class ScrollbarHelperBase(object):
     def __init__(self, master=None, **kw):
         self.scrolltype = kw.pop("scrolltype", self.VERTICAL)
         self.usemousewheel = tk.getboolean(kw.pop("usemousewheel", False))
-        super(ScrollbarHelperBase, self).__init__(master, **kw)
+        super().__init__(master, **kw)
         self.vsb = None
         self.hsb = None
         self.cwidget = None
@@ -61,7 +60,9 @@ class ScrollbarHelperBase(object):
             if hasattr(cwidget, "yview"):
                 self.vsb.configure(command=cwidget.yview)
                 cwidget.configure(
-                    yscrollcommand=lambda f, l: _autoscroll(self.vsb, f, l)
+                    yscrollcommand=lambda first, last: _autoscroll(
+                        self.vsb, first, last
+                    )
                 )
             else:
                 msg = "widget %s has no attribute 'yview'"
@@ -71,7 +72,9 @@ class ScrollbarHelperBase(object):
             if hasattr(cwidget, "xview"):
                 self.hsb.configure(command=cwidget.xview)
                 cwidget.configure(
-                    xscrollcommand=lambda f, l: _autoscroll(self.hsb, f, l)
+                    xscrollcommand=lambda first, last: _autoscroll(
+                        self.hsb, first, last
+                    )
                 )
             else:
                 msg = "widget % has no attribute 'xview'"
@@ -93,7 +96,7 @@ class ScrollbarHelperBase(object):
         option = "usemousewheel"
         if key == option:
             return self.usemousewheel
-        return super(ScrollbarHelperBase, self).cget(key)
+        return super().cget(key)
 
     __getitem__ = cget
 

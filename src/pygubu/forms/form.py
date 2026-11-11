@@ -67,7 +67,7 @@ class Form:
     def add_info_display(self, name: str, info_display):
         self.info_display[name] = info_display
 
-    def edit(self, data: dict, initial_bag: Optional[dict] = None):
+    def edit(self, data: dict, initial_bag: dict | None = None):
         """Intializes form to edit data values."""
         self.initialized = True
         self.fields_initial = {}

@@ -1,4 +1,3 @@
-# encoding: utf-8
 import tkinter as tk
 
 from pygubu.binding import (
@@ -285,5 +284,4 @@ class ScrolledFrameBase:
                 BindManager.mousewheel_unbind(w)
 
 
-class TkScrolledFrame(ScrolledFrameBase, tk.Frame):
-    ...
+class TkScrolledFrame(ScrolledFrameBase, tk.Frame): ...  # noqa: E701

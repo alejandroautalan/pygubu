@@ -5,8 +5,7 @@ from .widget import FieldWidget, WidgetInfo, FormInfo
 from .tkwidget import TkFormBuilder, TkVarBasedWidget, TkWidgetViewManager
 
 
-class FrameFormBuilder(TkFormBuilder, ttk.Frame):
-    ...
+class FrameFormBuilder(TkFormBuilder, ttk.Frame): ...  # noqa: E701
 
 
 class TtkWidgetViewManager(TkWidgetViewManager):
@@ -21,8 +20,7 @@ class TtkWidgetViewManager(TkWidgetViewManager):
         if style:
             # remove prefix if exists.
             prefix = "Error."
-            if style.startswith(prefix):
-                style = style[len(prefix) :]
+            style = style.removeprefix(prefix)
             if state:
                 style = f"{prefix}{style}"
             widget.configure(style=style)
@@ -38,12 +36,10 @@ class TtkWidgetInfoViewManager:
         if style:
             # remove prefix if exists
             prefix = "Error."
-            if style.startswith(prefix):
-                style = style[len(prefix) :]
+            style = style.removeprefix(prefix)
             # remove prefix if exists
             prefix = "Help."
-            if style.startswith(prefix):
-                style = style[len(prefix) :]
+            style = style.removeprefix(prefix)
             style = f"{mode}.{style}"
             widget.configure(style=style)
 

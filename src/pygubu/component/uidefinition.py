@@ -1,4 +1,3 @@
-# encoding: UTF-8
 import json
 import operator
 import sys
@@ -32,7 +31,7 @@ except AttributeError:  # Python 2
     JSONDecodeError = ValueError
 
 
-class UIDefinition(object):
+class UIDefinition:
     TK_COMMAND_PROPERTIES = (
         "command",
         "validatecommand",
@@ -44,7 +43,7 @@ class UIDefinition(object):
     )
 
     def __init__(self, wmetaclass=None, translator=None, author=None):
-        super(UIDefinition, self).__init__()
+        super().__init__()
         self.tree = None
         self.root = None
         self._latest_version = "1.5"
@@ -214,7 +213,7 @@ class UIDefinition(object):
                 if pname in ("validatecommand", "invalidcommand"):
                     cmd["cbtype"] = "entry_validate"
                     # get old format args
-                    pargs = "{0}_args".format(pname)
+                    pargs = f"{pname}_args"
                     dpath = xpath.format(pargs)
                     node = element.find(dpath)
                     if node is not None:
@@ -356,7 +355,7 @@ class UIDefinition(object):
         parent_has_layout = False
         parent_layout = None
 
-        xpath = ".//*[@id='{0}']/../..".format(elemid)
+        xpath = f".//*[@id='{elemid}']/../.."
         parent = self.root.find(xpath)
         if parent is not None:
             parent_layout = parent.find("./layout")
@@ -541,7 +540,7 @@ class UIDefinition(object):
         self._tree_load(tree, version)
 
     def get_xmlnode(self, identifier):
-        xpath = ".//object[@id='{0}']".format(identifier)
+        xpath = f".//object[@id='{identifier}']"
         node = self.tree.find(xpath)
         return node
 
@@ -562,7 +561,7 @@ class UIDefinition(object):
         return ET.tostring(self.root, encoding=encoding)
 
     def __repr__(self):
-        return '<UIFile xml="{0}">'.format(self.__str__())
+        return f'<UIFile xml="{self.__str__()}">'
 
     def save(self, file_or_filename):
         self._save_project_settings()
@@ -575,7 +574,7 @@ class UIDefinition(object):
 
     def get_widget(self, identifier):
         wmeta = None
-        xpath = ".//object[@id='{0}']".format(identifier)
+        xpath = f".//object[@id='{identifier}']"
         node = self.tree.find(xpath)
         if node is not None:
             wmeta = self.xmlnode_to_widget(node)
@@ -589,7 +588,7 @@ class UIDefinition(object):
             yield wmeta
 
     def widget_children(self, identifier):
-        xpath = ".//object[@id='{0}']".format(identifier)
+        xpath = f".//object[@id='{identifier}']"
         node = self.tree.find(xpath)
         if node is not None:
             xpath = "./child/object"
@@ -599,7 +598,7 @@ class UIDefinition(object):
                 yield wmeta
 
     def replace_widget(self, identifier, rootmeta):
-        xpath = ".//object[@id='{0}']".format(identifier)
+        xpath = f".//object[@id='{identifier}']"
         parent = self.root.find(xpath + "/..")
         target = parent.find(xpath)
 

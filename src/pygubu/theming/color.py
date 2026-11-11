@@ -11,14 +11,14 @@ class ColorUtil:
     # Color utilities begin
     def make_transparent(self, alpha, foreground, background="#ffffff"):
         """Simulate color transparency."""
-        fg = tuple((c // 256 for c in self.tk_master.winfo_rgb(foreground)))
-        bg = tuple((c // 256 for c in self.tk_master.winfo_rgb(background)))
+        fg = tuple(c // 256 for c in self.tk_master.winfo_rgb(foreground))
+        bg = tuple(c // 256 for c in self.tk_master.winfo_rgb(background))
         rgb_float = [alpha * c1 + (1 - alpha) * c2 for (c1, c2) in zip(fg, bg)]
         rgb_int = [int(x) for x in rgb_float]
         return "#{:02x}{:02x}{:02x}".format(*rgb_int)
 
     def hex_to_rgb(self, color: str):
-        return tuple((c // 256 for c in self.tk_master.winfo_rgb(color)))
+        return tuple(c // 256 for c in self.tk_master.winfo_rgb(color))
 
     def update_hsv(self, color, hd=0, sd=0, vd=0):
         """Modify the hue, saturation, and/or value of a given hex
@@ -43,8 +43,8 @@ class ColorUtil:
             str:
                 The resulting hexadecimal color value
         """
-        rgb_256 = tuple((c // 256 for c in self.tk_master.winfo_rgb(color)))
-        r, g, b = tuple((c / 256 for c in rgb_256))
+        rgb_256 = tuple(c // 256 for c in self.tk_master.winfo_rgb(color))
+        r, g, b = tuple(c / 256 for c in rgb_256)
         h, s, v = colorsys.rgb_to_hsv(r, g, b)
 
         # hue

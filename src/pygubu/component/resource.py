@@ -5,8 +5,7 @@ from functools import reduce
 from enum import Enum, auto
 
 
-class ResourceError(Exception):
-    ...
+class ResourceError(Exception): ...  # noqa: E701
 
 
 class ResourceValue(Enum):
@@ -63,16 +62,16 @@ class DictDataPool(IDataPool):
 
     def deep_get(self, dictionary, keys, default):
         return reduce(
-            lambda d, key: d.get(key, default)
-            if isinstance(d, dict)
-            else default,
+            lambda d, key: (
+                d.get(key, default) if isinstance(d, dict) else default
+            ),
             keys.split("/"),
             dictionary,
         )
 
 
 class ChainedResoucePool(IDataPool):
-    def __init__(self, chain: List[IDataPool]):
+    def __init__(self, chain: list[IDataPool]):
         self.chain = chain
 
     def add_definition(self, definition: ResouceDefinition):

@@ -1,4 +1,3 @@
-# encoding: utf-8
 __all__ = ["ToolTip"]
 
 import tkinter as tk

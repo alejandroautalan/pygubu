@@ -1,4 +1,3 @@
-# encoding: utf-8
 __all__ = ["CalendarView", "CalendarFrame"]
 
 import calendar
@@ -74,7 +73,7 @@ class CalendarView(ttk.Frame):
         if None in sysloc:
             sysloc = None
         else:
-            sysloc = "{0}.{1}".format(*sysloc)
+            sysloc = "{}.{}".format(*sysloc)
 
         self.__options = options = {
             "firstweekday": calendar.SUNDAY,
@@ -521,7 +520,7 @@ class CalendarView(ttk.Frame):
             f, c = i2rc(i, 7)
             if f < len(weeks):
                 day = weeks[f][c]
-                txt = "{0}".format(day) if day != 0 else ""
+                txt = f"{day}" if day != 0 else ""
             if redraw:
                 item = self._txtmat[i]
                 canvas.coords(item, x, y)

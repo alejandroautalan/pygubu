@@ -7,10 +7,7 @@ import pygubu.plugins
 from typing import List
 from .plugin_engine import PluginRegistry, IBuilderLoaderPlugin, IDesignerPlugin
 
-if sys.version_info < (3, 10):
-    from importlib_metadata import entry_points
-else:
-    from importlib.metadata import entry_points
+from importlib.metadata import entry_points
 
 logger = logging.getLogger(__name__)
 
@@ -94,7 +91,7 @@ class PluginManager:
         cls.plugins.extend(activated_instances)
 
     @classmethod
-    def _get_ordered_plugins(cls) -> List:
+    def _get_ordered_plugins(cls) -> list:
         """Return a list of plugins sorted by dependency."""
         # Map by UID
         registry_dict = {

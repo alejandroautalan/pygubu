@@ -76,7 +76,7 @@ class PropertyRegistryBase(IPropertyRegistry):
     def __init__(self):
         super().__init__()
         self._is_sorted: bool = False
-        self._sorted_names: List[str] = None
+        self._sorted_names: list[str] = None
 
     def _add_new(self, name: str, description: dict):
         self.properties[name] = description

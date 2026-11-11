@@ -1,4 +1,3 @@
-# encoding: utf-8
 import json
 import tkinter as tk
 import tkinter.ttk as ttk
@@ -131,7 +130,7 @@ class Combobox(ttk.Combobox):
         """
         choices = values
         # choices from string
-        if isinstance(values, type("")):
+        if isinstance(values, str):
             obj = None
             # try json string
             try:
@@ -161,7 +160,7 @@ class Combobox(ttk.Combobox):
         self._choices.clear()
         for idx, v in enumerate(values):
             key = value = v
-            if not isinstance(v, type("")) and len(v) == 2:
+            if not isinstance(v, str) and len(v) == 2:
                 key, value = v
             self._choices[key] = value
 

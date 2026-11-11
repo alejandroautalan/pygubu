@@ -13,8 +13,7 @@ class FormBuilder:
     def iter_widgets(self, force_scan=False):
         if self.fields_scanned is False or force_scan:
             self.scan_widgets()
-        for name, widget in self.widgets.items():
-            yield name, widget
+        yield from self.widgets.items()
         self.fields_scanned = True
 
     def scan_widgets(self):

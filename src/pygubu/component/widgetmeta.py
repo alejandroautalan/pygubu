@@ -1,4 +1,3 @@
-# encoding: UTF-8
 import xml.etree.ElementTree as ET
 from collections import namedtuple
 
