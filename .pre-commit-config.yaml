@@ -10,17 +10,16 @@ repos:
       - id: detect-private-key
       - id: end-of-file-fixer
 
-  - repo: https://github.com/psf/black
-    rev: 25.9.0
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.4
     hooks:
-      - id: black
-        args:
-          - --line-length=80
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
 
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.3.0
-    hooks:
-      - id: flake8
-        args:
-          - --max-line-length=80
-          - --ignore=E203,E501,F401,W503,E704
+
+#  - repo: https://github.com/astral-sh/uv-pre-commit
+#    rev: 0.13.7
+#    hooks:
+#      # Verifica y actualiza uv.lock si modificaste pyproject.toml
+#      - id: uv-lock

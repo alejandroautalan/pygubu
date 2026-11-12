@@ -62,20 +62,8 @@ hook-dirs = "pygubu.__pyinstaller:get_hook_dirs"
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.black]
+[tool.ruff]
 line-length = 80
-target-version = ["py39", "py310", "py311", "py312", "py313"]
-include = '\\.pyi?$'
-exclude = '''
-/(
-    \.git
-  | \.hg
-  | \.mypy_cache
-  | \.tox
-  | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
-)/
-'''
+
+[tool.ruff.lint]
+ignore = ["E203", "E501", "F401", "W503", "E704"]
