@@ -27,3 +27,7 @@ repos:
       - id: flake8
         additional_dependencies:
           - Flake8-pyproject
+          - flake8-bugbear
+          - flake8-comprehensions
+          - flake8-bandit
+          - flake8-simplify

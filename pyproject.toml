@@ -76,6 +76,7 @@ extend-ignore = [
     "E203", # Espacios antes de ':' en slices (requerido por PEP 8, pero Black lo formatea distinto)
     "W503", # Salto de línea antes de operador binario (regla antigua reemplazada por W504)
 ]
+max-complexity = 10
 exclude = [
     ".git",
     "__pycache__",
