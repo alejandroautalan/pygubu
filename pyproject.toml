@@ -62,8 +62,25 @@ hook-dirs = "pygubu.__pyinstaller:get_hook_dirs"
 [tool.setuptools.packages.find]
 where = ["src"]
 
-[tool.ruff]
-line-length = 80
+[tool.black]
+line-length = 88
+target-version = ["py310"] # Ajusta según tu versión de Python (ej. py310, py312)
 
-[tool.ruff.lint]
-ignore = ["E203", "E501", "F401", "W503", "E704"]
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = [
+    "E203", # Espacios antes de ':' en slices (requerido por PEP 8, pero Black lo formatea distinto)
+    "W503", # Salto de línea antes de operador binario (regla antigua reemplazada por W504)
+]
+exclude = [
+    ".git",
+    "__pycache__",
+    ".venv",
+    "venv",
+    "build",
+    "dist",
+]
