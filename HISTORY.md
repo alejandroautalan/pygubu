@@ -1,6 +1,13 @@
 History
 =======
 
+Changes for version 0.43
+
+  * New widgets: packframe, gridframe (experimental)
+  * Pygubu themes: render assets in svg if supported (tk9, cairosvg, tksvg)
+  * Break change: reorganize image related modules in theming.image
+  * Break change: changed iconset schema.
+
 Changes for version 0.42.1
 
   * pygubu.plugins: fix issues in customtkinter plugin
